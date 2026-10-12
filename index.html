@@ -35,6 +35,9 @@ main,#hours,#upload,#leave,#stats{padding:12px 16px 40px;display:grid;gap:10px;m
 #hours,#upload,#leave,#stats{display:none}
 .warn{background:rgba(229,72,77,.12);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45}
 .okmsg{background:rgba(31,157,85,.14);color:var(--ok);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600}
+#toast{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translate(-50%,-160%);z-index:60;width:max-content;max-width:92%;padding:12px 18px;border-radius:12px;background:var(--ok);color:#fff;font-size:15px;font-weight:700;line-height:1.4;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:transform .25s ease;pointer-events:none}
+#toast.on{transform:translate(-50%,0)}
+#toast.bad{background:var(--warn)}
 .card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:12px 14px}
 .card.empty{border-left-color:var(--line);opacity:.55;padding:9px 14px}
 .hd{display:flex;align-items:center;justify-content:space-between}
@@ -303,6 +306,8 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
   </div>
 </div>
 
+<div id="toast"></div>
+
 <!-- 편집 PIN 입력창 -->
 <div class="ov" id="epov">
   <div class="box">
@@ -363,7 +368,7 @@ function cget(k) {
   try { return JSON.parse(v); } catch (e) { return null; }
 }
 function cset(k, v) { try { sset("c_" + k, JSON.stringify(v)); } catch (e) {} }
-function cwipe() { ["dash", "up", "leave", "stats"].forEach(function (k) { sdel("c_" + k); }); }
+function cwipe() { ["dash", "up", "leave", "stats", "hours"].forEach(function (k) { sdel("c_" + k); }); }
 var R = { dash: false, up: false, leave: false, stats: false };   // 갱신 중 표시
 function updTxt(d, key) { return d.updated + " 기준" + (R[key] ? " · 갱신 중…" : ""); }
 
@@ -737,11 +742,13 @@ $("cfgo").onclick = function () {
     .then(function (r) {
       if (r && r.error) U.msg = { err: true, t: r.error };
       else U.msg = { err: false, t: it.n + " " + s.label + " → 완료 ✔" };
+      toast((U.msg.err ? "⚠️ " : "✔ ") + U.msg.t, U.msg.err);
       closeConfirm();
       loadUpload();
     })
     .catch(function (e) {
       U.msg = { err: true, t: "처리 실패: " + errText(e) };
+      toast("⚠️ " + U.msg.t, true);
       closeConfirm();
       loadUpload();
     });
@@ -1170,29 +1177,54 @@ function renderMissing(m) {
   });
 }
 
+function ymdLocal() {
+  var d = new Date();
+  return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+}
+
+// 이름 목록·월·TOP1·미입력자 화면에 반영
+function applyMeta(m, fromCache) {
+  H.meta = m;
+  var sel = $("hname");
+  var keep = sel.value || sget("hoursName") || "";
+  sel.innerHTML = "";
+  m.names.forEach(function (n) {
+    var o = el("option", null, n); o.value = n; sel.appendChild(o);
+  });
+  if (keep && m.names.indexOf(keep) >= 0) sel.value = keep;
+  if (!$("hdate").value) $("hdate").value = fromCache ? ymdLocal() : m.today;
+  $("hmonth").innerHTML = "";
+  $("hmonth").appendChild(document.createTextNode("시트 기준 월: "));
+  $("hmonth").appendChild(el("b", null, m.month + "월"));
+  renderMissing(m.missing);
+  renderTop(m.top);
+  checkMonth();
+}
+
+// 근무시간 탭: 지난번 화면을 먼저 바로 보여주고, 서버 한 번 호출로 셀·달력까지 갱신
 function loadHoursMeta() {
-  $("hmonth").textContent = "시트 기준 월 확인 중…";
-  call("getHoursMeta")
+  if (!H.meta) {
+    var cm = cget("hours");
+    if (cm && cm.names) { applyMeta(cm, true); $("hcur").textContent = "현재 값 확인 중…"; }
+    else $("hmonth").textContent = "시트 기준 월 확인 중…";
+  }
+  var name0 = $("hname").value || sget("hoursName") || "";
+  var date0 = $("hdate").value || "";
+  var t = ++H.token;
+  if (name0) monLoading(name0);
+  call("getHoursMeta", [name0, date0])
     .then(function (m) {
-      H.meta = m; H.loaded = true;
-      var sel = $("hname");
-      sel.innerHTML = "";
-      m.names.forEach(function (n) {
-        var o = el("option", null, n); o.value = n; sel.appendChild(o);
-      });
-      var last = sget("hoursName") || "";
-      if (last && m.names.indexOf(last) >= 0) sel.value = last;
-      if (!$("hdate").value) $("hdate").value = m.today;
-      $("hmonth").innerHTML = "";
-      $("hmonth").appendChild(document.createTextNode("시트 기준 월: "));
-      $("hmonth").appendChild(el("b", null, m.month + "월"));
-      renderMissing(m.missing);
-      renderTop(m.top);
-      checkMonth();
-      refreshCell();
+      H.loaded = true;
+      var c = m.cell;
+      delete m.cell;
+      cset("hours", m);
+      applyMeta(m, false);
+      if (t !== H.token) return;   // 그 사이 이름/날짜를 바꿨으면 그쪽 결과를 씀
+      if (c && c.name === $("hname").value && c.ymd === $("hdate").value) applyCell(c);
+      else refreshCell();
     })
     .catch(function (e) {
-      $("hmonth").textContent = "";
+      if (!H.meta) $("hmonth").textContent = "";
       showHErr("불러오기 실패: " + errText(e));
     });
 }
@@ -1303,6 +1335,27 @@ function renderMonth(name, r) {
   b.appendChild(el("div", "hint", "날짜를 누르면 아래 입력칸이 그 날로 바뀌어요. 빨간 칸은 비어 있는 평일이에요."));
 }
 
+// 현재 입력값 박스 + 달력 그리기
+function applyCell(r) {
+  var box = $("hcur");
+  box.innerHTML = "";
+  box.appendChild(document.createTextNode("현재 입력값: "));
+  box.appendChild(el("b", null, r.cur === "" ? "(비어 있음)" : r.cur + (r.formula ? " (수식)" : "")));
+  box.appendChild(document.createElement("br"));
+  box.appendChild(document.createTextNode("이번 달 계: " + (r.total || "-")));
+  renderMonth(r.name || $("hname").value, r);
+}
+
+// 화면 위쪽에 잠깐 뜨는 알림
+var TT = null;
+function toast(msg, bad) {
+  var t = $("toast");
+  t.textContent = msg;
+  t.className = (bad ? "bad " : "") + "on";
+  clearTimeout(TT);
+  TT = setTimeout(function () { t.className = bad ? "bad" : ""; }, bad ? 3500 : 2500);
+}
+
 function refreshCell() {
   var name = $("hname").value, date = $("hdate").value;
   var box = $("hcur");
@@ -1314,12 +1367,7 @@ function refreshCell() {
   call("getHoursCell", [name, date])
     .then(function (r) {
       if (t !== H.token) return;
-      box.innerHTML = "";
-      box.appendChild(document.createTextNode("현재 입력값: "));
-      box.appendChild(el("b", null, r.cur === "" ? "(비어 있음)" : r.cur + (r.formula ? " (수식)" : "")));
-      box.appendChild(document.createElement("br"));
-      box.appendChild(document.createTextNode("이번 달 계: " + (r.total || "-")));
-      renderMonth(name, r);
+      applyCell(r);
     })
     .catch(function (e) {
       if (t !== H.token) return;
@@ -1336,14 +1384,17 @@ function doSave(value) {
   if (!value || !String(value).trim()) { showHErr("입력값을 넣어 주세요."); return; }
 
   H.busy = true;
+  var label = $("hsave").textContent;
   $("hsave").disabled = true; $("hclr").disabled = true;
+  $("hsave").textContent = "저장 중…";
   callEdit("saveHours", [name, date, value, H.confirm])
     .then(function (r) {
       H.busy = false;
       $("hsave").disabled = false; $("hclr").disabled = false;
+      $("hsave").textContent = label;
       var res = $("hres");
       res.innerHTML = "";
-      if (r.error) { showHErr(r.error); return; }
+      if (r.error) { showHErr(r.error); toast("⚠️ " + r.error, true); return; }
       if (r.needConfirm) {
         H.confirm = true;
         $("hsave").textContent = "덮어쓰기 확인";
@@ -1355,19 +1406,25 @@ function doSave(value) {
       }
       if (r.ok) {
         resetConfirm();
+        var what = name + " " + date.slice(5).replace("-", "/") + " → " + (r.cur === "" ? "(비움)" : r.cur);
+        toast("✔ 저장 완료 · " + what);
         $("hres").appendChild(el("div", "okmsg",
-          "저장 완료 ✔ " + name + " " + date.slice(5).replace("-", "/") + " → " +
-          (r.cur === "" ? "(비움)" : r.cur) + " / 이번 달 계 " + (r.total || "-")));
+          "저장 완료 ✔ " + what + " / 이번 달 계 " + (r.total || "-")));
+        $("hval").value = "";
         sset("hoursName", name);
         renderTop(r.top);
         renderMissing(r.missing);
-        refreshCell();
+        H.token++;   // 진행 중인 조회 결과는 버리고 저장 응답으로 바로 갱신
+        if (r.cell && $("hname").value === name && $("hdate").value === date) applyCell(r.cell);
+        else refreshCell();
       }
     })
     .catch(function (e) {
       H.busy = false;
       $("hsave").disabled = false; $("hclr").disabled = false;
+      $("hsave").textContent = label;
       showHErr("저장 실패: " + errText(e));
+      toast("⚠️ 저장 실패: " + errText(e), true);
     });
 }
 
