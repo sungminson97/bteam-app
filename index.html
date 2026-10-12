@@ -46,6 +46,7 @@ main,#hours,#upload,#leave,#stats,#sched{padding:12px 16px 40px;display:grid;gap
 .tmtag.a{background:var(--ta)}
 .tmtag.b{background:var(--tb)}
 .tmtag.u{background:transparent;color:var(--warn);border:1px solid var(--warn)}
+.tmtag.unas{margin:0 0 0 8px}
 .tcmp{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:8px}
 .tcmp .row{display:grid;grid-template-columns:68px 1fr 40px;white-space:nowrap;align-items:center;gap:8px;font-size:13px;font-weight:700}
 .tcmp .bar{height:10px;border-radius:5px;background:var(--line);overflow:hidden}
@@ -745,6 +746,7 @@ function render() {
         if (it.t) li.appendChild(el("span", "t", it.t));
         if (it.loc) li.appendChild(locEl(it.loc));
         else if (it.noLoc) li.appendChild(el("span", "noloc", "📍 자리 정보 없음"));
+        if (it.unassigned) li.appendChild(el("span", "tmtag u unas", "▲미지정"));
         ul.appendChild(li);
       });
       card.appendChild(ul);
@@ -1799,7 +1801,7 @@ $("hval").oninput = resetConfirm;
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-13-1";
+var APP_VER = "2026-10-13-2";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
