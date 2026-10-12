@@ -753,7 +753,11 @@ function render() {
   });
 }
 
+// 마지막으로 서버 데이터를 받은 시각·날짜 (다시 켤 때 오래됐으면 자동 갱신)
+var LAST = { t: 0, d: "" };
+
 function applyDash(r) {
+  LAST.t = Date.now(); LAST.d = ymdLocal();
   store[0] = r.d0; store[1] = r.d1;
   if (r.sched) store.sched = r.sched;
   $("d0").textContent = r.d0.label || "";
@@ -1795,7 +1799,7 @@ $("hval").oninput = resetConfirm;
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-12-3";
+var APP_VER = "2026-10-13-1";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
@@ -1811,8 +1815,31 @@ function checkUpdate() {
     })
     .catch(function () { UPD.busy = false; });
 }
-document.addEventListener("visibilitychange", function () { if (!document.hidden) checkUpdate(); });
-window.addEventListener("pageshow", function (e) { if (e.persisted) checkUpdate(); });
+/* ---------- 🔁 다시 켰을 때 자동 갱신 ----------
+ * 아이폰 홈 화면 앱은 백그라운드에서 다시 켜면 예전 화면을 그대로 보여줌
+ * → 날짜가 바뀌었거나 10분 넘게 지났으면 데이터를 새로 불러옴 (서버 캐시를 쓰니 빠름)
+ */
+function refreshIfStale() {
+  if ($("app").style.display === "none" || !getPin()) return;   // 잠금 화면이면 안 함
+  if (!LAST.t) return;                                           // 아직 첫 로딩 전
+  var dayChanged = LAST.d !== ymdLocal();
+  if (!dayChanged && Date.now() - LAST.t < 10 * 60000) return;
+  LAST.t = Date.now();   // 연속 호출 방지
+  loadDash(false);
+  loadUpload();
+  // 나머지 탭은 다음에 들어갈 때 새로 불러오게, 지금 보고 있는 탭은 바로
+  LV.loaded = false; ST.loaded = false;
+  if (dayChanged) { H.loaded = false; $("hdate").value = ""; }
+  if (cur === 4) loadLeave(false);
+  else if (cur === 5) loadStats(false);
+  else if (cur === 3 && !H.busy) loadHoursMeta(true);
+  if (dayChanged) toast("📅 날짜가 바뀌어서 오늘 기준으로 새로 불러왔어요");
+}
+
+function onResume() { checkUpdate(); refreshIfStale(); }
+document.addEventListener("visibilitychange", function () { if (!document.hidden) onResume(); });
+window.addEventListener("pageshow", function (e) { if (e.persisted) onResume(); });
+window.addEventListener("focus", onResume);
 
 function boot() {
   buildChips();
