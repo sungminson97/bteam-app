@@ -45,7 +45,9 @@ ul{list-style:none;margin:8px 0 0;padding:0}
 li{padding:8px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.5}
 li:first-child{border-top:0}
 .t{color:var(--sub);font-size:12px;margin-left:6px}
-.last{color:var(--ok);font-weight:800;margin-left:6px}
+.tag{font-weight:800;margin-left:6px}
+.tag.done{color:var(--ok)}
+.tag.ing{color:var(--accent)}
 .loc{color:var(--warn);font-weight:700;margin-left:6px}
 .noloc{color:var(--sub);font-size:12px;margin-left:6px}
 .msg{text-align:center;color:var(--sub);padding:40px 0}
@@ -474,7 +476,7 @@ function render() {
       s.items.forEach(function (it) {
         var li = el("li");
         li.appendChild(document.createTextNode(it.n));
-        if (it.last) li.appendChild(el("span", "last", "(완료일)"));
+        if (it.tag) li.appendChild(el("span", "tag " + (it.tagKind || ""), "(" + it.tag + ")"));
         if (it.t) li.appendChild(el("span", "t", it.t));
         if (it.loc) li.appendChild(el("span", "loc", "📍 " + it.loc));
         else if (it.noLoc) li.appendChild(el("span", "noloc", "📍 자리 정보 없음"));
