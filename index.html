@@ -18,11 +18,11 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,"
 header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(12px + env(safe-area-inset-top)) 16px 8px;border-bottom:1px solid var(--line)}
 .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
-.logo{height:22px;width:auto;max-width:120px;object-fit:contain;display:block}
+.logo{height:20px;width:auto;max-width:110px;object-fit:contain;display:block}
 @media (prefers-color-scheme:dark){.logo{background:#fff;padding:3px 7px;border-radius:6px;height:26px}}
 .sep{width:1px;height:18px;background:var(--line);flex:none}
-h1{font-size:17px;margin:0;white-space:nowrap}
-#upd{font-size:12px;color:var(--sub);font-weight:400}
+h1{font-size:17px;margin:0;white-space:nowrap;display:flex;flex-direction:column;line-height:1.2}
+#upd{font-size:11px;color:var(--sub);font-weight:400;min-height:13px}
 .hb{display:flex;gap:6px;flex:none}
 button.ref{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:8px;padding:6px 10px;font-size:13px;white-space:nowrap}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
@@ -45,6 +45,7 @@ ul{list-style:none;margin:8px 0 0;padding:0}
 li{padding:8px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.5}
 li:first-child{border-top:0}
 .t{color:var(--sub);font-size:12px;margin-left:6px}
+.last{color:var(--ok);font-weight:800;margin-left:6px}
 .loc{color:var(--warn);font-weight:700;margin-left:6px}
 .noloc{color:var(--sub);font-size:12px;margin-left:6px}
 .msg{text-align:center;color:var(--sub);padding:40px 0}
@@ -473,6 +474,7 @@ function render() {
       s.items.forEach(function (it) {
         var li = el("li");
         li.appendChild(document.createTextNode(it.n));
+        if (it.last) li.appendChild(el("span", "last", "(완료일)"));
         if (it.t) li.appendChild(el("span", "t", it.t));
         if (it.loc) li.appendChild(el("span", "loc", "📍 " + it.loc));
         else if (it.noLoc) li.appendChild(el("span", "noloc", "📍 자리 정보 없음"));
