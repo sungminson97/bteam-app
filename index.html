@@ -11,8 +11,8 @@
 <link rel="icon" type="image/png" href="icon.png">
 <title>제조1-B</title>
 <style>
-:root{--bg:#f4f6f9;--card:#fff;--text:#1d2530;--sub:#7b8794;--line:#e3e8ee;--accent:#2f6fed;--warn:#e5484d;--ok:#1f9d55}
-@media (prefers-color-scheme:dark){:root{--bg:#12161c;--card:#1b222b;--text:#e8edf3;--sub:#8b97a5;--line:#2a333f;--accent:#6b9bff;--warn:#ff6b6f;--ok:#4cd08a}}
+:root{--bg:#f4f6f9;--card:#fff;--text:#1d2530;--sub:#7b8794;--line:#e3e8ee;--accent:#2f6fed;--warn:#e5484d;--ok:#1f9d55;--ta:#3b82f6;--tb:#ef4444}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--card:#1b222b;--text:#e8edf3;--sub:#8b97a5;--line:#2a333f;--accent:#6b9bff;--warn:#ff6b6f;--ok:#4cd08a;--ta:#5b9bff;--tb:#ff6b6f}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;-webkit-text-size-adjust:100%;padding-bottom:env(safe-area-inset-bottom)}
 header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(12px + env(safe-area-inset-top)) 16px 8px;border-bottom:1px solid var(--line)}
@@ -25,13 +25,14 @@ h1{font-size:17px;margin:0;white-space:nowrap}
 #upd{font-size:12px;color:var(--sub);font-weight:400}
 .hb{display:flex;gap:6px;flex:none}
 button.ref{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:8px;padding:6px 10px;font-size:13px;white-space:nowrap}
-.tabs{display:flex;gap:6px;margin-top:10px}
-.tab{flex:1;text-align:center;padding:8px 0;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--sub);line-height:1.2;cursor:pointer}
-.tab span{display:block;font-size:11px;font-weight:500;min-height:13px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.tab{text-align:center;padding:8px 0;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--sub);line-height:1.2;cursor:pointer}
+.tab span{display:block;font-size:11px;font-weight:500}
+.tab span:empty{display:none}
 .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .tab .bd{display:inline-block;min-width:18px;padding:0 5px;margin-left:3px;border-radius:9px;background:var(--warn);color:#fff;font-size:11px;font-weight:700}
-main,#hours,#upload{padding:12px 16px 40px;display:grid;gap:10px;max-width:720px;margin:0 auto}
-#hours,#upload{display:none}
+main,#hours,#upload,#leave,#stats{padding:12px 16px 40px;display:grid;gap:10px;max-width:720px;margin:0 auto}
+#hours,#upload,#leave,#stats{display:none}
 .warn{background:rgba(229,72,77,.12);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45}
 .okmsg{background:rgba(31,157,85,.14);color:var(--ok);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600}
 .card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:12px 14px}
@@ -45,8 +46,9 @@ li{padding:8px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.5
 li:first-child{border-top:0}
 .t{color:var(--sub);font-size:12px;margin-left:6px}
 .loc{color:var(--warn);font-weight:700;margin-left:6px}
+.noloc{color:var(--sub);font-size:12px;margin-left:6px}
 .msg{text-align:center;color:var(--sub);padding:40px 0}
-/* 업로드 */
+/* 시트 업로드 */
 .sum{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;align-items:center;justify-content:space-between}
 .sum b{font-size:26px;color:var(--warn)}
 .sum.zero b{color:var(--ok)}
@@ -56,7 +58,7 @@ li:first-child{border-top:0}
 .sheet:active{background:rgba(229,72,77,.15)}
 .eq{font-weight:600}
 .hint{font-size:12px;color:var(--sub);padding:0 2px;line-height:1.5}
-/* 확인창 / PIN창 */
+/* 확인창 */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
 .ov.on{display:flex}
 .box{width:100%;max-width:520px;background:var(--card);border-radius:18px 18px 0 0;padding:20px 18px calc(26px + env(safe-area-inset-bottom));display:grid;gap:12px}
@@ -65,7 +67,6 @@ li:first-child{border-top:0}
 .box p{margin:0;font-size:14px;line-height:1.6}
 .box p.sub{color:var(--sub);font-size:12px}
 .box p b{color:var(--warn)}
-.box input{width:100%;font-size:20px;letter-spacing:4px;text-align:center;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
 .ob{display:grid;grid-template-columns:1fr 1.6fr;gap:8px;margin-top:4px}
 .ob button{padding:14px;border-radius:12px;font-size:16px;font-weight:700;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit}
 .ob .go{background:var(--ok);border-color:var(--ok);color:#fff}
@@ -88,9 +89,99 @@ li:first-child{border-top:0}
 .save:disabled{opacity:.45}
 .clr{padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--sub);font-size:14px}
 .clr:disabled{opacity:.45}
+/* 연차 현황 */
+.lv{border-left-color:var(--accent)}
+.lv.low{border-left-color:var(--warn)}
+.lv .big{font-size:22px;font-weight:800;color:var(--accent)}
+.lv.low .big{color:var(--warn)}
+.lv .big small{font-size:12px;font-weight:600;color:var(--sub);margin-left:3px}
+.bar{height:7px;border-radius:4px;background:var(--line);margin:9px 0 7px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.lv.low .bar i{background:var(--warn)}
+.lvrow{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--sub)}
+.lvrow b{color:var(--text);font-weight:700}
+.lvsub{font-size:12px;color:var(--sub);margin-top:6px}
+/* 장비통계 */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sc h4{margin:0 0 8px;font-size:13px;color:var(--sub);font-weight:600}
+.srow{display:flex;align-items:baseline;justify-content:space-between;gap:6px;padding:3px 0}
+.srow .tm{font-size:13px;font-weight:700}
+.srow .tm.a{color:var(--ta)}
+.srow .tm.b{color:var(--tb)}
+.srow .v{font-size:18px;font-weight:800}
+.srow .v small{font-size:11px;font-weight:600;color:var(--sub);margin-left:3px}
+.srow.win .v{color:var(--accent)}
+.sdiff{margin-top:6px;font-size:12px;color:var(--sub)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.panel h4{margin:0 0 10px;font-size:14px}
+.leg{display:flex;gap:12px;font-size:12px;color:var(--sub);margin-bottom:8px}
+.leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px}
+.chart{display:flex;gap:3px;align-items:flex-end;height:150px}
+.mc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.mc .bars{flex:1;display:flex;align-items:flex-end;gap:1px;width:100%;justify-content:center}
+.mc .bars b{display:block;width:42%;max-width:11px;border-radius:2px 2px 0 0;min-height:0}
+.mc .bars .a{background:var(--ta)}
+.mc .bars .b{background:var(--tb)}
+.mc label{font-size:10px;color:var(--sub);margin-top:4px}
+.mc.now label{color:var(--accent);font-weight:800}
+.mt{width:100%;border-collapse:collapse;font-size:13px}
+.mt th{font-size:11px;color:var(--sub);font-weight:600;text-align:right;padding:0 0 6px}
+.mt th:first-child,.mt td:first-child{text-align:left}
+.mt td{padding:7px 0;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.mt td small{display:block;color:var(--sub);font-size:11px}
+.mt .tot td{font-weight:800}
+.mt .a{color:var(--ta)}.mt .b{color:var(--tb)}
+.mt .hi{font-weight:800}
+.mr{cursor:pointer}
+.mr.empty td{opacity:.45}
+.mr.open td{background:rgba(47,111,237,.07)}
+.det td{padding:0 0 8px;border-top:0}
+.ct{width:100%;border-collapse:collapse;font-size:12px;margin:2px 0}
+.ct th{color:var(--sub);font-weight:600;padding:5px 0;text-align:right}
+.ct td{padding:5px 0;text-align:right;border-top:1px solid var(--line)}
+.ct th:first-child,.ct td:first-child{text-align:left;font-weight:700}
+.ct td:last-child{font-weight:800}
+details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
+.rule{display:flex;gap:8px;font-size:13px;padding:6px 0;border-top:1px solid var(--line);line-height:1.5}
+.rule:first-of-type{margin-top:8px}
+.rule b{flex:none;min-width:92px}
+.rule span{color:var(--sub)}
+/* 잠금 화면 */
+#gate{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+.gbox{width:100%;max-width:360px;text-align:center;display:grid;gap:14px;justify-items:center}
+.glogo{height:28px;width:auto;max-width:150px;object-fit:contain}
+@media (prefers-color-scheme:dark){.glogo{background:#fff;padding:4px 9px;border-radius:6px}}
+.gtitle{font-size:22px;font-weight:800}
+.gicon{font-size:44px;line-height:1}
+#gmsg{margin:0;font-size:15px;line-height:1.6;color:var(--text)}
+#gmsg.bad{color:var(--warn);font-weight:600}
+#gin{width:100%;font-size:22px;letter-spacing:6px;text-align:center;padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+.gbtns{width:100%;display:grid;grid-template-columns:1fr 1.6fr;gap:8px}
+.gbtns button,#gretry{padding:14px;border-radius:12px;font-size:16px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--text);font-family:inherit}
+.gbtns .go{background:var(--accent);border-color:var(--accent);color:#fff}
+#gretry{width:100%;background:var(--accent);border-color:var(--accent);color:#fff}
 </style>
 </head>
 <body>
+
+<!-- 🔒 잠금 화면 -->
+<div id="gate">
+  <div class="gbox">
+    <img class="glogo" id="glogo" src="logo.png" alt="" onerror="this.style.display='none'">
+    <div class="gtitle">제조1-B</div>
+    <div class="gicon" id="gicon">🔒</div>
+    <p id="gmsg"></p>
+    <input id="gin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN">
+    <div class="gbtns" id="gbtns">
+      <button id="gno" type="button">닫기</button>
+      <button id="ggo" type="button" class="go">확인</button>
+    </div>
+    <button id="gretry" type="button">다시 시도</button>
+  </div>
+</div>
+
+<div id="app" style="display:none">
 <header>
   <div class="top">
     <div class="brand">
@@ -99,15 +190,17 @@ li:first-child{border-top:0}
       <h1>제조1-B <span id="upd"></span></h1>
     </div>
     <div class="hb">
-      <button class="ref" id="pinbtn" type="button">🔒</button>
+      <button class="ref" id="lockbtn" type="button">🔒</button>
       <button class="ref" id="ref" type="button">새로고침</button>
     </div>
   </div>
   <div class="tabs">
     <div class="tab on" id="t0">금일<span id="d0"></span></div>
     <div class="tab" id="t1">명일<span id="d1"></span></div>
-    <div class="tab" id="t2">업로드<span id="d2"></span></div>
+    <div class="tab" id="t2">시트 업로드<span id="d2"></span></div>
     <div class="tab" id="t3">근무시간<span></span></div>
+    <div class="tab" id="t4">연차 현황<span></span></div>
+    <div class="tab" id="t5">장비통계<span></span></div>
   </div>
 </header>
 
@@ -147,6 +240,9 @@ li:first-child{border-top:0}
   </div>
 </section>
 
+<section id="leave"></section>
+<section id="stats"></section>
+
 <!-- 업로드 완료 확인창 -->
 <div class="ov" id="cfov">
   <div class="box">
@@ -160,29 +256,22 @@ li:first-child{border-top:0}
     </div>
   </div>
 </div>
-
-<!-- PIN 입력창 -->
-<div class="ov" id="pinov">
-  <div class="box">
-    <h3>PIN 입력</h3>
-    <p class="sub" id="pinmsg">팀 PIN 번호를 입력해 주세요. 한 번 입력하면 이 기기에 저장돼요.</p>
-    <input id="pininput" type="password" inputmode="numeric" autocomplete="off">
-    <div class="ob">
-      <button id="pinno" type="button">닫기</button>
-      <button id="pingo" type="button" class="go">확인</button>
-    </div>
-  </div>
 </div>
 
 <script>
 /* ★ 배포 관리의 웹 앱 URL (끝이 /exec) */
 var API_URL = "https://script.google.com/macros/s/AKfycbyXGeBXjmZtWj0GqezipYO9GRmZrQ1Y2zoMzgfYfJBH9S9nTw_Scg3ZvKn1PoI4tUMt/exec";
+var MAX_FAILS = 3;   // PIN 연속 오입력 허용 횟수
+var LOCK_MIN = 10;   // 초과 시 잠금 시간(분)
 
 var cur = 0, store = {};
 var H = { meta: null, loaded: false, confirm: false, token: 0, busy: false };
 var U = { loaded: false, data: null, msg: null };
+var LV = { loaded: false, data: null };
+var ST = { loaded: false, data: null, open: {} };
 var CF = { it: null, s: null };
-var memPin = "";
+var G = { busy: false, timer: null };
+var mem = {};
 
 function el(tag, cls, text) {
   var e = document.createElement(tag);
@@ -193,58 +282,172 @@ function el(tag, cls, text) {
 function $(id) { return document.getElementById(id); }
 function errText(e) { return e && e.message ? e.message : String(e); }
 
-/* ---------- PIN / API ---------- */
-function getPin() {
-  try { return localStorage.getItem("appPin") || memPin; } catch (e) { return memPin; }
+/* ---------- 저장소(사파리 설정에 따라 막힐 수 있어 메모리 대체) ---------- */
+function sget(k) {
+  try { var v = localStorage.getItem(k); if (v != null) return v; } catch (e) {}
+  return mem[k] == null ? null : mem[k];
 }
-function savePin(p) {
-  memPin = p;
-  try { localStorage.setItem("appPin", p); } catch (e) {}
+function sset(k, v) {
+  mem[k] = String(v);
+  try { localStorage.setItem(k, String(v)); } catch (e) {}
 }
-function showPin(msg) {
-  $("pinmsg").textContent = msg || "팀 PIN 번호를 입력해 주세요. 한 번 입력하면 이 기기에 저장돼요.";
-  $("pininput").value = "";
-  $("pinov").className = "ov on";
-  setTimeout(function () { $("pininput").focus(); }, 100);
+function sdel(k) {
+  delete mem[k];
+  try { localStorage.removeItem(k); } catch (e) {}
 }
-function hidePin() { $("pinov").className = "ov"; }
 
-$("pinno").onclick = hidePin;
-$("pinbtn").onclick = function () { showPin(); };
-$("pingo").onclick = function () {
-  var v = $("pininput").value.trim();
-  if (!v) return;
-  savePin(v);
-  hidePin();
-  reloadAll();
-};
-$("pininput").onkeydown = function (e) { if (e.key === "Enter") $("pingo").onclick(); };
+/* ---------- API ---------- */
+function getPin() { return sget("appPin") || ""; }
 
-function call(fn, args) {
+function rawCall(pin, fn, args) {
   return fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ pin: getPin(), fn: fn, args: args || [] })
-  })
-    .then(function (r) { return r.json(); })
-    .then(function (j) {
-      if (!j.ok) {
-        if (j.code === "PIN") showPin(j.error);
-        throw new Error(j.error || "요청 실패");
-      }
-      return j.data;
-    });
+    body: JSON.stringify({ pin: pin, fn: fn, args: args || [] })
+  }).then(function (r) { return r.json(); });
 }
 
-function reloadAll() {
-  store = {};
-  U.loaded = false; U.data = null;
-  H.loaded = false;
-  if (cur < 2) render();
-  load(0); load(1);
-  loadUpload();
-  if (cur === 3) loadHoursMeta();
+function call(fn, args) {
+  return rawCall(getPin(), fn, args).then(function (j) {
+    if (!j.ok) {
+      if (j.code === "PIN") lockApp("PIN이 변경되었거나 맞지 않아요. 다시 입력해 주세요.");
+      throw new Error(j.error || "요청 실패");
+    }
+    return j.data;
+  });
 }
+
+/* ---------- 🔒 잠금 화면 ---------- */
+function setGate(mode, msg, bad) {
+  var m = $("gmsg");
+  m.textContent = msg || "";
+  m.className = bad ? "bad" : "";
+  $("gin").style.display = mode === "enter" ? "block" : "none";
+  $("gbtns").style.display = mode === "enter" ? "grid" : "none";
+  var rt = $("gretry");
+  rt.style.display = (mode === "denied" || mode === "error") ? "block" : "none";
+  rt.textContent = mode === "denied" ? "PIN 입력하기" : "다시 시도";
+  $("gicon").textContent = mode === "loading" ? "⏳" : mode === "error" ? "⚠️" : "🔒";
+  $("gate").style.display = "flex";
+  $("app").style.display = "none";
+  G.mode = mode;
+  if (mode === "enter") {
+    $("gin").value = "";
+    setTimeout(function () { try { $("gin").focus(); } catch (e) {} }, 100);
+  }
+}
+
+function stopTimer() { if (G.timer) { clearInterval(G.timer); G.timer = null; } }
+
+function lockLeft() {
+  var u = parseInt(sget("lockUntil") || "0", 10);
+  var left = u - Date.now();
+  return left > 0 ? left : 0;
+}
+
+function showLocked() {
+  stopTimer();
+  function tick() {
+    var left = lockLeft();
+    if (left <= 0) {
+      stopTimer();
+      sdel("lockUntil"); sdel("pinFails");
+      setGate("enter", "다시 PIN을 입력해 주세요.");
+      return;
+    }
+    var min = Math.floor(left / 60000), sec = Math.ceil((left % 60000) / 1000);
+    if (sec === 60) { min += 1; sec = 0; }
+    setGate("locked", "PIN을 " + MAX_FAILS + "회 잘못 입력해서 잠겼어요.\n" +
+      min + "분 " + (sec < 10 ? "0" : "") + sec + "초 후에 다시 시도할 수 있어요.", true);
+    $("gmsg").style.whiteSpace = "pre-line";
+  }
+  tick();
+  if (lockLeft() > 0) G.timer = setInterval(tick, 1000);
+}
+
+function wipeScreens() {
+  store = {};
+  U = { loaded: false, data: null, msg: null };
+  LV = { loaded: false, data: null };
+  ST = { loaded: false, data: null, open: {} };
+  H = { meta: null, loaded: false, confirm: false, token: 0, busy: false };
+  ["main", "upload", "leave", "stats"].forEach(function (id) { $(id).innerHTML = ""; });
+  $("hname").innerHTML = ""; $("hval").value = "";
+  $("htop").style.display = "none"; $("hmiss").innerHTML = "";
+  $("hcur").textContent = "이름과 날짜를 선택하세요."; $("hres").innerHTML = "";
+  $("upd").textContent = ""; $("d0").textContent = ""; $("d1").textContent = ""; $("d2").innerHTML = "";
+}
+
+function lockApp(msg) {
+  sdel("appPin");
+  wipeScreens();
+  closeConfirm();
+  if (lockLeft() > 0) { showLocked(); return; }
+  setGate("enter", msg || "PIN을 입력해 주세요.");
+}
+
+function unlock(pin, firstData) {
+  stopTimer();
+  sset("appPin", pin);
+  sdel("pinFails"); sdel("lockUntil");
+  $("gate").style.display = "none";
+  $("app").style.display = "block";
+  wipeScreens();
+  cur = 0;
+  setTab(0);
+  U.data = firstData; U.loaded = true;
+  if (firstData && !firstData.error) setBadge(firstData.total);
+  load(0); load(1);
+}
+
+function verify(pin, typed) {
+  if (G.busy) return;
+  G.busy = true;
+  setGate("loading", "확인 중…");
+  rawCall(pin, "getUploadStatus").then(function (j) {
+    G.busy = false;
+    if (j.ok) { unlock(pin, j.data); return; }
+    if (j.code === "PIN") {
+      if (!typed) {            // 저장돼 있던 PIN이 서버와 다름 (횟수에 넣지 않음)
+        sdel("appPin");
+        setGate("enter", "저장된 PIN이 맞지 않아요. 다시 입력해 주세요.", true);
+        return;
+      }
+      var f = parseInt(sget("pinFails") || "0", 10) + 1;
+      sset("pinFails", f);
+      if (f >= MAX_FAILS) {
+        sset("lockUntil", Date.now() + LOCK_MIN * 60000);
+        showLocked();
+      } else {
+        setGate("enter", "PIN이 올바르지 않아요. (" + f + "/" + MAX_FAILS + ")", true);
+      }
+      return;
+    }
+    setGate("error", (j.error || "서버 오류") + "\n잠시 후 다시 시도해 주세요.", true);
+    $("gmsg").style.whiteSpace = "pre-line";
+  }).catch(function (e) {
+    G.busy = false;
+    setGate("error", "서버에 연결할 수 없어요.\n네트워크를 확인하고 다시 시도해 주세요.", true);
+    $("gmsg").style.whiteSpace = "pre-line";
+  });
+}
+
+$("ggo").onclick = function () {
+  var v = $("gin").value.trim();
+  if (!v) return;
+  if (lockLeft() > 0) { showLocked(); return; }
+  verify(v, true);
+};
+$("gin").onkeydown = function (e) { if (e.key === "Enter") $("ggo").onclick(); };
+$("gno").onclick = function () {
+  setGate("denied", "PIN을 입력하지 않아서 화면을 표시할 수 없어요.", true);
+};
+$("gretry").onclick = function () {
+  if (G.mode === "denied") { setGate("enter", "PIN을 입력해 주세요."); return; }
+  var p = getPin();
+  if (p) verify(p, false); else setGate("enter", "PIN을 입력해 주세요.");
+};
+$("lockbtn").onclick = function () { lockApp("잠겼어요. PIN을 입력해 주세요."); };
 
 /* ---------- 금일/명일 ---------- */
 function render() {
@@ -271,7 +474,8 @@ function render() {
         var li = el("li");
         li.appendChild(document.createTextNode(it.n));
         if (it.t) li.appendChild(el("span", "t", it.t));
-        if (it.loc) li.appendChild(el("span", "loc", it.loc));
+        if (it.loc) li.appendChild(el("span", "loc", "📍 " + it.loc));
+        else if (it.noLoc) li.appendChild(el("span", "noloc", "📍 자리 정보 없음"));
         ul.appendChild(li);
       });
       card.appendChild(ul);
@@ -293,7 +497,7 @@ function load(off, force) {
     });
 }
 
-/* ---------- 업로드 현황 + 완료 처리 ---------- */
+/* ---------- 시트 업로드 + 완료 처리 ---------- */
 function setBadge(n) {
   var t = $("d2");
   t.innerHTML = "";
@@ -395,24 +599,259 @@ function loadUpload() {
     });
 }
 
+/* ---------- 연차 현황 ---------- */
+function fnum(n) {
+  if (n == null) return "-";
+  return String(Math.round(n * 100) / 100);
+}
+
+function renderLeave(d) {
+  var box = $("leave");
+  box.innerHTML = "";
+  if (!d) { box.appendChild(el("div", "msg", "불러오는 중…")); return; }
+  if (d.error) { box.appendChild(el("div", "warn", d.error)); return; }
+  $("upd").textContent = d.updated + " 기준";
+  if (d.warn) box.appendChild(el("div", "warn", "⚠️ " + d.warn));
+  if (!d.people.length) { box.appendChild(el("div", "msg", "표시할 인원이 없어요.")); return; }
+
+  d.people.forEach(function (p) {
+    var low = p.remain != null && p.remain <= 2;
+    var card = el("div", "card lv" + (low ? " low" : ""));
+    var hd = el("div", "hd");
+    hd.appendChild(el("span", "ttl", p.name));
+    var big = el("span", "big", fnum(p.remain));
+    big.appendChild(el("small", null, "일 남음"));
+    hd.appendChild(big);
+    card.appendChild(hd);
+
+    var pct = 0;
+    if (p.gen && p.used != null && p.gen > 0) pct = Math.max(0, Math.min(100, p.used / p.gen * 100));
+    var bar = el("div", "bar");
+    var fill = el("i");
+    fill.style.width = pct + "%";
+    bar.appendChild(fill);
+    card.appendChild(bar);
+
+    var row = el("div", "lvrow");
+    [["생성", p.gen], ["사용", p.used], ["예정", p.planned]].forEach(function (x) {
+      var s = el("span", null, x[0] + " ");
+      s.appendChild(el("b", null, fnum(x[1])));
+      row.appendChild(s);
+    });
+    card.appendChild(row);
+
+    var sub = [];
+    if (p.hire) sub.push("입사 " + p.hire);
+    if (p.tenure) sub.push(p.tenure);
+    if (sub.length) card.appendChild(el("div", "lvsub", sub.join(" · ")));
+    box.appendChild(card);
+  });
+  box.appendChild(el("div", "hint", "잔여 2일 이하는 빨간색으로 표시돼요."));
+}
+
+function loadLeave(force) {
+  LV.loaded = true;
+  call("getLeaveData", [!!force])
+    .then(function (d) { LV.data = d; if (cur === 4) renderLeave(d); })
+    .catch(function (e) {
+      LV.data = { error: "불러오기 실패: " + errText(e) };
+      if (cur === 4) renderLeave(LV.data);
+    });
+}
+
+/* ---------- 장비통계 ---------- */
+function fp(n) { return n == null ? "-" : (Math.round(n * 10) / 10).toFixed(1) + "점"; }
+function fc(n) { return n == null ? "-" : n + "대"; }
+function f1(n) { return n == null ? "-" : (Math.round(n * 10) / 10).toFixed(1); }
+
+function srow(team, pts, cnt, win) {
+  var r = el("div", "srow" + (win ? " win" : ""));
+  r.appendChild(el("span", "tm " + (team === "A" ? "a" : "b"), team + "팀"));
+  var v = el("span", "v", fp(pts));
+  if (cnt != null) v.appendChild(el("small", null, fc(cnt)));
+  r.appendChild(v);
+  return r;
+}
+
+function catTable(heads, rows) {
+  var t = el("table", "ct");
+  var tr = el("tr");
+  tr.appendChild(el("th", null, "팀"));
+  heads.forEach(function (h) { tr.appendChild(el("th", null, h)); });
+  t.appendChild(tr);
+  ["A", "B"].forEach(function (k) {
+    if (!rows[k]) return;
+    var r = el("tr");
+    r.appendChild(el("td", k === "A" ? "a" : "b", k + "팀"));
+    r.lastChild.style.color = k === "A" ? "var(--ta)" : "var(--tb)";
+    heads.forEach(function (h) { r.appendChild(el("td", null, f1(rows[k][h]))); });
+    t.appendChild(r);
+  });
+  return t;
+}
+
+function renderStats(d) {
+  var box = $("stats");
+  box.innerHTML = "";
+  if (!d) { box.appendChild(el("div", "msg", "불러오는 중…")); return; }
+  if (d.error) { box.appendChild(el("div", "warn", d.error)); return; }
+  $("upd").textContent = d.updated + " 기준";
+
+  var months = d.months || [];
+  var cm = null;
+  months.forEach(function (m) { if (m.m === d.current) cm = m; });
+
+  // 요약 카드 2개
+  var grid = el("div", "sgrid");
+  var c1 = el("div", "sc");
+  c1.appendChild(el("h4", null, cm ? parseInt(cm.m.slice(5), 10) + "월 (이번 달)" : "이번 달"));
+  if (cm) {
+    c1.appendChild(srow("A", cm.aPts, cm.aCnt, (cm.aPts || 0) > (cm.bPts || 0)));
+    c1.appendChild(srow("B", cm.bPts, cm.bCnt, (cm.bPts || 0) > (cm.aPts || 0)));
+  } else c1.appendChild(el("div", "sdiff", "이번 달 데이터 없음"));
+  if (d.info && d.info.planned != null) c1.appendChild(el("div", "sdiff", "출하 예정 " + d.info.planned + "대"));
+  grid.appendChild(c1);
+
+  var c2 = el("div", "sc");
+  c2.appendChild(el("h4", null, "올해 누적"));
+  var tp = d.totals && d.totals.pts, tc = d.totals && d.totals.cnt;
+  if (tp) {
+    c2.appendChild(srow("A", tp.A, tc ? tc.A : null, (tp.A || 0) > (tp.B || 0)));
+    c2.appendChild(srow("B", tp.B, tc ? tc.B : null, (tp.B || 0) > (tp.A || 0)));
+    var diff = d.overall && d.overall.diff;
+    if (!diff && tp.A != null && tp.B != null) {
+      var df = Math.round((tp.B - tp.A) * 10) / 10;
+      diff = (df >= 0 ? "B팀 +" : "A팀 +") + Math.abs(df).toFixed(1) + "점";
+    }
+    if (diff) c2.appendChild(el("div", "sdiff", diff));
+  } else c2.appendChild(el("div", "sdiff", "합계 없음"));
+  grid.appendChild(c2);
+  box.appendChild(grid);
+
+  if (d.info && d.info.total != null)
+    box.appendChild(el("div", "hint", "제조1팀 올해 총 " + d.info.total + "대 출하" +
+      (d.info.sheetUpdated ? " · 시트 업데이트 " + d.info.sheetUpdated : "")));
+
+  // 월별 막대그래프
+  var p1 = el("div", "panel");
+  p1.appendChild(el("h4", null, "월별 점수 (세트 환산)"));
+  var leg = el("div", "leg");
+  var la = el("span"); var ia = el("i"); ia.style.background = "var(--ta)"; la.appendChild(ia); la.appendChild(document.createTextNode("A팀"));
+  var lb = el("span"); var ib = el("i"); ib.style.background = "var(--tb)"; lb.appendChild(ib); lb.appendChild(document.createTextNode("B팀"));
+  leg.appendChild(la); leg.appendChild(lb);
+  p1.appendChild(leg);
+  var max = 0;
+  months.forEach(function (m) { max = Math.max(max, m.aPts || 0, m.bPts || 0); });
+  var chart = el("div", "chart");
+  months.forEach(function (m) {
+    var col = el("div", "mc" + (m.m === d.current ? " now" : ""));
+    var bars = el("div", "bars");
+    var a = el("b", "a"), b = el("b", "b");
+    a.style.height = max ? Math.round((m.aPts || 0) / max * 100) + "%" : "0";
+    b.style.height = max ? Math.round((m.bPts || 0) / max * 100) + "%" : "0";
+    bars.appendChild(a); bars.appendChild(b);
+    col.appendChild(bars);
+    col.appendChild(el("label", null, parseInt(m.m.slice(5), 10) + "월"));
+    chart.appendChild(col);
+  });
+  p1.appendChild(chart);
+  box.appendChild(p1);
+
+  // 월별 표 (누르면 카테고리 펼침)
+  var p2 = el("div", "panel");
+  p2.appendChild(el("h4", null, "월별 상세 (누르면 카테고리별 점수)"));
+  var tbl = el("table", "mt");
+  var th = el("tr");
+  th.appendChild(el("th", null, "월"));
+  var tha = el("th", null, "A팀"); tha.style.color = "var(--ta)";
+  var thb = el("th", null, "B팀"); thb.style.color = "var(--tb)";
+  th.appendChild(tha); th.appendChild(thb);
+  tbl.appendChild(th);
+
+  months.forEach(function (m) {
+    var empty = !m.aPts && !m.bPts && m.aCnt == null && m.bCnt == null;
+    var hasCats = m.cats && (m.cats.A || m.cats.B);
+    var tr = el("tr", "mr" + (empty ? " empty" : "") + (ST.open[m.m] ? " open" : ""));
+    tr.appendChild(el("td", null, parseInt(m.m.slice(5), 10) + "월"));
+    var aw = (m.aPts || 0) > (m.bPts || 0), bw = (m.bPts || 0) > (m.aPts || 0);
+    var ta = el("td", "a" + (aw ? " hi" : ""), empty ? "-" : fp(m.aPts)); if (!empty) ta.appendChild(el("small", null, fc(m.aCnt)));
+    var tb = el("td", "b" + (bw ? " hi" : ""), empty ? "-" : fp(m.bPts)); if (!empty) tb.appendChild(el("small", null, fc(m.bCnt)));
+    tr.appendChild(ta); tr.appendChild(tb);
+    if (hasCats) tr.onclick = function () { ST.open[m.m] = !ST.open[m.m]; renderStats(ST.data); };
+    tbl.appendChild(tr);
+    if (ST.open[m.m] && hasCats) {
+      var dr = el("tr", "det");
+      var dtd = el("td"); dtd.colSpan = 3;
+      dtd.appendChild(catTable(d.catKeys, m.cats));
+      dr.appendChild(dtd);
+      tbl.appendChild(dr);
+    }
+  });
+  if (tp) {
+    var tt = el("tr", "tot");
+    tt.appendChild(el("td", null, "합계"));
+    var xa = el("td", "a", fp(tp.A)); xa.appendChild(el("small", null, tc ? fc(tc.A) : ""));
+    var xb = el("td", "b", fp(tp.B)); xb.appendChild(el("small", null, tc ? fc(tc.B) : ""));
+    tt.appendChild(xa); tt.appendChild(xb);
+    tbl.appendChild(tt);
+  }
+  p2.appendChild(tbl);
+  box.appendChild(p2);
+
+  // 전체기간 합산 (카테고리별)
+  if (d.overall) {
+    var p3 = el("div", "panel");
+    p3.appendChild(el("h4", null, d.overall.title || "전체기간 합산"));
+    p3.appendChild(catTable(d.overall.heads, d.overall.rows));
+    box.appendChild(p3);
+  }
+
+  // 점수 기준
+  if (d.rules && d.rules.length) {
+    var dt = el("details", "panel");
+    dt.appendChild(el("summary", null, "카테고리 점수 기준"));
+    d.rules.forEach(function (r) {
+      var row = el("div", "rule");
+      row.appendChild(el("b", null, r.label + "  " + r.pts));
+      row.appendChild(el("span", null, r.desc || ""));
+      dt.appendChild(row);
+    });
+    box.appendChild(dt);
+  }
+}
+
+function loadStats(force) {
+  ST.loaded = true;
+  call("getStatsData", [!!force])
+    .then(function (d) { ST.data = d; if (cur === 5) renderStats(d); })
+    .catch(function (e) {
+      ST.data = { error: "불러오기 실패: " + errText(e) };
+      if (cur === 5) renderStats(ST.data);
+    });
+}
+
 /* ---------- 탭 ---------- */
 function setTab(n) {
   cur = n;
-  for (var i = 0; i < 4; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
+  for (var i = 0; i < 6; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
   $("main").style.display = n < 2 ? "grid" : "none";
   $("upload").style.display = n === 2 ? "grid" : "none";
   $("hours").style.display = n === 3 ? "grid" : "none";
+  $("leave").style.display = n === 4 ? "grid" : "none";
+  $("stats").style.display = n === 5 ? "grid" : "none";
   if (n < 2) render();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
-  else { $("upd").textContent = ""; if (!H.loaded) loadHoursMeta(); }
+  else if (n === 3) { $("upd").textContent = ""; if (!H.loaded) loadHoursMeta(); }
+  else if (n === 4) { renderLeave(LV.data); if (!LV.loaded) loadLeave(); }
+  else { renderStats(ST.data); if (!ST.loaded) loadStats(); }
 }
-$("t0").onclick = function () { setTab(0); };
-$("t1").onclick = function () { setTab(1); };
-$("t2").onclick = function () { setTab(2); };
-$("t3").onclick = function () { setTab(3); };
+for (var ti = 0; ti < 6; ti++) (function (k) { $("t" + k).onclick = function () { setTab(k); }; })(ti);
+
 $("ref").onclick = function () {
   if (cur === 3) { loadHoursMeta(); return; }
   if (cur === 2) { renderUpload(null); loadUpload(); return; }
+  if (cur === 4) { renderLeave(null); loadLeave(true); return; }
+  if (cur === 5) { renderStats(null); loadStats(true); return; }
   store = {}; render(); load(0, true); load(1, true);
 };
 
@@ -496,8 +935,7 @@ function loadHoursMeta() {
       m.names.forEach(function (n) {
         var o = el("option", null, n); o.value = n; sel.appendChild(o);
       });
-      var last = "";
-      try { last = localStorage.getItem("hoursName") || ""; } catch (e) {}
+      var last = sget("hoursName") || "";
       if (last && m.names.indexOf(last) >= 0) sel.value = last;
       if (!$("hdate").value) $("hdate").value = m.today;
       $("hmonth").innerHTML = "";
@@ -584,7 +1022,7 @@ function doSave(value) {
         $("hres").appendChild(el("div", "okmsg",
           "저장 완료 ✔ " + name + " " + date.slice(5).replace("-", "/") + " → " +
           (r.cur === "" ? "(비움)" : r.cur) + " / 이번 달 계 " + (r.total || "-")));
-        try { localStorage.setItem("hoursName", name); } catch (e) {}
+        sset("hoursName", name);
         renderTop(r.top);
         renderMissing(r.missing);
         refreshCell();
@@ -604,10 +1042,14 @@ $("hdate").onchange = function () { resetConfirm(); refreshCell(); };
 $("hval").oninput = resetConfirm;
 
 /* ---------- 시작 ---------- */
-buildChips();
-if (!getPin()) showPin();
-load(0); load(1);
-loadUpload();   // 탭 뱃지(업로드 필요 건수) 표시용
+function boot() {
+  buildChips();
+  if (lockLeft() > 0) { showLocked(); return; }
+  var p = getPin();
+  if (p) verify(p, false);
+  else setGate("enter", "PIN을 입력해 주세요.");
+}
+boot();
 </script>
 </body>
 </html>
