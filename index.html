@@ -1630,8 +1630,33 @@ $("hdate").onchange = function () { resetConfirm(); refreshCell(); };
 $("hval").oninput = resetConfirm;
 
 /* ---------- 시작 ---------- */
+/* ---------- 🔄 새 버전 자동 반영 ----------
+ * GitHub에 index.html을 새로 올리면 아래 APP_VER 숫자만 바꿔주세요. (예: 날짜-번호)
+ * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
+ * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
+ */
+var APP_VER = "2026-10-12-1";
+var UPD = { busy: false, last: 0 };
+
+function checkUpdate() {
+  if (UPD.busy || Date.now() - UPD.last < 60000) return;   // 1분에 한 번만
+  if (H.busy || $("epov").className.indexOf("on") >= 0 || $("cfov").className.indexOf("on") >= 0) return;   // 저장·입력 중엔 건너뜀
+  UPD.busy = true; UPD.last = Date.now();
+  fetch(location.pathname + "?_=" + Date.now(), { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.text() : ""; })
+    .then(function (t) {
+      UPD.busy = false;
+      var m = t.match(/var APP_VER = "([^"]+)"/);
+      if (m && m[1] !== APP_VER) location.replace(location.pathname + "?v=" + encodeURIComponent(m[1]));
+    })
+    .catch(function () { UPD.busy = false; });
+}
+document.addEventListener("visibilitychange", function () { if (!document.hidden) checkUpdate(); });
+window.addEventListener("pageshow", function (e) { if (e.persisted) checkUpdate(); });
+
 function boot() {
   buildChips();
+  checkUpdate();
   if (lockLeft() > 0) { showLocked(); return; }
   var p = getPin();
   if (!p) { setGate("enter", "PIN을 입력해 주세요."); return; }
