@@ -189,6 +189,21 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 .rule:first-of-type{margin-top:8px}
 .rule b{flex:none;min-width:92px}
 .rule span{color:var(--sub)}
+/* 장비통계 검토필요 */
+.rv{background:rgba(255,166,0,.12);border:1px solid rgba(255,166,0,.45);border-radius:12px;padding:12px 14px}
+.rv h4{margin:0;font-size:14px;color:#c27c00}
+@media (prefers-color-scheme:dark){.rv h4{color:#ffc947}}
+.rv .rvd{font-size:12px;color:var(--sub);margin-top:4px;line-height:1.5}
+.rv ul{margin-top:8px}
+.rv li{font-size:13px;padding:7px 0}
+.rv .tm{font-weight:800;margin-right:6px}
+.rv .tm.a{color:var(--ta)}
+.rv .tm.b{color:var(--tb)}
+.rv .rt{color:var(--sub);font-size:12px;margin-left:6px}
+.rv .rs{float:right;font-size:12px;font-weight:700}
+.rv .rs.set{color:var(--ok)}
+.rv .rs.tmp{color:#c27c00}
+.rvok{background:rgba(31,157,85,.1);color:var(--ok);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700}
 /* 잠금 화면 */
 #gate{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
 .gbox{width:100%;max-width:360px;text-align:center;display:grid;gap:14px;justify-items:center}
@@ -977,6 +992,33 @@ function renderStats(d) {
   } else c2.appendChild(el("div", "sdiff", "합계 없음"));
   grid.appendChild(c2);
   box.appendChild(grid);
+
+  // 🔍 검토필요 (TYPE으로 카테고리를 판단 못 한 장비)
+  if (d.review) {
+    if (!d.review.count) {
+      box.appendChild(el("div", "rvok", "✅ 검토필요 없음 · 모든 장비가 자동 분류됐어요"));
+    } else {
+      var rv = el("div", "rv");
+      rv.appendChild(el("h4", null, "🔍 검토필요 " + d.review.count + "건"));
+      rv.appendChild(el("div", "rvd",
+        "TYPE만으로 SET/EFEM·PRO/ROBOT/TRACK을 판단하지 못한 장비예요. " +
+        "수동 점수가 없으면 임시로 1점(SET)으로 계산돼요."));
+      var ul = el("ul");
+      d.review.items.forEach(function (x) {
+        var li = el("li");
+        var tk = /A/.test(x.team) ? "a" : "b";
+        li.appendChild(el("span", "tm " + tk, (x.team || "?") + "팀"));
+        li.appendChild(document.createTextNode(x.proj || "(PROJECT NO. 없음)"));
+        if (x.type) li.appendChild(el("span", "rt", x.type));
+        if (x.manual !== "") li.appendChild(el("span", "rs set", "수동 " + x.manual + "점"));
+        else li.appendChild(el("span", "rs tmp", "임시 " + (x.base || "1") + "점"));
+        ul.appendChild(li);
+      });
+      rv.appendChild(ul);
+      rv.appendChild(el("div", "rvd", "점수 확정은 시트 '장비통계_검토필요'의 F열(수동점수)에 입력해 주세요."));
+      box.appendChild(rv);
+    }
+  }
 
   if (d.info && d.info.total != null)
     box.appendChild(el("div", "hint", "제조1팀 올해 총 " + d.info.total + "대 출하" +
