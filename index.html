@@ -299,6 +299,17 @@ function sdel(k) {
   try { localStorage.removeItem(k); } catch (e) {}
 }
 
+/* ---------- 캐시(빠르게 먼저 보여주고 뒤에서 갱신) ---------- */
+function cget(k) {
+  var v = sget("c_" + k);
+  if (!v) return null;
+  try { return JSON.parse(v); } catch (e) { return null; }
+}
+function cset(k, v) { try { sset("c_" + k, JSON.stringify(v)); } catch (e) {} }
+function cwipe() { ["dash", "up", "leave", "stats"].forEach(function (k) { sdel("c_" + k); }); }
+var R = { dash: false, up: false, leave: false, stats: false };   // 갱신 중 표시
+function updTxt(d, key) { return d.updated + " 기준" + (R[key] ? " · 갱신 중…" : ""); }
+
 /* ---------- API ---------- */
 function getPin() { return sget("appPin") || ""; }
 
@@ -383,13 +394,14 @@ function wipeScreens() {
 
 function lockApp(msg) {
   sdel("appPin");
+  cwipe();
   wipeScreens();
   closeConfirm();
   if (lockLeft() > 0) { showLocked(); return; }
   setGate("enter", msg || "PIN을 입력해 주세요.");
 }
 
-function unlock(pin, firstData) {
+function unlock(pin) {
   stopTimer();
   sset("appPin", pin);
   sdel("pinFails"); sdel("lockUntil");
@@ -397,20 +409,37 @@ function unlock(pin, firstData) {
   $("app").style.display = "block";
   wipeScreens();
   cur = 0;
+  // 저장해 둔 지난 화면이 있으면 먼저 바로 보여주고, 뒤에서 최신으로 갱신
+  var cd = cget("dash");
+  if (cd && cd.d0) { store[0] = cd.d0; store[1] = cd.d1; $("d0").textContent = cd.d0.label || ""; $("d1").textContent = cd.d1.label || ""; }
+  var cu = cget("up");
+  if (cu && !cu.error) { U.data = cu; setBadge(cu.total); }
+  LV.data = cget("leave"); ST.data = cget("stats");
   setTab(0);
-  U.data = firstData; U.loaded = true;
-  if (firstData && !firstData.error) setBadge(firstData.total);
-  load(0); load(1);
+  loadDash();
+  loadUpload();
 }
 
 function verify(pin, typed) {
   if (G.busy) return;
   G.busy = true;
   setGate("loading", "확인 중…");
-  rawCall(pin, "getUploadStatus").then(function (j) {
+  // 금일/명일 데이터를 PIN 확인과 동시에 미리 요청 (확인되면 바로 쓰도록)
+  var pre = rawCall(pin, "getDashboardAll", [false]).catch(function () { return null; });
+  rawCall(pin, "ping").then(function (j) {
+    if (!j.ok && j.code !== "PIN" && /알 수 없는/.test(j.error || "")) {
+      return pre.then(function (pj) { return pj || { ok: false, error: "서버에 연결할 수 없어요." }; });   // 예전 Api.gs 호환
+    }
+    return j;
+  }).then(function (j) {
     G.busy = false;
-    if (j.ok) { unlock(pin, j.data); return; }
+    if (j.ok) {
+      unlock(pin);
+      pre.then(function (pj) { if (pj && pj.ok) applyDash(pj.data); });
+      return;
+    }
     if (j.code === "PIN") {
+      cwipe();
       if (!typed) {            // 저장돼 있던 PIN이 서버와 다름 (횟수에 넣지 않음)
         sdel("appPin");
         setGate("enter", "저장된 PIN이 맞지 않아요. 다시 입력해 주세요.", true);
@@ -460,7 +489,7 @@ function render() {
   if (!d) { main.appendChild(el("div", "msg", "불러오는 중…")); return; }
   if (d.error) { main.appendChild(el("div", "warn", d.error)); return; }
 
-  $("upd").textContent = d.updated + " 기준";
+  $("upd").textContent = updTxt(d, "dash");
   if (d.missing && d.missing.length)
     main.appendChild(el("div", "warn", "⚠️ 열을 찾지 못한 공정: " + d.missing.join(", ")));
 
@@ -486,6 +515,29 @@ function render() {
     }
     main.appendChild(card);
   });
+}
+
+function applyDash(r) {
+  store[0] = r.d0; store[1] = r.d1;
+  $("d0").textContent = r.d0.label || "";
+  $("d1").textContent = r.d1.label || "";
+  if (!r.d0.error && !r.d1.error) cset("dash", r);
+  if (cur < 2) render();
+}
+
+// 금일+명일을 한 번에 불러와요 (시트를 한 번만 읽어서 빠름)
+function loadDash(force) {
+  R.dash = true;
+  if (cur < 2) render();
+  call("getDashboardAll", [!!force])
+    .then(function (r) { R.dash = false; applyDash(r); })
+    .catch(function (e) {
+      R.dash = false;
+      if (/알 수 없는/.test(errText(e))) { load(0, force); load(1, force); return; }   // 예전 Api.gs 호환
+      if (!store[0]) store[0] = { error: "불러오기 실패: " + errText(e) };
+      if (!store[1]) store[1] = { error: "불러오기 실패: " + errText(e) };
+      if (cur < 2) render();
+    });
 }
 
 function load(off, force) {
@@ -549,7 +601,7 @@ function renderUpload(d) {
   if (!d) { box.appendChild(el("div", "msg", "불러오는 중…")); return; }
   if (d.error) { box.appendChild(el("div", "warn", d.error)); return; }
 
-  $("upd").textContent = d.updated + " 기준";
+  $("upd").textContent = updTxt(d, "up");
   setBadge(d.total);
 
   if (U.msg) {
@@ -591,14 +643,17 @@ function renderUpload(d) {
 
 function loadUpload() {
   U.loaded = true;
+  R.up = true;
   call("getUploadStatus")
     .then(function (d) {
+      R.up = false;
       U.data = d;
-      if (d && !d.error) setBadge(d.total);
+      if (d && !d.error) { setBadge(d.total); cset("up", d); }
       if (cur === 2) renderUpload(d);
     })
     .catch(function (e) {
-      U.data = { error: "불러오기 실패: " + errText(e) };
+      R.up = false;
+      if (!U.data || U.data.error) U.data = { error: "불러오기 실패: " + errText(e) };
       if (cur === 2) renderUpload(U.data);
     });
 }
@@ -614,7 +669,7 @@ function renderLeave(d) {
   box.innerHTML = "";
   if (!d) { box.appendChild(el("div", "msg", "불러오는 중…")); return; }
   if (d.error) { box.appendChild(el("div", "warn", d.error)); return; }
-  $("upd").textContent = d.updated + " 기준";
+  $("upd").textContent = updTxt(d, "leave");
   if (d.warn) box.appendChild(el("div", "warn", "⚠️ " + d.warn));
   if (!d.people.length) { box.appendChild(el("div", "msg", "표시할 인원이 없어요.")); return; }
 
@@ -655,10 +710,12 @@ function renderLeave(d) {
 
 function loadLeave(force) {
   LV.loaded = true;
+  R.leave = true;
   call("getLeaveData", [!!force])
-    .then(function (d) { LV.data = d; if (cur === 4) renderLeave(d); })
+    .then(function (d) { R.leave = false; LV.data = d; if (!d.error) cset("leave", d); if (cur === 4) renderLeave(d); })
     .catch(function (e) {
-      LV.data = { error: "불러오기 실패: " + errText(e) };
+      R.leave = false;
+      if (!LV.data || LV.data.error) LV.data = { error: "불러오기 실패: " + errText(e) };
       if (cur === 4) renderLeave(LV.data);
     });
 }
@@ -699,7 +756,7 @@ function renderStats(d) {
   box.innerHTML = "";
   if (!d) { box.appendChild(el("div", "msg", "불러오는 중…")); return; }
   if (d.error) { box.appendChild(el("div", "warn", d.error)); return; }
-  $("upd").textContent = d.updated + " 기준";
+  $("upd").textContent = updTxt(d, "stats");
 
   var months = d.months || [];
   var cm = null;
@@ -826,10 +883,12 @@ function renderStats(d) {
 
 function loadStats(force) {
   ST.loaded = true;
+  R.stats = true;
   call("getStatsData", [!!force])
-    .then(function (d) { ST.data = d; if (cur === 5) renderStats(d); })
+    .then(function (d) { R.stats = false; ST.data = d; if (!d.error) cset("stats", d); if (cur === 5) renderStats(d); })
     .catch(function (e) {
-      ST.data = { error: "불러오기 실패: " + errText(e) };
+      R.stats = false;
+      if (!ST.data || ST.data.error) ST.data = { error: "불러오기 실패: " + errText(e) };
       if (cur === 5) renderStats(ST.data);
     });
 }
@@ -853,10 +912,10 @@ for (var ti = 0; ti < 6; ti++) (function (k) { $("t" + k).onclick = function () 
 
 $("ref").onclick = function () {
   if (cur === 3) { loadHoursMeta(); return; }
-  if (cur === 2) { renderUpload(null); loadUpload(); return; }
-  if (cur === 4) { renderLeave(null); loadLeave(true); return; }
-  if (cur === 5) { renderStats(null); loadStats(true); return; }
-  store = {}; render(); load(0, true); load(1, true);
+  if (cur === 2) { loadUpload(); renderUpload(U.data); return; }
+  if (cur === 4) { loadLeave(true); renderLeave(LV.data); return; }
+  if (cur === 5) { loadStats(true); renderStats(ST.data); return; }
+  loadDash(true);
 };
 
 /* ---------- 근무시간 ---------- */
