@@ -897,8 +897,13 @@ function renderSchedList(box, s) {
 // 📅 달력: 이번 달 / 다음 달 (날짜를 누르면 그날 장비가 아래에)
 function renderSchedCal(box, s) {
   var today = schedToday(s);
-  var months = [s.from.slice(0, 7)];
-  if (s.to.slice(0, 7) !== months[0]) months.push(s.to.slice(0, 7));
+  // 받은 범위(지난달~다음 달)의 달 목록
+  var months = [];
+  var cy = +s.from.slice(0, 4), cm = +s.from.slice(5, 7);
+  while ((cy + "-" + ("0" + cm).slice(-2)) <= s.to.slice(0, 7)) {
+    months.push(cy + "-" + ("0" + cm).slice(-2));
+    cm++; if (cm > 12) { cm = 1; cy++; }
+  }
   if (!SC.month || months.indexOf(SC.month) < 0) SC.month = today.slice(0, 7);
   var mi = months.indexOf(SC.month);
 
@@ -1790,7 +1795,7 @@ $("hval").oninput = resetConfirm;
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-12-2";
+var APP_VER = "2026-10-12-3";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
