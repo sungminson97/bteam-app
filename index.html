@@ -25,14 +25,35 @@ h1{font-size:17px;margin:0;white-space:nowrap;display:flex;flex-direction:column
 #upd{font-size:11px;color:var(--sub);font-weight:400;min-height:13px}
 .hb{display:flex;gap:6px;flex:none}
 button.ref{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:8px;padding:6px 10px;font-size:13px;white-space:nowrap}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.tab{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tab{text-align:center;padding:8px 0;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--sub);line-height:1.2;cursor:pointer}
 .tab span{display:block;font-size:11px;font-weight:500}
 .tab span:empty{display:none}
 .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .tab .bd{display:inline-block;min-width:18px;padding:0 5px;margin-left:3px;border-radius:9px;background:var(--warn);color:#fff;font-size:11px;font-weight:700}
-main,#hours,#upload,#leave,#stats{padding:12px 16px 40px;display:grid;gap:10px;max-width:720px;margin:0 auto}
-#hours,#upload,#leave,#stats{display:none}
+main,#hours,#upload,#leave,#stats,#sched{padding:12px 16px 40px;display:grid;gap:10px;max-width:720px;margin:0 auto}
+#hours,#upload,#leave,#stats,#sched{display:none}
+/* 입고 일정 */
+.ssum{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline}
+.ssum b{font-size:22px;color:var(--accent)}
+.ssum span{font-size:13px;color:var(--sub)}
+.ssum .bad{color:var(--warn);font-weight:700}
+.sday .hd .ttl small{font-size:12px;font-weight:700;color:#fff;background:var(--accent);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.sday.we .hd .ttl{color:var(--sub)}
+.sday li .un{color:var(--warn);font-weight:700;font-size:12px;margin-left:6px}
+.tmtag{display:inline-block;min-width:34px;text-align:center;font-size:11px;font-weight:800;border-radius:6px;padding:1px 5px;margin-right:6px;color:#fff;vertical-align:1px}
+.tmtag.a{background:var(--ta)}
+.tmtag.b{background:var(--tb)}
+.tmtag.u{background:transparent;color:var(--warn);border:1px solid var(--warn)}
+.tcmp{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:8px}
+.tcmp .row{display:grid;grid-template-columns:68px 1fr 40px;white-space:nowrap;align-items:center;gap:8px;font-size:13px;font-weight:700}
+.tcmp .bar{height:10px;border-radius:5px;background:var(--line);overflow:hidden}
+.tcmp .bar i{display:block;height:100%;border-radius:5px}
+.tcmp .n{text-align:right;font-variant-numeric:tabular-nums}
+.dsplit{font-size:12px;font-weight:700;margin-right:8px}
+.dsplit .a{color:var(--ta)}.dsplit .b{color:var(--tb)}.dsplit .u{color:var(--warn)}
+.sday li .nl{color:var(--warn);font-weight:700;font-size:12px;margin-left:6px}
 .warn{background:rgba(229,72,77,.12);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45}
 .okmsg{background:rgba(31,157,85,.14);color:var(--ok);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600}
 #toast{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translate(-50%,-160%);z-index:60;width:max-content;max-width:92%;padding:12px 18px;border-radius:12px;background:var(--ok);color:#fff;font-size:15px;font-weight:700;line-height:1.4;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:transform .25s ease;pointer-events:none}
@@ -260,9 +281,10 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     <div class="tab on" id="t0">금일<span id="d0"></span></div>
     <div class="tab" id="t1">명일<span id="d1"></span></div>
     <div class="tab" id="t2">시트 업로드<span id="d2"></span></div>
+    <div class="tab" id="t6">입고 일정<span id="d6"></span></div>
+    <div class="tab" id="t5">장비통계<span></span></div>
     <div class="tab" id="t3">근무시간<span></span></div>
     <div class="tab" id="t4">연차 현황<span></span></div>
-    <div class="tab" id="t5">장비통계<span></span></div>
   </div>
 </header>
 
@@ -304,6 +326,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
   </div>
 </section>
 
+<section id="sched"></section>
 <section id="leave"></section>
 <section id="stats"></section>
 
@@ -541,7 +564,8 @@ function wipeScreens() {
   LV = { loaded: false, data: null, open: {} };
   ST = { loaded: false, data: null, open: {} };
   H = { meta: null, loaded: false, confirm: false, token: 0, busy: false };
-  ["main", "upload", "leave", "stats"].forEach(function (id) { $(id).innerHTML = ""; });
+  ["main", "upload", "leave", "stats", "sched"].forEach(function (id) { $(id).innerHTML = ""; });
+  $("d6").textContent = "";
   $("hname").innerHTML = ""; $("hval").value = "";
   $("htop").style.display = "none"; $("hmiss").innerHTML = "";
   $("hcur").textContent = "이름과 날짜를 선택하세요."; $("hres").innerHTML = "";
@@ -560,7 +584,7 @@ function lockApp(msg) {
   setGate("enter", msg || "PIN을 입력해 주세요.");
 }
 
-function unlock(pin) {
+function unlock(pin, pre) {
   stopTimer();
   sset("appPin", pin);
   sdel("pinFails"); sdel("lockUntil");
@@ -570,12 +594,24 @@ function unlock(pin) {
   cur = 0;
   // 저장해 둔 지난 화면이 있으면 먼저 바로 보여주고, 뒤에서 최신으로 갱신
   var cd = cget("dash");
-  if (cd && cd.d0) { store[0] = cd.d0; store[1] = cd.d1; $("d0").textContent = cd.d0.label || ""; $("d1").textContent = cd.d1.label || ""; }
+  if (cd && cd.d0) { store[0] = cd.d0; store[1] = cd.d1; if (cd.sched) store.sched = cd.sched; $("d0").textContent = cd.d0.label || ""; $("d1").textContent = cd.d1.label || ""; }
   var cu = cget("up");
   if (cu && !cu.error) { U.data = cu; setBadge(cu.total); }
   LV.data = cget("leave"); ST.data = cget("stats");
   setTab(0);
-  loadDash();
+  // ⚡ 이미 보낸 금일/명일 요청(pre)이 있으면 그 결과를 씀 (같은 요청을 두 번 보내지 않음)
+  if (pre) {
+    R.dash = true;
+    render();
+    pre.then(function (pj) {
+      R.dash = false;
+      if (pj && pj.ok) { applyDash(pj.data); return; }
+      if (pj && pj.code === "PIN") return;   // 잠금 처리됨
+      if (cur < 2) render();
+      if (cur === 6) renderSched();
+      toast("⚠️ " + ((pj && pj.error) || "서버에 연결할 수 없어요. 네트워크를 확인해 주세요."), true);
+    });
+  } else loadDash();
   loadUpload();
 }
 
@@ -596,8 +632,7 @@ function verify(pin, typed) {
       // 잠금 화면에서 편집 PIN을 넣었으면 편집 권한도 같이 기억
       if (j.data && j.data.level === "edit") sset("editPin", pin);
       else if (typed) sdel("editPin");
-      unlock(pin);
-      pre.then(function (pj) { if (pj && pj.ok) applyDash(pj.data); });
+      unlock(pin, pre);
       return;
     }
     if (j.code === "PIN") {
@@ -695,10 +730,93 @@ function render() {
 
 function applyDash(r) {
   store[0] = r.d0; store[1] = r.d1;
+  if (r.sched) store.sched = r.sched;
   $("d0").textContent = r.d0.label || "";
   $("d1").textContent = r.d1.label || "";
+  schedBadge();
   if (!r.d0.error && !r.d1.error) cset("dash", r);
   if (cur < 2) render();
+  if (cur === 6) renderSched();
+}
+
+/* ---------- 📅 FRAME 입고 일정 (2주) ---------- */
+function schedBadge() {
+  var s = store.sched;
+  $("d6").textContent = s && !s.error && s.total ? s.total + "대" : "";
+}
+
+function renderSched() {
+  var box = $("sched");
+  box.innerHTML = "";
+  var s = store.sched;
+  if (!s) {
+    box.appendChild(el("div", "msg", R.dash ? "불러오는 중…" : "입고 일정 정보가 없어요. 서버(DashboardApp.gs)를 새 버전으로 배포했는지 확인해 주세요."));
+    return;
+  }
+  if (s.error) { box.appendChild(el("div", "warn", s.error)); return; }
+  if (store[0] && store[0].updated) $("upd").textContent = updTxt(store[0], "dash");
+
+  var sum = el("div", "ssum");
+  sum.appendChild(el("span", null, "앞으로 2주 FRAME 입고"));
+  sum.appendChild(el("b", null, s.total + "대"));
+  if (s.noLoc) sum.appendChild(el("span", "bad", "📍 자리 미배정 " + s.noLoc + "대"));
+  box.appendChild(sum);
+
+  // 팀별 비교 막대
+  var cnt = s.cnt || { A: 0, B: 0, U: s.unassigned || 0 };
+  var mx = Math.max(cnt.A, cnt.B, cnt.U, 1);
+  var cmp = el("div", "tcmp");
+  [["A팀", cnt.A, "var(--ta)"], ["B팀", cnt.B, "var(--tb)"], ["▲미지정", cnt.U, "var(--warn)"]].forEach(function (x) {
+    if (x[0] === "▲미지정" && !x[1]) return;
+    var row = el("div", "row");
+    var lb = el("span", null, x[0]); lb.style.color = x[2];
+    row.appendChild(lb);
+    var bar = el("div", "bar"); var fill = el("i");
+    fill.style.width = Math.round(x[1] / mx * 100) + "%"; fill.style.background = x[2];
+    bar.appendChild(fill); row.appendChild(bar);
+    row.appendChild(el("span", "n", x[1] + "대"));
+    cmp.appendChild(row);
+  });
+  box.appendChild(cmp);
+
+  if (!s.days.length) {
+    box.appendChild(el("div", "msg", "2주 안에 잡힌 FRAME 입고가 없어요."));
+  }
+  var tomorrow = (function () { var d = new Date(); d.setDate(d.getDate() + 1); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); })();
+  s.days.forEach(function (d) {
+    var card = el("div", "card sday" + (d.dow === 0 || d.dow === 6 ? " we" : ""));
+    var hd = el("div", "hd");
+    var ttl = el("span", "ttl", d.label);
+    if (d.ymd === s.from) ttl.appendChild(el("small", null, "오늘"));
+    else if (d.ymd === tomorrow) ttl.appendChild(el("small", null, "내일"));
+    hd.appendChild(ttl);
+    // 그날 팀별 대수: A 1 · B 2 · ▲1
+    var dc = { A: 0, B: 0, U: 0 };
+    d.items.forEach(function (it) { dc[it.team === "A" ? "A" : it.team === "B" ? "B" : "U"]++; });
+    var right = el("span");
+    var sp = el("span", "dsplit");
+    if (dc.A) sp.appendChild(el("span", "a", "A " + dc.A + " "));
+    if (dc.B) sp.appendChild(el("span", "b", "B " + dc.B + " "));
+    if (dc.U) sp.appendChild(el("span", "u", "▲" + dc.U));
+    right.appendChild(sp);
+    right.appendChild(el("span", "cnt", d.items.length + "대"));
+    hd.appendChild(right);
+    card.appendChild(hd);
+    var ul = el("ul");
+    d.items.forEach(function (it) {
+      var li = el("li");
+      var tk = it.team === "A" ? "a" : it.team === "B" ? "b" : "u";
+      li.appendChild(el("span", "tmtag " + tk, it.team === "A" ? "A팀" : it.team === "B" ? "B팀" : "▲미지정"));
+      li.appendChild(document.createTextNode(it.n));
+      if (it.t) li.appendChild(el("span", "t", it.t));
+      if (it.loc) li.appendChild(locEl(it.loc));
+      else if (it.noLoc) li.appendChild(el("span", "nl", "📍 자리 미배정"));
+      ul.appendChild(li);
+    });
+    card.appendChild(ul);
+    box.appendChild(card);
+  });
+  box.appendChild(el("div", "hint", "Backlog FRAME 입고일 기준 (ROBOT은 Module 작업일). A팀·B팀·미지정 전체를 표시해요. ▲미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."));
 }
 
 // 금일+명일을 한 번에 불러와요 (시트를 한 번만 읽어서 빠름)
@@ -1138,19 +1256,21 @@ function loadStats(force) {
 /* ---------- 탭 ---------- */
 function setTab(n) {
   cur = n;
-  for (var i = 0; i < 6; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
+  for (var i = 0; i < 7; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
   $("main").style.display = n < 2 ? "grid" : "none";
   $("upload").style.display = n === 2 ? "grid" : "none";
   $("hours").style.display = n === 3 ? "grid" : "none";
   $("leave").style.display = n === 4 ? "grid" : "none";
   $("stats").style.display = n === 5 ? "grid" : "none";
+  $("sched").style.display = n === 6 ? "grid" : "none";
   if (n < 2) render();
+  else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
   else if (n === 3) { $("upd").textContent = ""; updLock(); if (!H.loaded) loadHoursMeta(); }
   else if (n === 4) { renderLeave(LV.data); if (!LV.loaded) loadLeave(); }
   else { renderStats(ST.data); if (!ST.loaded) loadStats(); }
 }
-for (var ti = 0; ti < 6; ti++) (function (k) { $("t" + k).onclick = function () { setTab(k); }; })(ti);
+for (var ti = 0; ti < 7; ti++) (function (k) { $("t" + k).onclick = function () { setTab(k); }; })(ti);
 
 // 새로고침: 버튼이 "갱신 중…"으로 바뀌고, 끝나면 위에 완료/실패 알림
 var REF = false;
@@ -1161,7 +1281,7 @@ $("ref").onclick = function () {
   else if (cur === 2) { p = loadUpload(); renderUpload(U.data); }
   else if (cur === 4) { p = loadLeave(true); renderLeave(LV.data); }
   else if (cur === 5) { p = loadStats(true); renderStats(ST.data); }
-  else p = loadDash(true);
+  else { p = loadDash(true); if (cur === 6) renderSched(); }
 
   REF = true;
   var b = $("ref");
@@ -1514,8 +1634,14 @@ function boot() {
   buildChips();
   if (lockLeft() > 0) { showLocked(); return; }
   var p = getPin();
-  if (p) verify(p, false);
-  else setGate("enter", "PIN을 입력해 주세요.");
+  if (!p) { setGate("enter", "PIN을 입력해 주세요."); return; }
+  // ⚡ 저장된 PIN이 있으면 PIN 확인을 기다리지 않고 지난 화면부터 바로 보여줌.
+  //    금일/명일 요청이 PIN 확인을 겸하고, PIN이 바뀌었으면 그때 잠금 화면으로.
+  var pre = rawCall(p, "getDashboardAll", [false]).then(function (j) {
+    if (!j.ok && j.code === "PIN") lockApp("저장된 PIN이 맞지 않아요. 다시 입력해 주세요.");
+    return j;
+  }).catch(function () { return null; });
+  unlock(p, pre);
 }
 boot();
 </script>
