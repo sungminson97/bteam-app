@@ -85,8 +85,12 @@ li:first-child{border-top:0}
 .form select,.form input[type=date],.form input[type=text]{width:100%;font-size:16px;padding:11px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
 .form input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;min-height:46px;text-align:left}
 /* 이번 달 입력 내역 */
-.mon{gap:10px}
+.mon{display:grid;gap:10px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);transition:opacity .15s}
 .mon h4{margin:0;font-size:15px}
+.mon h4 span{color:var(--accent)}
+.mon.ld .cal,.mon.ld .msum{opacity:.3}
+.mon.flash{animation:mflash .7s ease-out}
+@keyframes mflash{0%{background:rgba(47,111,237,.18)}100%{background:var(--card)}}
 .msum{font-size:13px;color:var(--sub);line-height:1.5}
 .msum b{color:var(--warn)}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
@@ -254,6 +258,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
       <label for="hname">이름</label>
       <select id="hname"></select>
     </div>
+    <div id="hmon" class="mon" style="display:none"></div>
     <div>
       <label for="hdate">날짜</label>
       <input type="date" id="hdate">
@@ -273,7 +278,6 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     </div>
     <div id="hres"></div>
   </div>
-  <div id="hmon" class="form mon" style="display:none"></div>
 </section>
 
 <section id="leave"></section>
@@ -1115,17 +1119,39 @@ function checkMonth() {
 }
 
 // 이번 달 입력 내역 (달력)
-var SHORT = { "오전반차": "오전반", "오후반차": "오후반", "반반차": "반반" };
+var SHORT = { "오전반차": "오전반", "오후반차": "오후반", "반반차": "반반", "대체휴일": "대휴" };
+
+// 시트 주말 칸에 적힌 "일"/"토" 같은 표시는 입력값이 아니라 주말 표시로 취급
+var WEEKEND_MARK = /^(일|토|일요일|토요일)$/;
+
+// 이름/날짜를 바꾸는 순간 달력 제목을 새 이름으로 바꾸고 흐리게 (불러오는 중)
+function monLoading(name) {
+  var b = $("hmon");
+  if (b.style.display === "none") return;
+  b.className = "mon ld";
+  var h = b.querySelector("h4");
+  if (h) {
+    h.innerHTML = "";
+    h.appendChild(document.createTextNode("📅 "));
+    h.appendChild(el("span", null, name));
+    h.appendChild(document.createTextNode(" · 불러오는 중…"));
+  }
+}
 
 function renderMonth(name, r) {
   var b = $("hmon");
+  var changed = b.getAttribute("data-name") !== name;
   b.innerHTML = "";
   if (!r || !r.days || !r.days.length) { b.style.display = "none"; return; }
   b.style.display = "grid";
+  b.setAttribute("data-name", name);
+  b.className = "mon";
+  if (changed) { void b.offsetWidth; b.className = "mon flash"; }
 
   var sel = $("hdate").value;
   var today = H.meta ? H.meta.today : "";
   var mm = parseInt(r.ym.slice(5), 10);
+  r.days.forEach(function (x) { if (WEEKEND_MARK.test(x.v)) x.v = ""; });
   var filled = 0, gaps = [];
   r.days.forEach(function (x) {
     var we = x.dow === 0 || x.dow === 6;
@@ -1133,7 +1159,11 @@ function renderMonth(name, r) {
     else if (!x.fut && !we) gaps.push(x.d + "일");
   });
 
-  b.appendChild(el("h4", null, "📅 " + name + " · " + mm + "월 입력 내역"));
+  var h4 = el("h4");
+  h4.appendChild(document.createTextNode("📅 "));
+  h4.appendChild(el("span", null, name));
+  h4.appendChild(document.createTextNode(" · " + mm + "월 입력 내역"));
+  b.appendChild(h4);
   var sum = el("div", "msum", "입력 " + filled + "일 · 이번 달 계 " + (r.total || "-"));
   if (gaps.length) {
     sum.appendChild(document.createElement("br"));
@@ -1174,7 +1204,7 @@ function renderMonth(name, r) {
     cal.appendChild(c);
   });
   b.appendChild(cal);
-  b.appendChild(el("div", "hint", "날짜를 누르면 위 입력칸이 그 날로 바뀌어요. 빨간 칸은 비어 있는 평일이에요."));
+  b.appendChild(el("div", "hint", "날짜를 누르면 아래 입력칸이 그 날로 바뀌어요. 빨간 칸은 비어 있는 평일이에요."));
 }
 
 function refreshCell() {
@@ -1184,6 +1214,7 @@ function refreshCell() {
   if (!checkMonth()) { box.textContent = "-"; $("hmon").style.display = "none"; return; }
   var t = ++H.token;
   box.textContent = "현재 값 확인 중…";
+  monLoading(name);
   call("getHoursCell", [name, date])
     .then(function (r) {
       if (t !== H.token) return;
