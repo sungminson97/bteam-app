@@ -52,6 +52,31 @@ main,#hours,#upload,#leave,#stats,#sched{padding:12px 16px 40px;display:grid;gap
 .tcmp .bar i{display:block;height:100%;border-radius:5px}
 .tcmp .n{text-align:right;font-variant-numeric:tabular-nums}
 .dsplit{font-size:12px;font-weight:700;margin-right:8px}
+/* 입고 일정: 목록|달력 전환, 달력 */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--line);border-radius:11px;padding:3px}
+.seg button{border:0;border-radius:9px;padding:9px 0;font-size:14px;font-weight:700;background:transparent;color:var(--sub);font-family:inherit}
+.seg button.on{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.sday.past{opacity:.6}
+.fcalw{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px}
+.mhead{display:flex;align-items:center;justify-content:space-between}
+.mhead b{font-size:17px}
+.mnav{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;width:40px;height:34px;font-size:14px}
+.mnav:disabled{opacity:.3}
+.msum2{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;font-weight:800}
+.msum2 .a{color:var(--ta)}.msum2 .b{color:var(--tb)}.msum2 .u{color:var(--warn)}.msum2 .t{color:var(--text);margin-left:auto}
+.fcal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.fcal .wh{font-size:11px;color:var(--sub);text-align:center;padding:2px 0}
+.fcal .wh.su{color:var(--warn)}.fcal .wh.sa{color:var(--accent)}
+.fc{min-height:54px;border-radius:8px;border:1px solid var(--line);background:var(--bg);padding:3px 1px;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;min-width:0}
+.fc i{font-style:normal;font-size:11px;font-weight:700;color:var(--sub)}
+.fc.su i{color:var(--warn)}.fc.sa i{color:var(--accent)}
+.fc.has{background:var(--card)}
+.fc.past{opacity:.45}
+.fc.today i{color:#fff;background:var(--accent);border-radius:9px;padding:0 6px}
+.fc.sel{outline:2px solid var(--accent);outline-offset:-1px;opacity:1}
+.fb{display:flex;flex-direction:column;align-items:center;line-height:1.15}
+.fb span{font-size:10.5px;font-weight:800}
+.fb .a{color:var(--ta)}.fb .b{color:var(--tb)}.fb .u{color:var(--warn)}
 .dsplit .a{color:var(--ta)}.dsplit .b{color:var(--tb)}.dsplit .u{color:var(--warn)}
 .sday li .nl{color:var(--warn);font-weight:700;font-size:12px;margin-left:6px}
 .warn{background:rgba(229,72,77,.12);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45}
@@ -739,10 +764,89 @@ function applyDash(r) {
   if (cur === 6) renderSched();
 }
 
-/* ---------- 📅 FRAME 입고 일정 (2주) ---------- */
+/* ---------- 📅 FRAME 입고 일정 (목록 2주 / 달력) ---------- */
+var SC = { view: "list", month: null, sel: null };   // 기본 화면은 목록(2주)
+
+function ymdOf(d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+function ymdAdd(ymd, n) { var p = ymd.split("-"); return ymdOf(new Date(+p[0], +p[1] - 1, +p[2] + n)); }
+function schedToday(s) { return s.today || s.from; }
+function teamKey(it) { return it.team === "A" ? "A" : it.team === "B" ? "B" : "U"; }
+
+// 날짜 범위 [a, b] 안의 날만
+function schedDaysIn(s, a, b) { return s.days.filter(function (d) { return d.ymd >= a && d.ymd <= b; }); }
+
+// 대수 집계 → { total, A, B, U, noLoc }
+function schedCount(days) {
+  var c = { total: 0, A: 0, B: 0, U: 0, noLoc: 0 };
+  days.forEach(function (d) {
+    d.items.forEach(function (it) { c.total++; c[teamKey(it)]++; if (it.noLoc) c.noLoc++; });
+  });
+  return c;
+}
+
+function schedListRange(s) {
+  var t = schedToday(s);
+  return [t, ymdAdd(t, (s.listDays || 14) - 1)];
+}
+
 function schedBadge() {
   var s = store.sched;
-  $("d6").textContent = s && !s.error && s.total ? s.total + "대" : "";
+  if (!s || s.error || !s.days) { $("d6").textContent = ""; return; }
+  var r = schedListRange(s);
+  var c = schedCount(schedDaysIn(s, r[0], r[1]));
+  $("d6").textContent = c.total ? c.total + "대" : "";
+}
+
+// 팀별 비교 막대
+function teamBars(c) {
+  var mx = Math.max(c.A, c.B, c.U, 1);
+  var cmp = el("div", "tcmp");
+  [["A팀", c.A, "var(--ta)"], ["B팀", c.B, "var(--tb)"], ["▲미지정", c.U, "var(--warn)"]].forEach(function (x) {
+    if (x[0] === "▲미지정" && !x[1]) return;
+    var row = el("div", "row");
+    var lb = el("span", null, x[0]); lb.style.color = x[2];
+    row.appendChild(lb);
+    var bar = el("div", "bar"); var fill = el("i");
+    fill.style.width = Math.round(x[1] / mx * 100) + "%"; fill.style.background = x[2];
+    bar.appendChild(fill); row.appendChild(bar);
+    row.appendChild(el("span", "n", x[1] + "대"));
+    cmp.appendChild(row);
+  });
+  return cmp;
+}
+
+// 하루치 카드 (목록·달력 공용)
+function schedDayCard(d, today) {
+  var card = el("div", "card sday" + (d.dow === 0 || d.dow === 6 ? " we" : "") + (d.ymd < today ? " past" : ""));
+  var hd = el("div", "hd");
+  var ttl = el("span", "ttl", d.label);
+  if (d.ymd === today) ttl.appendChild(el("small", null, "오늘"));
+  else if (d.ymd === ymdAdd(today, 1)) ttl.appendChild(el("small", null, "내일"));
+  hd.appendChild(ttl);
+  var dc = { A: 0, B: 0, U: 0 };
+  d.items.forEach(function (it) { dc[teamKey(it)]++; });
+  var right = el("span");
+  var sp = el("span", "dsplit");
+  if (dc.A) sp.appendChild(el("span", "a", "A " + dc.A + " "));
+  if (dc.B) sp.appendChild(el("span", "b", "B " + dc.B + " "));
+  if (dc.U) sp.appendChild(el("span", "u", "▲" + dc.U));
+  right.appendChild(sp);
+  right.appendChild(el("span", "cnt", d.items.length + "대"));
+  hd.appendChild(right);
+  card.appendChild(hd);
+  var ul = el("ul");
+  d.items.forEach(function (it) {
+    var li = el("li");
+    var tk = teamKey(it).toLowerCase();
+    li.appendChild(el("span", "tmtag " + tk, it.team === "A" ? "A팀" : it.team === "B" ? "B팀" : "▲미지정"));
+    li.appendChild(document.createTextNode(it.n));
+    if (it.t) li.appendChild(el("span", "t", it.t));
+    if (it.loc) li.appendChild(locEl(it.loc));
+    else if (it.noLoc) li.appendChild(el("span", "nl", "📍 자리 미배정"));
+    ul.appendChild(li);
+  });
+  card.appendChild(ul);
+  return card;
 }
 
 function renderSched() {
@@ -756,67 +860,118 @@ function renderSched() {
   if (s.error) { box.appendChild(el("div", "warn", s.error)); return; }
   if (store[0] && store[0].updated) $("upd").textContent = updTxt(store[0], "dash");
 
+  // 목록 | 달력 전환
+  var seg = el("div", "seg");
+  [["list", "📋 목록 (2주)"], ["cal", "📅 달력"]].forEach(function (x) {
+    var b = el("button", SC.view === x[0] ? "on" : "", x[1]);
+    b.type = "button";
+    b.onclick = function () { if (SC.view !== x[0]) { SC.view = x[0]; renderSched(); } };
+    seg.appendChild(b);
+  });
+  box.appendChild(seg);
+
+  if (SC.view === "cal") renderSchedCal(box, s);
+  else renderSchedList(box, s);
+
+  box.appendChild(el("div", "hint", "Backlog FRAME 입고일 기준 (ROBOT은 Module 작업일). A팀·B팀·미지정 전체를 표시해요. ▲미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."));
+}
+
+// 📋 목록: 오늘부터 2주
+function renderSchedList(box, s) {
+  var today = schedToday(s);
+  var r = schedListRange(s);
+  var days = schedDaysIn(s, r[0], r[1]);
+  var c = schedCount(days);
+
   var sum = el("div", "ssum");
   sum.appendChild(el("span", null, "앞으로 2주 FRAME 입고"));
-  sum.appendChild(el("b", null, s.total + "대"));
-  if (s.noLoc) sum.appendChild(el("span", "bad", "📍 자리 미배정 " + s.noLoc + "대"));
+  sum.appendChild(el("b", null, c.total + "대"));
+  if (c.noLoc) sum.appendChild(el("span", "bad", "📍 자리 미배정 " + c.noLoc + "대"));
   box.appendChild(sum);
+  box.appendChild(teamBars(c));
 
-  // 팀별 비교 막대
-  var cnt = s.cnt || { A: 0, B: 0, U: s.unassigned || 0 };
-  var mx = Math.max(cnt.A, cnt.B, cnt.U, 1);
-  var cmp = el("div", "tcmp");
-  [["A팀", cnt.A, "var(--ta)"], ["B팀", cnt.B, "var(--tb)"], ["▲미지정", cnt.U, "var(--warn)"]].forEach(function (x) {
-    if (x[0] === "▲미지정" && !x[1]) return;
-    var row = el("div", "row");
-    var lb = el("span", null, x[0]); lb.style.color = x[2];
-    row.appendChild(lb);
-    var bar = el("div", "bar"); var fill = el("i");
-    fill.style.width = Math.round(x[1] / mx * 100) + "%"; fill.style.background = x[2];
-    bar.appendChild(fill); row.appendChild(bar);
-    row.appendChild(el("span", "n", x[1] + "대"));
-    cmp.appendChild(row);
+  if (!days.length) box.appendChild(el("div", "msg", "2주 안에 잡힌 FRAME 입고가 없어요."));
+  days.forEach(function (d) { box.appendChild(schedDayCard(d, today)); });
+}
+
+// 📅 달력: 이번 달 / 다음 달 (날짜를 누르면 그날 장비가 아래에)
+function renderSchedCal(box, s) {
+  var today = schedToday(s);
+  var months = [s.from.slice(0, 7)];
+  if (s.to.slice(0, 7) !== months[0]) months.push(s.to.slice(0, 7));
+  if (!SC.month || months.indexOf(SC.month) < 0) SC.month = today.slice(0, 7);
+  var mi = months.indexOf(SC.month);
+
+  var y = +SC.month.slice(0, 4), m = +SC.month.slice(5, 7);
+  var first = SC.month + "-01";
+  var last = ymdOf(new Date(y, m, 0));
+  var mdays = schedDaysIn(s, first, last);
+  var byDay = {};
+  mdays.forEach(function (d) { byDay[d.ymd] = d; });
+  if (!SC.sel || SC.sel.slice(0, 7) !== SC.month) SC.sel = (SC.month === today.slice(0, 7)) ? today : first;
+
+  var wrap = el("div", "fcalw");
+
+  // 월 이동
+  var mh = el("div", "mhead");
+  var prev = el("button", "mnav", "◀"); prev.type = "button"; prev.disabled = mi <= 0;
+  prev.onclick = function () { SC.month = months[mi - 1]; SC.sel = null; renderSched(); };
+  var next = el("button", "mnav", "▶"); next.type = "button"; next.disabled = mi >= months.length - 1;
+  next.onclick = function () { SC.month = months[mi + 1]; SC.sel = null; renderSched(); };
+  mh.appendChild(prev);
+  mh.appendChild(el("b", null, y + "년 " + m + "월"));
+  mh.appendChild(next);
+  wrap.appendChild(mh);
+
+  // 그 달 팀별 합계 (시트 상단 'A팀 장비 / B팀 장비 / 미지정 / 합'과 같은 개념)
+  var c = schedCount(mdays);
+  var ms = el("div", "msum2");
+  ms.appendChild(el("span", "a", "A팀 " + c.A));
+  ms.appendChild(el("span", "b", "B팀 " + c.B));
+  ms.appendChild(el("span", "u", "▲미지정 " + c.U));
+  ms.appendChild(el("span", "t", "합 " + c.total + "대"));
+  wrap.appendChild(ms);
+
+  // 달력
+  var cal = el("div", "fcal");
+  ["일", "월", "화", "수", "목", "금", "토"].forEach(function (w, i) {
+    cal.appendChild(el("div", "wh" + (i === 0 ? " su" : i === 6 ? " sa" : ""), w));
   });
-  box.appendChild(cmp);
-
-  if (!s.days.length) {
-    box.appendChild(el("div", "msg", "2주 안에 잡힌 FRAME 입고가 없어요."));
+  var startDow = new Date(y, m - 1, 1).getDay();
+  for (var k = 0; k < startDow; k++) cal.appendChild(el("div"));
+  for (var dd = 1; dd <= +last.slice(8); dd++) {
+    (function (dd) {
+      var ymd = SC.month + "-" + ("0" + dd).slice(-2);
+      var dow = (startDow + dd - 1) % 7;
+      var d = byDay[ymd];
+      var cls = "fc" + (dow === 0 ? " su" : dow === 6 ? " sa" : "") + (ymd < today ? " past" : "") +
+        (ymd === today ? " today" : "") + (ymd === SC.sel ? " sel" : "") + (d ? " has" : "");
+      var cell = el("div", cls);
+      cell.appendChild(el("i", null, dd));
+      if (d) {
+        var dc = { A: 0, B: 0, U: 0 };
+        d.items.forEach(function (it) { dc[teamKey(it)]++; });
+        var bx = el("div", "fb");
+        if (dc.A) bx.appendChild(el("span", "a", "A" + dc.A));
+        if (dc.B) bx.appendChild(el("span", "b", "B" + dc.B));
+        if (dc.U) bx.appendChild(el("span", "u", "▲" + dc.U));
+        cell.appendChild(bx);
+      }
+      cell.onclick = function () { SC.sel = ymd; renderSched(); };
+      cal.appendChild(cell);
+    })(dd);
   }
-  var tomorrow = (function () { var d = new Date(); d.setDate(d.getDate() + 1); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); })();
-  s.days.forEach(function (d) {
-    var card = el("div", "card sday" + (d.dow === 0 || d.dow === 6 ? " we" : ""));
-    var hd = el("div", "hd");
-    var ttl = el("span", "ttl", d.label);
-    if (d.ymd === s.from) ttl.appendChild(el("small", null, "오늘"));
-    else if (d.ymd === tomorrow) ttl.appendChild(el("small", null, "내일"));
-    hd.appendChild(ttl);
-    // 그날 팀별 대수: A 1 · B 2 · ▲1
-    var dc = { A: 0, B: 0, U: 0 };
-    d.items.forEach(function (it) { dc[it.team === "A" ? "A" : it.team === "B" ? "B" : "U"]++; });
-    var right = el("span");
-    var sp = el("span", "dsplit");
-    if (dc.A) sp.appendChild(el("span", "a", "A " + dc.A + " "));
-    if (dc.B) sp.appendChild(el("span", "b", "B " + dc.B + " "));
-    if (dc.U) sp.appendChild(el("span", "u", "▲" + dc.U));
-    right.appendChild(sp);
-    right.appendChild(el("span", "cnt", d.items.length + "대"));
-    hd.appendChild(right);
-    card.appendChild(hd);
-    var ul = el("ul");
-    d.items.forEach(function (it) {
-      var li = el("li");
-      var tk = it.team === "A" ? "a" : it.team === "B" ? "b" : "u";
-      li.appendChild(el("span", "tmtag " + tk, it.team === "A" ? "A팀" : it.team === "B" ? "B팀" : "▲미지정"));
-      li.appendChild(document.createTextNode(it.n));
-      if (it.t) li.appendChild(el("span", "t", it.t));
-      if (it.loc) li.appendChild(locEl(it.loc));
-      else if (it.noLoc) li.appendChild(el("span", "nl", "📍 자리 미배정"));
-      ul.appendChild(li);
-    });
-    card.appendChild(ul);
-    box.appendChild(card);
-  });
-  box.appendChild(el("div", "hint", "Backlog FRAME 입고일 기준 (ROBOT은 Module 작업일). A팀·B팀·미지정 전체를 표시해요. ▲미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."));
+  wrap.appendChild(cal);
+  box.appendChild(wrap);
+
+  // 선택한 날짜 상세
+  var sd = byDay[SC.sel];
+  if (sd) box.appendChild(schedDayCard(sd, today));
+  else {
+    var p = SC.sel.split("-");
+    var wd = ["일", "월", "화", "수", "목", "금", "토"][new Date(+p[0], +p[1] - 1, +p[2]).getDay()];
+    box.appendChild(el("div", "card empty", (+p[1]) + "/" + (+p[2]) + "(" + wd + ") · 입고 없음"));
+  }
 }
 
 // 금일+명일을 한 번에 불러와요 (시트를 한 번만 읽어서 빠름)
@@ -1635,7 +1790,7 @@ $("hval").oninput = resetConfirm;
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-12-1";
+var APP_VER = "2026-10-12-2";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
