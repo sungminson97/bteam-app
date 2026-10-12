@@ -200,6 +200,11 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 .gbtns button,#gretry{padding:14px;border-radius:12px;font-size:16px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--text);font-family:inherit}
 .gbtns .go{background:var(--accent);border-color:var(--accent);color:#fff}
 #gretry{width:100%;background:var(--accent);border-color:var(--accent);color:#fff}
+/* 편집 PIN 창 */
+#epov{z-index:30}
+#epin{width:100%;font-size:22px;letter-spacing:6px;text-align:center;padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+#epmsg.bad{color:var(--warn);font-weight:600}
+#epov .ob .go{background:var(--accent);border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -277,6 +282,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
       <button class="clr" id="hclr" type="button">칸 비우기</button>
     </div>
     <div id="hres"></div>
+    <div id="hlock" class="hint" style="display:none">🔐 저장은 편집 PIN이 필요해요. (처음 한 번만 입력)</div>
   </div>
 </section>
 
@@ -294,6 +300,20 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
       <button id="cfno" type="button">취소</button>
       <button id="cfgo" type="button" class="go">✔ 완료로 기록</button>
     </div>
+  </div>
+</div>
+
+<!-- 편집 PIN 입력창 -->
+<div class="ov" id="epov">
+  <div class="box">
+    <h3>🔐 편집 PIN 입력</h3>
+    <p id="epmsg">저장하려면 편집 PIN이 필요해요.</p>
+    <input id="epin" type="password" inputmode="numeric" autocomplete="off" placeholder="편집 PIN">
+    <div class="ob">
+      <button id="epno" type="button">취소</button>
+      <button id="epgo" type="button" class="go">확인</button>
+    </div>
+    <p class="sub">한 번 입력하면 이 폰에 기억돼요. 🔒 버튼을 누르면 지워져요.</p>
   </div>
 </div>
 </div>
@@ -350,22 +370,93 @@ function updTxt(d, key) { return d.updated + " 기준" + (R[key] ? " · 갱신 �
 /* ---------- API ---------- */
 function getPin() { return sget("appPin") || ""; }
 
-function rawCall(pin, fn, args) {
+// 기기 번호 (수정 기록용, 폰마다 하나)
+function devId() {
+  var d = sget("devId");
+  if (!d) { d = Math.random().toString(16).slice(2, 6); sset("devId", d); }
+  return d;
+}
+
+// editPin: 저장 함수일 때만 보냄 (조회 요청엔 편집 PIN을 안 실어 보냄)
+function rawCall(pin, fn, args, editPin) {
   return fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ pin: pin, fn: fn, args: args || [] })
+    body: JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId() })
   }).then(function (r) { return r.json(); });
 }
 
-function call(fn, args) {
-  return rawCall(getPin(), fn, args).then(function (j) {
+function call(fn, args, editPin) {
+  return rawCall(getPin(), fn, args, editPin).then(function (j) {
     if (!j.ok) {
       if (j.code === "PIN") lockApp("PIN이 변경되었거나 맞지 않아요. 다시 입력해 주세요.");
-      throw new Error(j.error || "요청 실패");
+      var err = new Error(j.error || "요청 실패");
+      if (j.code === "EDIT") err.edit = true;
+      throw err;
     }
     return j.data;
   });
+}
+
+/* ---------- 🔐 편집 PIN ---------- */
+var EP = { res: null, rej: null, busy: false };
+
+function updLock() { $("hlock").style.display = sget("editPin") ? "none" : "block"; }
+
+function askEdit(msg) {
+  return new Promise(function (res, rej) {
+    EP.res = res; EP.rej = rej;
+    $("epmsg").textContent = msg || "저장하려면 편집 PIN이 필요해요.";
+    $("epmsg").className = msg ? "bad" : "";
+    $("epin").value = "";
+    $("epgo").disabled = false; $("epgo").textContent = "확인";
+    $("epov").className = "ov on";
+    setTimeout(function () { try { $("epin").focus(); } catch (e) {} }, 100);
+  });
+}
+
+function closeEdit(ok) {
+  $("epov").className = "ov";
+  var r = ok ? EP.res : EP.rej;
+  EP.res = EP.rej = null;
+  if (r) r(ok ? undefined : new Error("편집 PIN 입력을 취소했어요."));
+}
+
+$("epno").onclick = function () { closeEdit(false); };
+$("epin").onkeydown = function (e) { if (e.key === "Enter") $("epgo").onclick(); };
+$("epgo").onclick = function () {
+  var v = $("epin").value.trim();
+  if (!v || EP.busy) return;
+  EP.busy = true;
+  $("epgo").disabled = true; $("epgo").textContent = "확인 중…";
+  rawCall(getPin(), "checkEdit", [], v).then(function (j) {
+    EP.busy = false;
+    $("epgo").disabled = false; $("epgo").textContent = "확인";
+    if (j.ok) { sset("editPin", v); updLock(); closeEdit(true); return; }
+    if (j.code === "PIN") { closeEdit(false); lockApp("PIN이 변경되었거나 맞지 않아요. 다시 입력해 주세요."); return; }
+    $("epmsg").textContent = j.error || "편집 PIN이 올바르지 않아요.";
+    $("epmsg").className = "bad";
+    $("epin").value = "";
+  }).catch(function () {
+    EP.busy = false;
+    $("epgo").disabled = false; $("epgo").textContent = "확인";
+    $("epmsg").textContent = "서버에 연결할 수 없어요.";
+    $("epmsg").className = "bad";
+  });
+};
+
+// 저장 요청: 편집 PIN이 없거나 틀리면 입력창을 띄우고, 확인되면 다시 시도
+function callEdit(fn, args) {
+  function go() {
+    return call(fn, args, sget("editPin")).catch(function (e) {
+      if (!e.edit) throw e;
+      sdel("editPin"); updLock();
+      if (/막혔어요|설정되지/.test(e.message)) throw e;
+      return askEdit(e.message).then(function () { return call(fn, args, sget("editPin")); });
+    });
+  }
+  if (!sget("editPin")) return askEdit().then(go);
+  return go();
 }
 
 /* ---------- 🔒 잠금 화면 ---------- */
@@ -436,9 +527,11 @@ function wipeScreens() {
 
 function lockApp(msg) {
   sdel("appPin");
+  sdel("editPin");
   cwipe();
   wipeScreens();
   closeConfirm();
+  $("epov").className = "ov"; EP.res = EP.rej = null;
   if (lockLeft() > 0) { showLocked(); return; }
   setGate("enter", msg || "PIN을 입력해 주세요.");
 }
@@ -476,6 +569,9 @@ function verify(pin, typed) {
   }).then(function (j) {
     G.busy = false;
     if (j.ok) {
+      // 잠금 화면에서 편집 PIN을 넣었으면 편집 권한도 같이 기억
+      if (j.data && j.data.level === "edit") sset("editPin", pin);
+      else if (typed) sdel("editPin");
       unlock(pin);
       pre.then(function (pj) { if (pj && pj.ok) applyDash(pj.data); });
       return;
@@ -637,7 +733,7 @@ $("cfgo").onclick = function () {
   $("cfgo").disabled = true;
   $("cfno").disabled = true;
   $("cfgo").textContent = "처리 중…";
-  call("markUploadDone", [it.row, s.col, it.n])
+  callEdit("markUploadDone", [it.row, s.col, it.n])
     .then(function (r) {
       if (r && r.error) U.msg = { err: true, t: r.error };
       else U.msg = { err: false, t: it.n + " " + s.label + " → 완료 ✔" };
@@ -990,7 +1086,7 @@ function setTab(n) {
   $("stats").style.display = n === 5 ? "grid" : "none";
   if (n < 2) render();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
-  else if (n === 3) { $("upd").textContent = ""; if (!H.loaded) loadHoursMeta(); }
+  else if (n === 3) { $("upd").textContent = ""; updLock(); if (!H.loaded) loadHoursMeta(); }
   else if (n === 4) { renderLeave(LV.data); if (!LV.loaded) loadLeave(); }
   else { renderStats(ST.data); if (!ST.loaded) loadStats(); }
 }
@@ -1241,7 +1337,7 @@ function doSave(value) {
 
   H.busy = true;
   $("hsave").disabled = true; $("hclr").disabled = true;
-  call("saveHours", [name, date, value, H.confirm])
+  callEdit("saveHours", [name, date, value, H.confirm])
     .then(function (r) {
       H.busy = false;
       $("hsave").disabled = false; $("hclr").disabled = false;
