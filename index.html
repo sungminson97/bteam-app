@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="제조1-B">
+<meta name="theme-color" content="#2f6fed">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" type="image/png" href="icon.png">
+<title>제조1-B</title>
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--text:#1d2530;--sub:#7b8794;--line:#e3e8ee;--accent:#2f6fed;--warn:#e5484d;--ok:#1f9d55}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--card:#1b222b;--text:#e8edf3;--sub:#8b97a5;--line:#2a333f;--accent:#6b9bff;--warn:#ff6b6f;--ok:#4cd08a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;-webkit-text-size-adjust:100%;padding-bottom:env(safe-area-inset-bottom)}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(12px + env(safe-area-inset-top)) 16px 8px;border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{height:22px;width:auto;max-width:120px;object-fit:contain;display:block}
+@media (prefers-color-scheme:dark){.logo{background:#fff;padding:3px 7px;border-radius:6px;height:26px}}
+.sep{width:1px;height:18px;background:var(--line);flex:none}
+h1{font-size:17px;margin:0;white-space:nowrap}
+#upd{font-size:12px;color:var(--sub);font-weight:400}
+.hb{display:flex;gap:6px;flex:none}
+button.ref{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:8px;padding:6px 10px;font-size:13px;white-space:nowrap}
+.tabs{display:flex;gap:6px;margin-top:10px}
+.tab{flex:1;text-align:center;padding:8px 0;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--sub);line-height:1.2;cursor:pointer}
+.tab span{display:block;font-size:11px;font-weight:500;min-height:13px}
+.tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab .bd{display:inline-block;min-width:18px;padding:0 5px;margin-left:3px;border-radius:9px;background:var(--warn);color:#fff;font-size:11px;font-weight:700}
+main,#hours,#upload{padding:12px 16px 40px;display:grid;gap:10px;max-width:720px;margin:0 auto}
+#hours,#upload{display:none}
+.warn{background:rgba(229,72,77,.12);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45}
+.okmsg{background:rgba(31,157,85,.14);color:var(--ok);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:12px 14px}
+.card.empty{border-left-color:var(--line);opacity:.55;padding:9px 14px}
+.hd{display:flex;align-items:center;justify-content:space-between}
+.ttl{font-weight:700;font-size:15px}
+.cnt{font-size:20px;font-weight:800;color:var(--accent)}
+.card.empty .cnt{color:var(--sub);font-size:15px;font-weight:600}
+ul{list-style:none;margin:8px 0 0;padding:0}
+li{padding:8px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.5}
+li:first-child{border-top:0}
+.t{color:var(--sub);font-size:12px;margin-left:6px}
+.loc{color:var(--warn);font-weight:700;margin-left:6px}
+.msg{text-align:center;color:var(--sub);padding:40px 0}
+/* 업로드 */
+.sum{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;align-items:center;justify-content:space-between}
+.sum b{font-size:26px;color:var(--warn)}
+.sum.zero b{color:var(--ok)}
+.card.up{border-left-color:var(--warn)}
+.card.up .cnt{color:var(--warn)}
+.sheet{display:inline-block;margin:6px 6px 0 0;padding:8px 14px;border-radius:999px;border:1.5px solid var(--warn);background:transparent;color:var(--warn);font-size:14px;font-weight:700;font-family:inherit}
+.sheet:active{background:rgba(229,72,77,.15)}
+.eq{font-weight:600}
+.hint{font-size:12px;color:var(--sub);padding:0 2px;line-height:1.5}
+/* 확인창 / PIN창 */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.ov.on{display:flex}
+.box{width:100%;max-width:520px;background:var(--card);border-radius:18px 18px 0 0;padding:20px 18px calc(26px + env(safe-area-inset-bottom));display:grid;gap:12px}
+.box h3{margin:0;font-size:17px}
+.box .who{font-size:16px;font-weight:700}
+.box p{margin:0;font-size:14px;line-height:1.6}
+.box p.sub{color:var(--sub);font-size:12px}
+.box p b{color:var(--warn)}
+.box input{width:100%;font-size:20px;letter-spacing:4px;text-align:center;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.ob{display:grid;grid-template-columns:1fr 1.6fr;gap:8px;margin-top:4px}
+.ob button{padding:14px;border-radius:12px;font-size:16px;font-weight:700;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit}
+.ob .go{background:var(--ok);border-color:var(--ok);color:#fff}
+.ob button:disabled{opacity:.6}
+/* 근무시간 폼 */
+.top1{background:rgba(255,193,7,.18);border-radius:10px;padding:11px 12px;font-size:14px;font-weight:700;line-height:1.5}
+.mis{display:inline-block;margin:8px 6px 0 0;padding:7px 14px;border-radius:999px;border:1.5px solid var(--warn);background:transparent;color:var(--warn);font-size:14px;font-weight:700;font-family:inherit}
+.mis:active{background:rgba(229,72,77,.15)}
+.form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:12px}
+.form label{font-size:13px;color:var(--sub);display:block;margin-bottom:4px}
+.form select,.form input[type=date],.form input[type=text]{width:100%;font-size:16px;padding:11px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:14px;font-weight:600}
+.chip:active{background:var(--accent);color:#fff}
+.cur{font-size:14px;line-height:1.5;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line)}
+.cur b{color:var(--accent)}
+.btns{display:grid;grid-template-columns:1fr auto;gap:8px}
+.save{padding:14px;border:0;border-radius:12px;background:var(--accent);color:#fff;font-size:16px;font-weight:700}
+.save.confirm{background:var(--warn)}
+.save:disabled{opacity:.45}
+.clr{padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--sub);font-size:14px}
+.clr:disabled{opacity:.45}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="brand">
+      <img class="logo" id="logo" src="logo.png" alt="" onerror="this.style.display='none';document.getElementById('sep').style.display='none';">
+      <div class="sep" id="sep"></div>
+      <h1>제조1-B <span id="upd"></span></h1>
+    </div>
+    <div class="hb">
+      <button class="ref" id="pinbtn" type="button">🔒</button>
+      <button class="ref" id="ref" type="button">새로고침</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab on" id="t0">금일<span id="d0"></span></div>
+    <div class="tab" id="t1">명일<span id="d1"></span></div>
+    <div class="tab" id="t2">업로드<span id="d2"></span></div>
+    <div class="tab" id="t3">근무시간<span></span></div>
+  </div>
+</header>
+
+<main id="main"><div class="msg">불러오는 중…</div></main>
+
+<section id="upload"></section>
+
+<section id="hours">
+  <div id="hmiss" style="display:none"></div>
+  <div class="form">
+    <div id="htop" class="top1" style="display:none"></div>
+    <div id="hmonth" class="cur">시트 기준 월 확인 중…</div>
+    <div id="hwarn" class="warn" style="display:none"></div>
+
+    <div>
+      <label for="hname">이름</label>
+      <select id="hname"></select>
+    </div>
+    <div>
+      <label for="hdate">날짜</label>
+      <input type="date" id="hdate">
+    </div>
+
+    <div id="hcur" class="cur">이름과 날짜를 선택하세요.</div>
+
+    <div>
+      <label for="hval">입력값 (시간 숫자 또는 글자)</label>
+      <input type="text" id="hval" inputmode="decimal" placeholder="예: 8 / 10.5 / 연차">
+    </div>
+    <div class="chips" id="chips"></div>
+
+    <div class="btns">
+      <button class="save" id="hsave" type="button">저장</button>
+      <button class="clr" id="hclr" type="button">칸 비우기</button>
+    </div>
+    <div id="hres"></div>
+  </div>
+</section>
+
+<!-- 업로드 완료 확인창 -->
+<div class="ov" id="cfov">
+  <div class="box">
+    <h3>업로드 완료 처리</h3>
+    <div class="who" id="cfwho"></div>
+    <p><b id="cfsheet"></b> 시트 업로드를 마치셨나요?</p>
+    <p class="sub">'완료로 기록'을 누르면 시트에 <b style="color:var(--ok)">완료</b>로 저장돼요.<br>잘못 눌렀을 땐 시트에서 직접 수정해야 해요.</p>
+    <div class="ob">
+      <button id="cfno" type="button">취소</button>
+      <button id="cfgo" type="button" class="go">✔ 완료로 기록</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIN 입력창 -->
+<div class="ov" id="pinov">
+  <div class="box">
+    <h3>PIN 입력</h3>
+    <p class="sub" id="pinmsg">팀 PIN 번호를 입력해 주세요. 한 번 입력하면 이 기기에 저장돼요.</p>
+    <input id="pininput" type="password" inputmode="numeric" autocomplete="off">
+    <div class="ob">
+      <button id="pinno" type="button">닫기</button>
+      <button id="pingo" type="button" class="go">확인</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ★ 배포 관리의 웹 앱 URL (끝이 /exec) */
+var API_URL = "https://script.google.com/macros/s/AKfycbyXGeBXjmZtWj0GqezipYO9GRmZrQ1Y2zoMzgfYfJBH9S9nTw_Scg3ZvKn1PoI4tUMt/exec";
+
+var cur = 0, store = {};
+var H = { meta: null, loaded: false, confirm: false, token: 0, busy: false };
+var U = { loaded: false, data: null, msg: null };
+var CF = { it: null, s: null };
+var memPin = "";
+
+function el(tag, cls, text) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+function $(id) { return document.getElementById(id); }
+function errText(e) { return e && e.message ? e.message : String(e); }
+
+/* ---------- PIN / API ---------- */
+function getPin() {
+  try { return localStorage.getItem("appPin") || memPin; } catch (e) { return memPin; }
+}
+function savePin(p) {
+  memPin = p;
+  try { localStorage.setItem("appPin", p); } catch (e) {}
+}
+function showPin(msg) {
+  $("pinmsg").textContent = msg || "팀 PIN 번호를 입력해 주세요. 한 번 입력하면 이 기기에 저장돼요.";
+  $("pininput").value = "";
+  $("pinov").className = "ov on";
+  setTimeout(function () { $("pininput").focus(); }, 100);
+}
+function hidePin() { $("pinov").className = "ov"; }
+
+$("pinno").onclick = hidePin;
+$("pinbtn").onclick = function () { showPin(); };
+$("pingo").onclick = function () {
+  var v = $("pininput").value.trim();
+  if (!v) return;
+  savePin(v);
+  hidePin();
+  reloadAll();
+};
+$("pininput").onkeydown = function (e) { if (e.key === "Enter") $("pingo").onclick(); };
+
+function call(fn, args) {
+  return fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ pin: getPin(), fn: fn, args: args || [] })
+  })
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      if (!j.ok) {
+        if (j.code === "PIN") showPin(j.error);
+        throw new Error(j.error || "요청 실패");
+      }
+      return j.data;
+    });
+}
+
+function reloadAll() {
+  store = {};
+  U.loaded = false; U.data = null;
+  H.loaded = false;
+  if (cur < 2) render();
+  load(0); load(1);
+  loadUpload();
+  if (cur === 3) loadHoursMeta();
+}
+
+/* ---------- 금일/명일 ---------- */
+function render() {
+  var main = $("main");
+  main.innerHTML = "";
+  var d = store[cur];
+  if (!d) { main.appendChild(el("div", "msg", "불러오는 중…")); return; }
+  if (d.error) { main.appendChild(el("div", "warn", d.error)); return; }
+
+  $("upd").textContent = d.updated + " 기준";
+  if (d.missing && d.missing.length)
+    main.appendChild(el("div", "warn", "⚠️ 열을 찾지 못한 공정: " + d.missing.join(", ")));
+
+  d.stages.forEach(function (s) {
+    var n = s.items.length;
+    var card = el("div", "card" + (n ? "" : " empty"));
+    var hd = el("div", "hd");
+    hd.appendChild(el("span", "ttl", s.label));
+    hd.appendChild(el("span", "cnt", n ? n + "건" : "-"));
+    card.appendChild(hd);
+    if (n) {
+      var ul = el("ul");
+      s.items.forEach(function (it) {
+        var li = el("li");
+        li.appendChild(document.createTextNode(it.n));
+        if (it.t) li.appendChild(el("span", "t", it.t));
+        if (it.loc) li.appendChild(el("span", "loc", it.loc));
+        ul.appendChild(li);
+      });
+      card.appendChild(ul);
+    }
+    main.appendChild(card);
+  });
+}
+
+function load(off, force) {
+  call("getDashboardData", [off, !!force])
+    .then(function (d) {
+      store[off] = d;
+      $("d" + off).textContent = d.label || "";
+      if (off === cur) render();
+    })
+    .catch(function (e) {
+      store[off] = { error: "불러오기 실패: " + errText(e) };
+      if (off === cur) render();
+    });
+}
+
+/* ---------- 업로드 현황 + 완료 처리 ---------- */
+function setBadge(n) {
+  var t = $("d2");
+  t.innerHTML = "";
+  if (n > 0) t.appendChild(el("span", "bd", String(n)));
+}
+
+function openConfirm(it, s) {
+  CF.it = it; CF.s = s;
+  $("cfwho").textContent = it.n + (it.t ? " (" + it.t + ")" : "");
+  $("cfsheet").textContent = s.label;
+  var go = $("cfgo");
+  go.disabled = false;
+  go.textContent = "✔ 완료로 기록";
+  $("cfno").disabled = false;
+  $("cfov").className = "ov on";
+}
+
+function closeConfirm() { $("cfov").className = "ov"; }
+
+$("cfno").onclick = closeConfirm;
+$("cfov").onclick = function (e) { if (e.target === this) closeConfirm(); };
+$("cfgo").onclick = function () {
+  var it = CF.it, s = CF.s;
+  if (!it || !s) return;
+  $("cfgo").disabled = true;
+  $("cfno").disabled = true;
+  $("cfgo").textContent = "처리 중…";
+  call("markUploadDone", [it.row, s.col, it.n])
+    .then(function (r) {
+      if (r && r.error) U.msg = { err: true, t: r.error };
+      else U.msg = { err: false, t: it.n + " " + s.label + " → 완료 ✔" };
+      closeConfirm();
+      loadUpload();
+    })
+    .catch(function (e) {
+      U.msg = { err: true, t: "처리 실패: " + errText(e) };
+      closeConfirm();
+      loadUpload();
+    });
+};
+
+function renderUpload(d) {
+  var box = $("upload");
+  box.innerHTML = "";
+  if (!d) { box.appendChild(el("div", "msg", "불러오는 중…")); return; }
+  if (d.error) { box.appendChild(el("div", "warn", d.error)); return; }
+
+  $("upd").textContent = d.updated + " 기준";
+  setBadge(d.total);
+
+  if (U.msg) {
+    box.appendChild(el("div", U.msg.err ? "warn" : "okmsg", U.msg.t));
+    U.msg = null;
+  }
+
+  var sum = el("div", "sum" + (d.total ? "" : " zero"));
+  sum.appendChild(el("span", null, d.total ? "업로드 필요 장비" : "업로드 필요한 장비가 없어요 👍"));
+  if (d.total) sum.appendChild(el("b", null, d.total + "대"));
+  box.appendChild(sum);
+
+  if (d.total) box.appendChild(el("div", "hint", "서버 업로드를 마친 시트를 누르면 '완료 처리' 확인창이 떠요."));
+
+  d.people.forEach(function (p) {
+    var card = el("div", "card up");
+    var hd = el("div", "hd");
+    hd.appendChild(el("span", "ttl", p.name));
+    hd.appendChild(el("span", "cnt", p.items.length + "대"));
+    card.appendChild(hd);
+    var ul = el("ul");
+    p.items.forEach(function (it) {
+      var li = el("li");
+      li.appendChild(el("span", "eq", it.n));
+      if (it.t) li.appendChild(el("span", "t", it.t));
+      li.appendChild(document.createElement("br"));
+      it.sheets.forEach(function (s) {
+        var b = el("button", "sheet", "☐ " + s.label);
+        b.type = "button";
+        b.onclick = function () { openConfirm(it, s); };
+        li.appendChild(b);
+      });
+      ul.appendChild(li);
+    });
+    card.appendChild(ul);
+    box.appendChild(card);
+  });
+}
+
+function loadUpload() {
+  U.loaded = true;
+  call("getUploadStatus")
+    .then(function (d) {
+      U.data = d;
+      if (d && !d.error) setBadge(d.total);
+      if (cur === 2) renderUpload(d);
+    })
+    .catch(function (e) {
+      U.data = { error: "불러오기 실패: " + errText(e) };
+      if (cur === 2) renderUpload(U.data);
+    });
+}
+
+/* ---------- 탭 ---------- */
+function setTab(n) {
+  cur = n;
+  for (var i = 0; i < 4; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
+  $("main").style.display = n < 2 ? "grid" : "none";
+  $("upload").style.display = n === 2 ? "grid" : "none";
+  $("hours").style.display = n === 3 ? "grid" : "none";
+  if (n < 2) render();
+  else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
+  else { $("upd").textContent = ""; if (!H.loaded) loadHoursMeta(); }
+}
+$("t0").onclick = function () { setTab(0); };
+$("t1").onclick = function () { setTab(1); };
+$("t2").onclick = function () { setTab(2); };
+$("t3").onclick = function () { setTab(3); };
+$("ref").onclick = function () {
+  if (cur === 3) { loadHoursMeta(); return; }
+  if (cur === 2) { renderUpload(null); loadUpload(); return; }
+  store = {}; render(); load(0, true); load(1, true);
+};
+
+/* ---------- 근무시간 ---------- */
+var CHIPS = ["4", "6", "8", "9", "10", "11", "12", "연차", "오전반차", "오후반차", "반반차", "공가"];
+
+function buildChips() {
+  var box = $("chips");
+  box.innerHTML = "";
+  CHIPS.forEach(function (c) {
+    var b = el("button", "chip", c);
+    b.type = "button";
+    b.onclick = function () { $("hval").value = c; resetConfirm(); };
+    box.appendChild(b);
+  });
+}
+
+function resetConfirm() {
+  H.confirm = false;
+  var b = $("hsave");
+  b.textContent = "저장";
+  b.className = "save";
+  $("hres").innerHTML = "";
+}
+
+function showHErr(msg) {
+  $("hres").innerHTML = "";
+  $("hres").appendChild(el("div", "warn", msg));
+}
+
+function renderTop(t) {
+  var b = $("htop");
+  if (!t || !t.names || !t.names.length) { b.style.display = "none"; return; }
+  var mm = H.meta ? H.meta.month + "월" : "이번 달";
+  b.style.display = "block";
+  b.textContent = "🏆 " + mm + " 근무시간 TOP1  " + t.names.join(", ") + "님 (" + t.hours + "시간)";
+}
+
+// 금일 근무시간 미입력자
+function renderMissing(m) {
+  var b = $("hmiss");
+  b.innerHTML = "";
+  if (!m) { b.style.display = "none"; return; }
+  b.style.display = "block";
+
+  if (m.skipped) {
+    b.className = "warn";
+    b.textContent = m.sheetMonth
+      ? "시트 월(AE1)이 " + m.sheetMonth + "월이라 금일(" + m.label + ") 미입력 확인을 할 수 없어요."
+      : "금일(" + m.label + ") 미입력 확인을 할 수 없어요. (날짜 헤더 확인 필요)";
+    return;
+  }
+  if (!m.names || !m.names.length) {
+    b.className = "okmsg";
+    b.textContent = "✅ 금일(" + m.label + ") 근무시간 모두 입력 완료";
+    return;
+  }
+  b.className = "warn";
+  b.appendChild(document.createTextNode("⚠️ 금일(" + m.label + ") 근무시간 미입력 " + m.names.length + "명"));
+  b.appendChild(document.createElement("br"));
+  m.names.forEach(function (n) {
+    var x = el("button", "mis", n);
+    x.type = "button";
+    x.onclick = function () {
+      $("hname").value = n;
+      if (H.meta) $("hdate").value = H.meta.today;
+      resetConfirm();
+      refreshCell();
+    };
+    b.appendChild(x);
+  });
+}
+
+function loadHoursMeta() {
+  $("hmonth").textContent = "시트 기준 월 확인 중…";
+  call("getHoursMeta")
+    .then(function (m) {
+      H.meta = m; H.loaded = true;
+      var sel = $("hname");
+      sel.innerHTML = "";
+      m.names.forEach(function (n) {
+        var o = el("option", null, n); o.value = n; sel.appendChild(o);
+      });
+      var last = "";
+      try { last = localStorage.getItem("hoursName") || ""; } catch (e) {}
+      if (last && m.names.indexOf(last) >= 0) sel.value = last;
+      if (!$("hdate").value) $("hdate").value = m.today;
+      $("hmonth").innerHTML = "";
+      $("hmonth").appendChild(document.createTextNode("시트 기준 월: "));
+      $("hmonth").appendChild(el("b", null, m.month + "월"));
+      renderMissing(m.missing);
+      renderTop(m.top);
+      checkMonth();
+      refreshCell();
+    })
+    .catch(function (e) {
+      $("hmonth").textContent = "";
+      showHErr("불러오기 실패: " + errText(e));
+    });
+}
+
+function checkMonth() {
+  var w = $("hwarn");
+  var ok = true;
+  var d = $("hdate").value;
+  if (H.meta && d) {
+    var mm = parseInt(d.split("-")[1], 10);
+    if (mm !== H.meta.month) {
+      w.style.display = "block";
+      w.textContent = "⚠️ 시트 월(" + H.meta.month + "월)과 선택한 날짜(" + mm + "월)가 달라요. 시트 AE1 월을 먼저 바꿔 주세요.";
+      ok = false;
+    } else w.style.display = "none";
+  }
+  $("hsave").disabled = !ok;
+  $("hclr").disabled = !ok;
+  return ok;
+}
+
+function refreshCell() {
+  var name = $("hname").value, date = $("hdate").value;
+  var box = $("hcur");
+  if (!H.meta || !name || !date) { box.textContent = "이름과 날짜를 선택하세요."; return; }
+  if (!checkMonth()) { box.textContent = "-"; return; }
+  var t = ++H.token;
+  box.textContent = "현재 값 확인 중…";
+  call("getHoursCell", [name, date])
+    .then(function (r) {
+      if (t !== H.token) return;
+      box.innerHTML = "";
+      box.appendChild(document.createTextNode("현재 입력값: "));
+      box.appendChild(el("b", null, r.cur === "" ? "(비어 있음)" : r.cur + (r.formula ? " (수식)" : "")));
+      box.appendChild(document.createElement("br"));
+      box.appendChild(document.createTextNode("이번 달 계: " + (r.total || "-")));
+    })
+    .catch(function (e) {
+      if (t !== H.token) return;
+      box.textContent = "";
+      showHErr(errText(e));
+    });
+}
+
+function doSave(value) {
+  if (H.busy) return;
+  var name = $("hname").value, date = $("hdate").value;
+  if (!name || !date) { showHErr("이름과 날짜를 선택해 주세요."); return; }
+  if (!checkMonth()) return;
+  if (!value || !String(value).trim()) { showHErr("입력값을 넣어 주세요."); return; }
+
+  H.busy = true;
+  $("hsave").disabled = true; $("hclr").disabled = true;
+  call("saveHours", [name, date, value, H.confirm])
+    .then(function (r) {
+      H.busy = false;
+      $("hsave").disabled = false; $("hclr").disabled = false;
+      var res = $("hres");
+      res.innerHTML = "";
+      if (r.error) { showHErr(r.error); return; }
+      if (r.needConfirm) {
+        H.confirm = true;
+        $("hsave").textContent = "덮어쓰기 확인";
+        $("hsave").className = "save confirm";
+        res.appendChild(el("div", "warn",
+          "이미 '" + (r.cur === "" ? "(수식)" : r.cur) + "' 값이" + (r.formula ? "(수식)" : "") +
+          " 들어 있어요. 덮어쓰려면 한 번 더 눌러 주세요."));
+        return;
+      }
+      if (r.ok) {
+        resetConfirm();
+        $("hres").appendChild(el("div", "okmsg",
+          "저장 완료 ✔ " + name + " " + date.slice(5).replace("-", "/") + " → " +
+          (r.cur === "" ? "(비움)" : r.cur) + " / 이번 달 계 " + (r.total || "-")));
+        try { localStorage.setItem("hoursName", name); } catch (e) {}
+        renderTop(r.top);
+        renderMissing(r.missing);
+        refreshCell();
+      }
+    })
+    .catch(function (e) {
+      H.busy = false;
+      $("hsave").disabled = false; $("hclr").disabled = false;
+      showHErr("저장 실패: " + errText(e));
+    });
+}
+
+$("hsave").onclick = function () { doSave($("hval").value); };
+$("hclr").onclick = function () { doSave("__CLEAR__"); };
+$("hname").onchange = function () { resetConfirm(); refreshCell(); };
+$("hdate").onchange = function () { resetConfirm(); refreshCell(); };
+$("hval").oninput = resetConfirm;
+
+/* ---------- 시작 ---------- */
+buildChips();
+if (!getPin()) showPin();
+load(0); load(1);
+loadUpload();   // 탭 뱃지(업로드 필요 건수) 표시용
+</script>
+</body>
+</html>
