@@ -1014,7 +1014,8 @@ function renderStats(d) {
         else li.appendChild(el("span", "rs tmp", "임시 " + (x.base || "1") + "점"));
         ul.appendChild(li);
       });
-      rv.appendChild(ul);
+      if (d.review.items.length) rv.appendChild(ul);
+      else rv.appendChild(el("div", "rvd", "※ '장비통계_검토필요' 시트를 찾지 못해 장비 목록은 표시할 수 없어요."));
       rv.appendChild(el("div", "rvd", "점수 확정은 시트 '장비통계_검토필요'의 F열(수동점수)에 입력해 주세요."));
       box.appendChild(rv);
     }
