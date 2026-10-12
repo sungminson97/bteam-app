@@ -360,7 +360,11 @@ function el(tag, cls, text) {
   return e;
 }
 function $(id) { return document.getElementById(id); }
-function errText(e) { return e && e.message ? e.message : String(e); }
+function errText(e) {
+  var m = e && e.message ? e.message : String(e);
+  if (/failed to fetch|load failed|network/i.test(m)) return "서버에 연결할 수 없어요. 네트워크를 확인해 주세요.";
+  return m;
+}
 
 /* ---------- 저장소(사파리 설정에 따라 막힐 수 있어 메모리 대체) ---------- */
 function sget(k) {
@@ -701,14 +705,16 @@ function applyDash(r) {
 function loadDash(force) {
   R.dash = true;
   if (cur < 2) render();
-  call("getDashboardAll", [!!force])
-    .then(function (r) { R.dash = false; applyDash(r); })
+  // 끝나면 "" (성공) 또는 오류 문구를 돌려줌 → 새로고침 알림에 사용
+  return call("getDashboardAll", [!!force])
+    .then(function (r) { R.dash = false; applyDash(r); return (r.d0 && r.d0.error) || ""; })
     .catch(function (e) {
       R.dash = false;
-      if (/알 수 없는/.test(errText(e))) { load(0, force); load(1, force); return; }   // 예전 Api.gs 호환
+      if (/알 수 없는/.test(errText(e))) { load(0, force); load(1, force); return ""; }   // 예전 Api.gs 호환
       if (!store[0]) store[0] = { error: "불러오기 실패: " + errText(e) };
       if (!store[1]) store[1] = { error: "불러오기 실패: " + errText(e) };
       if (cur < 2) render();
+      return errText(e);
     });
 }
 
@@ -818,17 +824,19 @@ function renderUpload(d) {
 function loadUpload() {
   U.loaded = true;
   R.up = true;
-  call("getUploadStatus")
+  return call("getUploadStatus")
     .then(function (d) {
       R.up = false;
       U.data = d;
       if (d && !d.error) { setBadge(d.total); cset("up", d); }
       if (cur === 2) renderUpload(d);
+      return (d && d.error) || "";
     })
     .catch(function (e) {
       R.up = false;
       if (!U.data || U.data.error) U.data = { error: "불러오기 실패: " + errText(e) };
       if (cur === 2) renderUpload(U.data);
+      return errText(e);
     });
 }
 
@@ -915,12 +923,13 @@ function renderLeave(d) {
 function loadLeave(force) {
   LV.loaded = true;
   R.leave = true;
-  call("getLeaveData", [!!force])
-    .then(function (d) { R.leave = false; LV.data = d; if (!d.error) cset("leave", d); if (cur === 4) renderLeave(d); })
+  return call("getLeaveData", [!!force])
+    .then(function (d) { R.leave = false; LV.data = d; if (!d.error) cset("leave", d); if (cur === 4) renderLeave(d); return d.error || ""; })
     .catch(function (e) {
       R.leave = false;
       if (!LV.data || LV.data.error) LV.data = { error: "불러오기 실패: " + errText(e) };
       if (cur === 4) renderLeave(LV.data);
+      return errText(e);
     });
 }
 
@@ -1116,12 +1125,13 @@ function renderStats(d) {
 function loadStats(force) {
   ST.loaded = true;
   R.stats = true;
-  call("getStatsData", [!!force])
-    .then(function (d) { R.stats = false; ST.data = d; if (!d.error) cset("stats", d); if (cur === 5) renderStats(d); })
+  return call("getStatsData", [!!force])
+    .then(function (d) { R.stats = false; ST.data = d; if (!d.error) cset("stats", d); if (cur === 5) renderStats(d); return d.error || ""; })
     .catch(function (e) {
       R.stats = false;
       if (!ST.data || ST.data.error) ST.data = { error: "불러오기 실패: " + errText(e) };
       if (cur === 5) renderStats(ST.data);
+      return errText(e);
     });
 }
 
@@ -1142,12 +1152,31 @@ function setTab(n) {
 }
 for (var ti = 0; ti < 6; ti++) (function (k) { $("t" + k).onclick = function () { setTab(k); }; })(ti);
 
+// 새로고침: 버튼이 "갱신 중…"으로 바뀌고, 끝나면 위에 완료/실패 알림
+var REF = false;
 $("ref").onclick = function () {
-  if (cur === 3) { loadHoursMeta(); return; }
-  if (cur === 2) { loadUpload(); renderUpload(U.data); return; }
-  if (cur === 4) { loadLeave(true); renderLeave(LV.data); return; }
-  if (cur === 5) { loadStats(true); renderStats(ST.data); return; }
-  loadDash(true);
+  if (REF) return;
+  var p;
+  if (cur === 3) p = loadHoursMeta();
+  else if (cur === 2) { p = loadUpload(); renderUpload(U.data); }
+  else if (cur === 4) { p = loadLeave(true); renderLeave(LV.data); }
+  else if (cur === 5) { p = loadStats(true); renderStats(ST.data); }
+  else p = loadDash(true);
+
+  REF = true;
+  var b = $("ref");
+  b.disabled = true;
+  b.textContent = "갱신 중…";
+  Promise.resolve(p).then(function (err) {
+    REF = false;
+    b.disabled = false;
+    b.textContent = "새로고침";
+    if ($("app").style.display === "none") return;   // PIN 오류로 잠긴 경우
+    var d = new Date();
+    var hm = ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+    if (err) toast("⚠️ 새로고침 실패: " + err, true);
+    else toast("✔ 새로고침 완료 · " + hm + " 기준");
+  });
 };
 
 /* ---------- 근무시간 ---------- */
@@ -1255,20 +1284,22 @@ function loadHoursMeta() {
   var date0 = $("hdate").value || "";
   var t = ++H.token;
   if (name0) monLoading(name0);
-  call("getHoursMeta", [name0, date0])
+  return call("getHoursMeta", [name0, date0])
     .then(function (m) {
       H.loaded = true;
       var c = m.cell;
       delete m.cell;
       cset("hours", m);
       applyMeta(m, false);
-      if (t !== H.token) return;   // 그 사이 이름/날짜를 바꿨으면 그쪽 결과를 씀
+      if (t !== H.token) return "";   // 그 사이 이름/날짜를 바꿨으면 그쪽 결과를 씀
       if (c && c.name === $("hname").value && c.ymd === $("hdate").value) applyCell(c);
       else refreshCell();
+      return "";
     })
     .catch(function (e) {
       if (!H.meta) $("hmonth").textContent = "";
       showHErr("불러오기 실패: " + errText(e));
+      return errText(e);
     });
 }
 
