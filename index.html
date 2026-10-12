@@ -50,6 +50,7 @@ li:first-child{border-top:0}
 .tag.done{color:var(--ok)}
 .tag.ing{color:var(--accent)}
 .loc{color:var(--warn);font-weight:700;margin-left:6px}
+.loc .area{color:var(--text)}
 .noloc{color:var(--sub);font-size:12px;margin-left:6px}
 .msg{text-align:center;color:var(--sub);padding:40px 0}
 /* 시트 업로드 */
@@ -82,6 +83,28 @@ li:first-child{border-top:0}
 .form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:12px}
 .form label{font-size:13px;color:var(--sub);display:block;margin-bottom:4px}
 .form select,.form input[type=date],.form input[type=text]{width:100%;font-size:16px;padding:11px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.form input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;min-height:46px;text-align:left}
+/* 이번 달 입력 내역 */
+.mon{gap:10px}
+.mon h4{margin:0;font-size:15px}
+.msum{font-size:13px;color:var(--sub);line-height:1.5}
+.msum b{color:var(--warn)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .wh{font-size:11px;color:var(--sub);text-align:center;padding:2px 0}
+.cal .wh.su{color:var(--warn)}
+.cal .wh.sa{color:var(--accent)}
+.cd{min-height:46px;border-radius:8px;border:1px solid var(--line);background:var(--bg);padding:4px 1px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;min-width:0}
+.cd i{font-style:normal;font-size:10px;color:var(--sub)}
+.cd b{font-size:12px;font-weight:700;line-height:1.1;white-space:nowrap;overflow:hidden;max-width:100%}
+.cd.su i{color:var(--warn)}
+.cd.sa i{color:var(--accent)}
+.cd.txt b{color:var(--accent);font-size:11px}
+.cd.we{opacity:.5}
+.cd.fut{opacity:.4}
+.cd.gap{border-color:var(--warn);background:rgba(229,72,77,.1)}
+.cd.gap b{color:var(--warn)}
+.cd.today i{font-weight:800;color:var(--text)}
+.cd.sel{outline:2px solid var(--accent);outline-offset:-1px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:14px;font-weight:600}
 .chip:active{background:var(--accent);color:#fff}
@@ -96,6 +119,7 @@ li:first-child{border-top:0}
 /* 연차 현황 */
 .lv{border-left-color:var(--accent)}
 .lv.low{border-left-color:var(--warn)}
+.lv.tap{cursor:pointer}
 .lv .big{font-size:22px;font-weight:800;color:var(--accent)}
 .lv.low .big{color:var(--warn)}
 .lv .big small{font-size:12px;font-weight:600;color:var(--sub);margin-left:3px}
@@ -105,6 +129,13 @@ li:first-child{border-top:0}
 .lvrow{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--sub)}
 .lvrow b{color:var(--text);font-weight:700}
 .lvsub{font-size:12px;color:var(--sub);margin-top:6px}
+.lvtog{font-size:12px;color:var(--accent);font-weight:600;margin-top:8px}
+.lvdays{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;display:grid;gap:10px}
+.lvdays h5{margin:0 0 2px;font-size:12px;color:var(--sub);font-weight:600}
+.dchip{display:inline-block;margin:4px 5px 0 0;padding:5px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:13px;font-variant-numeric:tabular-nums}
+.dchip b{font-weight:700;margin-left:4px}
+.dchip.plan{border-color:var(--accent);color:var(--accent)}
+.dnone{font-size:12px;color:var(--sub)}
 /* 장비통계 */
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
@@ -242,6 +273,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     </div>
     <div id="hres"></div>
   </div>
+  <div id="hmon" class="form mon" style="display:none"></div>
 </section>
 
 <section id="leave"></section>
@@ -271,7 +303,7 @@ var LOCK_MIN = 10;   // 초과 시 잠금 시간(분)
 var cur = 0, store = {};
 var H = { meta: null, loaded: false, confirm: false, token: 0, busy: false };
 var U = { loaded: false, data: null, msg: null };
-var LV = { loaded: false, data: null };
+var LV = { loaded: false, data: null, open: {} };
 var ST = { loaded: false, data: null, open: {} };
 var CF = { it: null, s: null };
 var G = { busy: false, timer: null };
@@ -387,13 +419,14 @@ function showLocked() {
 function wipeScreens() {
   store = {};
   U = { loaded: false, data: null, msg: null };
-  LV = { loaded: false, data: null };
+  LV = { loaded: false, data: null, open: {} };
   ST = { loaded: false, data: null, open: {} };
   H = { meta: null, loaded: false, confirm: false, token: 0, busy: false };
   ["main", "upload", "leave", "stats"].forEach(function (id) { $(id).innerHTML = ""; });
   $("hname").innerHTML = ""; $("hval").value = "";
   $("htop").style.display = "none"; $("hmiss").innerHTML = "";
   $("hcur").textContent = "이름과 날짜를 선택하세요."; $("hres").innerHTML = "";
+  $("hmon").innerHTML = ""; $("hmon").style.display = "none";
   $("upd").textContent = ""; $("d0").textContent = ""; $("d1").textContent = ""; $("d2").innerHTML = "";
 }
 
@@ -487,6 +520,19 @@ $("gretry").onclick = function () {
 $("lockbtn").onclick = function () { lockApp("잠겼어요. PIN을 입력해 주세요."); };
 
 /* ---------- 금일/명일 ---------- */
+// 자리 표시: (본사)/(동탄)은 검정, 자리 번호는 빨강
+function locEl(txt) {
+  var s = el("span", "loc", "📍 ");
+  txt = String(txt);
+  var m = txt.match(/^\((본사|동탄)\)\s*/);
+  if (m) {
+    s.appendChild(el("span", "area", "(" + m[1] + ") "));
+    txt = txt.slice(m[0].length);
+  }
+  s.appendChild(document.createTextNode(txt));
+  return s;
+}
+
 function render() {
   var main = $("main");
   main.innerHTML = "";
@@ -513,7 +559,7 @@ function render() {
         if (it.owner) li.appendChild(el("span", "own", it.owner));
         if (it.tag) li.appendChild(el("span", "tag " + (it.tagKind || ""), "(" + it.tag + ")"));
         if (it.t) li.appendChild(el("span", "t", it.t));
-        if (it.loc) li.appendChild(el("span", "loc", "📍 " + it.loc));
+        if (it.loc) li.appendChild(locEl(it.loc));
         else if (it.noLoc) li.appendChild(el("span", "noloc", "📍 자리 정보 없음"));
         ul.appendChild(li);
       });
@@ -670,6 +716,19 @@ function fnum(n) {
   return String(Math.round(n * 100) / 100);
 }
 
+// 날짜 목록 (사용 / 예정)
+function daySec(title, list, plan) {
+  var w = el("div");
+  w.appendChild(el("h5", null, title + " " + list.length + "건"));
+  if (!list.length) { w.appendChild(el("div", "dnone", "기록 없음")); return w; }
+  list.forEach(function (x) {
+    var c = el("span", "dchip" + (plan ? " plan" : ""), x.l);
+    if (x.k) c.appendChild(el("b", null, x.k));
+    w.appendChild(c);
+  });
+  return w;
+}
+
 function renderLeave(d) {
   var box = $("leave");
   box.innerHTML = "";
@@ -679,9 +738,10 @@ function renderLeave(d) {
   if (d.warn) box.appendChild(el("div", "warn", "⚠️ " + d.warn));
   if (!d.people.length) { box.appendChild(el("div", "msg", "표시할 인원이 없어요.")); return; }
 
+  var hasDays = false;
   d.people.forEach(function (p) {
     var low = p.remain != null && p.remain <= 2;
-    var card = el("div", "card lv" + (low ? " low" : ""));
+    var card = el("div", "card lv" + (low ? " low" : "") + (p.days ? " tap" : ""));
     var hd = el("div", "hd");
     hd.appendChild(el("span", "ttl", p.name));
     var big = el("span", "big", fnum(p.remain));
@@ -709,9 +769,25 @@ function renderLeave(d) {
     if (p.hire) sub.push("입사 " + p.hire);
     if (p.tenure) sub.push(p.tenure);
     if (sub.length) card.appendChild(el("div", "lvsub", sub.join(" · ")));
+
+    // 누르면 연차 쓴 날짜 펼치기
+    if (p.days) {
+      hasDays = true;
+      var open = !!LV.open[p.name];
+      card.appendChild(el("div", "lvtog", open ? "▲ 접기" : "▼ 연차 사용일 보기"));
+      if (open) {
+        var dv = el("div", "lvdays");
+        dv.appendChild(daySec("사용", p.days.used, false));
+        if (p.days.plan.length) dv.appendChild(daySec("예정", p.days.plan, true));
+        card.appendChild(dv);
+      }
+      card.onclick = function () { LV.open[p.name] = !LV.open[p.name]; renderLeave(LV.data); };
+    }
     box.appendChild(card);
   });
-  box.appendChild(el("div", "hint", "잔여 2일 이하는 빨간색으로 표시돼요."));
+  box.appendChild(el("div", "hint",
+    (hasDays ? "이름을 누르면 올해 연차 쓴 날짜가 보여요 (schedule 시트 기준). " : "") +
+    "잔여 2일 이하는 빨간색으로 표시돼요."));
 }
 
 function loadLeave(force) {
@@ -1038,11 +1114,74 @@ function checkMonth() {
   return ok;
 }
 
+// 이번 달 입력 내역 (달력)
+var SHORT = { "오전반차": "오전반", "오후반차": "오후반", "반반차": "반반" };
+
+function renderMonth(name, r) {
+  var b = $("hmon");
+  b.innerHTML = "";
+  if (!r || !r.days || !r.days.length) { b.style.display = "none"; return; }
+  b.style.display = "grid";
+
+  var sel = $("hdate").value;
+  var today = H.meta ? H.meta.today : "";
+  var mm = parseInt(r.ym.slice(5), 10);
+  var filled = 0, gaps = [];
+  r.days.forEach(function (x) {
+    var we = x.dow === 0 || x.dow === 6;
+    if (x.v) filled++;
+    else if (!x.fut && !we) gaps.push(x.d + "일");
+  });
+
+  b.appendChild(el("h4", null, "📅 " + name + " · " + mm + "월 입력 내역"));
+  var sum = el("div", "msum", "입력 " + filled + "일 · 이번 달 계 " + (r.total || "-"));
+  if (gaps.length) {
+    sum.appendChild(document.createElement("br"));
+    sum.appendChild(el("b", null, "⚠️ 빈 평일 " + gaps.length + "일: " + gaps.join(", ")));
+  }
+  b.appendChild(sum);
+
+  var cal = el("div", "cal");
+  ["일", "월", "화", "수", "목", "금", "토"].forEach(function (w, i) {
+    cal.appendChild(el("div", "wh" + (i === 0 ? " su" : i === 6 ? " sa" : ""), w));
+  });
+  for (var k = 0; k < r.days[0].dow; k++) cal.appendChild(el("div"));
+
+  r.days.forEach(function (x) {
+    var ymd = r.ym + "-" + ("0" + x.d).slice(-2);
+    var we = x.dow === 0 || x.dow === 6;
+    var cls = "cd" + (x.dow === 0 ? " su" : x.dow === 6 ? " sa" : "");
+    var txt;
+    if (x.v) {
+      txt = SHORT[x.v] || x.v;
+      if (!/^\d+(\.\d+)?$/.test(x.v)) cls += " txt";
+    } else if (x.fut) { txt = ""; cls += " fut"; }
+    else if (we) { txt = "-"; cls += " we"; }
+    else { txt = "!"; cls += " gap"; }
+    if (ymd === today) cls += " today";
+    if (ymd === sel) cls += " sel";
+
+    var c = el("div", cls);
+    c.appendChild(el("i", null, x.d));
+    c.appendChild(el("b", null, txt || " "));
+    if (x.v) c.title = x.v;
+    c.onclick = function () {
+      $("hdate").value = ymd;
+      resetConfirm();
+      refreshCell();
+      try { $("hcur").scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+    };
+    cal.appendChild(c);
+  });
+  b.appendChild(cal);
+  b.appendChild(el("div", "hint", "날짜를 누르면 위 입력칸이 그 날로 바뀌어요. 빨간 칸은 비어 있는 평일이에요."));
+}
+
 function refreshCell() {
   var name = $("hname").value, date = $("hdate").value;
   var box = $("hcur");
-  if (!H.meta || !name || !date) { box.textContent = "이름과 날짜를 선택하세요."; return; }
-  if (!checkMonth()) { box.textContent = "-"; return; }
+  if (!H.meta || !name || !date) { box.textContent = "이름과 날짜를 선택하세요."; $("hmon").style.display = "none"; return; }
+  if (!checkMonth()) { box.textContent = "-"; $("hmon").style.display = "none"; return; }
   var t = ++H.token;
   box.textContent = "현재 값 확인 중…";
   call("getHoursCell", [name, date])
@@ -1053,6 +1192,7 @@ function refreshCell() {
       box.appendChild(el("b", null, r.cur === "" ? "(비어 있음)" : r.cur + (r.formula ? " (수식)" : "")));
       box.appendChild(document.createElement("br"));
       box.appendChild(document.createTextNode("이번 달 계: " + (r.total || "-")));
+      renderMonth(name, r);
     })
     .catch(function (e) {
       if (t !== H.token) return;
