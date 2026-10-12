@@ -333,7 +333,11 @@ function call(fn, args) {
 }
 
 /* ---------- 🔒 잠금 화면 ---------- */
+// 로딩 중 문구 (원하는 말로 바꿔도 돼요)
+var LOAD_MSG = "데이터 불러오는 중…";
+
 function setGate(mode, msg, bad) {
+  if (mode === "loading" && !msg) msg = LOAD_MSG;
   var m = $("gmsg");
   m.textContent = msg || "";
   m.className = bad ? "bad" : "";
@@ -424,7 +428,7 @@ function unlock(pin) {
 function verify(pin, typed) {
   if (G.busy) return;
   G.busy = true;
-  setGate("loading", "확인 중…");
+  setGate("loading");
   // 금일/명일 데이터를 PIN 확인과 동시에 미리 요청 (확인되면 바로 쓰도록)
   var pre = rawCall(pin, "getDashboardAll", [false]).catch(function () { return null; });
   rawCall(pin, "ping").then(function (j) {
