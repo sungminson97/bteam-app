@@ -1274,7 +1274,7 @@ function applyMeta(m, fromCache) {
 }
 
 // 근무시간 탭: 지난번 화면을 먼저 바로 보여주고, 서버 한 번 호출로 셀·달력까지 갱신
-function loadHoursMeta() {
+function loadHoursMeta(silent) {
   if (!H.meta) {
     var cm = cget("hours");
     if (cm && cm.names) { applyMeta(cm, true); $("hcur").textContent = "현재 값 확인 중…"; }
@@ -1283,7 +1283,7 @@ function loadHoursMeta() {
   var name0 = $("hname").value || sget("hoursName") || "";
   var date0 = $("hdate").value || "";
   var t = ++H.token;
-  if (name0) monLoading(name0);
+  if (name0 && !silent) monLoading(name0);
   return call("getHoursMeta", [name0, date0])
     .then(function (m) {
       H.loaded = true;
@@ -1298,7 +1298,7 @@ function loadHoursMeta() {
     })
     .catch(function (e) {
       if (!H.meta) $("hmonth").textContent = "";
-      showHErr("불러오기 실패: " + errText(e));
+      if (!silent) showHErr("불러오기 실패: " + errText(e));
       return errText(e);
     });
 }
@@ -1416,7 +1416,7 @@ function applyCell(r) {
   box.appendChild(document.createTextNode("현재 입력값: "));
   box.appendChild(el("b", null, r.cur === "" ? "(비어 있음)" : r.cur + (r.formula ? " (수식)" : "")));
   box.appendChild(document.createElement("br"));
-  box.appendChild(document.createTextNode("이번 달 계: " + (r.total || "-")));
+  box.appendChild(document.createTextNode("이번 달 계: " + (r.total == null ? "갱신 중…" : (r.total || "-"))));
   renderMonth(r.name || $("hname").value, r);
 }
 
@@ -1482,15 +1482,16 @@ function doSave(value) {
         resetConfirm();
         var what = name + " " + date.slice(5).replace("-", "/") + " → " + (r.cur === "" ? "(비움)" : r.cur);
         toast("✔ 저장 완료 · " + what);
-        $("hres").appendChild(el("div", "okmsg",
-          "저장 완료 ✔ " + what + " / 이번 달 계 " + (r.total || "-")));
+        $("hres").appendChild(el("div", "okmsg", "저장 완료 ✔ " + what));
         $("hval").value = "";
         sset("hoursName", name);
-        renderTop(r.top);
+        if (r.top !== undefined) renderTop(r.top);
         renderMissing(r.missing);
         H.token++;   // 진행 중인 조회 결과는 버리고 저장 응답으로 바로 갱신
         if (r.cell && $("hname").value === name && $("hdate").value === date) applyCell(r.cell);
         else refreshCell();
+        // 합계(계)·TOP1은 시트 재계산 후 값이라 뒤에서 조용히 다시 불러옴
+        if (r.total == null) setTimeout(function () { loadHoursMeta(true); }, 300);
       }
     })
     .catch(function (e) {
