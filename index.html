@@ -162,6 +162,9 @@ li:first-child{border-top:0}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:14px;font-weight:600}
 .chip:active{background:var(--accent);color:#fff}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.notebox{display:grid;gap:4px;padding:10px 12px;border-radius:10px;background:rgba(47,111,237,.07);border:1px solid rgba(47,111,237,.25)}
+.notebox .hint b{color:var(--accent)}
 .cur{font-size:14px;line-height:1.5;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line)}
 .cur b{color:var(--accent)}
 .btns{display:grid;grid-template-columns:1fr auto;gap:8px}
@@ -342,6 +345,11 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
       <input type="text" id="hval" inputmode="decimal" placeholder="예: 8 / 10.5 / 연차">
     </div>
     <div class="chips" id="chips"></div>
+    <div id="hnoteBox" class="notebox" style="display:none">
+      <label for="hnote">사유 (선택 · 한글 입력)</label>
+      <input type="text" id="hnote" inputmode="text" autocomplete="off" maxlength="40" placeholder="예: 은행업무">
+      <div class="hint" id="hnoteHint"></div>
+    </div>
 
     <div class="btns">
       <button class="save" id="hsave" type="button">저장</button>
@@ -1474,7 +1482,7 @@ function buildChips() {
   CHIPS.forEach(function (c) {
     var b = el("button", "chip", c);
     b.type = "button";
-    b.onclick = function () { $("hval").value = c; resetConfirm(); };
+    b.onclick = function () { $("hval").value = c; resetConfirm(); updNote(); };
     box.appendChild(b);
   });
 }
@@ -1736,6 +1744,25 @@ function refreshCell() {
     });
 }
 
+// 연차·반차·공가를 고르면 사유 칸 표시 (schedule 시트에 "이름 연차 (사유)"로 기록)
+var LEAVE_RX = /^(오전반차|오후반차|반반차|연차|공가)\s*(?:[\(（]\s*(.*?)\s*[\)）])?$/;
+function updNote() {
+  var m = String($("hval").value || "").trim().match(LEAVE_RX);
+  // 칩 강조
+  var chips = $("chips").children;
+  for (var i = 0; i < chips.length; i++) chips[i].className = "chip" + (chips[i].textContent === String($("hval").value).trim() ? " on" : "");
+  var box = $("hnoteBox");
+  if (!m) { box.style.display = "none"; return; }
+  box.style.display = "grid";
+  if (m[2] && !$("hnote").value) $("hnote").value = m[2];
+  var note = $("hnote").value.trim();
+  var h = $("hnoteHint");
+  h.innerHTML = "";
+  h.appendChild(document.createTextNode("schedule 시트에 "));
+  h.appendChild(el("b", null, "'" + ($("hname").value || "이름") + " " + m[1] + (note ? " (" + note + ")" : "") + "'"));
+  h.appendChild(document.createTextNode(" 로 기록돼요. 근무시간 칸에는 '" + m[1] + "'만 들어가요."));
+}
+
 function doSave(value) {
   if (H.busy) return;
   var name = $("hname").value, date = $("hdate").value;
@@ -1747,7 +1774,8 @@ function doSave(value) {
   var label = $("hsave").textContent;
   $("hsave").disabled = true; $("hclr").disabled = true;
   $("hsave").textContent = "저장 중…";
-  callEdit("saveHours", [name, date, value, H.confirm])
+  var note = $("hnoteBox").style.display === "none" ? "" : $("hnote").value.trim();
+  callEdit("saveHours", [name, date, value, H.confirm, note])
     .then(function (r) {
       H.busy = false;
       $("hsave").disabled = false; $("hclr").disabled = false;
@@ -1767,9 +1795,16 @@ function doSave(value) {
       if (r.ok) {
         resetConfirm();
         var what = name + " " + date.slice(5).replace("-", "/") + " → " + (r.cur === "" ? "(비움)" : r.cur);
-        toast("✔ 저장 완료 · " + what);
+        var sc = r.sched, scMsg = "";
+        if (sc && sc.ok && (sc.action === "추가" || sc.action === "수정")) scMsg = "📅 schedule " + sc.action + ": " + sc.text;
+        else if (sc && sc.ok && sc.action === "삭제") scMsg = "📅 schedule에서 삭제: " + sc.text;
+        if (sc && sc.error) toast("⚠️ 근무시간은 저장됐지만 " + sc.error, true);
+        else toast("✔ 저장 완료 · " + what + (scMsg ? " · schedule 반영" : ""));
         $("hres").appendChild(el("div", "okmsg", "저장 완료 ✔ " + what));
-        $("hval").value = "";
+        if (scMsg) $("hres").appendChild(el("div", "okmsg", scMsg));
+        if (sc && sc.error) $("hres").appendChild(el("div", "warn", sc.error));
+        if (sc && sc.ok && sc.action !== "없음") { LV.loaded = false; sdel("c_leave"); }   // 연차 탭 다시 불러오기
+        $("hval").value = ""; $("hnote").value = ""; updNote();
         sset("hoursName", name);
         if (r.top !== undefined) renderTop(r.top);
         renderMissing(r.missing);
@@ -1791,9 +1826,10 @@ function doSave(value) {
 
 $("hsave").onclick = function () { doSave($("hval").value); };
 $("hclr").onclick = function () { doSave("__CLEAR__"); };
-$("hname").onchange = function () { resetConfirm(); refreshCell(); };
+$("hname").onchange = function () { resetConfirm(); refreshCell(); updNote(); };
+$("hnote").oninput = function () { resetConfirm(); updNote(); };
 $("hdate").onchange = function () { resetConfirm(); refreshCell(); };
-$("hval").oninput = resetConfirm;
+$("hval").oninput = function () { resetConfirm(); updNote(); };
 
 /* ---------- 시작 ---------- */
 /* ---------- 🔄 새 버전 자동 반영 ----------
@@ -1801,7 +1837,7 @@ $("hval").oninput = resetConfirm;
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-13-2";
+var APP_VER = "2026-10-13-3";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
