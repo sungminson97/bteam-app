@@ -165,6 +165,11 @@ li:first-child{border-top:0}
 .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .notebox{display:grid;gap:4px;padding:10px 12px;border-radius:10px;background:rgba(47,111,237,.07);border:1px solid rgba(47,111,237,.25)}
 .notebox .hint b{color:var(--accent)}
+.notebox input{width:100%;font-size:16px;padding:11px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+#hhrsRow{display:grid;gap:4px;margin-bottom:4px}
+.delbox{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--warn);font-weight:600;padding:8px 10px;border-radius:10px;border:1px dashed var(--warn)}
+.delbox input{width:18px;height:18px}
+.cur .sch{display:block;margin-top:2px;color:var(--accent);font-weight:700}
 .cur{font-size:14px;line-height:1.5;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line)}
 .cur b{color:var(--accent)}
 .btns{display:grid;grid-template-columns:1fr auto;gap:8px}
@@ -346,10 +351,17 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     </div>
     <div class="chips" id="chips"></div>
     <div id="hnoteBox" class="notebox" style="display:none">
+      <div id="hhrsRow" style="display:none">
+        <label for="hhrs">실제 근무시간 (근무시간 칸에 들어가요)</label>
+        <input type="text" id="hhrs" inputmode="decimal" autocomplete="off" placeholder="예: 4">
+      </div>
       <label for="hnote">사유 (선택 · 한글 입력)</label>
       <input type="text" id="hnote" inputmode="text" autocomplete="off" maxlength="40" placeholder="예: 은행업무">
       <div class="hint" id="hnoteHint"></div>
     </div>
+    <label id="hdelBox" class="delbox" style="display:none">
+      <input type="checkbox" id="hdel"> <span id="hdelTxt"></span>
+    </label>
 
     <div class="btns">
       <button class="save" id="hsave" type="button">저장</button>
@@ -1711,7 +1723,10 @@ function applyCell(r) {
   box.appendChild(el("b", null, r.cur === "" ? "(비어 있음)" : r.cur + (r.formula ? " (수식)" : "")));
   box.appendChild(document.createElement("br"));
   box.appendChild(document.createTextNode("이번 달 계: " + (r.total == null ? "갱신 중…" : (r.total || "-"))));
+  H.curSched = r.sched || "";
+  if (H.curSched) box.appendChild(el("span", "sch", "📅 schedule: " + H.curSched));
   renderMonth(r.name || $("hname").value, r);
+  updNote();
 }
 
 // 화면 위쪽에 잠깐 뜨는 알림
@@ -1746,21 +1761,40 @@ function refreshCell() {
 
 // 연차·반차·공가를 고르면 사유 칸 표시 (schedule 시트에 "이름 연차 (사유)"로 기록)
 var LEAVE_RX = /^(오전반차|오후반차|반반차|연차|공가)\s*(?:[\(（]\s*(.*?)\s*[\)）])?$/;
+var HALF_HRS = { "오전반차": "4", "오후반차": "4", "반반차": "6" };   // 반차 기본 근무시간
 function updNote() {
-  var m = String($("hval").value || "").trim().match(LEAVE_RX);
+  var val = String($("hval").value || "").trim();
+  var m = val.match(LEAVE_RX);
   // 칩 강조
   var chips = $("chips").children;
-  for (var i = 0; i < chips.length; i++) chips[i].className = "chip" + (chips[i].textContent === String($("hval").value).trim() ? " on" : "");
+  for (var i = 0; i < chips.length; i++) chips[i].className = "chip" + (chips[i].textContent === val ? " on" : "");
+
+  // schedule 지우기 체크 (이 날 schedule 기록이 있는데 일반 근무시간/칸 비우기를 할 때만)
+  var db = $("hdelBox");
+  if (H.curSched && !m) {
+    db.style.display = "flex";
+    $("hdelTxt").textContent = "schedule의 '" + H.curSched + "'도 지우기";
+  } else { db.style.display = "none"; $("hdel").checked = false; }
+
   var box = $("hnoteBox");
-  if (!m) { box.style.display = "none"; return; }
+  if (!m) { box.style.display = "none"; H.half = ""; return; }
   box.style.display = "grid";
   if (m[2] && !$("hnote").value) $("hnote").value = m[2];
+
+  var isHalf = !!HALF_HRS[m[1]];
+  $("hhrsRow").style.display = isHalf ? "grid" : "none";
+  if (isHalf && H.half !== m[1]) $("hhrs").value = HALF_HRS[m[1]];   // 반차 종류를 바꿀 때만 기본값
+  H.half = isHalf ? m[1] : "";
+
   var note = $("hnote").value.trim();
+  var nm = $("hname").value || "이름";
   var h = $("hnoteHint");
   h.innerHTML = "";
-  h.appendChild(document.createTextNode("schedule 시트에 "));
-  h.appendChild(el("b", null, "'" + ($("hname").value || "이름") + " " + m[1] + (note ? " (" + note + ")" : "") + "'"));
-  h.appendChild(document.createTextNode(" 로 기록돼요. 근무시간 칸에는 '" + m[1] + "'만 들어가요."));
+  h.appendChild(document.createTextNode("저장하면 · 근무시간 칸: "));
+  h.appendChild(el("b", null, isHalf ? ($("hhrs").value.trim() || "?") : m[1]));
+  h.appendChild(document.createElement("br"));
+  h.appendChild(document.createTextNode("　　　　 · schedule: "));
+  h.appendChild(el("b", null, nm + " " + m[1] + (note ? " (" + note + ")" : "")));
 }
 
 function doSave(value) {
@@ -1770,12 +1804,22 @@ function doSave(value) {
   if (!checkMonth()) return;
   if (!value || !String(value).trim()) { showHErr("입력값을 넣어 주세요."); return; }
 
-  H.busy = true;
   var label = $("hsave").textContent;
+  var note = $("hnoteBox").style.display === "none" ? "" : $("hnote").value.trim();
+  var leave = "";
+  if (value !== "__CLEAR__") {
+    var lm = String(value).trim().match(LEAVE_RX);
+    if (lm && HALF_HRS[lm[1]]) {   // 반차: 칸에는 근무시간 숫자, schedule에는 반차
+      var hrs = $("hhrs").value.trim();
+      if (!/^\d+(\.\d+)?$/.test(hrs)) { showHErr("반차일 때는 실제 근무시간을 숫자로 넣어 주세요. (예: 4)"); return; }
+      leave = lm[1]; value = hrs;
+    }
+  }
+  var delSched = $("hdelBox").style.display !== "none" && $("hdel").checked;
+  H.busy = true;
   $("hsave").disabled = true; $("hclr").disabled = true;
   $("hsave").textContent = "저장 중…";
-  var note = $("hnoteBox").style.display === "none" ? "" : $("hnote").value.trim();
-  callEdit("saveHours", [name, date, value, H.confirm, note])
+  callEdit("saveHours", [name, date, value, H.confirm, note, leave, delSched])
     .then(function (r) {
       H.busy = false;
       $("hsave").disabled = false; $("hclr").disabled = false;
@@ -1804,7 +1848,7 @@ function doSave(value) {
         if (scMsg) $("hres").appendChild(el("div", "okmsg", scMsg));
         if (sc && sc.error) $("hres").appendChild(el("div", "warn", sc.error));
         if (sc && sc.ok && sc.action !== "없음") { LV.loaded = false; sdel("c_leave"); }   // 연차 탭 다시 불러오기
-        $("hval").value = ""; $("hnote").value = ""; updNote();
+        $("hval").value = ""; $("hnote").value = ""; $("hdel").checked = false; H.half = ""; updNote();
         sset("hoursName", name);
         if (r.top !== undefined) renderTop(r.top);
         renderMissing(r.missing);
@@ -1828,6 +1872,8 @@ $("hsave").onclick = function () { doSave($("hval").value); };
 $("hclr").onclick = function () { doSave("__CLEAR__"); };
 $("hname").onchange = function () { resetConfirm(); refreshCell(); updNote(); };
 $("hnote").oninput = function () { resetConfirm(); updNote(); };
+$("hhrs").oninput = function () { resetConfirm(); updNote(); };
+$("hdel").onchange = resetConfirm;
 $("hdate").onchange = function () { resetConfirm(); refreshCell(); };
 $("hval").oninput = function () { resetConfirm(); updNote(); };
 
@@ -1837,7 +1883,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-13-3";
+var APP_VER = "2026-10-13-4";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
