@@ -194,7 +194,8 @@ li:first-child{border-top:0}
 .wkt td:first-child{font-weight:600;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wkt .cur{background:rgba(47,111,237,.08)}
 .wkt th.cur{color:var(--accent)}
-.wkt td.w{color:#d97706;font-weight:700}
+.wkt td.ok{color:var(--ok);font-weight:700}
+.msum .okc{color:var(--ok)}
 .wkt td.x{background:rgba(229,72,77,.16);color:var(--warn);font-weight:800}
 .wkt td.z{color:var(--sub)}
 .wkt tr.me td:first-child{color:var(--accent)}
@@ -1829,10 +1830,29 @@ function renderTop(t) {
   b.textContent = "🏆 " + mm + " 근무시간 TOP1  " + t.names.join(", ") + "님 (" + t.hours + "시간)";
 }
 
-/* ---------- ⏱ 주 52시간 체크 (월~일, 숫자만 합산) ---------- */
+/* ---------- ⏱ 주 52시간 체크 (월~일, 숫자만 합산) ----------
+ * 기준: 주 52시간을 "채웠는지" (52시간 이상 = 달성, 미만 = 미달)
+ * - 끝난 주만 판정, 이번 주는 진행 중(남은 시간 표시), 달이 걸친 주(*)는 일부만 있어서 판정 안 함
+ */
 function wkMd(ymd) { return (+ymd.slice(5, 7)) + "/" + (+ymd.slice(8, 10)); }
-function wkLv(h, w) { return h > w.limit ? "x" : h >= w.warn ? "w" : ""; }
 function wkFmt(h) { return String(Math.round(h * 10) / 10); }
+function wkToday() { return (H.meta && H.meta.today) || ymdLocal(); }
+
+// 끝난 주 중 가장 최근(달 걸친 주 제외) 번호, 없으면 -1
+function wkLastDone(w) {
+  var t = wkToday(), last = -1;
+  w.weeks.forEach(function (k, i) { if (k.to < t && !k.part) last = i; });
+  return last;
+}
+
+// 칸 색: ok(달성) / x(미달) / z(판정 안 함)
+function wkCls(h, w, i) {
+  var k = w.weeks[i], t = wkToday();
+  if (h >= w.limit) return "ok";
+  if (k.part || !h) return "z";
+  if (k.to < t) return "x";
+  return h ? "" : "z";   // 이번 주·앞으로: 진행 중
+}
 
 // 이 사람의 이번 주 합계 (없으면 null)
 function wkMine(name) {
@@ -1850,22 +1870,28 @@ function renderWeek(w) {
   b.style.display = "block";
 
   var cw = w.cur;   // 이번 주 (시트 월이 이번 달이 아니면 -1)
-  var over = [], near = [];
-  w.rows.forEach(function (r) {
-    var hs = cw >= 0 ? [r.h[cw]] : r.h;
-    var mx = Math.max.apply(null, hs);
-    if (mx > w.limit) over.push(r.n); else if (mx >= w.warn) near.push(r.n);
-  });
-  b.className = "wk" + (over.length ? " x" : near.length ? " w" : "");
+  var ld = wkLastDone(w);
+  var miss = [];
+  if (ld >= 0) w.rows.forEach(function (r) { if (r.h[ld] > 0 && r.h[ld] < w.limit) miss.push(r.n); });   // 입력이 하나도 없는 주(입사 전 등)는 제외
+  b.className = "wk" + (miss.length ? " x" : "");
 
   var sm = el("summary");
   sm.appendChild(el("span", "tg", "주별 표 ▾"));
   sm.appendChild(document.createTextNode("⏱ 주 " + w.limit + "시간 체크 "));
-  var range = cw >= 0 ? "이번 주 " + wkMd(w.weeks[cw].from) + "~" + wkMd(w.weeks[cw].to) : w.m + "월 전체";
-  if (over.length) sm.appendChild(el("span", "bx x", "⛔ 초과 " + over.length + "명 (" + over.join(", ") + ")"));
-  else if (near.length) sm.appendChild(el("span", "bx w", "⚠️ " + w.warn + "h 이상 " + near.length + "명 (" + near.join(", ") + ")"));
-  else sm.appendChild(el("span", "bx", "✅ 초과 없음"));
-  sm.appendChild(el("small", null, range + " · 월~일 기준 · 시트 숫자만 합산"));
+  if (ld >= 0) {
+    var lr = "지난주(" + wkMd(w.weeks[ld].from) + "~" + wkMd(w.weeks[ld].to) + ")";
+    if (miss.length) sm.appendChild(el("span", "bx x", "⚠️ " + lr + " 미달 " + miss.length + "명 (" + miss.join(", ") + ")"));
+    else sm.appendChild(el("span", "bx", "✅ " + lr + " 전원 달성"));
+  } else {
+    sm.appendChild(el("span", "bx", "이번 달 끝난 주 없음"));
+  }
+  if (cw >= 0) {
+    var done = w.rows.filter(function (r) { return r.h[cw] >= w.limit; }).length;
+    sm.appendChild(el("small", null, "이번 주 " + wkMd(w.weeks[cw].from) + "~" + wkMd(w.weeks[cw].to) +
+      " 진행 중 · 달성 " + done + "/" + w.rows.length + "명 · 월~일 기준"));
+  } else {
+    sm.appendChild(el("small", null, w.m + "월 · 월~일 기준 · 시트 숫자만 합산"));
+  }
   b.appendChild(sm);
 
   var tb = el("table", "wkt");
@@ -1886,15 +1912,14 @@ function renderWeek(w) {
     nm.onclick = function () { $("hname").value = r.n; resetConfirm(); refreshCell(); updNote(); renderWeek(H.meta.week); };
     row.appendChild(nm);
     r.h.forEach(function (h, i) {
-      var lv = wkLv(h, w);
-      row.appendChild(el("td", (i === cw ? "cur " : "") + (lv || (h ? "" : "z")), h ? wkFmt(h) : "-"));
+      row.appendChild(el("td", (i === cw ? "cur " : "") + wkCls(h, w, i), h ? wkFmt(h) : "-"));
     });
     tb.appendChild(row);
   });
   b.appendChild(tb);
-  var hint = "빨강 = " + w.limit + "시간 초과 · 주황 = " + w.warn + "시간 이상. 연차·공가 등 글자는 0시간으로 계산해요. 이름을 누르면 그 사람 달력이 열려요.";
+  var hint = "초록 = " + w.limit + "시간 달성 · 빨강 = 끝난 주인데 " + w.limit + "시간 미달. 이번 주는 진행 중이라 판정하지 않아요. 숫자가 하나도 없는 주(-)는 빼고 봐요. 연차·공가 등 글자는 0시간으로 계산해요. 이름을 누르면 그 사람 달력이 열려요.";
   if (w.weeks.some(function (k) { return k.part; }))
-    hint += " * 달이 걸친 주는 시트에 이 달(" + w.m + "월) 날짜만 있어서 그 날들만 합산했어요.";
+    hint += " * 달이 걸친 주는 시트에 이 달(" + w.m + "월) 날짜만 있어서 판정하지 않아요.";
   b.appendChild(el("div", "hint", hint));
   b.open = open;
 }
@@ -2056,9 +2081,8 @@ function renderMonth(name, r) {
   var wm = wkMine(name), wl = H.meta && H.meta.week;
   if (wm != null && wl) {
     sum.appendChild(document.createElement("br"));
-    var lv = wkLv(wm, wl);
-    var wt = "⏱ 이번 주 " + wkFmt(wm) + "시간" + (wm > wl.limit ? " · " + wl.limit + "시간 초과!" : " · " + wl.limit + "시간까지 " + wkFmt(wl.limit - wm) + "시간 남음");
-    if (lv) sum.appendChild(el("b", null, wt)); else sum.appendChild(document.createTextNode(wt));
+    var wt = "⏱ 이번 주 " + wkFmt(wm) + "시간" + (wm >= wl.limit ? " · ✅ " + wl.limit + "시간 달성" : " · " + wl.limit + "시간까지 " + wkFmt(wl.limit - wm) + "시간 남음");
+    if (wm >= wl.limit) sum.appendChild(el("b", "okc", wt)); else sum.appendChild(document.createTextNode(wt));
   }
   if (gaps.length) {
     sum.appendChild(document.createElement("br"));
@@ -2271,7 +2295,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-14-4";
+var APP_VER = "2026-10-14-5";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
