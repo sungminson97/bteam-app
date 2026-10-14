@@ -1928,8 +1928,12 @@ function wkLastDone(w) {
   return last;
 }
 
+// 그 주에 휴가 말고 실제 근무 시간이 있는지
+function wkWorked(r, i) { return r.h[i] - ((r.lv && r.lv[i]) || 0) > 0; }
+
 // 칸 색: ok(달성) / x(미달) / z(판정 안 함)
-function wkCls(h, w, i) {
+function wkCls(h, w, i, r) {
+  if (r && h < w.limit && !wkWorked(r, i)) return "z";
   var k = w.weeks[i], t = wkToday();
   if (h >= w.limit) return "ok";
   if (k.part || !h) return "z";
@@ -1955,7 +1959,8 @@ function renderWeek(w) {
   var cw = w.cur;   // 이번 주 (시트 월이 이번 달이 아니면 -1)
   var ld = wkLastDone(w);
   var miss = [];
-  if (ld >= 0) w.rows.forEach(function (r) { if (r.h[ld] > 0 && r.h[ld] < w.limit) miss.push(r.n); });   // 입력이 하나도 없는 주(입사 전 등)는 제외
+  // 실제 근무 숫자가 하나도 없는 주(입사 전, 휴일 표시만 있는 주 등)는 제외
+  if (ld >= 0) w.rows.forEach(function (r) { if (wkWorked(r, ld) && r.h[ld] < w.limit) miss.push(r.n); });
   b.className = "wk" + (miss.length ? " x" : "");
 
   var sm = el("summary");
@@ -2004,14 +2009,14 @@ function renderWeek(w) {
     nm.onclick = function () { goMon(r.n); };
     row.appendChild(nm);
     r.h.forEach(function (h, i) {
-      var td = el("td", (i === cw ? "cur " : "") + wkCls(h, w, i), h ? wkFmt(h) : "-");
+      var td = el("td", (i === cw ? "cur " : "") + wkCls(h, w, i, r), h ? wkFmt(h) : "-");
       if (r.lv && r.lv[i]) td.appendChild(el("small", "lv", "휴" + wkFmt(r.lv[i])));   // 휴가 인정시간 포함
       row.appendChild(td);
     });
     tb.appendChild(row);
   });
   b.appendChild(tb);
-  var hint = "초록 = " + w.limit + "시간 달성 · 빨강 = 끝난 주인데 " + w.limit + "시간 미달. 이번 주는 진행 중이라 판정하지 않아요. 숫자가 하나도 없는 주(-)는 빼고 봐요. 연차·공가·대휴는 8시간, 반차는 4시간, 반반차는 2시간으로 쳐요(휴○ = 그중 휴가 시간). 이름을 누르면 그 사람 입력 내역으로 이동해요.";
+  var hint = "초록 = " + w.limit + "시간 달성 · 빨강 = 끝난 주인데 " + w.limit + "시간 미달. 이번 주는 진행 중이라 판정하지 않아요. 근무 숫자가 없는 주(입사 전 등)는 빼고 봐요. 연차·공가·대휴는 8시간, 반차는 4시간, 반반차는 2시간으로 쳐요(작은 글씨 휴8 = 합계 중 휴가로 넣은 시간 8시간). 이름을 누르면 그 사람 입력 내역으로 이동해요.";
   if (w.weeks.some(function (k) { return k.part; }))
     hint += " * 달이 걸친 주는 시트에 이 달(" + w.m + "월) 날짜만 있어서 판정하지 않아요.";
   b.appendChild(el("div", "hint", hint));
@@ -2429,7 +2434,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-14-9";
+var APP_VER = "2026-10-15-1";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
