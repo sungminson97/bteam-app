@@ -166,6 +166,20 @@ li:first-child{border-top:0}
 .sheet:active{background:rgba(229,72,77,.15)}
 .eq{font-weight:600}
 .hint{font-size:12px;color:var(--sub);padding:0 2px;line-height:1.5}
+.opsec{background:var(--card);border:1px solid var(--line);border-left:5px solid #f59e0b;border-radius:12px;padding:12px 14px}
+.opsec.ok{border-left-color:var(--ok)}
+.opsec .hd{display:flex;justify-content:space-between;align-items:baseline;font-weight:700}
+.opsec .hd b{color:#d97706;font-size:18px}
+.opsec ul{list-style:none;margin:8px 0 0;padding:0}
+.opsec li{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line)}
+.opsec li .nm{flex:1;min-width:0}
+.opsec li .nm small{display:block;color:var(--sub);font-size:12px;font-weight:400}
+.opsec li .need{color:var(--warn);font-weight:700}
+.opbtn{flex:none;padding:8px 12px;border-radius:999px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);font-size:13px;font-weight:700;font-family:inherit}
+.opbtn:active{background:rgba(47,111,237,.12)}
+.opsec .more{margin-top:8px;width:100%;padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:13px;font-weight:600;font-family:inherit}
+#opchips .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+#opin{font-size:16px;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);width:100%;box-sizing:border-box}
 /* 확인창 */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
 .ov.on{display:flex}
@@ -465,6 +479,20 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     <div class="ob">
       <button id="cfno" type="button">취소</button>
       <button id="cfgo" type="button" class="go">✔ 완료로 기록</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="opov">
+  <div class="box">
+    <h3>👷 작업자 입력</h3>
+    <div class="who" id="opwho"></div>
+    <div class="chips" id="opchips"></div>
+    <input type="text" id="opin" inputmode="text" autocomplete="off" maxlength="20" placeholder="직접 입력 (목록에 없는 이름)">
+    <p class="sub">저장하면 26_장비_LOG 작업자(F열)에 들어가요. 이미 적힌 이름은 앱에서 바꾸지 않아요. 잘못 넣었으면 시트에서 고쳐 주세요.</p>
+    <div class="ob">
+      <button id="opno" type="button">취소</button>
+      <button id="opgo" type="button" class="go">저장</button>
     </div>
   </div>
 </div>
@@ -1236,6 +1264,100 @@ function renderUpload(d) {
     card.appendChild(ul);
     box.appendChild(card);
   });
+
+  renderNoOp(box, d);
+}
+
+/* ---------- 👷 작업자 입력 (26_장비_LOG F열) ---------- */
+var OP = { it: null, pick: "", more: false };
+
+function opPick(n) {
+  OP.pick = n;
+  $("opin").value = "";
+  Array.prototype.forEach.call($("opchips").children, function (c) { c.className = "chip" + (c.textContent === n ? " on" : ""); });
+}
+
+function openOp(it, names) {
+  OP.it = it; OP.pick = "";
+  $("opwho").textContent = it.n + (it.t ? " (" + it.t + ")" : "");
+  var ch = $("opchips");
+  ch.innerHTML = "";
+  (names || []).forEach(function (n) {
+    var c = el("button", "chip", n);
+    c.type = "button";
+    c.onclick = function () { opPick(n); };
+    ch.appendChild(c);
+  });
+  $("opin").value = "";
+  $("opgo").disabled = false; $("opno").disabled = false;
+  $("opgo").textContent = "저장";
+  $("opov").className = "ov on";
+}
+
+function closeOp() { $("opov").className = "ov"; }
+$("opno").onclick = closeOp;
+$("opov").onclick = function (e) { if (e.target === this) closeOp(); };
+$("opin").oninput = function () { if (this.value.trim()) opPick(""); };
+$("opgo").onclick = function () {
+  var it = OP.it;
+  var op = ($("opin").value.trim() || OP.pick).trim();
+  if (!it) return;
+  if (!op) { toast("⚠️ 작업자를 고르거나 이름을 입력해 주세요.", true); return; }
+  $("opgo").disabled = true; $("opno").disabled = true;
+  $("opgo").textContent = "저장 중…";
+  callEdit("setOperator", [it.row, it.n, op])
+    .then(function (r) {
+      if (r && r.error) U.msg = { err: true, t: r.error };
+      else U.msg = { err: false, t: it.n + " 작업자 → " + op + " ✔" };
+      toast((U.msg.err ? "⚠️ " : "✔ ") + U.msg.t, U.msg.err);
+      closeOp();
+      loadUpload();
+    })
+    .catch(function (e) {
+      U.msg = { err: true, t: "저장 실패: " + errText(e) };
+      toast("⚠️ " + U.msg.t, true);
+      closeOp();
+      loadUpload();
+    });
+};
+
+// 업로드 탭 아래쪽: 작업자 미입력 장비
+function renderNoOp(box, d) {
+  var list = d.noOp;
+  if (!list) return;   // 서버가 아직 옛 버전
+  var sec = el("div", "opsec" + (list.length ? "" : " ok"));
+  var hd = el("div", "hd");
+  hd.appendChild(el("span", null, list.length ? "👷 작업자 미입력" : "👷 작업자 모두 입력됨 👍"));
+  if (list.length) hd.appendChild(el("b", null, list.length + "대"));
+  sec.appendChild(hd);
+  if (!list.length) { box.appendChild(sec); return; }
+
+  var LIM = 8;
+  var ul = el("ul");
+  list.slice(0, OP.more ? list.length : LIM).forEach(function (it) {
+    var li = el("li");
+    var nm = el("span", "nm");
+    nm.appendChild(el("span", "eq", it.n));
+    var sub = [it.t, it.site].filter(Boolean).join(" · ");
+    var sm = el("small", null, sub);
+    if (it.need) { if (sub) sm.appendChild(document.createTextNode(" · ")); sm.appendChild(el("span", "need", "1차검수 업로드 필요")); }
+    nm.appendChild(sm);
+    li.appendChild(nm);
+    var b = el("button", "opbtn", "작업자 입력");
+    b.type = "button";
+    b.onclick = function () { openOp(it, d.opNames); };
+    li.appendChild(b);
+    ul.appendChild(li);
+  });
+  sec.appendChild(ul);
+  if (list.length > LIM) {
+    var mb = el("button", "more", OP.more ? "접기" : "전체 " + list.length + "대 보기");
+    mb.type = "button";
+    mb.onclick = function () { OP.more = !OP.more; renderUpload(U.data); };
+    sec.appendChild(mb);
+  }
+  box.appendChild(sec);
+  box.appendChild(el("div", "hint", "26_장비_LOG 작업자(F열)가 빈 장비예요. 1차검수 업로드가 필요한 장비가 위에 나와요. 저장은 편집 PIN이 필요해요."));
 }
 
 function loadUpload() {
@@ -2295,7 +2417,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-14-5";
+var APP_VER = "2026-10-14-6";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
