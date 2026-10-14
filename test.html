@@ -197,6 +197,8 @@ li:first-child{border-top:0}
 .wkt th{font-size:11px;color:var(--sub);font-weight:600;line-height:1.25}
 .wkt th:first-child,.wkt td:first-child{text-align:left;width:64px;padding-left:0}
 .wkt td:first-child{font-weight:600;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wkt td small.lv{display:block;font-size:10px;font-weight:600;color:var(--sub);line-height:1.1}
+.wk .wkn{border:0;background:rgba(229,72,77,.12);color:var(--warn);font:inherit;font-size:13px;font-weight:700;border-radius:6px;padding:1px 6px;margin:2px 3px 0 0;text-decoration:underline}
 .wkt .cur{background:rgba(47,111,237,.08)}
 .wkt th.cur{color:var(--accent)}
 .wkt td.ok{color:var(--ok);font-weight:700}
@@ -1961,7 +1963,16 @@ function renderWeek(w) {
   sm.appendChild(document.createTextNode("⏱ 주 " + w.limit + "시간 체크 "));
   if (ld >= 0) {
     var lr = "지난주(" + wkMd(w.weeks[ld].from) + "~" + wkMd(w.weeks[ld].to) + ")";
-    if (miss.length) sm.appendChild(el("span", "bx x", "⚠️ " + lr + " 미달 " + miss.length + "명 (" + miss.join(", ") + ")"));
+    if (miss.length) {
+      var bx = el("span", "bx x", "⚠️ " + lr + " 미달 " + miss.length + "명 ");
+      miss.forEach(function (n) {
+        var a = el("button", "wkn", n);
+        a.type = "button";
+        a.onclick = function (e) { e.preventDefault(); e.stopPropagation(); goMon(n); };   // 표 열고 닫기 말고 그 사람 달력으로
+        bx.appendChild(a);
+      });
+      sm.appendChild(bx);
+    }
     else sm.appendChild(el("span", "bx", "✅ " + lr + " 전원 달성"));
   } else {
     sm.appendChild(el("span", "bx", "이번 달 끝난 주 없음"));
@@ -1990,19 +2001,42 @@ function renderWeek(w) {
   w.rows.forEach(function (r) {
     var row = el("tr", r.n === me ? "me" : "");
     var nm = el("td", null, r.n);
-    nm.onclick = function () { $("hname").value = r.n; resetConfirm(); refreshCell(); updNote(); renderWeek(H.meta.week); };
+    nm.onclick = function () { goMon(r.n); };
     row.appendChild(nm);
     r.h.forEach(function (h, i) {
-      row.appendChild(el("td", (i === cw ? "cur " : "") + wkCls(h, w, i), h ? wkFmt(h) : "-"));
+      var td = el("td", (i === cw ? "cur " : "") + wkCls(h, w, i), h ? wkFmt(h) : "-");
+      if (r.lv && r.lv[i]) td.appendChild(el("small", "lv", "휴" + wkFmt(r.lv[i])));   // 휴가 인정시간 포함
+      row.appendChild(td);
     });
     tb.appendChild(row);
   });
   b.appendChild(tb);
-  var hint = "초록 = " + w.limit + "시간 달성 · 빨강 = 끝난 주인데 " + w.limit + "시간 미달. 이번 주는 진행 중이라 판정하지 않아요. 숫자가 하나도 없는 주(-)는 빼고 봐요. 연차·공가 등 글자는 0시간으로 계산해요. 이름을 누르면 그 사람 달력이 열려요.";
+  var hint = "초록 = " + w.limit + "시간 달성 · 빨강 = 끝난 주인데 " + w.limit + "시간 미달. 이번 주는 진행 중이라 판정하지 않아요. 숫자가 하나도 없는 주(-)는 빼고 봐요. 연차·공가·대휴는 8시간, 반차는 4시간, 반반차는 2시간으로 쳐요(휴○ = 그중 휴가 시간). 이름을 누르면 그 사람 입력 내역으로 이동해요.";
   if (w.weeks.some(function (k) { return k.part; }))
     hint += " * 달이 걸친 주는 시트에 이 달(" + w.m + "월) 날짜만 있어서 판정하지 않아요.";
   b.appendChild(el("div", "hint", hint));
   b.open = open;
+}
+
+// 이름을 누르면 그 사람으로 바꾸고 "입력 내역" 달력으로 스크롤
+function scrollMon() {
+  var b = $("hmon");
+  if (!b || b.style.display === "none") return false;
+  var hd = document.querySelector("header");
+  var y = b.getBoundingClientRect().top + window.pageYOffset - (hd ? hd.offsetHeight : 0) - 8;
+  try { window.scrollTo({ top: y, behavior: "smooth" }); } catch (e) { window.scrollTo(0, y); }
+  return true;
+}
+function goMon(n) {
+  if ($("hname").value !== n) {
+    $("hname").value = n;
+    resetConfirm();
+    refreshCell();
+    updNote();
+  }
+  if (H.meta) renderWeek(H.meta.week);
+  H.scrollMon = true;          // 달력이 새 사람으로 그려지면 한 번 더 맞춰서 스크롤
+  scrollMon();
 }
 
 // 금일 근무시간 미입력자
@@ -2031,10 +2065,9 @@ function renderMissing(m) {
     var x = el("button", "mis", n);
     x.type = "button";
     x.onclick = function () {
-      $("hname").value = n;
       if (H.meta) $("hdate").value = H.meta.today;
-      resetConfirm();
-      refreshCell();
+      $("hname").value = "";   // 같은 이름이어도 다시 불러오게
+      goMon(n);
     };
     b.appendChild(x);
   });
@@ -2219,6 +2252,7 @@ function applyCell(r) {
   if (H.curSched) box.appendChild(el("span", "sch", "📅 schedule: " + H.curSched));
   renderMonth(r.name || $("hname").value, r);
   updNote();
+  if (H.scrollMon) { H.scrollMon = false; setTimeout(scrollMon, 30); }
 }
 
 // 화면 위쪽에 잠깐 뜨는 알림
@@ -2376,7 +2410,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-14-7";
+var APP_VER = "2026-10-14-8";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
