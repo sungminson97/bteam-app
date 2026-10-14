@@ -22,9 +22,15 @@ header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(12px + 
 @media (prefers-color-scheme:dark){.logo{background:#fff;padding:3px 7px;border-radius:6px;height:26px}}
 .sep{width:1px;height:18px;background:var(--line);flex:none}
 h1{font-size:17px;margin:0;white-space:nowrap;display:flex;flex-direction:column;line-height:1.2}
+#ver{font-size:10px;font-weight:500;color:var(--sub);margin-left:5px;letter-spacing:-.2px}
 #upd{font-size:11px;color:var(--sub);font-weight:400;min-height:13px}
 .hb{display:flex;gap:6px;flex:none}
 button.ref{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:8px;padding:6px 10px;font-size:13px;white-space:nowrap}
+#srchbtn,#lockbtn{padding:6px 8px}
+.hb{gap:5px}
+@media (max-width:429px){.logo{max-width:84px}}
+@media (max-width:400px){.logo{max-width:84px}.brand{gap:7px}h1{font-size:16px}button.ref{font-size:12.5px}}
+@media (max-width:389px){header{padding-left:12px;padding-right:12px}.logo{max-width:70px}.brand{gap:6px}button.ref{padding:6px 8px}#srchbtn,#lockbtn{padding:6px 6px}#ver{font-size:9.5px;margin-left:4px}}
 .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
 .tab{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tab{text-align:center;padding:8px 0;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--sub);line-height:1.2;cursor:pointer}
@@ -35,7 +41,7 @@ button.ref{border:1px solid var(--line);background:var(--card);color:var(--text)
 main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:grid;gap:10px;max-width:720px;margin:0 auto}
 #hours,#upload,#leave,#stats,#sched,#srch{display:none}
 /* 테스트 표시 */
-.testtag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:6px;background:#7c3aed;color:#fff;font-size:11px;font-weight:800;vertical-align:2px}
+.testtag{display:inline-block;margin-top:2px;align-self:flex-start;padding:1px 7px;border-radius:6px;background:#7c3aed;color:#fff;font-size:11px;font-weight:800;vertical-align:2px}
 /* 🏖️ 오늘 연차 */
 .lvb{background:var(--card);border:1px solid var(--line);border-left:5px solid #f59e0b;border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.6}
 .lvb b{font-size:13px;color:#b45309;margin-right:6px}
@@ -67,6 +73,9 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .eqtags .tb{background:var(--tb);color:#fff;border-color:var(--tb)}
 .eqtags .tu,.eqtags .loc{color:var(--warn);border-color:var(--warn)}
 .eqtags .up{color:#b45309;border-color:#f59e0b;background:rgba(245,158,11,.12)}
+.eqv{display:grid;gap:4px;font-size:14px}
+.eqv div{display:flex;gap:8px;align-items:baseline}
+.eqv .k{color:var(--sub);font-size:13px;flex:none}
 .eqtl .r{display:grid;grid-template-columns:92px 1fr auto;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:14px;align-items:center}
 .eqtl .r:first-child{border-top:0}
 .eqtl .k{color:var(--sub);font-size:13px}
@@ -171,6 +180,24 @@ li:first-child{border-top:0}
 .ob .go{background:var(--ok);border-color:var(--ok);color:#fff}
 .ob button:disabled{opacity:.6}
 /* 근무시간 폼 */
+.wk{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ok);border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.5}
+.wk.w{border-left-color:#f59e0b}.wk.x{border-left-color:var(--warn)}
+.wk summary{cursor:pointer;font-weight:700;list-style:none}
+.wk summary::-webkit-details-marker{display:none}
+.wk summary small{display:block;font-weight:500;color:var(--sub);font-size:12px}
+.wk summary .tg{float:right;font-size:12px;color:var(--accent);font-weight:600}
+.wk .bx{font-weight:700}.wk .bx.x{color:var(--warn)}.wk .bx.w{color:#d97706}
+.wkt{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;table-layout:fixed}
+.wkt th,.wkt td{border-top:1px solid var(--line);padding:6px 2px;text-align:center}
+.wkt th{font-size:11px;color:var(--sub);font-weight:600;line-height:1.25}
+.wkt th:first-child,.wkt td:first-child{text-align:left;width:64px;padding-left:0}
+.wkt td:first-child{font-weight:600;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wkt .cur{background:rgba(47,111,237,.08)}
+.wkt th.cur{color:var(--accent)}
+.wkt td.w{color:#d97706;font-weight:700}
+.wkt td.x{background:rgba(229,72,77,.16);color:var(--warn);font-weight:800}
+.wkt td.z{color:var(--sub)}
+.wkt tr.me td:first-child{color:var(--accent)}
 .top1{background:rgba(255,193,7,.18);border-radius:10px;padding:11px 12px;font-size:14px;font-weight:700;line-height:1.5}
 .mis{display:inline-block;margin:8px 6px 0 0;padding:7px 14px;border-radius:999px;border:1.5px solid var(--warn);background:transparent;color:var(--warn);font-size:14px;font-weight:700;font-family:inherit}
 .mis:active{background:rgba(229,72,77,.15)}
@@ -348,7 +375,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     <div class="brand">
       <img class="logo" id="logo" src="logo.png" alt="" onerror="this.style.display='none';document.getElementById('sep').style.display='none';">
       <div class="sep" id="sep"></div>
-      <h1><span>제조1-B<span id="testtag"></span></span> <span id="upd"></span></h1>
+      <h1><span>제조1-B<small id="ver"></small></span> <span id="upd"></span><span id="testtag"></span></h1>
     </div>
     <div class="hb">
       <button class="ref" id="srchbtn" type="button" aria-label="장비 검색">🔍</button>
@@ -366,7 +393,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     <div class="tab" id="t4">연차 현황<span></span></div>
   </div>
   <div id="sbar" class="sbar" style="display:none">
-    <input id="sq" type="search" inputmode="text" enterkeyhint="search" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="장비명 또는 담당자 (예: 373, 손성민)">
+    <input id="sq" type="search" inputmode="text" enterkeyhint="search" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="장비명·담당자·업체 (예: 373, 손성민)">
     <button id="sclose" type="button">닫기</button>
   </div>
 </header>
@@ -378,6 +405,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 
 <section id="hours">
   <div id="hmiss" style="display:none"></div>
+  <details id="hweek" class="wk" style="display:none"></details>
   <div class="form">
     <div id="htop" class="top1" style="display:none"></div>
     <div id="hmonth" class="cur">시트 기준 월 확인 중…</div>
@@ -459,7 +487,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 
 <script>
 /* ★ 실행 환경 (본 앱 index.html / 테스트 test.html 는 이 3줄만 달라요) */
-var IS_TEST = true;    // 테스트 화면이면 true (위쪽에 🧪 테스트 표시, 저장 공간 따로 씀)
+var IS_TEST = true;   // 테스트 화면이면 true (위쪽에 🧪 테스트 표시, 저장 공간 따로 씀)
 var API_URL = "https://script.google.com/macros/s/AKfycbyXGeBXjmZtWj0GqezipYO9GRmZrQ1Y2zoMzgfYfJBH9S9nTw_Scg3ZvKn1PoI4tUMt/exec";
 var SP = IS_TEST ? "t_" : "";   // 폰 저장 이름 앞에 붙임 → 테스트와 본 앱 PIN·캐시가 섞이지 않음
 var MAX_FAILS = 3;   // PIN 연속 오입력 허용 횟수
@@ -1642,7 +1670,7 @@ function renderSearch() {
   var today = ymdLocal();
 
   if (!q) {
-    box.appendChild(el("div", "hint", "장비명 일부(예: 373)나 담당자 이름(예: 손성민)을 입력하세요. Backlog 전체 " +
+    box.appendChild(el("div", "hint", "장비명 일부(예: 373), 담당자 이름(예: 손성민), 업체명을 입력하세요. Backlog 전체 " +
       idx.rows.length + "대에서 찾아요." + (SR.loading ? " · 최신 목록 받는 중…" : " · " + (idx.built || "") + " 기준")));
     return;
   }
@@ -1655,6 +1683,7 @@ function renderSearch() {
     else if (n.indexOf(q) === 0) sc = 1;
     else if (n.indexOf(q) >= 0) sc = 2;
     else if (r[2] && normQ(r[2]).indexOf(q) >= 0) sc = 3;
+    else if (r[6] && r[6].some(function (v) { return normQ(v[1]).indexOf(q) >= 0; })) sc = 4;   // 업체명으로도 찾기
     if (sc >= 0) hits.push({ i: i, sc: sc });
   });
   hits.sort(function (a, b) {
@@ -1681,7 +1710,7 @@ function renderSearch() {
     it.appendChild(nm);
     var nx = eqNext(r, idx.stages, today);
     it.appendChild(el("span", "nx", nx ? (nx.done ? nx.label + " 완료" : (nx.now ? "오늘 " : "") + nx.label + " " + mdw(nx.d)) : "일정 없음"));
-    it.appendChild(el("span", "ty", r[1] + (r[4] ? " · 📍" + r[4] : "")));
+    it.appendChild(el("span", "ty", r[1] + (r[4] ? " · 📍" + r[4] : "") + (r[6] && r[6][0] ? " · 🏭" + r[6][0][1] : "")));
     it.onclick = function () { SR.sel = h.i; renderSearch(); window.scrollTo(0, 0); };
     list.appendChild(it);
   });
@@ -1708,6 +1737,18 @@ function renderEquipDetail(box, r, stages, today, canBack) {
   tags.appendChild(el("span", "loc", r[4] ? "📍 " + r[4] : "📍 자리 정보 없음"));
   eqUploads(r[0]).forEach(function (lb) { tags.appendChild(el("span", "up", "⬆ " + lb + " 업로드 필요")); });
   c.appendChild(tags);
+
+  // 🏭 FRAME 업체
+  if (r[6] && r[6].length) {
+    var vd = el("div", "eqv");
+    r[6].forEach(function (v) {
+      var row = el("div");
+      row.appendChild(el("span", "k", "🏭 " + v[0]));
+      row.appendChild(el("b", null, v[1]));
+      vd.appendChild(row);
+    });
+    c.appendChild(vd);
+  }
 
   var tl = el("div", "eqtl");
   stages.forEach(function (st, i) {
@@ -1788,6 +1829,76 @@ function renderTop(t) {
   b.textContent = "🏆 " + mm + " 근무시간 TOP1  " + t.names.join(", ") + "님 (" + t.hours + "시간)";
 }
 
+/* ---------- ⏱ 주 52시간 체크 (월~일, 숫자만 합산) ---------- */
+function wkMd(ymd) { return (+ymd.slice(5, 7)) + "/" + (+ymd.slice(8, 10)); }
+function wkLv(h, w) { return h > w.limit ? "x" : h >= w.warn ? "w" : ""; }
+function wkFmt(h) { return String(Math.round(h * 10) / 10); }
+
+// 이 사람의 이번 주 합계 (없으면 null)
+function wkMine(name) {
+  var w = H.meta && H.meta.week;
+  if (!w || w.cur < 0) return null;
+  var r = w.rows.filter(function (x) { return x.n === name; })[0];
+  return r ? r.h[w.cur] : null;
+}
+
+function renderWeek(w) {
+  var b = $("hweek");
+  if (!w || !w.rows || !w.rows.length || !w.weeks.length) { b.style.display = "none"; return; }
+  var open = b.open;
+  b.innerHTML = "";
+  b.style.display = "block";
+
+  var cw = w.cur;   // 이번 주 (시트 월이 이번 달이 아니면 -1)
+  var over = [], near = [];
+  w.rows.forEach(function (r) {
+    var hs = cw >= 0 ? [r.h[cw]] : r.h;
+    var mx = Math.max.apply(null, hs);
+    if (mx > w.limit) over.push(r.n); else if (mx >= w.warn) near.push(r.n);
+  });
+  b.className = "wk" + (over.length ? " x" : near.length ? " w" : "");
+
+  var sm = el("summary");
+  sm.appendChild(el("span", "tg", "주별 표 ▾"));
+  sm.appendChild(document.createTextNode("⏱ 주 " + w.limit + "시간 체크 "));
+  var range = cw >= 0 ? "이번 주 " + wkMd(w.weeks[cw].from) + "~" + wkMd(w.weeks[cw].to) : w.m + "월 전체";
+  if (over.length) sm.appendChild(el("span", "bx x", "⛔ 초과 " + over.length + "명 (" + over.join(", ") + ")"));
+  else if (near.length) sm.appendChild(el("span", "bx w", "⚠️ " + w.warn + "h 이상 " + near.length + "명 (" + near.join(", ") + ")"));
+  else sm.appendChild(el("span", "bx", "✅ 초과 없음"));
+  sm.appendChild(el("small", null, range + " · 월~일 기준 · 시트 숫자만 합산"));
+  b.appendChild(sm);
+
+  var tb = el("table", "wkt");
+  var tr = el("tr");
+  tr.appendChild(el("th", null, "이름"));
+  w.weeks.forEach(function (k, i) {
+    var th = el("th", i === cw ? "cur" : "");
+    th.appendChild(document.createTextNode(wkMd(k.from) + (k.part ? "*" : "")));
+    th.appendChild(document.createElement("br"));
+    th.appendChild(document.createTextNode("~" + wkMd(k.to)));
+    tr.appendChild(th);
+  });
+  tb.appendChild(tr);
+  var me = $("hname").value;
+  w.rows.forEach(function (r) {
+    var row = el("tr", r.n === me ? "me" : "");
+    var nm = el("td", null, r.n);
+    nm.onclick = function () { $("hname").value = r.n; resetConfirm(); refreshCell(); updNote(); renderWeek(H.meta.week); };
+    row.appendChild(nm);
+    r.h.forEach(function (h, i) {
+      var lv = wkLv(h, w);
+      row.appendChild(el("td", (i === cw ? "cur " : "") + (lv || (h ? "" : "z")), h ? wkFmt(h) : "-"));
+    });
+    tb.appendChild(row);
+  });
+  b.appendChild(tb);
+  var hint = "빨강 = " + w.limit + "시간 초과 · 주황 = " + w.warn + "시간 이상. 연차·공가 등 글자는 0시간으로 계산해요. 이름을 누르면 그 사람 달력이 열려요.";
+  if (w.weeks.some(function (k) { return k.part; }))
+    hint += " * 달이 걸친 주는 시트에 이 달(" + w.m + "월) 날짜만 있어서 그 날들만 합산했어요.";
+  b.appendChild(el("div", "hint", hint));
+  b.open = open;
+}
+
 // 금일 근무시간 미입력자
 function renderMissing(m) {
   var b = $("hmiss");
@@ -1844,6 +1955,7 @@ function applyMeta(m, fromCache) {
   $("hmonth").appendChild(el("b", null, m.month + "월"));
   renderMissing(m.missing);
   renderTop(m.top);
+  renderWeek(m.week);
   checkMonth();
 }
 
@@ -1941,6 +2053,13 @@ function renderMonth(name, r) {
   h4.appendChild(document.createTextNode(" · " + mm + "월 입력 내역"));
   b.appendChild(h4);
   var sum = el("div", "msum", "입력 " + filled + "일 · 이번 달 계 " + (r.total || "-"));
+  var wm = wkMine(name), wl = H.meta && H.meta.week;
+  if (wm != null && wl) {
+    sum.appendChild(document.createElement("br"));
+    var lv = wkLv(wm, wl);
+    var wt = "⏱ 이번 주 " + wkFmt(wm) + "시간" + (wm > wl.limit ? " · " + wl.limit + "시간 초과!" : " · " + wl.limit + "시간까지 " + wkFmt(wl.limit - wm) + "시간 남음");
+    if (lv) sum.appendChild(el("b", null, wt)); else sum.appendChild(document.createTextNode(wt));
+  }
   if (gaps.length) {
     sum.appendChild(document.createElement("br"));
     sum.appendChild(el("b", null, "⚠️ 빈 평일 " + gaps.length + "일: " + gaps.join(", ")));
@@ -2119,6 +2238,7 @@ function doSave(value) {
         $("hval").value = ""; $("hnote").value = ""; $("hdel").checked = false; H.half = ""; updNote();
         sset("hoursName", name);
         if (r.top !== undefined) renderTop(r.top);
+        if (r.week && H.meta) { H.meta.week = r.week; cset("hours", H.meta); renderWeek(r.week); }
         renderMissing(r.missing);
         H.token++;   // 진행 중인 조회 결과는 버리고 저장 응답으로 바로 갱신
         if (r.cell && $("hname").value === name && $("hdate").value === date) applyCell(r.cell);
@@ -2138,7 +2258,7 @@ function doSave(value) {
 
 $("hsave").onclick = function () { doSave($("hval").value); };
 $("hclr").onclick = function () { doSave("__CLEAR__"); };
-$("hname").onchange = function () { resetConfirm(); refreshCell(); updNote(); };
+$("hname").onchange = function () { resetConfirm(); refreshCell(); updNote(); if (H.meta) renderWeek(H.meta.week); };
 $("hnote").oninput = function () { resetConfirm(); updNote(); };
 $("hhrs").oninput = function () { resetConfirm(); updNote(); };
 $("hdel").onchange = resetConfirm;
@@ -2151,7 +2271,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-13-5";
+var APP_VER = "2026-10-14-4";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
@@ -2195,6 +2315,7 @@ window.addEventListener("focus", onResume);
 
 function boot() {
   buildChips();
+  $("ver").textContent = "v" + APP_VER.slice(5).replace("-", ".");   // 예: v10.14-4
   if (IS_TEST) {
     $("testtag").appendChild(el("span", "testtag", "🧪 테스트"));
     document.title = "제조1-B 테스트";
