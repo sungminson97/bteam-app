@@ -479,7 +479,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 
 <div class="ov" id="opov">
   <div class="box">
-    <h3>👷 작업자 입력</h3>
+    <h3>👷 작업자 입력(FT)</h3>
     <div class="who" id="opwho"></div>
     <div class="chips" id="opchips"></div>
     <input type="text" id="opin" inputmode="text" autocomplete="off" maxlength="20" placeholder="직접 입력 (목록에 없는 이름)">
@@ -1256,7 +1256,7 @@ function renderUpload(d) {
       });
       if (it.done1) li.appendChild(el("span", "sdone", "✔ 1차검수 완료"));
       if (it.noOp) {   // 작업자(F열)가 비어 있음 → 이름을 적어야 목록에서 사라짐
-        var ob = el("button", "sheet op", "👷 작업자 입력");
+        var ob = el("button", "sheet op", "👷 작업자 입력(FT)");
         ob.type = "button";
         ob.onclick = function () { openOp(it, d.opNames); };
         li.appendChild(ob);
@@ -2265,14 +2265,31 @@ function toast(msg, bad) {
   TT = setTimeout(function () { t.className = bad ? "bad" : ""; }, bad ? 3500 : 2500);
 }
 
+// 미리 받아둔 값(H.meta.grid)으로 getHoursCell 응답과 같은 모양 만들기 (없으면 null)
+function gridCell(name, date) {
+  var g = H.meta && H.meta.grid;
+  if (!g || !g.rows || !g.rows[name] || !date) return null;
+  var y = +date.slice(0, 4), m = +date.slice(5, 7), day = +date.slice(8, 10);
+  if (m !== g.m) return null;
+  var row = g.rows[name], today = H.meta.today || ymdLocal(), ym = date.slice(0, 7);
+  var last = new Date(y, m, 0).getDate(), days = [];
+  for (var d = 1; d <= Math.min(last, row.v.length); d++) {
+    var key = ym + "-" + ("0" + d).slice(-2);
+    days.push({ d: d, dow: new Date(y, m - 1, d).getDay(), v: row.v[d - 1] || "", fut: key > today });
+  }
+  return { name: name, ymd: date, cur: row.v[day - 1] || "", formula: false, total: row.t, ym: ym, days: days, sched: "" };
+}
+
 function refreshCell() {
   var name = $("hname").value, date = $("hdate").value;
   var box = $("hcur");
   if (!H.meta || !name || !date) { box.textContent = "이름과 날짜를 선택하세요."; $("hmon").style.display = "none"; return; }
   if (!checkMonth()) { box.textContent = "-"; $("hmon").style.display = "none"; return; }
   var t = ++H.token;
-  box.textContent = "현재 값 확인 중…";
-  monLoading(name);
+  // ⚡ 미리 받아둔 전원 입력값으로 달력·현재값을 바로 그림 → 서버 응답(schedule·수식 여부)은 뒤에서 덮어씀
+  var q = gridCell(name, date);
+  if (q) { applyCell(q); H.curSched = ""; }
+  else { box.textContent = "현재 값 확인 중…"; monLoading(name); }
   call("getHoursCell", [name, date])
     .then(function (r) {
       if (t !== H.token) return;
@@ -2377,7 +2394,9 @@ function doSave(value) {
         $("hval").value = ""; $("hnote").value = ""; $("hdel").checked = false; H.half = ""; updNote();
         sset("hoursName", name);
         if (r.top !== undefined) renderTop(r.top);
-        if (r.week && H.meta) { H.meta.week = r.week; cset("hours", H.meta); renderWeek(r.week); }
+        if (r.week && H.meta) { H.meta.week = r.week; renderWeek(r.week); }
+        try { var gr = H.meta.grid.rows[name]; gr.v[+date.slice(8, 10) - 1] = r.cur; } catch (eg) {}   // 미리 받아둔 값도 갱신
+        if (H.meta) cset("hours", H.meta);
         renderMissing(r.missing);
         H.token++;   // 진행 중인 조회 결과는 버리고 저장 응답으로 바로 갱신
         if (r.cell && $("hname").value === name && $("hdate").value === date) applyCell(r.cell);
@@ -2410,7 +2429,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-14-8";
+var APP_VER = "2026-10-14-9";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
