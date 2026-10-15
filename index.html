@@ -517,6 +517,19 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
   <div class="box wkd" id="wkbox"></div>
 </div>
 
+<div class="ov" id="clrov">
+  <div class="box">
+    <h3>🗑 입력값 지우기</h3>
+    <div class="who" id="clrwho"></div>
+    <p id="clrmsg"></p>
+    <p class="sub" id="clrsch" style="display:none"></p>
+    <div class="ob">
+      <button id="clrno" type="button">취소</button>
+      <button id="clrgo" type="button" class="go" style="background:var(--warn);border-color:var(--warn)">지우기</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <!-- 편집 PIN 입력창 -->
@@ -2380,6 +2393,7 @@ function applyCell(r) {
   box.appendChild(document.createElement("br"));
   box.appendChild(document.createTextNode("이번 달 계: " + (r.total == null ? "갱신 중…" : (r.total || "-"))));
   H.curSched = r.sched || "";
+  H.curVal = r.cur === "" && r.formula ? "(수식)" : String(r.cur == null ? "" : r.cur);
   if (H.curSched) box.appendChild(el("span", "sch", "📅 schedule: " + H.curSched));
   renderMonth(r.name || $("hname").value, r);
   updNote();
@@ -2471,7 +2485,7 @@ function updNote() {
   h.appendChild(el("b", null, nm + " " + m[1] + (note ? " (" + note + ")" : "")));
 }
 
-function doSave(value) {
+function doSave(value, force, delForce) {
   if (H.busy) return;
   var name = $("hname").value, date = $("hdate").value;
   if (!name || !date) { showHErr("이름과 날짜를 선택해 주세요."); return; }
@@ -2489,11 +2503,11 @@ function doSave(value) {
       leave = lm[1]; value = hrs;
     }
   }
-  var delSched = $("hdelBox").style.display !== "none" && $("hdel").checked;
+  var delSched = !!delForce || ($("hdelBox").style.display !== "none" && $("hdel").checked);
   H.busy = true;
   $("hsave").disabled = true; $("hclr").disabled = true;
   $("hsave").textContent = "저장 중…";
-  callEdit("saveHours", [name, date, value, H.confirm, note, leave, delSched])
+  callEdit("saveHours", [name, date, value, H.confirm || !!force, note, leave, delSched])
     .then(function (r) {
       H.busy = false;
       $("hsave").disabled = false; $("hclr").disabled = false;
@@ -2546,7 +2560,31 @@ function doSave(value) {
 }
 
 $("hsave").onclick = function () { doSave($("hval").value); };
-$("hclr").onclick = function () { doSave("__CLEAR__"); };
+// 칸 비우기: 확인창을 띄우고 "지우기"를 누르면 바로 지움 (덮어쓰기 확인 단계 없음)
+$("hclr").onclick = function () {
+  if (H.busy) return;
+  var name = $("hname").value, date = $("hdate").value;
+  if (!name || !date) { showHErr("이름과 날짜를 선택해 주세요."); return; }
+  if (!checkMonth()) return;
+  var cur = H.curVal || "";
+  if (!cur) { toast("이미 비어 있는 칸이에요."); return; }
+  resetConfirm();
+  var p = date.split("-"), wd = ["일", "월", "화", "수", "목", "금", "토"][new Date(+p[0], +p[1] - 1, +p[2]).getDay()];
+  $("clrwho").textContent = name + " · " + (+p[1]) + "/" + (+p[2]) + "(" + wd + ")";
+  $("clrmsg").textContent = "현재 값 '" + cur + "'을(를) 지우시겠습니까?";
+  var sc = $("clrsch");
+  if (H.curSched) { sc.style.display = "block"; sc.textContent = "📅 schedule의 '" + H.curSched + "' 기록도 같이 지워져요."; }
+  else sc.style.display = "none";
+  $("clrgo").disabled = false; $("clrno").disabled = false;
+  $("clrov").className = "ov on";
+};
+function closeClr() { $("clrov").className = "ov"; }
+$("clrno").onclick = closeClr;
+$("clrov").onclick = function (e) { if (e.target === this) closeClr(); };
+$("clrgo").onclick = function () {
+  closeClr();
+  doSave("__CLEAR__", true, !!H.curSched);
+};
 $("hname").onchange = function () { resetConfirm(); refreshCell(); updNote(); if (H.meta) renderWeek(H.meta.week); };
 $("hnote").oninput = function () { resetConfirm(); updNote(); };
 $("hhrs").oninput = function () { resetConfirm(); updNote(); };
@@ -2560,7 +2598,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-15-4";
+var APP_VER = "2026-10-15-5";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
