@@ -619,15 +619,32 @@ function devId() {
 // ⏱ 속도기록: 왕복이 SLOW_MS 이상 걸렸거나 실패한 요청만 다음 요청 때 서버에 알려줌 → "앱_속도기록"
 var SLOW_MS = 6000;   // 6초 이상이면 느림으로 기록
 var SPD = { last: null };
+// 📶 조회 요청은 연결이 끊기면 1번 자동 재시도 (저장 요청은 중복 저장 막으려고 재시도 안 함)
+var READ_FNS = { ping: 1, getDashboardAll: 1, getDashboardData: 1, getUploadStatus: 1, getHoursMeta: 1, getHoursCell: 1, getLeaveData: 1, getStatsData: 1, getEquipIndex: 1 };
+var CALL_TIMEOUT = 30000;   // 30초 넘게 응답 없으면 끊고 (조회면) 다시 시도
+
+function fetchJson(body) {
+  var ctl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+  var tm = ctl ? setTimeout(function () { ctl.abort(); }, CALL_TIMEOUT) : null;
+  return fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: body,
+    signal: ctl ? ctl.signal : undefined
+  }).then(function (r) { if (tm) clearTimeout(tm); return r.json(); },
+          function (e) { if (tm) clearTimeout(tm); if (e && e.name === "AbortError") throw new Error("network timeout"); throw e; });
+}
+
 function rawCall(pin, fn, args, editPin) {
   var rid = Math.random().toString(36).slice(2, 10), t0 = Date.now(), prev = SPD.last;
   SPD.last = null;
   var a0 = (fn === "getDashboardAll" || fn === "getEquipIndex") ? [args && args[0] === true] : [];
-  return fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev })
-  }).then(function (r) { return r.json(); })
+  var body = JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev });
+  return fetchJson(body)
+    .catch(function (e) {
+      if (!READ_FNS[fn]) throw e;
+      return new Promise(function (res) { setTimeout(res, 1500); }).then(function () { return fetchJson(body); });
+    })
     .then(function (j) {
       var ms = Date.now() - t0;
       if (ms >= SLOW_MS) SPD.last = { rid: rid, ms: ms, fn: fn, args: a0, at: t0 };
@@ -2598,7 +2615,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-15-5";
+var APP_VER = "2026-10-15-6";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
