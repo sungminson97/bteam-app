@@ -603,12 +603,27 @@ function devId() {
 }
 
 // editPin: 저장 함수일 때만 보냄 (조회 요청엔 편집 PIN을 안 실어 보냄)
+// ⏱ 속도기록: 왕복이 SLOW_MS 이상 걸렸거나 실패한 요청만 다음 요청 때 서버에 알려줌 → "앱_속도기록"
+var SLOW_MS = 6000;   // 6초 이상이면 느림으로 기록
+var SPD = { last: null };
 function rawCall(pin, fn, args, editPin) {
+  var rid = Math.random().toString(36).slice(2, 10), t0 = Date.now(), prev = SPD.last;
+  SPD.last = null;
+  var a0 = (fn === "getDashboardAll" || fn === "getEquipIndex") ? [args && args[0] === true] : [];
   return fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId() })
-  }).then(function (r) { return r.json(); });
+    body: JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev })
+  }).then(function (r) { return r.json(); })
+    .then(function (j) {
+      var ms = Date.now() - t0;
+      if (ms >= SLOW_MS) SPD.last = { rid: rid, ms: ms, fn: fn, args: a0, at: t0 };
+      return j;
+    }, function (e) {
+      if (prev && !SPD.last) SPD.last = prev;   // 이번에 못 보낸 지난 기록은 다음에 다시
+      else SPD.last = { rid: rid, ms: Date.now() - t0, fn: fn, args: a0, at: t0, fail: "응답 없음 (네트워크/서버 연결 실패)" };
+      throw e;
+    });
 }
 
 function call(fn, args, editPin) {
@@ -2545,7 +2560,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-15-2";
+var APP_VER = "2026-10-15-4";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
