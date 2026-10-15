@@ -221,6 +221,9 @@ li:first-child{border-top:0}
 .wkd .vd.x{background:rgba(229,72,77,.1);color:var(--warn)}
 .wkd .vd.ok{background:rgba(31,157,85,.1);color:var(--ok)}
 .wkt td:not(:first-child){cursor:pointer}
+.cal .cd.schv{border:1.5px dashed #f59e0b;background:#fff8ec}
+.cal .cd.schv b{color:#b45309;font-size:11px}
+#hmiss small{font-size:12px;color:var(--sub);font-weight:500}
 .wkt .cur{background:rgba(47,111,237,.08)}
 .wkt th.cur{color:var(--accent)}
 .wkt td.ok{color:var(--ok);font-weight:700}
@@ -2130,7 +2133,7 @@ var WEEK_MARK = /^(일|토|일요일|토요일)$/;
 function openWeekDetail(r, i) {
   var w = H.meta && H.meta.week, g = H.meta && H.meta.grid;
   if (!w) return;
-  var k = w.weeks[i], half = w.half || {};
+  var k = w.weeks[i], sch = w.sch || {};
   var row = g && g.rows && g.rows[r.n];
   var h = r.h[i], lv = (r.lv && r.lv[i]) || 0, work = Math.round((h - lv) * 10) / 10;
   var box = $("wkbox");
@@ -2165,10 +2168,14 @@ function openWeekDetail(r, i) {
     if (!row || m !== g.m) { c.appendChild(document.createTextNode("·")); cl += " out"; c.title = "다른 달 (시트에 없음)"; }
     else {
       var v = String(row.v[d - 1] || "").trim();
+      var sc = sch[r.n + "|" + d];
       if (/^\d+(\.\d+)?$/.test(v)) {
         c.appendChild(document.createTextNode(v));
-        var hh = half[r.n + "|" + d];
-        if (hh) { c.appendChild(el("em", null, (hh === 2 ? "반반차" : "반차") + "+" + hh)); cl += " hf"; }
+        if (sc && sc[0] < 8) { c.appendChild(el("em", null, (SHORT[sc[1]] || sc[1]) + "+" + sc[0])); cl += " hf"; }
+      } else if (!v && sc) {   // 칸은 비었는데 schedule에 휴가
+        c.appendChild(document.createTextNode((SHORT[sc[1]] || sc[1]) + " " + sc[0]));
+        c.appendChild(el("em", null, "스케줄"));
+        cl += " lv";
       } else if (wkLeaveTxt(v)) {
         c.appendChild(document.createTextNode((SHORT[v] || v) + " " + wkLeaveTxt(v)));
         cl += " lv";
@@ -2187,7 +2194,7 @@ function openWeekDetail(r, i) {
   else if (k.to < wkToday() ) { vd = "⚠️ " + w.limit + "시간 미달 · " + wkFmt(w.limit - h) + "시간 부족"; vc = "x"; }
   else vd = "⏳ 진행 중 · " + w.limit + "시간까지 " + wkFmt(w.limit - h) + "시간 남음";
   box.appendChild(el("div", "vd " + vc, vd));
-  box.appendChild(el("p", "sub", "연차·공가·대휴 8시간 / 반차 4시간 / 반반차 2시간을 휴가로 인정해요. 주황 칸 = 휴가가 들어간 날."));
+  box.appendChild(el("p", "sub", "연차·공가·대휴 8시간 / 반차 4시간 / 반반차 2시간을 휴가로 인정해요. 주황 칸 = 휴가가 들어간 날. '스케줄' = 근무시간 칸은 비어 있지만 schedule 시트에 적힌 휴가."));
 
   var ob = el("div", "ob");
   var b1 = el("button", null, "닫기"); b1.type = "button"; b1.onclick = closeWeekDetail;
@@ -2214,9 +2221,11 @@ function renderMissing(m) {
       : "금일(" + m.label + ") 미입력 확인을 할 수 없어요. (날짜 헤더 확인 필요)";
     return;
   }
+  var offTxt = m.off && m.off.length ? "📅 휴가(schedule): " + m.off.join(", ") : "";
   if (!m.names || !m.names.length) {
     b.className = "okmsg";
     b.textContent = "✅ 금일(" + m.label + ") 근무시간 모두 입력 완료";
+    if (offTxt) { b.appendChild(document.createElement("br")); b.appendChild(el("small", null, offTxt)); }
     return;
   }
   b.className = "warn";
@@ -2232,6 +2241,7 @@ function renderMissing(m) {
     };
     b.appendChild(x);
   });
+  if (offTxt) { b.appendChild(document.createElement("br")); b.appendChild(el("small", "offs", offTxt + " → 미입력에서 뺐어요")); }
 }
 
 function ymdLocal() {
@@ -2340,11 +2350,17 @@ function renderMonth(name, r) {
   var today = H.meta ? H.meta.today : "";
   var mm = parseInt(r.ym.slice(5), 10);
   r.days.forEach(function (x) { if (WEEKEND_MARK.test(x.v)) x.v = ""; });
+  // 칸은 비었지만 schedule에 휴가가 적힌 날 (시트엔 안 들어가 있음 → 표시만)
+  var schm = (H.meta && H.meta.week && H.meta.week.sch) || {};
+  if (H.meta && H.meta.week && H.meta.week.m === mm) r.days.forEach(function (x) {
+    var sc = schm[name + "|" + x.d];
+    if (!x.v && sc) x.sv = sc[1];
+  });
   var filled = 0, gaps = [];
   r.days.forEach(function (x) {
     var we = x.dow === 0 || x.dow === 6;
     if (x.v) filled++;
-    else if (!x.fut && !we) gaps.push(x.d + "일");
+    else if (!x.fut && !we && !x.sv) gaps.push(x.d + "일");
   });
 
   var h4 = el("h4");
@@ -2379,7 +2395,8 @@ function renderMonth(name, r) {
     if (x.v) {
       txt = SHORT[x.v] || x.v;
       if (!/^\d+(\.\d+)?$/.test(x.v)) cls += " txt";
-    } else if (x.fut) { txt = ""; cls += " fut"; }
+    } else if (x.sv) { txt = SHORT[x.sv] || x.sv; cls += " txt schv" + (x.fut ? " fut" : ""); }   // schedule에만 있는 휴가
+    else if (x.fut) { txt = ""; cls += " fut"; }
     else if (we) { txt = "-"; cls += " we"; }
     else { txt = "!"; cls += " gap"; }
     if (ymd === today) cls += " today";
@@ -2389,6 +2406,7 @@ function renderMonth(name, r) {
     c.appendChild(el("i", null, x.d));
     c.appendChild(el("b", null, txt || " "));
     if (x.v) c.title = x.v;
+    else if (x.sv) c.title = x.sv + " (schedule에만 있음 · 근무시간 칸은 비어 있음)";
     c.onclick = function () {
       $("hdate").value = ymd;
       resetConfirm();
@@ -2398,7 +2416,7 @@ function renderMonth(name, r) {
     cal.appendChild(c);
   });
   b.appendChild(cal);
-  b.appendChild(el("div", "hint", "날짜를 누르면 아래 입력칸이 그 날로 바뀌어요. 빨간 칸은 비어 있는 평일이에요."));
+  b.appendChild(el("div", "hint", "날짜를 누르면 아래 입력칸이 그 날로 바뀌어요. 빨간 칸은 비어 있는 평일이에요. 점선 칸은 schedule에만 적힌 휴가예요(근무시간 칸은 비어 있음)."));
 }
 
 // 현재 입력값 박스 + 달력 그리기
@@ -2615,7 +2633,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-15-6";
+var APP_VER = "2026-10-15-7";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
