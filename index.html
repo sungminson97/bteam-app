@@ -199,6 +199,28 @@ li:first-child{border-top:0}
 .wkt td:first-child{font-weight:600;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wkt td small.lv{display:block;font-size:10px;font-weight:600;color:var(--sub);line-height:1.1}
 .wk .wkn{border:0;background:rgba(229,72,77,.12);color:var(--warn);font:inherit;font-size:13px;font-weight:700;border-radius:6px;padding:1px 6px;margin:2px 3px 0 0;text-decoration:underline}
+.wkd .big{display:flex;align-items:center;gap:14px}
+.wkd .bc{min-width:84px;height:70px;border-radius:12px;display:grid;place-items:center;align-content:center;font-size:26px;font-weight:800;line-height:1.1;border:1px solid var(--line);background:var(--card)}
+.wkd .bc small{font-size:12px;color:var(--sub);font-weight:600}
+.wkd .bc.x{background:rgba(229,72,77,.14);color:var(--warn);border-color:transparent}
+.wkd .bc.ok{color:var(--ok)}
+.wkd .bc.cur{background:rgba(47,111,237,.08)}
+.wkd .eqn{font-size:15px;line-height:1.8}
+.wkd .eqn b{font-size:17px}
+.wkd .eqn .lvh{color:#b45309}
+.wkd .dys{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.wkd .dys div{border:1px solid var(--line);border-radius:8px;padding:5px 0;background:var(--bg);font-size:13px;font-weight:700;min-width:0}
+.wkd .dys div i{display:block;font-style:normal;color:var(--sub);font-size:11px;font-weight:500}
+.wkd .dys .lv{background:#fff4e0;border-color:#f59e0b;color:#b45309}
+.wkd .dys .hf{background:#fff4e0;border-color:#f59e0b}
+.wkd .dys .hf em{display:block;font-style:normal;font-size:10px;color:#b45309}
+.wkd .dys .we{color:var(--sub);font-weight:500}
+.wkd .dys .out{opacity:.45;font-weight:500}
+.wkd .dys .su i{color:var(--warn)}.wkd .dys .sa i{color:var(--accent)}
+.wkd .vd{font-size:14px;font-weight:700;padding:10px 12px;border-radius:10px;background:var(--bg)}
+.wkd .vd.x{background:rgba(229,72,77,.1);color:var(--warn)}
+.wkd .vd.ok{background:rgba(31,157,85,.1);color:var(--ok)}
+.wkt td:not(:first-child){cursor:pointer}
 .wkt .cur{background:rgba(47,111,237,.08)}
 .wkt th.cur{color:var(--accent)}
 .wkt td.ok{color:var(--ok);font-weight:700}
@@ -489,6 +511,10 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
       <button id="opgo" type="button" class="go">저장</button>
     </div>
   </div>
+</div>
+
+<div class="ov" id="wkov">
+  <div class="box wkd" id="wkbox"></div>
 </div>
 
 <div id="toast"></div>
@@ -2011,12 +2037,13 @@ function renderWeek(w) {
     r.h.forEach(function (h, i) {
       var td = el("td", (i === cw ? "cur " : "") + wkCls(h, w, i, r), h ? wkFmt(h) : "-");
       if (r.lv && r.lv[i]) td.appendChild(el("small", "lv", "휴" + wkFmt(r.lv[i])));   // 휴가 인정시간 포함
+      td.onclick = function () { openWeekDetail(r, i); };   // 숫자를 누르면 하루씩 상세
       row.appendChild(td);
     });
     tb.appendChild(row);
   });
   b.appendChild(tb);
-  var hint = "초록 = " + w.limit + "시간 달성 · 빨강 = 끝난 주인데 " + w.limit + "시간 미달. 이번 주는 진행 중이라 판정하지 않아요. 근무 숫자가 없는 주(입사 전 등)는 빼고 봐요. 연차·공가·대휴는 8시간, 반차는 4시간, 반반차는 2시간으로 쳐요(작은 글씨 휴8 = 합계 중 휴가로 넣은 시간 8시간). 이름을 누르면 그 사람 입력 내역으로 이동해요.";
+  var hint = "초록 = " + w.limit + "시간 달성 · 빨강 = 끝난 주인데 " + w.limit + "시간 미달. 이번 주는 진행 중이라 판정하지 않아요. 근무 숫자가 없는 주(입사 전 등)는 빼고 봐요. 연차·공가·대휴는 8시간, 반차는 4시간, 반반차는 2시간으로 쳐요(작은 글씨 휴8 = 합계 중 휴가로 넣은 시간 8시간). 숫자를 누르면 하루씩 상세, 이름을 누르면 입력 내역으로 이동해요.";
   if (w.weeks.some(function (k) { return k.part; }))
     hint += " * 달이 걸친 주는 시트에 이 달(" + w.m + "월) 날짜만 있어서 판정하지 않아요.";
   b.appendChild(el("div", "hint", hint));
@@ -2043,6 +2070,90 @@ function goMon(n) {
   H.scrollMon = true;          // 달력이 새 사람으로 그려지면 한 번 더 맞춰서 스크롤
   scrollMon();
 }
+
+/* ---------- ⏱ 주별 상세 (표의 숫자를 누르면) ---------- */
+function wkLeaveTxt(t) {   // 서버 weekLeaveHours_와 같은 규칙
+  t = String(t || "").replace(/\s/g, "");
+  if (!t || WEEK_MARK.test(t)) return 0;
+  if (/반반차/.test(t)) return 2;
+  if (/반차/.test(t)) return 4;
+  if (/연차|공가|휴가|대체휴일|대휴|휴일|경조/.test(t)) return 8;
+  return 0;
+}
+var WEEK_MARK = /^(일|토|일요일|토요일)$/;
+
+function openWeekDetail(r, i) {
+  var w = H.meta && H.meta.week, g = H.meta && H.meta.grid;
+  if (!w) return;
+  var k = w.weeks[i], half = w.half || {};
+  var row = g && g.rows && g.rows[r.n];
+  var h = r.h[i], lv = (r.lv && r.lv[i]) || 0, work = Math.round((h - lv) * 10) / 10;
+  var box = $("wkbox");
+  box.innerHTML = "";
+  box.appendChild(el("h3", null, "⏱ " + r.n + " · " + wkMd(k.from) + " ~ " + wkMd(k.to) + " 주"));
+
+  var cls = wkCls(h, w, i, r);
+  var big = el("div", "big");
+  var bc = el("div", "bc " + (i === w.cur && cls !== "ok" ? "cur" : cls), h ? wkFmt(h) : "0");
+  if (lv) bc.appendChild(el("small", null, "휴" + wkFmt(lv)));
+  big.appendChild(bc);
+  var eq = el("div", "eqn");
+  eq.appendChild(document.createTextNode("= 실제 근무 "));
+  eq.appendChild(el("b", null, wkFmt(work)));
+  eq.appendChild(document.createTextNode("시간"));
+  eq.appendChild(document.createElement("br"));
+  eq.appendChild(document.createTextNode("+ 휴가 인정 "));
+  eq.appendChild(el("b", "lvh", wkFmt(lv)));
+  eq.appendChild(document.createTextNode("시간"));
+  big.appendChild(eq);
+  box.appendChild(big);
+
+  // 월~일 하루씩
+  var dys = el("div", "dys");
+  var p = k.from.split("-"), wd = ["일", "월", "화", "수", "목", "금", "토"];
+  for (var n = 0; n < 7; n++) {
+    var dt = new Date(+p[0], +p[1] - 1, +p[2] + n);
+    var dow = dt.getDay(), m = dt.getMonth() + 1, d = dt.getDate();
+    var c = el("div");
+    c.appendChild(el("i", null, (n === 0 || d === 1 ? m + "/" : "") + d + " " + wd[dow]));
+    var cl = dow === 0 ? "su" : dow === 6 ? "sa" : "";
+    if (!row || m !== g.m) { c.appendChild(document.createTextNode("·")); cl += " out"; c.title = "다른 달 (시트에 없음)"; }
+    else {
+      var v = String(row.v[d - 1] || "").trim();
+      if (/^\d+(\.\d+)?$/.test(v)) {
+        c.appendChild(document.createTextNode(v));
+        var hh = half[r.n + "|" + d];
+        if (hh) { c.appendChild(el("em", null, (hh === 2 ? "반반차" : "반차") + "+" + hh)); cl += " hf"; }
+      } else if (wkLeaveTxt(v)) {
+        c.appendChild(document.createTextNode((SHORT[v] || v) + " " + wkLeaveTxt(v)));
+        cl += " lv";
+      } else { c.appendChild(document.createTextNode(v && !WEEK_MARK.test(v) ? v : "-")); cl += " we"; }
+    }
+    c.className = cl;
+    dys.appendChild(c);
+  }
+  box.appendChild(dys);
+
+  // 판정
+  var vd, vc = "";
+  if (k.part) vd = "＊ 달이 걸친 주라 이 달(" + w.m + "월) 날짜만 더했어요 · 판정 안 함";
+  else if (!wkWorked(r, i) && h < w.limit) vd = "실제 근무 숫자가 없는 주 · 판정 안 함";
+  else if (h >= w.limit) { vd = "✅ " + w.limit + "시간 달성"; vc = "ok"; }
+  else if (k.to < wkToday() ) { vd = "⚠️ " + w.limit + "시간 미달 · " + wkFmt(w.limit - h) + "시간 부족"; vc = "x"; }
+  else vd = "⏳ 진행 중 · " + w.limit + "시간까지 " + wkFmt(w.limit - h) + "시간 남음";
+  box.appendChild(el("div", "vd " + vc, vd));
+  box.appendChild(el("p", "sub", "연차·공가·대휴 8시간 / 반차 4시간 / 반반차 2시간을 휴가로 인정해요. 주황 칸 = 휴가가 들어간 날."));
+
+  var ob = el("div", "ob");
+  var b1 = el("button", null, "닫기"); b1.type = "button"; b1.onclick = closeWeekDetail;
+  var b2 = el("button", "go", "입력 내역 보기"); b2.type = "button"; b2.style.background = "var(--accent)"; b2.style.borderColor = "var(--accent)";
+  b2.onclick = function () { closeWeekDetail(); goMon(r.n); };
+  ob.appendChild(b1); ob.appendChild(b2);
+  box.appendChild(ob);
+  $("wkov").className = "ov on";
+}
+function closeWeekDetail() { $("wkov").className = "ov"; }
+$("wkov").onclick = function (e) { if (e.target === this) closeWeekDetail(); };
 
 // 금일 근무시간 미입력자
 function renderMissing(m) {
@@ -2434,7 +2545,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-15-1";
+var APP_VER = "2026-10-15-2";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
