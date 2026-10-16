@@ -1772,7 +1772,8 @@ function loadEquipIndex(force) {
 }
 
 function openSearch() {
-  SR.open = true; SR.sel = -1;
+  SR.open = true; SR.sel = -1; SR.want = "";
+  $("sq").value = "";   // 🔍 버튼으로 열면 항상 빈 검색창부터
   $("sbar").style.display = "flex";
   SECTIONS.forEach(function (id) { $(id).style.display = "none"; });
   $("srch").style.display = "grid";
@@ -1798,6 +1799,7 @@ function openEquip(name) {
 function closeSearch(silent) {
   var backY = SR.backY; SR.backY = null;
   SR.open = false;
+  $("sq").value = ""; SR.sel = -1;   // 닫으면 검색어도 지움
   $("sbar").style.display = "none";
   $("srch").style.display = "none";
   $("srch").innerHTML = "";
@@ -2664,7 +2666,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-16-1";
+var APP_VER = "2026-10-16-2";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
