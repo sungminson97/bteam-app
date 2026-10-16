@@ -7,6 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="제조1-B">
 <meta name="theme-color" content="#2f6fed">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" type="image/png" href="icon.png">
 <title>제조1-B</title>
@@ -2666,7 +2668,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-16-2";
+var APP_VER = "2026-10-16-3";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
@@ -2707,6 +2709,11 @@ function onResume() { checkUpdate(); refreshIfStale(); }
 document.addEventListener("visibilitychange", function () { if (!document.hidden) onResume(); });
 window.addEventListener("pageshow", function (e) { if (e.persisted) onResume(); });
 window.addEventListener("focus", onResume);
+
+// 📱 갤럭시(안드로이드) 홈 화면 앱 설치용 (캐시 안 함)
+if ("serviceWorker" in navigator) {
+  try { navigator.serviceWorker.register("sw.js").catch(function () {}); } catch (e) {}
+}
 
 function boot() {
   buildChips();
