@@ -187,6 +187,11 @@ li:first-child{border-top:0}
 #ntov textarea,#ntov input,#apov input{font-size:16px;padding:12px 14px;margin-bottom:6px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;font-family:inherit}
 #ntfrom .chip.on,#ntto .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
 #ttlbtn{cursor:pointer;-webkit-tap-highlight-color:transparent}
+#ttlbtn.adm{color:var(--warn)}
+.chip:disabled{opacity:1;background:transparent;color:var(--sub);border:1.5px dashed var(--line);font-weight:500}
+.chip:disabled::before{content:"🔒 ";font-size:12px}
+#clrmsg,#otmsg{white-space:pre-line;word-break:keep-all}
+#hlvlock{color:var(--warn);font-size:13px;font-weight:600;word-break:keep-all;margin-top:-4px}
 .mnl{display:grid;gap:8px}
 .mnl button{display:flex;justify-content:space-between;align-items:center;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:15px;font-weight:700;font-family:inherit;text-align:left}
 .mnl button small{color:var(--sub);font-weight:500;font-size:12px}
@@ -523,6 +528,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
       <input type="text" id="hval" inputmode="decimal" placeholder="예: 8 / 10.5 / 연차">
     </div>
     <div class="chips" id="chips"></div>
+    <div id="hlvlock" style="display:none">🔒 연차류는 본인 또는 관리자만 입력할 수 있어요</div>
     <div id="hnoteBox" class="notebox" style="display:none">
       <div id="hhrsRow" style="display:none">
         <label for="hhrs">실제 근무시간 (근무시간 칸에 들어가요)</label>
@@ -580,6 +586,17 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 
 <div class="ov" id="wkov">
   <div class="box wkd" id="wkbox"></div>
+</div>
+
+<div class="ov" id="otov">
+  <div class="box">
+    <h3>✋ 다른 사람 근무시간</h3>
+    <p id="otmsg" style="word-break:keep-all;line-height:1.6"></p>
+    <div class="ob">
+      <button id="otno" type="button">취소</button>
+      <button id="otgo" type="button" class="go" style="background:var(--accent);border-color:var(--accent)">계속</button>
+    </div>
+  </div>
 </div>
 
 <div class="ov" id="clrov">
@@ -795,7 +812,8 @@ function rawCall(pin, fn, args, editPin) {
   var rid = Math.random().toString(36).slice(2, 10), t0 = Date.now(), prev = SPD.last;
   SPD.last = null;
   var a0 = (fn === "getDashboardAll" || fn === "getEquipIndex") ? [args && args[0] === true] : [];
-  var body = JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev });
+  var body = JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev,
+    me: myName(), adm: fn === "saveHours" && adminOn() ? sget("admPin") : "" });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
   return fetchJson(body)
     .catch(function (e) {
       if (!READ_FNS[fn]) throw e;
@@ -2683,8 +2701,12 @@ function updNote() {
   var val = String($("hval").value || "").trim();
   var m = val.match(LEAVE_RX);
   // 칩 강조
-  var chips = $("chips").children;
-  for (var i = 0; i < chips.length; i++) chips[i].className = "chip" + (chips[i].textContent === val ? " on" : "");
+  var chips = $("chips").children, lk = leaveLocked();
+  for (var i = 0; i < chips.length; i++) {
+    chips[i].className = "chip" + (chips[i].textContent === val ? " on" : "");
+    chips[i].disabled = lk && LEAVE_RX.test(chips[i].textContent);   // 🔒 남의 연차류는 관리자만
+  }
+  $("hlvlock").style.display = lk ? "block" : "none";
 
   // schedule 지우기 체크 (이 날 schedule 기록이 있는데 일반 근무시간/칸 비우기를 할 때만)
   var db = $("hdelBox");
@@ -2720,6 +2742,19 @@ function doSave(value, force, delForce) {
   if (!name || !date) { showHErr("이름과 날짜를 선택해 주세요."); return; }
   if (!checkMonth()) return;
   if (!value || !String(value).trim()) { showHErr("입력값을 넣어 주세요."); return; }
+  // 🔒 남의 이름: 연차류(입력·덮어쓰기·지우기)는 본인 또는 관리자만
+  if (leaveLocked() && (LEAVE_RX.test(String(value).trim()) || LEAVE_RX.test(String(H.curVal || "").trim()) ||
+      (value === "__CLEAR__" && H.curSched) || (!!delForce || ($("hdelBox").style.display !== "none" && $("hdel").checked)))) {
+    showHErr("연차류는 본인 또는 관리자만 입력할 수 있어요."); toast("🔒 연차류는 본인 또는 관리자만 입력할 수 있어요", true); return;
+  }
+  // ✋ 남의 이름으로 저장할 때 확인 (칸 비우기는 지우기 창에서 이미 확인)
+  if (isOther(name) && value !== "__CLEAR__" && !H.otherOK) {
+    var dp = date.split("-");
+    $("otmsg").textContent = name + "님 " + (+dp[1]) + "/" + (+dp[2]) + " 근무시간을 " + myName() + "님이 입력합니다. 계속할까요?";
+    $("otov").className = "ov on";
+    H.otherArgs = [value, force, delForce];
+    return;
+  }
 
   var label = $("hsave").textContent;
   var note = $("hnoteBox").style.display === "none" ? "" : $("hnote").value.trim();
@@ -2743,7 +2778,7 @@ function doSave(value, force, delForce) {
       $("hsave").textContent = label;
       var res = $("hres");
       res.innerHTML = "";
-      if (r.error) { showHErr(r.error); toast("⚠️ " + r.error, true); return; }
+      if (r.error) { if (r.admBad) adminOff(); showHErr(r.error); toast("⚠️ " + r.error, true); return; }
       if (r.needConfirm) {
         H.confirm = true;
         $("hsave").textContent = "덮어쓰기 확인";
@@ -2754,7 +2789,7 @@ function doSave(value, force, delForce) {
         return;
       }
       if (r.ok) {
-        resetConfirm();
+        resetConfirm(); H.otherOK = false;
         var what = name + " " + date.slice(5).replace("-", "/") + " → " + (r.cur === "" ? "(비움)" : r.cur);
         var sc = r.sched, scMsg = "";
         if (sc && sc.ok && (sc.action === "추가" || sc.action === "수정")) scMsg = "📅 schedule " + sc.action + ": " + sc.text;
@@ -2800,7 +2835,8 @@ $("hclr").onclick = function () {
   resetConfirm();
   var p = date.split("-"), wd = ["일", "월", "화", "수", "목", "금", "토"][new Date(+p[0], +p[1] - 1, +p[2]).getDay()];
   $("clrwho").textContent = name + " · " + (+p[1]) + "/" + (+p[2]) + "(" + wd + ")";
-  $("clrmsg").textContent = "현재 값 '" + cur + "'을(를) 지우시겠습니까?";
+  if (leaveLocked() && (LEAVE_RX.test(String(cur).trim()) || H.curSched)) { showHErr("연차류는 본인 또는 관리자만 입력할 수 있어요."); toast("🔒 연차류는 본인 또는 관리자만 지울 수 있어요", true); return; }
+  $("clrmsg").textContent = (isOther(name) ? name + "님 칸을 " + myName() + "님이 지웁니다.\n" : "") + "현재 값 '" + cur + "'을(를) 지우시겠습니까?";
   var sc = $("clrsch");
   if (H.curSched) { sc.style.display = "block"; sc.textContent = "📅 schedule의 '" + H.curSched + "' 기록도 같이 지워져요."; }
   else sc.style.display = "none";
@@ -2814,11 +2850,14 @@ $("clrgo").onclick = function () {
   closeClr();
   doSave("__CLEAR__", true, !!H.curSched);
 };
-$("hname").onchange = function () { resetConfirm(); refreshCell(); updNote(); if (H.meta) renderWeek(H.meta.week); };
+$("hname").onchange = function () { H.otherOK = false; resetConfirm(); refreshCell(); updNote(); if (H.meta) renderWeek(H.meta.week); };
+$("otno").onclick = function () { $("otov").className = "ov"; H.otherOK = false; };
+$("otov").onclick = function (e) { if (e.target === this) { $("otov").className = "ov"; H.otherOK = false; } };
+$("otgo").onclick = function () { $("otov").className = "ov"; H.otherOK = true; var a = H.otherArgs || []; doSave(a[0], a[1], a[2]); };
 $("hnote").oninput = function () { resetConfirm(); updNote(); };
 $("hhrs").oninput = function () { resetConfirm(); updNote(); };
 $("hdel").onchange = resetConfirm;
-$("hdate").onchange = function () { resetConfirm(); refreshCell(); };
+$("hdate").onchange = function () { H.otherOK = false; resetConfirm(); refreshCell(); };
 $("hval").oninput = function () { resetConfirm(); updNote(); };
 
 /* ---------- 시작 ---------- */
@@ -2827,7 +2866,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-17-14";
+var APP_VER = "2026-10-17-16";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
@@ -2864,7 +2903,7 @@ function refreshIfStale() {
   if (dayChanged) toast("📅 날짜가 바뀌어서 오늘 기준으로 새로 불러왔어요");
 }
 
-function onResume() { checkUpdate(); refreshIfStale(); }
+function onResume() { checkUpdate(); refreshIfStale(); try { adminUI(); } catch (e) {} }
 document.addEventListener("visibilitychange", function () { if (!document.hidden) onResume(); });
 window.addEventListener("pageshow", function (e) { if (e.persisted) onResume(); });
 window.addEventListener("focus", onResume);
@@ -3213,11 +3252,35 @@ $("ntno").onclick = closeNotice;
 $("ntov").onclick = function (e) { if (e.target === this) closeNotice(); };
 // 🔒 메뉴 → 공지 보내기: 관리자 PIN 먼저 (매번 확인)
 var DEV_NAME = "손성민";   // 🛠 개발자 (이름 변경 요청 받는 사람)
+
+/* ---------- 🔑 관리자 모드 (관리자 PIN 확인 → 오늘 자정까지, 제목 빨강) ----------
+ * 켜져 있으면: 남의 이름으로 연차류 입력 가능 (서버도 관리자 PIN으로 다시 확인), 공지 보내기 PIN 생략
+ */
+function adminOn() {
+  var u = +(sget("admUntil") || 0);
+  if (!u || u < Date.now() || !sget("admPin")) { if (u) { sdel("admUntil"); sdel("admPin"); } return false; }
+  return true;
+}
+function adminSet(pin) {
+  var d = new Date(); d.setHours(23, 59, 59, 0);
+  sset("admPin", pin); sset("admUntil", String(d.getTime()));
+  adminUI();
+}
+function adminOff() { sdel("admPin"); sdel("admUntil"); adminUI(); }
+function adminUI() {
+  var on = adminOn();
+  $("ttlbtn").className = on ? "adm" : "";
+  if ($("hname")) updNote();
+}
+function isOther(name) { return !!(name && myName() && name !== myName()); }
+function leaveLocked() { return isOther($("hname").value) && !adminOn(); }
 function openAdminGate(next) {
-  NT.next = next === "dev" ? "dev" : "notice";
+  NT.next = next === "dev" ? "dev" : next === "mode" ? "mode" : "notice";
+  if (NT.next === "notice" && adminOn()) { NT.pin = sget("admPin"); openNotice(); mnBackShow("ntov"); return; }   // 관리자 모드면 PIN 생략
   var dev = NT.next === "dev";
   $("apttl").textContent = dev ? "🛠 개발자 PIN" : "🔒 관리자 PIN";
-  $("apdesc").textContent = dev ? "개발자 전용 메뉴예요." : "공지 보내기는 관리자만 할 수 있어요.";
+  $("apdesc").textContent = dev ? "개발자 전용 메뉴예요." : NT.next === "mode" ? "관리자 모드는 오늘 자정까지 유지돼요.\n(남의 연차류 입력 · 공지 보내기 PIN 생략)" : "공지 보내기는 관리자만 할 수 있어요.";
+  $("apdesc").style.whiteSpace = "pre-line";
   $("appin").placeholder = dev ? "개발자 PIN" : "관리자 PIN";
   NT.pin = "";
   $("appin").value = ""; $("apmsg").textContent = "";
@@ -3240,6 +3303,8 @@ $("apgo").onclick = function () {
     if (r && r.error) { msg.textContent = r.error; $("appin").value = ""; return; }
     var back = $("apov").querySelector(".mnback"), fromMenu = back && back.style.display !== "none";
     if (dev) { DV.pin = pin; closeAdminGate(); mnBackHide(); openDevPanel(); return; }
+    adminSet(pin);   // 관리자 PIN 맞음 → 관리자 모드 켜짐 (제목 빨강)
+    if (NT.next === "mode") { closeAdminGate(); mnBackHide(); toast("🔑 관리자 모드 켜짐 · 오늘 자정까지"); return; }
     NT.pin = pin;
     closeAdminGate(); mnBackHide();
     openNotice();
@@ -3260,7 +3325,7 @@ $("ntgo").onclick = function () {
   call("sendNotice", [{ pin: pin, sender: NT.from, title: "", body: body, to: [] }])   // 제목은 서버 기본값 "📢 제조1-B 공지", 받는 사람은 전체
     .then(function (r) {
       $("ntgo").disabled = false; $("ntgo").textContent = "보내기";
-      if (r && r.error) { msg.textContent = r.error; if (r.adminPin) NT.pin = ""; return; }
+      if (r && r.error) { msg.textContent = r.error; if (r.adminPin) { NT.pin = ""; adminOff(); } return; }
       if (r.notice) store.notice = r.notice;
       closeNotice();
       toast("📢 공지를 보냈어요 · " + r.count + "명");
@@ -3285,6 +3350,9 @@ function openMenu() {
   }
   if (myName()) item("👤 내 이름", myName() + " (고정)", function () { toast("이름이 틀렸으면 " + DEV_NAME + "에게 말해 주세요"); });
   if (ONESIGNAL_APP_ID) item("🔔 알림 설정", pushOn() ? "켜짐" : "꺼짐", openPush, "pushov");
+  if (noticeIsAdmin()) item("🔑 관리자 모드", adminOn() ? "켜짐 · 누르면 끄기" : "꺼짐", function () {
+    if (adminOn()) { adminOff(); toast("🔑 관리자 모드 꺼짐"); } else openAdminGate("mode");
+  }, adminOn() ? null : "apov");
   if (noticeIsAdmin()) item("📢 공지 보내기", "관리자", function () { openAdminGate("notice"); }, "apov");
   if (noticeIsAdmin() && ONESIGNAL_APP_ID) item("👥 알림 현황", "누가 켰는지", openPushStatus);   // 알림 현황은 아래쪽에 "← 메뉴로" 버튼
   item("🔄 앱 새로 불러오기", "v" + APP_VER.slice(5).replace("-", "."), function () { location.reload(); });
@@ -3497,6 +3565,7 @@ function boot() {
   }
   checkUpdate();
   try { pushInit(); } catch (ep) {}
+  try { adminUI(); } catch (ea) {}   // 🔑 관리자 모드면 제목 빨강
   setTimeout(nameAsk, 300);   // 👤 이름 고르기가 제일 먼저
   setTimeout(function () { if (nameDone()) devRegister(); }, 6000);   // 📱 기기 목록 등록 (버전 바뀔 때 한 번, 화면 로딩 끝난 뒤)
   if (lockLeft() > 0) { showLocked(); return; }
