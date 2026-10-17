@@ -110,6 +110,8 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .dsplit{font-size:12px;font-weight:700;margin-right:8px}
 /* 입고 일정: 목록|달력 전환, 달력 */
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--line);border-radius:11px;padding:3px}
+.kseg{margin-bottom:-2px}
+.kseg button.on{color:var(--accent)}
 .seg button{border:0;border-radius:9px;padding:9px 0;font-size:14px;font-weight:700;background:transparent;color:var(--sub);font-family:inherit}
 .seg button.on{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .sday.past{opacity:.6}
@@ -190,6 +192,11 @@ li:first-child{border-top:0}
 #ttlbtn.adm{color:var(--warn)}
 .chip:disabled{opacity:1;background:transparent;color:var(--sub);border:1.5px dashed var(--line);font-weight:500}
 .chip:disabled::before{content:"🔒 ";font-size:12px}
+.btns .clr.lock{color:var(--sub);border-style:dashed}
+.btns .save:disabled{opacity:.4}
+#hval:disabled{opacity:.6}
+#hlvlock{line-height:1.6;white-space:pre-line;background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:12px 14px;margin-top:0}
+.btns .clr.lock::before{content:"🔒 ";font-size:12px}
 #clrmsg,#otmsg{white-space:pre-line;word-break:keep-all}
 #hlvlock{color:var(--warn);font-size:13px;font-weight:600;word-break:keep-all;margin-top:-4px}
 .mnl{display:grid;gap:8px}
@@ -487,7 +494,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     <div class="tab on" id="t0">금일<span id="d0"></span></div>
     <div class="tab" id="t1">명일<span id="d1"></span></div>
     <div class="tab" id="t2">시트 업로드<span id="d2"></span></div>
-    <div class="tab" id="t6">입고 일정<span id="d6"></span></div>
+    <div class="tab" id="t6">입출하 일정<span id="d6"></span></div>
     <div class="tab" id="t5">장비통계<span></span></div>
     <div class="tab" id="t3">근무시간<span></span></div>
     <div class="tab" id="t4">연차 현황<span></span></div>
@@ -528,7 +535,8 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
       <input type="text" id="hval" inputmode="decimal" placeholder="예: 8 / 10.5 / 연차">
     </div>
     <div class="chips" id="chips"></div>
-    <div id="hlvlock" style="display:none">🔒 연차류는 본인 또는 관리자만 입력할 수 있어요</div>
+    <div id="hlvlock" style="display:none">🔒 다른 사람 칸은 숫자만 대신 입력할 수 있어요.
+연차류 입력·칸 비우기는 본인 또는 관리자만 돼요.</div>
     <div id="hnoteBox" class="notebox" style="display:none">
       <div id="hhrsRow" style="display:none">
         <label for="hhrs">실제 근무시간 (근무시간 칸에 들어가요)</label>
@@ -993,7 +1001,7 @@ function unlock(pin, pre) {
   cur = 0;
   // 저장해 둔 지난 화면이 있으면 먼저 바로 보여주고, 뒤에서 최신으로 갱신
   var cd = cget("dash");
-  if (cd && cd.d0) { store[0] = cd.d0; store[1] = cd.d1; if (cd.sched) store.sched = cd.sched; if (cd.leave) store.leave = cd.leave; $("d0").textContent = cd.d0.label || ""; $("d1").textContent = cd.d1.label || ""; }
+  if (cd && cd.d0) { store[0] = cd.d0; store[1] = cd.d1; if (cd.sched) store.sched = cd.sched; if (cd.ship) store.ship = cd.ship; if (cd.leave) store.leave = cd.leave; $("d0").textContent = cd.d0.label || ""; $("d1").textContent = cd.d1.label || ""; }
   var cu = cget("up");
   if (cu && !cu.error) { U.data = cu; setBadge(cu.total); }
   LV.data = cget("leave"); ST.data = cget("stats");
@@ -1165,6 +1173,7 @@ function applyDash(r) {
   LAST.t = Date.now(); LAST.d = ymdLocal();
   store[0] = r.d0; store[1] = r.d1;
   if (r.sched) store.sched = r.sched;
+  if (r.ship) store.ship = r.ship;
   if (r.leave) store.leave = r.leave;
   store.notice = r.notice || null;
   $("d0").textContent = r.d0.label || "";
@@ -1176,7 +1185,9 @@ function applyDash(r) {
 }
 
 /* ---------- 📅 FRAME 입고 일정 (목록 2주 / 달력) ---------- */
-var SC = { view: "list", month: null, sel: null };   // 기본 화면은 목록(2주)
+var SC = { view: "list", month: null, sel: null, kind: "in" };   // 기본 화면은 입고 · 목록(2주) / kind: "in" 입고, "out" 출하
+try { if (sget("schedKind") === "out") SC.kind = "out"; } catch (e) {}
+function schedData() { return SC.kind === "out" ? store.ship : store.sched; }
 
 function ymdOf(d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
 function ymdAdd(ymd, n) { var p = ymd.split("-"); return ymdOf(new Date(+p[0], +p[1] - 1, +p[2] + n)); }
@@ -1201,11 +1212,10 @@ function schedListRange(s) {
 }
 
 function schedBadge() {
-  var s = store.sched;
-  if (!s || s.error || !s.days) { $("d6").textContent = ""; return; }
-  var r = schedListRange(s);
-  var c = schedCount(schedDaysIn(s, r[0], r[1]));
-  $("d6").textContent = c.total ? c.total + "대" : "";
+  function n2(s) { if (!s || s.error || !s.days) return null; var r = schedListRange(s); return schedCount(schedDaysIn(s, r[0], r[1])).total; }
+  var a = n2(store.sched), b = n2(store.ship);
+  if (a == null) { $("d6").textContent = ""; return; }
+  $("d6").textContent = b == null ? (a ? a + "대" : "") : "입 " + a + " · 출 " + b;   // 앞으로 2주
 }
 
 // 팀별 비교 막대
@@ -1265,9 +1275,20 @@ function schedDayCard(d, today) {
 function renderSched() {
   var box = $("sched");
   box.innerHTML = "";
-  var s = store.sched;
+  var out = SC.kind === "out";
+  // 📥 입고 | 📤 출하 전환
+  var kseg = el("div", "seg kseg");
+  [["in", "📥 입고"], ["out", "📤 출하"]].forEach(function (x) {
+    var b = el("button", SC.kind === x[0] ? "on" : "", x[1]);
+    b.type = "button";
+    b.onclick = function () { if (SC.kind !== x[0]) { SC.kind = x[0]; SC.sel = null; sset("schedKind", x[0]); renderSched(); } };
+    kseg.appendChild(b);
+  });
+  box.appendChild(kseg);
+
+  var s = schedData();
   if (!s) {
-    box.appendChild(el("div", "msg", R.dash ? "불러오는 중…" : "입고 일정 정보가 없어요. 서버(DashboardApp.gs)를 새 버전으로 배포했는지 확인해 주세요."));
+    box.appendChild(el("div", "msg", R.dash ? "불러오는 중…" : out ? "출하 일정이 아직 없어요. 새로고침을 눌러 보세요. (서버 DashboardApp.gs 새 버전 배포 필요)" : "입고 일정 정보가 없어요. 서버(DashboardApp.gs)를 새 버전으로 배포했는지 확인해 주세요."));
     return;
   }
   if (s.error) { box.appendChild(el("div", "warn", s.error)); return; }
@@ -1286,7 +1307,9 @@ function renderSched() {
   if (SC.view === "cal") renderSchedCal(box, s);
   else renderSchedList(box, s);
 
-  box.appendChild(el("div", "hint", "Backlog FRAME 입고일 기준 (ROBOT은 Module 작업일). A팀·B팀·미지정 전체를 표시해요. ▲미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."));
+  box.appendChild(el("div", "hint", out
+    ? "Backlog 출하일(Factory out date) 기준. A팀·B팀·미지정 전체를 표시해요. ▲미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."
+    : "Backlog FRAME 입고일 기준 (ROBOT은 Module 작업일). A팀·B팀·미지정 전체를 표시해요. ▲미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."));
 }
 
 // 📋 목록: 오늘부터 2주
@@ -1297,13 +1320,13 @@ function renderSchedList(box, s) {
   var c = schedCount(days);
 
   var sum = el("div", "ssum");
-  sum.appendChild(el("span", null, "앞으로 2주 FRAME 입고"));
+  sum.appendChild(el("span", null, SC.kind === "out" ? "앞으로 2주 출하" : "앞으로 2주 FRAME 입고"));
   sum.appendChild(el("b", null, c.total + "대"));
   if (c.noLoc) sum.appendChild(el("span", "bad", "📍 자리 미배정 " + c.noLoc + "대"));
   box.appendChild(sum);
   box.appendChild(teamBars(c));
 
-  if (!days.length) box.appendChild(el("div", "msg", "2주 안에 잡힌 FRAME 입고가 없어요."));
+  if (!days.length) box.appendChild(el("div", "msg", SC.kind === "out" ? "2주 안에 잡힌 출하가 없어요." : "2주 안에 잡힌 FRAME 입고가 없어요."));
   days.forEach(function (d) { box.appendChild(schedDayCard(d, today)); });
 }
 
@@ -1388,7 +1411,7 @@ function renderSchedCal(box, s) {
   else {
     var p = SC.sel.split("-");
     var wd = ["일", "월", "화", "수", "목", "금", "토"][new Date(+p[0], +p[1] - 1, +p[2]).getDay()];
-    box.appendChild(el("div", "card empty", (+p[1]) + "/" + (+p[2]) + "(" + wd + ") · 입고 없음"));
+    box.appendChild(el("div", "card empty", (+p[1]) + "/" + (+p[2]) + "(" + wd + ") · " + (SC.kind === "out" ? "출하" : "입고") + " 없음"));
   }
 }
 
@@ -2704,9 +2727,11 @@ function updNote() {
   var chips = $("chips").children, lk = leaveLocked();
   for (var i = 0; i < chips.length; i++) {
     chips[i].className = "chip" + (chips[i].textContent === val ? " on" : "");
-    chips[i].disabled = lk && LEAVE_RX.test(chips[i].textContent);   // 🔒 남의 연차류는 관리자만
+    chips[i].disabled = lk && LEAVE_RX.test(chips[i].textContent);   // 🔒 남의 연차류는 관리자만 (숫자 대신 입력은 됨)
   }
   $("hlvlock").style.display = lk ? "block" : "none";
+  $("hclr").className = "clr" + (lk ? " lock" : "");
+
 
   // schedule 지우기 체크 (이 날 schedule 기록이 있는데 일반 근무시간/칸 비우기를 할 때만)
   var db = $("hdelBox");
@@ -2743,8 +2768,10 @@ function doSave(value, force, delForce) {
   if (!checkMonth()) return;
   if (!value || !String(value).trim()) { showHErr("입력값을 넣어 주세요."); return; }
   // 🔒 남의 이름: 연차류(입력·덮어쓰기·지우기)는 본인 또는 관리자만
+  // 🔒 남의 이름: 숫자 대신 입력은 OK, 연차류(입력·덮어쓰기·schedule 삭제)와 칸 비우기는 본인 또는 관리자만
+  if (leaveLocked() && value === "__CLEAR__") { showHErr("다른 사람 칸 비우기는 본인 또는 관리자만 할 수 있어요."); toast("🔒 다른 사람 칸은 본인 또는 관리자만 비울 수 있어요", true); return; }
   if (leaveLocked() && (LEAVE_RX.test(String(value).trim()) || LEAVE_RX.test(String(H.curVal || "").trim()) ||
-      (value === "__CLEAR__" && H.curSched) || (!!delForce || ($("hdelBox").style.display !== "none" && $("hdel").checked)))) {
+      !!delForce || ($("hdelBox").style.display !== "none" && $("hdel").checked))) {
     showHErr("연차류는 본인 또는 관리자만 입력할 수 있어요."); toast("🔒 연차류는 본인 또는 관리자만 입력할 수 있어요", true); return;
   }
   // ✋ 남의 이름으로 저장할 때 확인 (칸 비우기는 지우기 창에서 이미 확인)
@@ -2835,7 +2862,7 @@ $("hclr").onclick = function () {
   resetConfirm();
   var p = date.split("-"), wd = ["일", "월", "화", "수", "목", "금", "토"][new Date(+p[0], +p[1] - 1, +p[2]).getDay()];
   $("clrwho").textContent = name + " · " + (+p[1]) + "/" + (+p[2]) + "(" + wd + ")";
-  if (leaveLocked() && (LEAVE_RX.test(String(cur).trim()) || H.curSched)) { showHErr("연차류는 본인 또는 관리자만 입력할 수 있어요."); toast("🔒 연차류는 본인 또는 관리자만 지울 수 있어요", true); return; }
+  if (leaveLocked()) { showHErr("다른 사람 칸 비우기는 본인 또는 관리자만 할 수 있어요."); toast("🔒 다른 사람 칸은 본인 또는 관리자만 비울 수 있어요", true); return; }
   $("clrmsg").textContent = (isOther(name) ? name + "님 칸을 " + myName() + "님이 지웁니다.\n" : "") + "현재 값 '" + cur + "'을(를) 지우시겠습니까?";
   var sc = $("clrsch");
   if (H.curSched) { sc.style.display = "block"; sc.textContent = "📅 schedule의 '" + H.curSched + "' 기록도 같이 지워져요."; }
@@ -2866,7 +2893,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-17-16";
+var APP_VER = "2026-10-17-21";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
@@ -3254,7 +3281,7 @@ $("ntov").onclick = function (e) { if (e.target === this) closeNotice(); };
 var DEV_NAME = "손성민";   // 🛠 개발자 (이름 변경 요청 받는 사람)
 
 /* ---------- 🔑 관리자 모드 (관리자 PIN 확인 → 오늘 자정까지, 제목 빨강) ----------
- * 켜져 있으면: 남의 이름으로 연차류 입력 가능 (서버도 관리자 PIN으로 다시 확인), 공지 보내기 PIN 생략
+ * 켜져 있으면: 다른 사람 근무시간 입력 가능 (서버도 관리자 PIN으로 다시 확인), 공지 보내기 PIN 생략
  */
 function adminOn() {
   var u = +(sget("admUntil") || 0);
@@ -3279,7 +3306,7 @@ function openAdminGate(next) {
   if (NT.next === "notice" && adminOn()) { NT.pin = sget("admPin"); openNotice(); mnBackShow("ntov"); return; }   // 관리자 모드면 PIN 생략
   var dev = NT.next === "dev";
   $("apttl").textContent = dev ? "🛠 개발자 PIN" : "🔒 관리자 PIN";
-  $("apdesc").textContent = dev ? "개발자 전용 메뉴예요." : NT.next === "mode" ? "관리자 모드는 오늘 자정까지 유지돼요.\n(남의 연차류 입력 · 공지 보내기 PIN 생략)" : "공지 보내기는 관리자만 할 수 있어요.";
+  $("apdesc").textContent = dev ? "개발자 전용 메뉴예요." : NT.next === "mode" ? "관리자 모드는 오늘 자정까지 유지돼요.\n(다른 사람 연차류·칸 비우기 · 공지 보내기 PIN 생략)" : "공지 보내기는 관리자만 할 수 있어요.";
   $("apdesc").style.whiteSpace = "pre-line";
   $("appin").placeholder = dev ? "개발자 PIN" : "관리자 PIN";
   NT.pin = "";
@@ -3303,8 +3330,7 @@ $("apgo").onclick = function () {
     if (r && r.error) { msg.textContent = r.error; $("appin").value = ""; return; }
     var back = $("apov").querySelector(".mnback"), fromMenu = back && back.style.display !== "none";
     if (dev) { DV.pin = pin; closeAdminGate(); mnBackHide(); openDevPanel(); return; }
-    adminSet(pin);   // 관리자 PIN 맞음 → 관리자 모드 켜짐 (제목 빨강)
-    if (NT.next === "mode") { closeAdminGate(); mnBackHide(); toast("🔑 관리자 모드 켜짐 · 오늘 자정까지"); return; }
+    if (NT.next === "mode") { adminSet(pin); closeAdminGate(); mnBackHide(); toast("🔑 관리자 모드 켜짐 · 오늘 자정까지"); return; }   // 관리자 모드는 이 메뉴로만 켜짐 (공지 보내기로는 안 켜짐)
     NT.pin = pin;
     closeAdminGate(); mnBackHide();
     openNotice();
@@ -3325,7 +3351,7 @@ $("ntgo").onclick = function () {
   call("sendNotice", [{ pin: pin, sender: NT.from, title: "", body: body, to: [] }])   // 제목은 서버 기본값 "📢 제조1-B 공지", 받는 사람은 전체
     .then(function (r) {
       $("ntgo").disabled = false; $("ntgo").textContent = "보내기";
-      if (r && r.error) { msg.textContent = r.error; if (r.adminPin) { NT.pin = ""; adminOff(); } return; }
+      if (r && r.error) { msg.textContent = r.error; if (r.adminPin) { NT.pin = ""; if (adminOn()) adminOff(); } return; }
       if (r.notice) store.notice = r.notice;
       closeNotice();
       toast("📢 공지를 보냈어요 · " + r.count + "명");
