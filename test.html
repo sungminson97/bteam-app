@@ -1212,6 +1212,7 @@ function schedListRange(s) {
 }
 
 function schedBadge() {
+  $("d6").textContent = ""; return;   // 탭 버튼엔 대수 안 보여줌 (눌러서 보게)
   function n2(s) { if (!s || s.error || !s.days) return null; var r = schedListRange(s); return schedCount(schedDaysIn(s, r[0], r[1])).total; }
   var a = n2(store.sched), b = n2(store.ship);
   if (a == null) { $("d6").textContent = ""; return; }
@@ -1760,7 +1761,13 @@ function renderStats(d) {
     c1.appendChild(srow("A", cm.aPts, cm.aCnt, (cm.aPts || 0) > (cm.bPts || 0)));
     c1.appendChild(srow("B", cm.bPts, cm.bCnt, (cm.bPts || 0) > (cm.aPts || 0)));
   } else c1.appendChild(el("div", "sdiff", "이번 달 데이터 없음"));
-  if (d.info && d.info.planned != null) c1.appendChild(el("div", "sdiff", "출하 예정 " + d.info.planned + "대"));
+  if (d.info && d.info.planned != null) {   // 🚚 현재까지 출하 / 이번 달 예정
+    var done = cm ? (cm.aCnt || 0) + (cm.bCnt || 0) : null;
+    var sd = el("div", "sdiff");
+    if (done != null) { sd.appendChild(document.createTextNode("현재까지 ")); sd.appendChild(el("b", null, done + "대")); sd.appendChild(document.createTextNode(" 출하")); sd.appendChild(el("br")); sd.appendChild(document.createTextNode("/ 예정 " + d.info.planned + "대")); }
+    else sd.appendChild(document.createTextNode("출하 예정 " + d.info.planned + "대"));
+    c1.appendChild(sd);
+  }
   grid.appendChild(c1);
 
   var c2 = el("div", "sc");
@@ -2893,7 +2900,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-17-21";
+var APP_VER = "2026-10-17-23";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
