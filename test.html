@@ -38,6 +38,7 @@ button.ref{border:1px solid var(--line);background:var(--card);color:var(--text)
 .tab{text-align:center;padding:8px 0;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--sub);line-height:1.2;cursor:pointer}
 .tab span{display:block;font-size:11px;font-weight:500}
 .tab span:empty{display:none}
+.tab{display:flex;flex-direction:column;justify-content:center;align-items:center}   /* 글자가 한 줄뿐인 탭도 가운데로 */
 .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .tab .bd{display:inline-block;min-width:18px;padding:0 5px;margin-left:3px;border-radius:9px;background:var(--warn);color:#fff;font-size:11px;font-weight:700}
 main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:grid;gap:10px;max-width:720px;margin:0 auto}
@@ -2900,7 +2901,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-17-23";
+var APP_VER = "2026-10-17-24";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
