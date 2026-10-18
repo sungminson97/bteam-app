@@ -457,11 +457,34 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 #epin{width:100%;font-size:22px;letter-spacing:6px;text-align:center;padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
 #epmsg.bad{color:var(--warn);font-weight:600}
 #epov .ob .go{background:var(--accent);border-color:var(--accent)}
+
+/* 📲 홈 화면 앱으로만 사용 (링크·PC 차단) */
+#ig{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);overflow:auto;padding:calc(28px + env(safe-area-inset-top)) 20px 40px}
+#ig .w{max-width:440px;margin:0 auto;display:grid;gap:16px}
+#ig .igtop{display:flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left}
+#ig .igtop img{width:56px;height:56px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+#ig .igtop b{font-size:22px}
+#ig .igtop small{display:block;color:var(--sub);font-size:13px;font-weight:500}
+#ig h2{margin:4px 0 0;font-size:21px;line-height:1.4;word-break:keep-all}
+#ig .why{color:var(--sub);font-size:14px;line-height:1.6;word-break:keep-all;margin:-6px 0 0}
+#ig ol{margin:0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:s}
+#ig li{counter-increment:s;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 14px 14px 52px;position:relative;font-size:15px;line-height:1.55;word-break:keep-all}
+#ig li::before{content:counter(s);position:absolute;left:14px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
+#ig li b{color:var(--accent)}
+#ig .ic{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:24px;padding:0 5px;border:1.5px solid var(--text);border-radius:6px;font-size:13px;font-weight:800;vertical-align:-5px;margin:0 2px}
+#ig .ic svg{width:15px;height:15px}
+#ig .big{padding:16px;border-radius:14px;border:0;background:var(--accent);color:#fff;font-size:17px;font-weight:800;font-family:inherit}
+#ig .sub2{padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:15px;font-weight:700;font-family:inherit}
+#ig .note{color:var(--sub);font-size:12.5px;line-height:1.6;word-break:keep-all;text-align:center}
+#ig .url{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:12px;font-size:13px;word-break:break-all;text-align:center;color:var(--accent);font-weight:700}
+#ig .qr{display:flex;justify-content:center;padding:14px;background:#fff;border-radius:14px;border:1px solid var(--line)}
+#ig .ok{background:rgba(31,157,85,.12);color:var(--ok);border-radius:12px;padding:14px;font-weight:700;text-align:center;line-height:1.6}
 </style>
 </head>
 <body>
 
 <!-- 🔒 잠금 화면 -->
+<div id="ig"><div class="w" id="igw"></div></div>
 <div id="gate">
   <div class="gbox">
     <img class="glogo" id="glogo" src="logo.png" alt="" onerror="this.style.display='none'">
@@ -2901,7 +2924,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-17-24";
+var APP_VER = "2026-10-19-1";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
@@ -3590,8 +3613,136 @@ if ("serviceWorker" in navigator) {
   try { navigator.serviceWorker.register("sw.js").catch(function () {}); } catch (e) {}
 }
 
+
+/* ---------- 📲 홈 화면 앱으로만 사용 ----------
+ * 링크(사파리·크롬·카톡 안 브라우저)나 PC로 열면 앱 대신 "홈 화면에 추가" 안내만 보여줌
+ * → 알림은 홈 화면 앱에서만 받을 수 있어서 (특히 아이폰)
+ * 개발용: 주소 끝에 ?pc=1 을 붙여 한 번 열면 이 브라우저는 계속 통과 (?pc=0 이면 해제)
+ */
+var IG = { prompt: null };
+window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); IG.prompt = e; if (IG.onPrompt) IG.onPrompt(); });
+window.addEventListener("appinstalled", function () { IG.installed = true; if (IG.onInstalled) IG.onInstalled(); });
+
+function igEnv() {
+  var ua = navigator.userAgent || "";
+  var ipad = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+  var ios = /iPhone|iPad|iPod/i.test(ua) || ipad;
+  var android = /Android/i.test(ua);
+  var standalone = window.navigator.standalone === true ||
+    (window.matchMedia && (window.matchMedia("(display-mode: standalone)").matches || window.matchMedia("(display-mode: fullscreen)").matches || window.matchMedia("(display-mode: minimal-ui)").matches));
+  var inapp = /KAKAOTALK|NAVER\(|Line\/|Instagram|FBAN|FBAV|DaumApps|everytimeApp/i.test(ua);
+  return {
+    ios: ios, android: android, pc: !ios && !android, standalone: standalone, inapp: inapp,
+    kakao: /KAKAOTALK/i.test(ua),
+    samsung: /SamsungBrowser/i.test(ua),
+    safari: ios && !/CriOS|FxiOS|EdgiOS|OPiOS|Whale|NAVER|KAKAOTALK|DaumApps/i.test(ua)
+  };
+}
+function igUrl() { return location.origin + location.pathname; }
+var IG_SHARE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 12v8h14v-8"/></svg>';
+
+// 통과해야 하면 false, 막았으면 true
+function instGate() {
+  try {
+    var q = location.search;
+    if (/[?&]pc=1\b/.test(q)) sset("allowBrowser", "1");
+    if (/[?&]pc=0\b/.test(q)) sdel("allowBrowser");
+  } catch (e) {}
+  var env = igEnv();
+  if (env.standalone || sget("allowBrowser") === "1") return false;
+
+  var W = $("igw"); W.innerHTML = "";
+  var top = el("div", "igtop");
+  var im = document.createElement("img"); im.src = "icon-192.png"; im.alt = "";
+  top.appendChild(im);
+  var tb = el("div"); tb.appendChild(el("b", null, IS_TEST ? "제조1-B 테스트" : "제조1-B")); tb.appendChild(el("small", null, "제조B팀 업무 앱"));
+  top.appendChild(tb); W.appendChild(top);
+
+  function h2(t) { W.appendChild(el("h2", null, t)); }
+  function why(t) { W.appendChild(el("p", "why", t)); }
+  function steps(arr) {
+    var ol = el("ol");
+    arr.forEach(function (h) { var li = el("li"); li.innerHTML = h; ol.appendChild(li); });
+    W.appendChild(ol);
+  }
+  function copyBtn(label) {
+    var b = el("button", "sub2", label || "🔗 링크 복사"); b.type = "button";
+    b.onclick = function () {
+      var u = igUrl();
+      function ok() { b.textContent = "✅ 복사됐어요"; setTimeout(function () { b.textContent = label || "🔗 링크 복사"; }, 2000); }
+      try { navigator.clipboard.writeText(u).then(ok, function () { prompt("아래 주소를 복사하세요", u); }); }
+      catch (e) { prompt("아래 주소를 복사하세요", u); }
+    };
+    W.appendChild(b);
+  }
+  function note(t) { W.appendChild(el("div", "note", t)); }
+  var WHY = "알림(52시간·근무시간·공지)은 홈 화면에 추가한 앱에서만 받을 수 있어요.\n한 번만 추가하면 다음부터는 아이콘으로 바로 열려요.";
+
+  if (env.pc) {
+    h2("📱 제조1-B는 휴대폰 전용이에요");
+    why("휴대폰으로 아래 주소를 열고 홈 화면에 추가해 주세요.");
+    var qr = el("div", "qr"); qr.id = "igqr"; W.appendChild(qr);
+    W.appendChild(el("div", "url", igUrl()));
+    copyBtn();
+    var qn = el("div", "note", "휴대폰 카메라로 QR을 찍으면 바로 열려요."); W.appendChild(qn);
+    var sc = document.createElement("script");
+    sc.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+    sc.onload = function () { try { new QRCode($("igqr"), { text: igUrl(), width: 180, height: 180 }); } catch (e) { $("igqr").style.display = "none"; qn.style.display = "none"; } };
+    sc.onerror = function () { $("igqr").style.display = "none"; qn.style.display = "none"; };
+    document.head.appendChild(sc);
+  } else if (env.inapp) {
+    h2("📲 " + (env.ios ? "Safari로" : "Chrome으로") + " 열어 주세요");
+    why((env.kakao ? "카톡" : "앱") + " 안 브라우저에서는 홈 화면에 추가할 수 없어요.\n" + WHY);
+    if (env.kakao) steps(env.ios
+      ? ["화면 오른쪽 아래 <span class='ic'>⋯</span> 누르기", "<b>다른 브라우저로 열기</b> 또는 <b>Safari로 열기</b> 누르기", "Safari에서 열리면 나오는 안내대로 홈 화면에 추가"]
+      : ["화면 오른쪽 위 <span class='ic'>⋮</span> 누르기", "<b>다른 브라우저로 열기</b> 누르기 (Chrome 선택)", "Chrome에서 열리면 나오는 안내대로 앱 설치"]);
+    else steps(["오른쪽 위·아래 메뉴에서 <b>다른 브라우저로 열기</b> 누르기", "안 보이면 아래 <b>링크 복사</b> → " + (env.ios ? "Safari" : "Chrome") + " 주소창에 붙여넣기"]);
+    copyBtn();
+  } else if (env.ios) {
+    h2("📲 홈 화면에 추가해 주세요");
+    why(WHY);
+    if (env.safari) steps([
+      "화면 아래 <span class='ic'>" + IG_SHARE + "</span> 공유 버튼 누르기<br><small>(안 보이면 아래 <span class='ic'>⋯</span> 먼저 누르기)</small>",
+      "아래로 내려서 <b>홈 화면에 추가</b> 누르기",
+      "오른쪽 위 <b>추가</b> 누르기",
+      "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]);
+    else steps([
+      "주소창 옆 <span class='ic'>" + IG_SHARE + "</span> 공유 버튼 누르기",
+      "<b>홈 화면에 추가</b> 누르기 (안 보이면 아래 링크 복사 → Safari에서 열기)",
+      "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]);
+    if (!env.safari) copyBtn("🔗 링크 복사 (Safari에서 열기)");
+    note("iOS 16.4 이상에서 알림을 받을 수 있어요. · 추가했는데도 이 화면이 계속 뜨면 손성민에게 알려 주세요.");
+  } else {   // 안드로이드
+    h2("📲 앱을 설치해 주세요");
+    why(WHY);
+    var bi = el("button", "big", "📲 앱 설치하기"); bi.type = "button"; bi.style.display = "none";
+    W.appendChild(bi);
+    var done = el("div", "ok", "✅ 설치됐어요!\n홈 화면의 제조1-B 아이콘으로 열어 주세요."); done.style.display = "none"; done.style.whiteSpace = "pre-line";
+    W.appendChild(done);
+    function showBtn() { if (IG.prompt) bi.style.display = ""; }
+    bi.onclick = function () {
+      if (!IG.prompt) return;
+      IG.prompt.prompt();
+      IG.prompt.userChoice.then(function (c) { if (c && c.outcome === "accepted") { bi.style.display = "none"; done.style.display = ""; } IG.prompt = null; }).catch(function () {});
+    };
+    IG.onPrompt = showBtn; IG.onInstalled = function () { bi.style.display = "none"; done.style.display = ""; };
+    showBtn();
+    W.appendChild(el("div", "note", "버튼이 안 보이면 직접 추가해 주세요 ↓"));
+    steps(env.samsung
+      ? ["화면 아래 <span class='ic'>≡</span> 메뉴 누르기", "<b>현재 페이지 추가</b> → <b>홈 화면</b> 누르기", "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]
+      : ["화면 오른쪽 위 <span class='ic'>⋮</span> 누르기", "<b>앱 설치</b> 또는 <b>홈 화면에 추가</b> 누르기", "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]);
+    note("추가했는데도 이 화면이 계속 뜨면 손성민에게 알려 주세요.");
+  }
+  [].forEach.call(W.querySelectorAll(".why,.note"), function (x) { x.style.whiteSpace = "pre-line"; });
+  $("ig").style.display = "block";
+  $("gate").style.display = "none"; $("app").style.display = "none";
+  return true;
+}
+
 function boot() {
   buildChips();
+  $("ver").textContent = "v" + APP_VER.slice(5).replace("-", ".");
+  if (instGate()) return;   // 📲 링크·PC면 안내 화면만
   $("ver").textContent = "v" + APP_VER.slice(5).replace("-", ".");   // 예: v10.14-4
   if (IS_TEST) {
     $("testtag").appendChild(el("span", "testtag", "🧪 테스트"));
