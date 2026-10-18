@@ -38,6 +38,7 @@ button.ref{border:1px solid var(--line);background:var(--card);color:var(--text)
 .tab{text-align:center;padding:8px 0;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--sub);line-height:1.2;cursor:pointer}
 .tab span{display:block;font-size:11px;font-weight:500}
 .tab span:empty{display:none}
+.tab{display:flex;flex-direction:column;justify-content:center;align-items:center}   /* 글자가 한 줄뿐인 탭도 가운데로 */
 .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .tab .bd{display:inline-block;min-width:18px;padding:0 5px;margin-left:3px;border-radius:9px;background:var(--warn);color:#fff;font-size:11px;font-weight:700}
 main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:grid;gap:10px;max-width:720px;margin:0 auto}
@@ -110,6 +111,8 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .dsplit{font-size:12px;font-weight:700;margin-right:8px}
 /* 입고 일정: 목록|달력 전환, 달력 */
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--line);border-radius:11px;padding:3px}
+.kseg{margin-bottom:-2px}
+.kseg button.on{color:var(--accent)}
 .seg button{border:0;border-radius:9px;padding:9px 0;font-size:14px;font-weight:700;background:transparent;color:var(--sub);font-family:inherit}
 .seg button.on{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .sday.past{opacity:.6}
@@ -137,6 +140,8 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .sday li .nl{color:var(--warn);font-weight:700;font-size:12px;margin-left:6px}
 .warn{background:rgba(229,72,77,.12);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45}
 .okmsg{background:rgba(31,157,85,.14);color:var(--ok);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600}
+.wkmsg{background:rgba(47,111,237,.10);color:var(--accent);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;line-height:1.6;word-break:keep-all}
+.wkmsg small{color:var(--sub);font-weight:500}
 #toast{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translate(-50%,-160%);z-index:60;width:max-content;max-width:92%;padding:12px 18px;border-radius:12px;background:var(--ok);color:#fff;font-size:15px;font-weight:700;line-height:1.4;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:transform .25s ease;pointer-events:none}
 #toast.on{transform:translate(-50%,0)}
 #toast.bad{background:var(--warn)}
@@ -173,6 +178,63 @@ li:first-child{border-top:0}
 .hint{font-size:12px;color:var(--sub);padding:0 2px;line-height:1.5}
 #opchips .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
 #opin{font-size:16px;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);width:100%;box-sizing:border-box}
+.pushrow{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--card);border:1px dashed var(--accent);border-radius:12px;padding:10px 14px;font-size:14px;font-weight:600;color:var(--accent);cursor:pointer}
+.pushrow.on{border-style:solid;border-color:var(--line);color:var(--sub);font-weight:500;font-size:13px;padding:7px 14px}
+.pushrow.on b{color:var(--text)}
+#pushchips .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.ntc{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.55}
+.ntc .h{font-weight:800;color:var(--accent);font-size:13px;margin-bottom:2px}
+.ntc .h small{color:var(--sub);font-weight:500;margin-left:6px}
+.ntc .b{white-space:pre-wrap;font-weight:600}
+.ntbtn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 14px;font-size:14px;font-weight:700;color:var(--accent);text-align:left;cursor:pointer;font-family:inherit;width:100%}
+#ntov textarea,#ntov input,#apov input{font-size:16px;padding:12px 14px;margin-bottom:6px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;font-family:inherit}
+#ntfrom .chip.on,#ntto .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+#ttlbtn{cursor:pointer;-webkit-tap-highlight-color:transparent}
+#ttlbtn.adm{color:var(--warn)}
+.chip:disabled{opacity:1;background:transparent;color:var(--sub);border:1.5px dashed var(--line);font-weight:500}
+.chip:disabled::before{content:"🔒 ";font-size:12px}
+.btns .clr.lock{color:var(--sub);border-style:dashed}
+.btns .save:disabled{opacity:.4}
+#hval:disabled{opacity:.6}
+#hlvlock{line-height:1.6;white-space:pre-line;background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:12px 14px;margin-top:0}
+.btns .clr.lock::before{content:"🔒 ";font-size:12px}
+#clrmsg,#otmsg{white-space:pre-line;word-break:keep-all}
+#hlvlock{color:var(--warn);font-size:13px;font-weight:600;word-break:keep-all;margin-top:-4px}
+.mnl{display:grid;gap:8px}
+.mnl button{display:flex;justify-content:space-between;align-items:center;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:15px;font-weight:700;font-family:inherit;text-align:left}
+.mnl button small{color:var(--sub);font-weight:500;font-size:12px}
+.dvi{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;padding:12px 14px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:14px;margin-bottom:10px}
+.dvi span{color:var(--sub)}
+.dvi b{font-weight:700;text-align:right;word-break:keep-all}
+#mnlist .dev{background:none;border-style:dashed}
+#dvmsg{white-space:pre-line;word-break:keep-all}
+#dllist{max-height:58vh;overflow:auto;display:grid;gap:8px}
+.dlc{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg)}
+.dlc.mine{border-color:var(--accent)}
+.dlc .h{font-weight:700;font-size:16px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
+.dlc .h small{color:var(--sub);font-weight:500;font-size:12px}
+.dlc .tg{font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--accent)}
+.dlc .tg.w{color:var(--warn);border-color:var(--warn)}
+.dlc .m{color:var(--sub);font-size:12px;margin-top:4px;word-break:keep-all}
+.dlc .pend{white-space:pre-line;margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--card);border:1px dashed var(--accent);color:var(--accent);font-size:13px;font-weight:600;line-height:1.5;word-break:keep-all}
+.dlc .bt{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.dlc .bt button{padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:700;font-family:inherit;color:var(--text)}
+.dlc .bt .go{background:var(--accent);border-color:var(--accent);color:#fff}
+.dlc .bt .x{color:var(--warn)}
+.dlc .bt button:disabled{opacity:.6}
+.dlc .chips{margin-top:10px}
+.dlc .em{color:var(--warn);font-size:12px;margin-top:6px;white-space:pre-line;word-break:keep-all}
+#nmchips .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.unl{display:grid;gap:6px}
+.unl .lk{border:0;background:none;color:var(--sub);font-size:12px;text-decoration:underline;font-family:inherit;justify-self:start;padding:0}
+.unl input{font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.unl .row{display:grid;grid-template-columns:1fr auto;gap:6px}
+.unl .row button{padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font-weight:700;font-family:inherit}
+.psl{display:grid;gap:10px;font-size:14px}
+.psl h5{margin:0 0 4px;font-size:13px}
+.psl .on h5{color:var(--ok)}.psl .off h5{color:var(--warn)}
+.psl .p{display:inline-block;margin:2px 4px 2px 0;padding:3px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-weight:600}
+.psl .p small{color:var(--sub);font-weight:500;margin-left:4px}
 /* 확인창 */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
 .ov.on{display:flex}
@@ -186,6 +248,14 @@ li:first-child{border-top:0}
 .ob button{padding:14px;border-radius:12px;font-size:16px;font-weight:700;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit}
 .ob .go{background:var(--ok);border-color:var(--ok);color:#fff}
 .ob button:disabled{opacity:.6}
+#apmsg,#ntmsg,#pushmsg,#nmdesc,#nmmsg{white-space:pre-line;word-break:keep-all;line-height:1.5}
+.ntpv{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:16px;background:var(--bg);border:1px solid var(--line);margin-bottom:10px;font-size:14px;line-height:1.4}
+.ntpv .ic{flex:none;width:34px;height:34px;border-radius:8px;background:#123;color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.ntpv .tx{min-width:0;flex:1;white-space:pre-line;word-break:keep-all}
+.ntpv .t{font-weight:700}
+.ntpv .f{color:var(--sub);font-size:13px}
+.ntpv .e{color:var(--sub)}
+.mnback{display:block;margin:0 auto 0 0;border:0;background:none;color:var(--accent);font-weight:700;font-size:15px;padding:2px 0 8px;font-family:inherit;cursor:pointer}
 /* 근무시간 폼 */
 .wk{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ok);border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.5}
 .wk.w{border-left-color:#f59e0b}.wk.x{border-left-color:var(--warn)}
@@ -413,7 +483,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     <div class="brand">
       <img class="logo" id="logo" src="logo.png" alt="" onerror="this.style.display='none';document.getElementById('sep').style.display='none';">
       <div class="sep" id="sep"></div>
-      <h1><span>제조1-B<small id="ver"></small></span> <span id="upd"></span><span id="testtag"></span></h1>
+      <h1><span id="ttlbtn">제조1-B<small id="ver"></small></span> <span id="upd"></span><span id="testtag"></span></h1>
     </div>
     <div class="hb">
       <button class="ref" id="srchbtn" type="button" aria-label="장비 검색">🔍</button>
@@ -425,7 +495,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     <div class="tab on" id="t0">금일<span id="d0"></span></div>
     <div class="tab" id="t1">명일<span id="d1"></span></div>
     <div class="tab" id="t2">시트 업로드<span id="d2"></span></div>
-    <div class="tab" id="t6">입고 일정<span id="d6"></span></div>
+    <div class="tab" id="t6">입출하 일정<span id="d6"></span></div>
     <div class="tab" id="t5">장비통계<span></span></div>
     <div class="tab" id="t3">근무시간<span></span></div>
     <div class="tab" id="t4">연차 현황<span></span></div>
@@ -466,6 +536,8 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
       <input type="text" id="hval" inputmode="decimal" placeholder="예: 8 / 10.5 / 연차">
     </div>
     <div class="chips" id="chips"></div>
+    <div id="hlvlock" style="display:none">🔒 다른 사람 칸은 숫자만 대신 입력할 수 있어요.
+연차류 입력·칸 비우기는 본인 또는 관리자만 돼요.</div>
     <div id="hnoteBox" class="notebox" style="display:none">
       <div id="hhrsRow" style="display:none">
         <label for="hhrs">실제 근무시간 (근무시간 칸에 들어가요)</label>
@@ -525,6 +597,17 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
   <div class="box wkd" id="wkbox"></div>
 </div>
 
+<div class="ov" id="otov">
+  <div class="box">
+    <h3>✋ 다른 사람 근무시간</h3>
+    <p id="otmsg" style="word-break:keep-all;line-height:1.6"></p>
+    <div class="ob">
+      <button id="otno" type="button">취소</button>
+      <button id="otgo" type="button" class="go" style="background:var(--accent);border-color:var(--accent)">계속</button>
+    </div>
+  </div>
+</div>
+
 <div class="ov" id="clrov">
   <div class="box">
     <h3>🗑 입력값 지우기</h3>
@@ -535,6 +618,97 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
       <button id="clrno" type="button">취소</button>
       <button id="clrgo" type="button" class="go" style="background:var(--warn);border-color:var(--warn)">지우기</button>
     </div>
+  </div>
+</div>
+
+<div class="ov" id="pushov">
+  <div class="box">
+    <h3>🔔 52시간·근무시간 놓치지 않게 알림을 켜주세요</h3>
+    <p>매일 <b style="color:var(--accent)">아침 8시</b>에 이번 주 52시간까지 남은 시간·내 장비·업로드를, <b style="color:var(--accent)">퇴근 전(17:30)</b>엔 근무시간 미입력일 때 알려드려요.</p>
+    <div class="who">내 이름</div>
+    <div class="chips" id="pushchips"><span class="hint">이름 불러오는 중…</span></div>
+    <div id="pushunlock" class="unl"></div>
+    <p class="sub" id="pushmsg"></p>
+    <div class="ob">
+      <button id="pushno" type="button">나중에</button>
+      <button id="pushgo" type="button" class="go" style="background:var(--accent);border-color:var(--accent)">알림 허용</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="dlov">
+  <div class="box">
+    <h3>📱 팀 기기 목록</h3>
+    <p class="sub" style="margin:0;word-break:keep-all">이름을 바꾸면 그 폰에서 앱을 열 때 자동으로 바뀌어요.</p>
+    <div id="dllist"></div>
+    <div class="ob" style="grid-template-columns:1fr 1fr"><button id="dlback" type="button">← Developer</button><button id="dlno" type="button">닫기</button></div>
+  </div>
+</div>
+
+<div class="ov" id="dvov">
+  <div class="box">
+    <h3>🛠 Developer</h3>
+    <div class="dvi" id="dvinfo"></div>
+    <div class="mnl" id="dvlist"></div>
+    <p class="sub" id="dvmsg"></p>
+    <div class="ob" style="grid-template-columns:1fr 1fr"><button id="dvback" type="button">← 메뉴로</button><button id="dvno" type="button">닫기</button></div>
+  </div>
+</div>
+
+<div class="ov" id="apov">
+  <div class="box">
+    <h3 id="apttl">🔒 관리자 PIN</h3>
+    <p id="apdesc">공지 보내기는 관리자만 할 수 있어요.</p>
+    <input type="password" id="appin" inputmode="numeric" autocomplete="off" placeholder="관리자 PIN">
+    <p class="sub" id="apmsg"></p>
+    <div class="ob">
+      <button id="apno" type="button">취소</button>
+      <button id="apgo" type="button" class="go" style="background:var(--accent);border-color:var(--accent)">확인</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="ntov">
+  <div class="box">
+    <h3>📢 공지 보내기</h3>
+    <div class="who">보낸 사람</div>
+    <div class="chips" id="ntfrom"></div>
+    <div class="who">내용</div>
+    <textarea id="ntbody" rows="3" maxlength="300" placeholder="예: 15:00까지 2공장 앞 집합 바랍니다"></textarea>
+    <div class="who">폰 알림 미리보기</div>
+    <div class="ntpv" id="ntpv"></div>
+    <div class="who">받는 사람 · <b style="color:var(--accent)">전체</b></div>
+    <p class="sub" id="ntmsg">알림을 켠 사람 전체의 폰에 바로 알림으로 가요.</p>
+    <div class="ob">
+      <button id="ntno" type="button">취소</button>
+      <button id="ntgo" type="button" class="go" style="background:var(--accent);border-color:var(--accent)">보내기</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="mnov">
+  <div class="box">
+    <h3>⚙️ 메뉴</h3>
+    <div class="mnl" id="mnlist"></div>
+    <div class="ob" style="grid-template-columns:1fr"><button id="mnno" type="button">닫기</button></div>
+  </div>
+</div>
+
+<div class="ov" id="nmov">
+  <div class="box">
+    <h3 id="nmttl">👤 본인 이름을 선택해 주세요</h3>
+    <p id="nmdesc">처음 한 번만 선택해요. 선택하면 이 폰에 <b style="color:var(--accent)">고정</b>되고, 바꾸려면 관리자에게 요청해야 해요.</p>
+    <div class="chips" id="nmchips"><span class="hint">이름 불러오는 중…</span></div>
+    <p class="sub" id="nmmsg"></p>
+    <div class="ob" id="nmob" style="grid-template-columns:1fr"><button id="nmno" type="button" style="display:none">취소</button><button id="nmgo" type="button" class="go" style="background:var(--accent);border-color:var(--accent)" disabled>이 이름으로 정하기</button></div>
+  </div>
+</div>
+
+<div class="ov" id="psov">
+  <div class="box">
+    <h3>👥 알림 현황</h3>
+    <div id="pslist" class="psl"><span class="hint">불러오는 중…</span></div>
+    <div class="ob" style="grid-template-columns:1fr 1fr"><button id="psback" type="button">← 메뉴로</button><button id="psno" type="button">닫기</button></div>
   </div>
 </div>
 
@@ -609,7 +783,7 @@ function cget(k) {
   try { return JSON.parse(v); } catch (e) { return null; }
 }
 function cset(k, v) { try { sset("c_" + k, JSON.stringify(v)); } catch (e) {} }
-function cwipe() { ["dash", "up", "leave", "stats", "hours", "eqidx"].forEach(function (k) { sdel("c_" + k); }); }
+function cwipe() { ["dash", "up", "leave", "stats", "hours", "eqidx", "names"].forEach(function (k) { sdel("c_" + k); }); }
 var R = { dash: false, up: false, leave: false, stats: false };   // 갱신 중 표시
 function updTxt(d, key) { return d.updated + " 기준" + (R[key] ? " · 갱신 중…" : ""); }
 
@@ -647,7 +821,8 @@ function rawCall(pin, fn, args, editPin) {
   var rid = Math.random().toString(36).slice(2, 10), t0 = Date.now(), prev = SPD.last;
   SPD.last = null;
   var a0 = (fn === "getDashboardAll" || fn === "getEquipIndex") ? [args && args[0] === true] : [];
-  var body = JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev });
+  var body = JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev,
+    me: myName(), adm: fn === "saveHours" && adminOn() ? sget("admPin") : "" });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
   return fetchJson(body)
     .catch(function (e) {
       if (!READ_FNS[fn]) throw e;
@@ -656,6 +831,7 @@ function rawCall(pin, fn, args, editPin) {
     .then(function (j) {
       var ms = Date.now() - t0;
       if (ms >= SLOW_MS) SPD.last = { rid: rid, ms: ms, fn: fn, args: a0, at: t0 };
+      if (j && j.rn && fn === "getDashboardAll") remoteRenameLater(j.rn);   // 📱 개발자가 원격으로 이름 바꿈
       return j;
     }, function (e) {
       if (prev && !SPD.last) SPD.last = prev;   // 이번에 못 보낸 지난 기록은 다음에 다시
@@ -826,7 +1002,7 @@ function unlock(pin, pre) {
   cur = 0;
   // 저장해 둔 지난 화면이 있으면 먼저 바로 보여주고, 뒤에서 최신으로 갱신
   var cd = cget("dash");
-  if (cd && cd.d0) { store[0] = cd.d0; store[1] = cd.d1; if (cd.sched) store.sched = cd.sched; if (cd.leave) store.leave = cd.leave; $("d0").textContent = cd.d0.label || ""; $("d1").textContent = cd.d1.label || ""; }
+  if (cd && cd.d0) { store[0] = cd.d0; store[1] = cd.d1; if (cd.sched) store.sched = cd.sched; if (cd.ship) store.ship = cd.ship; if (cd.leave) store.leave = cd.leave; $("d0").textContent = cd.d0.label || ""; $("d1").textContent = cd.d1.label || ""; }
   var cu = cget("up");
   if (cu && !cu.error) { U.data = cu; setBadge(cu.total); }
   LV.data = cget("leave"); ST.data = cget("stats");
@@ -959,6 +1135,7 @@ function render() {
   $("upd").textContent = updTxt(d, "dash");
   var lb = leaveBanner(cur);
   if (lb) main.appendChild(lb);
+  if (cur === 0 && !pushOn()) { var pr = pushRow(); if (pr) main.appendChild(pr); }   // 🔔 알림 안 켠 사람만 (켠 뒤엔 제목 메뉴에서 변경)
   if (d.missing && d.missing.length)
     main.appendChild(el("div", "warn", "⚠️ 열을 찾지 못한 공정: " + d.missing.join(", ")));
 
@@ -997,7 +1174,9 @@ function applyDash(r) {
   LAST.t = Date.now(); LAST.d = ymdLocal();
   store[0] = r.d0; store[1] = r.d1;
   if (r.sched) store.sched = r.sched;
+  if (r.ship) store.ship = r.ship;
   if (r.leave) store.leave = r.leave;
+  store.notice = r.notice || null;
   $("d0").textContent = r.d0.label || "";
   $("d1").textContent = r.d1.label || "";
   schedBadge();
@@ -1007,7 +1186,9 @@ function applyDash(r) {
 }
 
 /* ---------- 📅 FRAME 입고 일정 (목록 2주 / 달력) ---------- */
-var SC = { view: "list", month: null, sel: null };   // 기본 화면은 목록(2주)
+var SC = { view: "list", month: null, sel: null, kind: "in" };   // 기본 화면은 입고 · 목록(2주) / kind: "in" 입고, "out" 출하
+try { if (sget("schedKind") === "out") SC.kind = "out"; } catch (e) {}
+function schedData() { return SC.kind === "out" ? store.ship : store.sched; }
 
 function ymdOf(d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
 function ymdAdd(ymd, n) { var p = ymd.split("-"); return ymdOf(new Date(+p[0], +p[1] - 1, +p[2] + n)); }
@@ -1032,11 +1213,11 @@ function schedListRange(s) {
 }
 
 function schedBadge() {
-  var s = store.sched;
-  if (!s || s.error || !s.days) { $("d6").textContent = ""; return; }
-  var r = schedListRange(s);
-  var c = schedCount(schedDaysIn(s, r[0], r[1]));
-  $("d6").textContent = c.total ? c.total + "대" : "";
+  $("d6").textContent = ""; return;   // 탭 버튼엔 대수 안 보여줌 (눌러서 보게)
+  function n2(s) { if (!s || s.error || !s.days) return null; var r = schedListRange(s); return schedCount(schedDaysIn(s, r[0], r[1])).total; }
+  var a = n2(store.sched), b = n2(store.ship);
+  if (a == null) { $("d6").textContent = ""; return; }
+  $("d6").textContent = b == null ? (a ? a + "대" : "") : "입 " + a + " · 출 " + b;   // 앞으로 2주
 }
 
 // 팀별 비교 막대
@@ -1096,9 +1277,20 @@ function schedDayCard(d, today) {
 function renderSched() {
   var box = $("sched");
   box.innerHTML = "";
-  var s = store.sched;
+  var out = SC.kind === "out";
+  // 📥 입고 | 📤 출하 전환
+  var kseg = el("div", "seg kseg");
+  [["in", "📥 입고"], ["out", "📤 출하"]].forEach(function (x) {
+    var b = el("button", SC.kind === x[0] ? "on" : "", x[1]);
+    b.type = "button";
+    b.onclick = function () { if (SC.kind !== x[0]) { SC.kind = x[0]; SC.sel = null; sset("schedKind", x[0]); renderSched(); } };
+    kseg.appendChild(b);
+  });
+  box.appendChild(kseg);
+
+  var s = schedData();
   if (!s) {
-    box.appendChild(el("div", "msg", R.dash ? "불러오는 중…" : "입고 일정 정보가 없어요. 서버(DashboardApp.gs)를 새 버전으로 배포했는지 확인해 주세요."));
+    box.appendChild(el("div", "msg", R.dash ? "불러오는 중…" : out ? "출하 일정이 아직 없어요. 새로고침을 눌러 보세요. (서버 DashboardApp.gs 새 버전 배포 필요)" : "입고 일정 정보가 없어요. 서버(DashboardApp.gs)를 새 버전으로 배포했는지 확인해 주세요."));
     return;
   }
   if (s.error) { box.appendChild(el("div", "warn", s.error)); return; }
@@ -1117,7 +1309,9 @@ function renderSched() {
   if (SC.view === "cal") renderSchedCal(box, s);
   else renderSchedList(box, s);
 
-  box.appendChild(el("div", "hint", "Backlog FRAME 입고일 기준 (ROBOT은 Module 작업일). A팀·B팀·미지정 전체를 표시해요. ▲미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."));
+  box.appendChild(el("div", "hint", out
+    ? "Backlog 출하일(Factory out date) 기준. A팀·B팀·미지정 전체를 표시해요. ▲미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."
+    : "Backlog FRAME 입고일 기준 (ROBOT은 Module 작업일). A팀·B팀·미지정 전체를 표시해요. ▲미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."));
 }
 
 // 📋 목록: 오늘부터 2주
@@ -1128,13 +1322,13 @@ function renderSchedList(box, s) {
   var c = schedCount(days);
 
   var sum = el("div", "ssum");
-  sum.appendChild(el("span", null, "앞으로 2주 FRAME 입고"));
+  sum.appendChild(el("span", null, SC.kind === "out" ? "앞으로 2주 출하" : "앞으로 2주 FRAME 입고"));
   sum.appendChild(el("b", null, c.total + "대"));
   if (c.noLoc) sum.appendChild(el("span", "bad", "📍 자리 미배정 " + c.noLoc + "대"));
   box.appendChild(sum);
   box.appendChild(teamBars(c));
 
-  if (!days.length) box.appendChild(el("div", "msg", "2주 안에 잡힌 FRAME 입고가 없어요."));
+  if (!days.length) box.appendChild(el("div", "msg", SC.kind === "out" ? "2주 안에 잡힌 출하가 없어요." : "2주 안에 잡힌 FRAME 입고가 없어요."));
   days.forEach(function (d) { box.appendChild(schedDayCard(d, today)); });
 }
 
@@ -1219,7 +1413,7 @@ function renderSchedCal(box, s) {
   else {
     var p = SC.sel.split("-");
     var wd = ["일", "월", "화", "수", "목", "금", "토"][new Date(+p[0], +p[1] - 1, +p[2]).getDay()];
-    box.appendChild(el("div", "card empty", (+p[1]) + "/" + (+p[2]) + "(" + wd + ") · 입고 없음"));
+    box.appendChild(el("div", "card empty", (+p[1]) + "/" + (+p[2]) + "(" + wd + ") · " + (SC.kind === "out" ? "출하" : "입고") + " 없음"));
   }
 }
 
@@ -1568,7 +1762,13 @@ function renderStats(d) {
     c1.appendChild(srow("A", cm.aPts, cm.aCnt, (cm.aPts || 0) > (cm.bPts || 0)));
     c1.appendChild(srow("B", cm.bPts, cm.bCnt, (cm.bPts || 0) > (cm.aPts || 0)));
   } else c1.appendChild(el("div", "sdiff", "이번 달 데이터 없음"));
-  if (d.info && d.info.planned != null) c1.appendChild(el("div", "sdiff", "출하 예정 " + d.info.planned + "대"));
+  if (d.info && d.info.planned != null) {   // 🚚 현재까지 출하 / 이번 달 예정
+    var done = cm ? (cm.aCnt || 0) + (cm.bCnt || 0) : null;
+    var sd = el("div", "sdiff");
+    if (done != null) { sd.appendChild(document.createTextNode("현재까지 ")); sd.appendChild(el("b", null, done + "대")); sd.appendChild(document.createTextNode(" 출하")); sd.appendChild(el("br")); sd.appendChild(document.createTextNode("/ 예정 " + d.info.planned + "대")); }
+    else sd.appendChild(document.createTextNode("출하 예정 " + d.info.planned + "대"));
+    c1.appendChild(sd);
+  }
   grid.appendChild(c1);
 
   var c2 = el("div", "sc");
@@ -2256,6 +2456,14 @@ function renderMissing(m) {
       : "금일(" + m.label + ") 미입력 확인을 할 수 없어요. (날짜 헤더 확인 필요)";
     return;
   }
+  if (m.weekend) {   // 🗓 주말: 미입력 체크 안 함, 출근해서 입력한 사람만
+    if (!m.worked || !m.worked.length) { b.style.display = "none"; return; }   // 아무도 안 적었으면 줄 자체를 안 보여줌
+    b.className = "wkmsg";
+    b.appendChild(document.createTextNode("🗓 주말(" + m.label + ") · 출근했으면 근무시간을 입력해 주세요"));
+    b.appendChild(document.createElement("br"));
+    b.appendChild(el("small", null, "오늘 입력: " + m.worked.join(", ")));
+    return;
+  }
   var offTxt = m.off && m.off.length ? "📅 휴가(schedule): " + m.off.join(", ") : "";
   if (!m.names || !m.names.length) {
     b.className = "okmsg";
@@ -2288,7 +2496,7 @@ function ymdLocal() {
 function applyMeta(m, fromCache) {
   H.meta = m;
   var sel = $("hname");
-  var keep = sel.value || sget("hoursName") || "";
+  var keep = sel.value || sget("hoursName") || myName() || "";
   sel.innerHTML = "";
   m.names.forEach(function (n) {
     var o = el("option", null, n); o.value = n; sel.appendChild(o);
@@ -2524,8 +2732,14 @@ function updNote() {
   var val = String($("hval").value || "").trim();
   var m = val.match(LEAVE_RX);
   // 칩 강조
-  var chips = $("chips").children;
-  for (var i = 0; i < chips.length; i++) chips[i].className = "chip" + (chips[i].textContent === val ? " on" : "");
+  var chips = $("chips").children, lk = leaveLocked();
+  for (var i = 0; i < chips.length; i++) {
+    chips[i].className = "chip" + (chips[i].textContent === val ? " on" : "");
+    chips[i].disabled = lk && LEAVE_RX.test(chips[i].textContent);   // 🔒 남의 연차류는 관리자만 (숫자 대신 입력은 됨)
+  }
+  $("hlvlock").style.display = lk ? "block" : "none";
+  $("hclr").className = "clr" + (lk ? " lock" : "");
+
 
   // schedule 지우기 체크 (이 날 schedule 기록이 있는데 일반 근무시간/칸 비우기를 할 때만)
   var db = $("hdelBox");
@@ -2561,6 +2775,21 @@ function doSave(value, force, delForce) {
   if (!name || !date) { showHErr("이름과 날짜를 선택해 주세요."); return; }
   if (!checkMonth()) return;
   if (!value || !String(value).trim()) { showHErr("입력값을 넣어 주세요."); return; }
+  // 🔒 남의 이름: 연차류(입력·덮어쓰기·지우기)는 본인 또는 관리자만
+  // 🔒 남의 이름: 숫자 대신 입력은 OK, 연차류(입력·덮어쓰기·schedule 삭제)와 칸 비우기는 본인 또는 관리자만
+  if (leaveLocked() && value === "__CLEAR__") { showHErr("다른 사람 칸 비우기는 본인 또는 관리자만 할 수 있어요."); toast("🔒 다른 사람 칸은 본인 또는 관리자만 비울 수 있어요", true); return; }
+  if (leaveLocked() && (LEAVE_RX.test(String(value).trim()) || LEAVE_RX.test(String(H.curVal || "").trim()) ||
+      !!delForce || ($("hdelBox").style.display !== "none" && $("hdel").checked))) {
+    showHErr("연차류는 본인 또는 관리자만 입력할 수 있어요."); toast("🔒 연차류는 본인 또는 관리자만 입력할 수 있어요", true); return;
+  }
+  // ✋ 남의 이름으로 저장할 때 확인 (칸 비우기는 지우기 창에서 이미 확인)
+  if (isOther(name) && value !== "__CLEAR__" && !H.otherOK) {
+    var dp = date.split("-");
+    $("otmsg").textContent = name + "님 " + (+dp[1]) + "/" + (+dp[2]) + " 근무시간을 " + myName() + "님이 입력합니다. 계속할까요?";
+    $("otov").className = "ov on";
+    H.otherArgs = [value, force, delForce];
+    return;
+  }
 
   var label = $("hsave").textContent;
   var note = $("hnoteBox").style.display === "none" ? "" : $("hnote").value.trim();
@@ -2584,7 +2813,7 @@ function doSave(value, force, delForce) {
       $("hsave").textContent = label;
       var res = $("hres");
       res.innerHTML = "";
-      if (r.error) { showHErr(r.error); toast("⚠️ " + r.error, true); return; }
+      if (r.error) { if (r.admBad) adminOff(); showHErr(r.error); toast("⚠️ " + r.error, true); return; }
       if (r.needConfirm) {
         H.confirm = true;
         $("hsave").textContent = "덮어쓰기 확인";
@@ -2595,7 +2824,7 @@ function doSave(value, force, delForce) {
         return;
       }
       if (r.ok) {
-        resetConfirm();
+        resetConfirm(); H.otherOK = false;
         var what = name + " " + date.slice(5).replace("-", "/") + " → " + (r.cur === "" ? "(비움)" : r.cur);
         var sc = r.sched, scMsg = "";
         if (sc && sc.ok && (sc.action === "추가" || sc.action === "수정")) scMsg = "📅 schedule " + sc.action + ": " + sc.text;
@@ -2641,7 +2870,8 @@ $("hclr").onclick = function () {
   resetConfirm();
   var p = date.split("-"), wd = ["일", "월", "화", "수", "목", "금", "토"][new Date(+p[0], +p[1] - 1, +p[2]).getDay()];
   $("clrwho").textContent = name + " · " + (+p[1]) + "/" + (+p[2]) + "(" + wd + ")";
-  $("clrmsg").textContent = "현재 값 '" + cur + "'을(를) 지우시겠습니까?";
+  if (leaveLocked()) { showHErr("다른 사람 칸 비우기는 본인 또는 관리자만 할 수 있어요."); toast("🔒 다른 사람 칸은 본인 또는 관리자만 비울 수 있어요", true); return; }
+  $("clrmsg").textContent = (isOther(name) ? name + "님 칸을 " + myName() + "님이 지웁니다.\n" : "") + "현재 값 '" + cur + "'을(를) 지우시겠습니까?";
   var sc = $("clrsch");
   if (H.curSched) { sc.style.display = "block"; sc.textContent = "📅 schedule의 '" + H.curSched + "' 기록도 같이 지워져요."; }
   else sc.style.display = "none";
@@ -2655,11 +2885,14 @@ $("clrgo").onclick = function () {
   closeClr();
   doSave("__CLEAR__", true, !!H.curSched);
 };
-$("hname").onchange = function () { resetConfirm(); refreshCell(); updNote(); if (H.meta) renderWeek(H.meta.week); };
+$("hname").onchange = function () { H.otherOK = false; resetConfirm(); refreshCell(); updNote(); if (H.meta) renderWeek(H.meta.week); };
+$("otno").onclick = function () { $("otov").className = "ov"; H.otherOK = false; };
+$("otov").onclick = function (e) { if (e.target === this) { $("otov").className = "ov"; H.otherOK = false; } };
+$("otgo").onclick = function () { $("otov").className = "ov"; H.otherOK = true; var a = H.otherArgs || []; doSave(a[0], a[1], a[2]); };
 $("hnote").oninput = function () { resetConfirm(); updNote(); };
 $("hhrs").oninput = function () { resetConfirm(); updNote(); };
 $("hdel").onchange = resetConfirm;
-$("hdate").onchange = function () { resetConfirm(); refreshCell(); };
+$("hdate").onchange = function () { H.otherOK = false; resetConfirm(); refreshCell(); };
 $("hval").oninput = function () { resetConfirm(); updNote(); };
 
 /* ---------- 시작 ---------- */
@@ -2668,7 +2901,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-16-3";
+var APP_VER = "2026-10-17-24";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
@@ -2705,10 +2938,652 @@ function refreshIfStale() {
   if (dayChanged) toast("📅 날짜가 바뀌어서 오늘 기준으로 새로 불러왔어요");
 }
 
-function onResume() { checkUpdate(); refreshIfStale(); }
+function onResume() { checkUpdate(); refreshIfStale(); try { adminUI(); } catch (e) {} }
 document.addEventListener("visibilitychange", function () { if (!document.hidden) onResume(); });
 window.addEventListener("pageshow", function (e) { if (e.persisted) onResume(); });
 window.addEventListener("focus", onResume);
+
+/* ---------- 👤 내 이름 (처음 한 번 고르면 이 폰에 고정, 변경은 관리자 PIN) ---------- */
+function myName() { return sget("myName") || ""; }
+function nameDone() { return sget("nameOK") === "1" && !!myName(); }   // 이번 버전에서 직접 고른 적이 있는지
+var NM = { pick: "", confirm: false };
+
+function nmChips(names) {
+  var b = $("nmchips"); b.innerHTML = "";
+  (names || []).forEach(function (n) {
+    var c = el("button", "chip" + (n === NM.pick ? " on" : ""), n); c.type = "button";
+    c.onclick = function () { NM.pick = n; NM.confirm = false; $("nmgo").disabled = false; $("nmgo").textContent = NM.change ? "이 이름으로 바꾸기" : "이 이름으로 정하기"; $("nmmsg").textContent = ""; nmChips(names); };
+    b.appendChild(c);
+  });
+}
+
+// 첫 선택 / 관리자 변경 화면 전환
+function nmMode(change) {
+  NM.change = change;
+  $("nmttl").textContent = change ? "👤 바꿀 이름을 선택해 주세요" : "👤 본인 이름을 선택해 주세요";
+  var d = $("nmdesc"); d.innerHTML = "";
+  if (change) {
+    d.appendChild(document.createTextNode("지금 이름: "));
+    var nb = el("b", null, myName() || "-"); nb.style.color = "var(--text)"; d.appendChild(nb);
+    d.appendChild(el("br")); d.appendChild(document.createTextNode("새 이름으로 고정되고, 알림도 새 이름으로 와요."));
+  } else {
+    d.appendChild(document.createTextNode("처음 한 번만 선택해요. 선택하면 이 폰에 "));
+    var g = el("b", null, "고정"); g.style.color = "var(--accent)"; d.appendChild(g);
+    d.appendChild(document.createTextNode("되고, 바꾸려면 관리자에게 요청해야 해요."));
+  }
+  $("nmno").style.display = change ? "" : "none";
+  $("nmob").style.gridTemplateColumns = change ? "1fr 1.6fr" : "1fr";
+}
+// 🔒 관리자 PIN 확인 후 이름 바꾸기 (메뉴 → 내 이름, 알림 설정 → 이름 바꾸기)
+function openNameChange() {
+  nmMode(true);
+  NM.pick = ""; NM.confirm = false;
+  $("nmgo").disabled = true; $("nmgo").textContent = "이 이름으로 바꾸기"; $("nmmsg").textContent = "";
+  var cn = cget("names");
+  if (cn && cn.names) nmChips(cn.names);
+  call("getTeamNames").then(function (r) { if (r && r.names) { cset("names", r); PUSH.names = r.names; nmChips(r.names); } }).catch(function () {});
+  $("nmov").className = "ov on";
+}
+$("nmno").onclick = function () { $("nmov").className = "ov"; nmMode(false); };
+
+function nameAsk() {
+  if (nameDone()) return;   // 이미 직접 고른 사람만 통과 (예전에 알림 켠 사람도 한 번은 다시 고름)
+  if ($("app").style.display === "none") { setTimeout(nameAsk, 500); return; }   // PIN 화면이면 기다림
+  var o = document.querySelector(".ov.on");
+  if (o && o.id !== "nmov") { if (o.id === "pushov") closePush(); else { setTimeout(nameAsk, 800); return; } }   // 알림 창보다 이름이 먼저
+  nmMode(false);
+  NM.pick = ""; NM.confirm = false;
+  $("nmgo").disabled = true; $("nmgo").textContent = "이 이름으로 정하기"; $("nmmsg").textContent = "";
+  var cn = cget("names");
+  if (cn && cn.names) nmChips(cn.names);
+  call("getTeamNames").then(function (r) { if (r && r.names) { cset("names", r); PUSH.names = r.names; nmChips(r.names); } }).catch(function () {});
+  $("nmov").className = "ov on";
+}
+
+$("nmgo").onclick = function () {
+  if (!NM.pick) return;
+  if (!NM.confirm) {   // 한 번 더 확인
+    if (NM.change && NM.pick === myName()) { $("nmmsg").textContent = "지금 이름과 같아요. 다른 이름을 골라 주세요."; return; }
+    NM.confirm = true;
+    $("nmgo").textContent = "'" + NM.pick + "' 맞아요 (확정)";
+    $("nmmsg").textContent = "정한 뒤에는 직접 바꿀 수 없어요. 맞으면 한 번 더 눌러 주세요.";
+    return;
+  }
+  var wasChange = NM.change;
+  var old = sget("pushName");
+  sset("myName", NM.pick); sset("nameOK", "1");
+  if (wasChange || !sget("hoursName") || sget("hoursName") === old) sset("hoursName", NM.pick);
+  if (old && old !== NM.pick) {   // 예전에 다른 이름으로 알림을 켰으면 새 이름으로 다시 연결
+    sset("pushName", NM.pick);
+    if (window.OneSignalDeferred) window.OneSignalDeferred.push(async function (OS) { try { await OS.login(NM.pick); } catch (e) {} });
+    call("pushRegister", [NM.pick]).catch(function () {});
+  }
+  $("nmov").className = "ov";
+  toast(wasChange ? "👤 이름이 '" + NM.pick + "'(으)로 바뀌었어요" : "👤 " + NM.pick + " 님으로 정해졌어요");
+  devRegister(true);
+  nmMode(false);
+  if (cur === 0 && !SR.open) render();
+  setTimeout(pushAutoAsk, 800);
+};
+
+// 👥 알림 현황 (관리자)
+function openPushStatus() {
+  $("pslist").innerHTML = "";
+  $("pslist").appendChild(el("span", "hint", "불러오는 중…"));
+  $("psov").className = "ov on";
+  call("getPushStatus").then(function (r) {
+    var L = $("pslist"); L.innerHTML = "";
+    var a = el("div", "on"); a.appendChild(el("h5", null, "✅ 알림 켬 " + r.on.length + "명"));
+    r.on.forEach(function (x) { var p = el("span", "p", x.n); if (x.dev > 1) p.appendChild(el("small", null, "기기 " + x.dev)); a.appendChild(p); });
+    if (!r.on.length) a.appendChild(el("span", "hint", "아직 없어요"));
+    var b = el("div", "off"); b.appendChild(el("h5", null, "⚠️ 안 켬 " + r.off.length + "명"));
+    r.off.forEach(function (n) { b.appendChild(el("span", "p", n)); });
+    if (!r.off.length) b.appendChild(el("span", "hint", "모두 켰어요 👍"));
+    L.appendChild(a); L.appendChild(b);
+    L.appendChild(el("div", "hint", "'기기 2'는 같은 이름으로 폰이 2대 등록된 경우예요."));
+  }).catch(function (e) { $("pslist").innerHTML = ""; $("pslist").appendChild(el("div", "warn", "불러오기 실패: " + errText(e))); });
+}
+$("psno").onclick = function () { $("psov").className = "ov"; };
+$("psov").onclick = function (e) { if (e.target === this) $("psov").className = "ov"; };
+
+/* ---------- 🔔 폰 알림 (OneSignal) ----------
+ * ONESIGNAL_APP_ID 를 넣어야 켜짐 (비어 있으면 알림 관련 화면이 아예 안 보임)
+ * 알림 대상은 이름(external_id)으로 구분 → 서버(PushApp.gs)가 이름으로 보냄
+ */
+var ONESIGNAL_APP_ID = "fc4b5576-a46a-46d4-a11f-771e4928765a";   // ← OneSignal App ID
+var PUSH = { ready: false, pick: "", names: null };
+
+function pushStandaloneOk() {
+  var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var standalone = window.navigator.standalone === true || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+  return !ios || standalone;   // 아이폰은 홈 화면 앱에서만 알림 가능
+}
+
+function pushInit() {
+  if (!ONESIGNAL_APP_ID) return;
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  var sc = document.createElement("script");
+  sc.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
+  sc.defer = true;
+  document.head.appendChild(sc);
+  var dir = location.pathname.replace(/[^\/]*$/, "");   // 예: /bteam-app/
+  window.OneSignalDeferred.push(async function (OS) {
+    try {
+      await OS.init({
+        appId: ONESIGNAL_APP_ID,
+        safari_web_id: "web.onesignal.auto.4efa60d1-07b1-4ba2-89e8-693e25ede623",
+        serviceWorkerPath: dir.replace(/^\//, "") + "sw.js",
+        serviceWorkerParam: { scope: dir },
+        notifyButton: { enable: false },
+        welcomeNotification: { title: "제조1-B", message: "알림이 켜졌어요. 평일 아침 8시에 오늘 할 일을 알려드릴게요." }
+      });
+      PUSH.ready = true;
+      var n = sget("pushName");
+      if (n && OS.Notifications.permission) { try { await OS.login(n); } catch (e1) {} }
+      setTimeout(pushAutoAsk, 1500);   // 알림 안 켠 사람은 앱 열면 자동으로 창 띄움
+    } catch (e) { console.log("push init", e); }
+    if (cur === 0 && !SR.open) render();
+  });
+}
+
+// 알림 안 켠 사람에게 앱 열 때 자동으로 창 띄우기 ("나중에" 누르면 그날은 안 띄움)
+function pushAutoAsk() {
+  if (!ONESIGNAL_APP_ID || pushOn()) return;
+  if (!nameDone()) { setTimeout(pushAutoAsk, 3000); return; }   // 이름 먼저
+  if ($("app").style.display === "none") { setTimeout(pushAutoAsk, 2000); return; }   // PIN 화면이면 기다림
+  if (sget("pushLater") === ymdLocal()) return;
+  if (!pushStandaloneOk()) return;   // 아이폰 사파리 탭에서는 허용이 안 돼서 안 띄움
+  try { if (window.Notification && Notification.permission === "denied") return; } catch (e) {}
+  if (document.querySelector(".ov.on")) { setTimeout(pushAutoAsk, 3000); return; }   // 다른 창 떠 있으면 나중에
+  mnBackHide(); openPush();
+}
+
+function pushOn() {
+  try { return !!(sget("pushName") && window.Notification && Notification.permission === "granted"); } catch (e) { return false; }
+}
+
+// 금일 화면 위쪽 한 줄
+function pushRow() {
+  if (!ONESIGNAL_APP_ID) return null;
+  var r;
+  if (pushOn()) {
+    r = el("div", "pushrow on");
+    var t = el("span"); t.appendChild(document.createTextNode("🔔 알림 켜짐 · ")); t.appendChild(el("b", null, sget("pushName")));
+    r.appendChild(t);
+    r.appendChild(el("span", null, "변경 ›"));
+  } else {
+    r = el("div", "pushrow");
+    r.appendChild(el("span", null, "🔔 52시간·근무시간 놓치지 않게 알림 켜기"));
+    r.appendChild(el("span", null, "›"));
+  }
+  r.onclick = openPush;
+  return r;
+}
+
+function pushChips() {
+  var box = $("pushchips");
+  box.innerHTML = "";
+  var u = $("pushunlock"); u.innerHTML = "";
+  if (myName() && !PUSH.unlocked) {   // 이름 고정: 내 이름만 보여주고, 변경은 관리자 PIN
+    PUSH.pick = myName();
+    box.appendChild(el("span", "chip on", "👤 " + myName() + " (고정)"));
+    var lk = el("span", "hint", "이름이 틀렸으면 " + DEV_NAME + "에게 말해 주세요.");
+    if (false) lk.onclick = function () {
+      u.innerHTML = "";
+      var row = el("div", "row");
+      var ip = el("input"); ip.type = "password"; ip.inputMode = "numeric"; ip.placeholder = "관리자 PIN";
+      var ok = el("button", null, "확인"); ok.type = "button";
+      ok.onclick = function () {
+        ok.disabled = true;
+        call("checkAdmin", [ip.value.trim()]).then(function (r) {
+          ok.disabled = false;
+          if (r && r.ok) { PUSH.unlocked = true; pushChips(); $("pushmsg").textContent = "바꿀 이름을 고르고 '알림 허용'을 누르면 이 폰의 이름이 바뀌어요."; }
+          else $("pushmsg").textContent = (r && r.error) || "확인 실패";
+        }).catch(function (e) { ok.disabled = false; $("pushmsg").textContent = errText(e); });
+      };
+      row.appendChild(ip); row.appendChild(ok); u.appendChild(row);
+    };
+    u.appendChild(lk);
+    return;
+  }
+  (PUSH.names || []).forEach(function (n) {
+    var c = el("button", "chip" + (n === PUSH.pick ? " on" : ""), n);
+    c.type = "button";
+    c.onclick = function () { PUSH.pick = n; pushChips(); };
+    box.appendChild(c);
+  });
+}
+
+function openPush() {
+  PUSH.pick = myName() || sget("pushName") || "";
+  PUSH.unlocked = false;
+  var msg = $("pushmsg");
+  msg.textContent = "";
+  $("pushgo").disabled = false; $("pushgo").textContent = "알림 허용";
+  if (!pushStandaloneOk()) {
+    msg.textContent = "📱 아이폰은 홈 화면에 추가한 앱으로 열어야 알림을 받을 수 있어요. 홈 화면 아이콘으로 다시 열어서 눌러 주세요.";
+    $("pushgo").disabled = true;
+  } else if (!("Notification" in window)) {
+    msg.textContent = "이 브라우저는 알림을 지원하지 않아요. (아이폰은 iOS 16.4 이상, 갤럭시는 크롬으로 설치한 앱)";
+    $("pushgo").disabled = true;
+  }
+  var cn = cget("names");
+  if (!PUSH.names && cn && cn.names) PUSH.names = cn.names;
+  if (!PUSH.names && H.meta && H.meta.names) PUSH.names = H.meta.names;
+  if (PUSH.names) pushChips();
+  call("getTeamNames").then(function (r) {
+    if (r && r.names && r.names.length) { PUSH.names = r.names; cset("names", r); pushChips(); }
+  }).catch(function () {});
+  $("pushov").className = "ov on";
+}
+
+function closePush() { $("pushov").className = "ov"; }
+$("pushno").onclick = function () { sset("pushLater", ymdLocal()); closePush(); };   // 오늘은 다시 안 띄움
+$("pushov").onclick = function (e) { if (e.target === this) closePush(); };
+$("pushgo").onclick = function () {
+  var n = PUSH.pick;
+  if (!n) { $("pushmsg").textContent = "내 이름을 먼저 골라 주세요."; return; }
+  if (!PUSH.ready || !window.OneSignal) { $("pushmsg").textContent = "알림 준비 중이에요. 잠시 후 다시 눌러 주세요."; return; }
+  $("pushgo").disabled = true; $("pushgo").textContent = "허용 중…";
+  window.OneSignalDeferred.push(async function (OS) {
+    try {
+      await OS.login(n);
+      await OS.Notifications.requestPermission();
+      if (OS.Notifications.permission) {
+        try { await OS.User.PushSubscription.optIn(); } catch (e2) {}
+        sset("pushName", n);
+        sset("myName", n); sset("nameOK", "1"); PUSH.unlocked = false;
+        closePush();
+        toast("🔔 알림이 켜졌어요 · " + n);
+        call("pushRegister", [n]).catch(function () {});   // 누가 켰는지 시트에 기록
+      } else {
+        $("pushmsg").textContent = "알림이 허용되지 않았어요. 폰 설정 → 알림에서 '제조1-B'를 허용한 뒤 다시 눌러 주세요.";
+      }
+    } catch (e) {
+      $("pushmsg").textContent = "알림 설정 실패: " + (e && e.message ? e.message : e);
+    }
+    $("pushgo").disabled = false; $("pushgo").textContent = "알림 허용";
+    if (cur === 0 && !SR.open) render();
+  });
+};
+
+/* ---------- 📢 관리자 공지 ---------- */
+var NOTICE_ADMINS = ["고현우", "나영훈", "손성민"];   // 공지 보내기 버튼이 보이는 사람 (실제로 보내려면 관리자 PIN 필요)
+var NT = { from: "", pin: "" };
+
+function noticeCard() {
+  var n = store.notice;
+  if (!n || n.date !== ymdLocal()) return null;
+  if (!n.all) {   // 골라서 보낸 공지는 받는 사람(과 관리자)에게만 표시
+    var me = sget("pushName") || sget("hoursName") || "";
+    if ((n.to || []).indexOf(me) < 0 && NOTICE_ADMINS.indexOf(me) < 0) return null;
+  }
+  var c = el("div", "ntc");
+  var h = el("div", "h", n.title || "📢 공지");
+  h.appendChild(el("small", null, n.time + " · " + n.sender));
+  c.appendChild(h);
+  c.appendChild(el("div", "b", n.body));
+  return c;
+}
+
+function noticeIsAdmin() {
+  var me = myName() || sget("pushName") || "";
+  return NOTICE_ADMINS.indexOf(me) >= 0;
+}
+
+function noticeBtn() {
+  if (!noticeIsAdmin()) return null;
+  var b = el("button", "ntbtn", "📢 공지 보내기 (관리자)");
+  b.type = "button";
+  b.onclick = openNotice;
+  return b;
+}
+
+function ntChips() {
+  var f = $("ntfrom"); f.innerHTML = "";
+  NOTICE_ADMINS.forEach(function (n) {
+    var c = el("button", "chip" + (n === NT.from ? " on" : ""), n); c.type = "button";
+    c.onclick = function () { NT.from = n; ntChips(); ntPreview(); };
+    f.appendChild(c);
+  });
+}
+
+function openNotice() {
+  var me = myName() || sget("pushName") || "";
+  NT.from = NOTICE_ADMINS.indexOf(me) >= 0 ? me : "";
+  $("ntbody").value = "";
+  $("ntmsg").textContent = "알림을 켠 사람 전체의 폰에 바로 알림으로 가요.";
+  $("ntmsg").style.color = "";
+  $("ntgo").disabled = false; $("ntgo").textContent = "보내기";
+  ntChips(); ntPreview();
+  $("ntov").className = "ov on";
+  setTimeout(function () { try { $("ntbody").focus(); } catch (e) {} }, 200);
+}
+function closeNotice() { $("ntov").className = "ov"; }
+
+// 📢 공지 알림 모양 (서버 PushApp.gs noticeFmt_ 와 같은 규칙)
+// 제목 "📢 공지" / 내용 "쓴 내용⏎– 보낸 사람" (아이폰은 제목 밑에 "from 앱이름" 줄을 자동으로 붙임)
+function noticeFmt(body, sender) {
+  body = String(body || "").replace(/\r/g, "").trim();
+  return {
+    title: "📢 공지",
+    text: body + "\n– " + (sender || "")
+  };
+}
+function ntPreview() {
+  var P = $("ntpv"); P.innerHTML = "";
+  var body = $("ntbody").value.trim();
+  P.appendChild(el("div", "ic", "1B"));
+  var tx = el("div", "tx");
+  if (!body) { tx.appendChild(el("div", "e", "내용을 쓰면 폰에 이렇게 보여요")); P.appendChild(tx); return; }
+  var f = noticeFmt(body, NT.from || "보낸 사람");
+  tx.appendChild(el("div", "t", f.title));
+  tx.appendChild(el("div", "f", "from 제조1-B"));
+  tx.appendChild(el("div", null, f.text));
+  P.appendChild(tx);
+}
+$("ntbody").oninput = ntPreview;
+$("ntno").onclick = closeNotice;
+$("ntov").onclick = function (e) { if (e.target === this) closeNotice(); };
+// 🔒 메뉴 → 공지 보내기: 관리자 PIN 먼저 (매번 확인)
+var DEV_NAME = "손성민";   // 🛠 개발자 (이름 변경 요청 받는 사람)
+
+/* ---------- 🔑 관리자 모드 (관리자 PIN 확인 → 오늘 자정까지, 제목 빨강) ----------
+ * 켜져 있으면: 다른 사람 근무시간 입력 가능 (서버도 관리자 PIN으로 다시 확인), 공지 보내기 PIN 생략
+ */
+function adminOn() {
+  var u = +(sget("admUntil") || 0);
+  if (!u || u < Date.now() || !sget("admPin")) { if (u) { sdel("admUntil"); sdel("admPin"); } return false; }
+  return true;
+}
+function adminSet(pin) {
+  var d = new Date(); d.setHours(23, 59, 59, 0);
+  sset("admPin", pin); sset("admUntil", String(d.getTime()));
+  adminUI();
+}
+function adminOff() { sdel("admPin"); sdel("admUntil"); adminUI(); }
+function adminUI() {
+  var on = adminOn();
+  $("ttlbtn").className = on ? "adm" : "";
+  if ($("hname")) updNote();
+}
+function isOther(name) { return !!(name && myName() && name !== myName()); }
+function leaveLocked() { return isOther($("hname").value) && !adminOn(); }
+function openAdminGate(next) {
+  NT.next = next === "dev" ? "dev" : next === "mode" ? "mode" : "notice";
+  if (NT.next === "notice" && adminOn()) { NT.pin = sget("admPin"); openNotice(); mnBackShow("ntov"); return; }   // 관리자 모드면 PIN 생략
+  var dev = NT.next === "dev";
+  $("apttl").textContent = dev ? "🛠 개발자 PIN" : "🔒 관리자 PIN";
+  $("apdesc").textContent = dev ? "개발자 전용 메뉴예요." : NT.next === "mode" ? "관리자 모드는 오늘 자정까지 유지돼요.\n(다른 사람 연차류·칸 비우기 · 공지 보내기 PIN 생략)" : "공지 보내기는 관리자만 할 수 있어요.";
+  $("apdesc").style.whiteSpace = "pre-line";
+  $("appin").placeholder = dev ? "개발자 PIN" : "관리자 PIN";
+  NT.pin = "";
+  $("appin").value = ""; $("apmsg").textContent = "";
+  $("apgo").disabled = false; $("apgo").textContent = "확인";
+  $("apov").className = "ov on";
+  setTimeout(function () { try { $("appin").focus(); } catch (e) {} }, 200);
+}
+function closeAdminGate() { $("apov").className = "ov"; }
+$("apno").onclick = closeAdminGate;
+$("apov").onclick = function (e) { if (e.target === this) closeAdminGate(); };
+$("appin").onkeydown = function (e) { if (e.key === "Enter") $("apgo").click(); };
+$("apgo").onclick = function () {
+  var pin = $("appin").value.trim(), msg = $("apmsg");
+  msg.style.color = "var(--warn)";
+  var dev = NT.next === "dev";
+  if (!pin) { msg.textContent = (dev ? "개발자" : "관리자") + " PIN을 입력해 주세요."; return; }
+  $("apgo").disabled = true; $("apgo").textContent = "확인 중…";
+  call(dev ? "checkDev" : "checkAdmin", [pin]).then(function (r) {
+    $("apgo").disabled = false; $("apgo").textContent = "확인";
+    if (r && r.error) { msg.textContent = r.error; $("appin").value = ""; return; }
+    var back = $("apov").querySelector(".mnback"), fromMenu = back && back.style.display !== "none";
+    if (dev) { DV.pin = pin; closeAdminGate(); mnBackHide(); openDevPanel(); return; }
+    if (NT.next === "mode") { adminSet(pin); closeAdminGate(); mnBackHide(); toast("🔑 관리자 모드 켜짐 · 오늘 자정까지"); return; }   // 관리자 모드는 이 메뉴로만 켜짐 (공지 보내기로는 안 켜짐)
+    NT.pin = pin;
+    closeAdminGate(); mnBackHide();
+    openNotice();
+    if (fromMenu) mnBackShow("ntov");
+  }).catch(function (e) {
+    $("apgo").disabled = false; $("apgo").textContent = "확인";
+    msg.textContent = "확인 실패: " + errText(e);
+  });
+};
+$("ntgo").onclick = function () {
+  var msg = $("ntmsg");
+  msg.style.color = "var(--warn)";
+  var body = $("ntbody").value.trim(), pin = NT.pin || "";
+  if (!NT.from) { msg.textContent = "보낸 사람을 골라 주세요."; return; }
+  if (!body) { msg.textContent = "내용을 입력해 주세요."; return; }
+  if (!pin) { closeNotice(); openAdminGate(); return; }
+  $("ntgo").disabled = true; $("ntgo").textContent = "보내는 중…";
+  call("sendNotice", [{ pin: pin, sender: NT.from, title: "", body: body, to: [] }])   // 제목은 서버 기본값 "📢 제조1-B 공지", 받는 사람은 전체
+    .then(function (r) {
+      $("ntgo").disabled = false; $("ntgo").textContent = "보내기";
+      if (r && r.error) { msg.textContent = r.error; if (r.adminPin) { NT.pin = ""; if (adminOn()) adminOff(); } return; }
+      if (r.notice) store.notice = r.notice;
+      closeNotice();
+      toast("📢 공지를 보냈어요 · " + r.count + "명");
+      if (cur === 0 && !SR.open) render();
+    })
+    .catch(function (e) {
+      $("ntgo").disabled = false; $("ntgo").textContent = "보내기";
+      msg.textContent = "보내기 실패: " + errText(e);
+    });
+};
+
+/* ---------- ⚙️ 제목(제조1-B)을 누르면 메뉴: 알림 설정 · 공지 보내기(관리자) ---------- */
+function openMenu() {
+  var L = $("mnlist");
+  L.innerHTML = "";
+  function item(t, sub, fn, ov) {
+    var b = el("button"); b.type = "button";
+    b.appendChild(el("span", null, t));
+    if (sub) b.appendChild(el("small", null, sub));
+    b.onclick = function () { closeMenu(); mnBackHide(); fn(); if (ov) mnBackShow(ov); };
+    L.appendChild(b);
+  }
+  if (myName()) item("👤 내 이름", myName() + " (고정)", function () { toast("이름이 틀렸으면 " + DEV_NAME + "에게 말해 주세요"); });
+  if (ONESIGNAL_APP_ID) item("🔔 알림 설정", pushOn() ? "켜짐" : "꺼짐", openPush, "pushov");
+  if (noticeIsAdmin()) item("🔑 관리자 모드", adminOn() ? "켜짐 · 누르면 끄기" : "꺼짐", function () {
+    if (adminOn()) { adminOff(); toast("🔑 관리자 모드 꺼짐"); } else openAdminGate("mode");
+  }, adminOn() ? null : "apov");
+  if (noticeIsAdmin()) item("📢 공지 보내기", "관리자", function () { openAdminGate("notice"); }, "apov");
+  if (noticeIsAdmin() && ONESIGNAL_APP_ID) item("👥 알림 현황", "누가 켰는지", openPushStatus);   // 알림 현황은 아래쪽에 "← 메뉴로" 버튼
+  item("🔄 앱 새로 불러오기", "v" + APP_VER.slice(5).replace("-", "."), function () { location.reload(); });
+  item("🛠 Developer", "개발자", function () { openAdminGate("dev"); }, "apov");
+  L.lastChild.className = "dev";
+  $("mnov").className = "ov on";
+}
+function closeMenu() { $("mnov").className = "ov"; }
+
+/* ---------- 📱 이 폰 등록 (팀 기기 목록용) + 원격 이름 변경 받기 ---------- */
+function devInfo() {
+  var ua = navigator.userAgent;
+  var standalone = window.navigator.standalone === true || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+  var k = /iphone|ipad|ipod/i.test(ua) ? "아이폰" : /android/i.test(ua) ? (/samsung|SM-/i.test(ua) ? "갤럭시" : "안드로이드") : "PC";
+  return { kind: k + (standalone ? " 앱" : " 브라우저"), ver: "v" + APP_VER.slice(5).replace("-", ".") + (IS_TEST ? " 테스트" : "") };
+}
+// 이름을 정했을 때 + 앱 버전이 바뀌었을 때만 한 번 보냄 (앱 열 때마다 보내지 않음)
+function devRegister(force) {
+  var n = myName();
+  if (!n) return;
+  var key = n + "|" + APP_VER;
+  if (!force && sget("devReg") === key) return;
+  call("deviceRegister", [n, devInfo()]).then(function () { sset("devReg", key); }).catch(function () {});
+}
+var RN = { busy: "" };
+// 앱 화면이 뜬 뒤에 적용 (앱 여는 중에 온 경우 대비)
+function remoteRenameLater(rn) {
+  if ($("app").style.display === "none") { setTimeout(function () { remoteRenameLater(rn); }, 800); return; }
+  setTimeout(function () { applyRemoteRename(rn); }, 300);
+}
+function applyRemoteRename(rn) {
+  var to = rn && rn.to;
+  if (!to || RN.busy === to) return;
+  RN.busy = to;
+  var old = myName();
+  if (to !== old) {
+    sset("myName", to); sset("nameOK", "1");
+    if (!sget("hoursName") || sget("hoursName") === old) sset("hoursName", to);
+    if (sget("pushName")) {
+      sset("pushName", to);
+      if (window.OneSignalDeferred) window.OneSignalDeferred.push(async function (OS) { try { await OS.login(to); } catch (e) {} });
+      call("pushRegister", [to]).catch(function () {});
+    }
+    if ($("nmov").className.indexOf("on") >= 0) { $("nmov").className = "ov"; nmMode(false); }
+    toast("🛠 이름이 '" + to + "'(으)로 바뀌었어요");
+    if (cur === 0 && !SR.open) render();
+  } else sset("nameOK", "1");
+  call("deviceRegister", [to, devInfo()]).then(function () { sset("devReg", to + "|" + APP_VER); RN.busy = ""; }).catch(function () { RN.busy = ""; });
+}
+
+/* ---------- 📱 팀 기기 목록 (Developer → 개발자 PIN) ---------- */
+var DL = { rows: [], names: [], open: "", pick: "", forget: "" };
+function openDevList() {
+  $("dlov").className = "ov on";
+  $("dllist").innerHTML = ""; $("dllist").appendChild(el("span", "hint", "불러오는 중…"));
+  call("devList", [DV.pin]).then(function (r) {
+    if (r && r.error) { dlErr(r.error); return; }
+    DL.rows = r.rows || []; DL.names = r.names || []; DL.open = ""; DL.pick = ""; DL.forget = "";
+    dlRender();
+  }).catch(function (e) { dlErr("불러오기 실패: " + errText(e)); });
+}
+function dlErr(t) { var L = $("dllist"); L.innerHTML = ""; var w = el("div", "warn", t); w.style.whiteSpace = "pre-line"; L.appendChild(w); }
+function dlRender() {
+  var L = $("dllist"); L.innerHTML = "";
+  if (!DL.rows.length) { L.appendChild(el("span", "hint", "아직 등록된 폰이 없어요. 업데이트 후 앱을 연 폰부터 나와요.")); return; }
+  var cnt = {}; DL.rows.forEach(function (r) { cnt[r.n] = (cnt[r.n] || 0) + 1; });
+  var me = devId();
+  DL.rows.forEach(function (r) {
+    var mine = r.dev === me;
+    var c = el("div", "dlc" + (mine ? " mine" : ""));
+    var h = el("div", "h"); h.appendChild(document.createTextNode(r.n)); h.appendChild(el("small", null, "기기-" + r.dev));
+    if (mine) h.appendChild(el("span", "tg", "이 폰"));
+    if (cnt[r.n] > 1) h.appendChild(el("span", "tg w", "같은 이름 " + cnt[r.n] + "대"));
+    c.appendChild(h);
+    c.appendChild(el("div", "m", [r.kind || "-", r.push ? "🔔 알림 켬" : "🔕 알림 안 켬", r.ver || "", r.at || ""].filter(Boolean).join(" · ")));
+    if (r.pend) {
+      var p = el("div", "pend", "⏳ '" + r.pend + "'(으)로 바꾸기 예약됨\n그 폰에서 앱을 열면 바뀌어요");
+      c.appendChild(p);
+    }
+    var bt = el("div", "bt");
+    function btn(t, cls, fn) { var b = el("button", cls, t); b.type = "button"; b.onclick = function () { fn(b); }; bt.appendChild(b); return b; }
+    var msg = el("div", "em");
+    if (r.pend) btn("예약 취소", null, function (b) { b.disabled = true; dlDo("devRenameCancel", [DV.pin, r.dev], msg, "예약을 취소했어요"); });
+    btn(DL.open === r.dev ? "닫기" : "이름 바꾸기", null, function () {
+      if (mine) { closeDevList(); openNameChange(); return; }   // 이 폰은 바로 바꾸기
+      DL.open = DL.open === r.dev ? "" : r.dev; DL.pick = ""; DL.forget = ""; dlRender();
+    });
+    btn(DL.forget === r.dev ? "한 번 더 누르면 빼기" : "목록에서 빼기", "x", function (b) {
+      if (DL.forget !== r.dev) { DL.forget = r.dev; DL.open = ""; dlRender(); return; }
+      b.disabled = true; dlDo("devForget", [DV.pin, r.dev], msg, "목록에서 뺐어요");
+    });
+    c.appendChild(bt);
+    if (DL.open === r.dev) {
+      var ch = el("div", "chips");
+      DL.names.forEach(function (n) {
+        if (n === r.n) return;
+        var b = el("button", "chip" + (n === DL.pick ? " on" : ""), n); b.type = "button";
+        b.onclick = function () { DL.pick = n; dlRender(); };
+        ch.appendChild(b);
+      });
+      c.appendChild(ch);
+      if (DL.pick) {
+        var bt2 = el("div", "bt");
+        var go = el("button", "go", "'" + r.n + "' → '" + DL.pick + "' 바꾸기 예약"); go.type = "button";
+        go.onclick = function () { go.disabled = true; dlDo("devRename", [DV.pin, r.dev, DL.pick], msg, "예약했어요 · 그 폰에서 앱을 열면 바뀌어요"); };
+        bt2.appendChild(go); c.appendChild(bt2);
+      }
+    }
+    c.appendChild(msg);
+    L.appendChild(c);
+  });
+  var foot = el("div", "hint", "이 폰은 바로 바뀌고, 다른 폰은 앱을 열 때 바뀌어요.");
+  foot.style.wordBreak = "keep-all"; L.appendChild(foot);
+}
+function dlDo(fn, args, msg, okText) {
+  msg.textContent = "";
+  call(fn, args).then(function (r) {
+    if (r && r.error) { msg.textContent = r.error; dlRender(); return; }
+    toast("📱 " + okText);
+    openDevList();
+  }).catch(function (e) { msg.textContent = "실패: " + errText(e); });
+}
+function closeDevList() { $("dlov").className = "ov"; }
+$("dlno").onclick = closeDevList;
+$("dlback").onclick = function () { closeDevList(); openDevPanel(); };
+$("dlov").onclick = function (e) { if (e.target === this) closeDevList(); };
+
+/* ---------- 🛠 Developer (개발자 PIN 확인 후, 이 폰에서만) ---------- */
+var DV = { reset: false, pin: "" };
+function openDevPanel() {
+  DV.reset = false;
+  var I = $("dvinfo"); I.innerHTML = "";
+  var perm = "-";
+  try { perm = window.Notification ? ({ granted: "허용", denied: "거절", "default": "안 정함" })[Notification.permission] || Notification.permission : "지원 안 함"; } catch (e) {}
+  var standalone = window.navigator.standalone === true || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+  [["이 폰 이름", myName() || "(없음)"],
+   ["알림", (pushOn() ? "켜짐" : "꺼짐") + " · 권한 " + perm + (sget("pushName") ? " · " + sget("pushName") : "")],
+   ["기기 번호", "기기-" + devId()],
+   ["버전", "v" + APP_VER.slice(5).replace("-", ".") + (IS_TEST ? " (테스트)" : "")],
+   ["실행", standalone ? "홈 화면 앱" : "브라우저"]
+  ].forEach(function (x) { I.appendChild(el("span", null, x[0])); I.appendChild(el("b", null, x[1])); });
+
+  var L = $("dvlist"); L.innerHTML = ""; $("dvmsg").textContent = ""; $("dvmsg").style.color = "";
+  function item(t, sub, fn) {
+    var b = el("button"); b.type = "button";
+    b.appendChild(el("span", null, t)); b.appendChild(el("small", null, sub));
+    b.onclick = function () { fn(b); };
+    L.appendChild(b); return b;
+  }
+  item("👤 이 폰 이름 바꾸기", myName() || "-", function () { $("dvov").className = "ov"; openNameChange(); });
+  item("📱 팀 기기 목록", "원격 이름 변경", function () { $("dvov").className = "ov"; openDevList(); });
+  if (ONESIGNAL_APP_ID) item("🔁 알림 다시 연결", "알림이 안 올 때", function (b) {
+    var n = myName();
+    if (!n || !pushOn()) { $("dvmsg").style.color = "var(--warn)"; $("dvmsg").textContent = "이 폰은 알림이 꺼져 있어요.\n🔔 알림 설정에서 먼저 켜 주세요."; return; }
+    b.disabled = true; $("dvmsg").style.color = ""; $("dvmsg").textContent = "다시 연결 중…";
+    if (window.OneSignalDeferred) window.OneSignalDeferred.push(async function (OS) { try { await OS.login(n); await OS.User.PushSubscription.optIn(); } catch (e) {} });
+    call("pushRegister", [n]).then(function () { b.disabled = false; $("dvmsg").textContent = "✅ '" + n + "' 이름으로 다시 연결했어요."; })
+      .catch(function (e) { b.disabled = false; $("dvmsg").style.color = "var(--warn)"; $("dvmsg").textContent = "연결 실패: " + errText(e); });
+  });
+  item("🧹 이 폰 앱 초기화", "PIN·이름 다시 입력", function (b) {
+    if (!DV.reset) {
+      DV.reset = true;
+      b.firstChild.textContent = "🧹 한 번 더 누르면 초기화";
+      b.lastChild.textContent = "확인";
+      b.style.borderColor = "var(--warn)"; b.style.color = "var(--warn)";
+      $("dvmsg").style.color = "var(--warn)";
+      $("dvmsg").textContent = "이 폰에 저장된 PIN·이름·화면 기록이 지워지고\n처음 화면부터 다시 시작해요.\n(시트 데이터는 그대로예요)";
+      return;
+    }
+    try {
+      var ks = [];
+      for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && k.indexOf(SP) === 0 && (SP || k.indexOf("t_") !== 0)) ks.push(k); }
+      ks.forEach(function (k) { localStorage.removeItem(k); });
+    } catch (e) {}
+    location.reload();
+  });
+  $("dvov").className = "ov on";
+}
+function closeDev() { $("dvov").className = "ov"; }
+$("dvno").onclick = closeDev;
+$("dvback").onclick = function () { closeDev(); openMenu(); };
+$("dvov").onclick = function (e) { if (e.target === this) closeDev(); };
+// 메뉴에서 연 창 위쪽에 "← 메뉴로" (닫기는 그대로 바로 닫힘)
+function mnBackShow(id) {
+  var box = $(id).querySelector(".box"), b = box.querySelector(".mnback");
+  if (!b) {
+    b = el("button", "mnback", "← 메뉴로"); b.type = "button";
+    b.onclick = function () { $(id).className = "ov"; openMenu(); };
+    box.insertBefore(b, box.firstChild);
+  }
+  b.style.display = "";
+}
+function mnBackHide() { [].forEach.call(document.querySelectorAll(".mnback"), function (b) { b.style.display = "none"; }); }
+$("psback").onclick = function () { $("psov").className = "ov"; openMenu(); };
+$("ttlbtn").onclick = openMenu;
+$("mnno").onclick = closeMenu;
+$("mnov").onclick = function (e) { if (e.target === this) closeMenu(); };
 
 // 📱 갤럭시(안드로이드) 홈 화면 앱 설치용 (캐시 안 함)
 if ("serviceWorker" in navigator) {
@@ -2723,6 +3598,10 @@ function boot() {
     document.title = "제조1-B 테스트";
   }
   checkUpdate();
+  try { pushInit(); } catch (ep) {}
+  try { adminUI(); } catch (ea) {}   // 🔑 관리자 모드면 제목 빨강
+  setTimeout(nameAsk, 300);   // 👤 이름 고르기가 제일 먼저
+  setTimeout(function () { if (nameDone()) devRegister(); }, 6000);   // 📱 기기 목록 등록 (버전 바뀔 때 한 번, 화면 로딩 끝난 뒤)
   if (lockLeft() > 0) { showLocked(); return; }
   var p = getPin();
   if (!p) { setGate("enter", "PIN을 입력해 주세요."); return; }
