@@ -175,10 +175,15 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .upv b{color:#7aa6ff}
 .upn{list-style:none;margin:18px 0 0;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);text-align:left;font-size:14px;line-height:1.7;color:#dbe3ef}
 .upn:empty{display:none}
-.upn li{border:0;padding:0;margin:0}
+.upn li{border:0;padding:0 0 0 24px;margin:0;position:relative;word-break:keep-all}
 .upn li+li{border-top:1px solid rgba(255,255,255,.08);padding-top:4px;margin-top:4px}
-.upn li::before{content:"✨ "}
+.upn li+li::before{top:4px}
+.upn li::before{content:"✨";position:absolute;left:0}
 .ups{margin-top:16px;font-size:13px;color:#9fb0c8}
+#upok{display:none;width:100%;margin-top:22px;padding:14px;border:0;border-radius:14px;background:#2f6fed;color:#fff;font-size:16px;font-weight:800;font-family:inherit;box-shadow:0 8px 24px rgba(47,111,237,.35)}
+#upov.ok #upok{display:block;animation:upin .35s ease-out}
+.upnh{margin:18px 0 -10px;font-size:13px;font-weight:700;color:#9fb0c8;text-align:left;padding-left:4px}
+@keyframes upin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 #toast{white-space:pre-line;position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translate(-50%,-160%);z-index:60;width:max-content;max-width:92%;padding:12px 18px;border-radius:12px;background:var(--ok);color:#fff;font-size:15px;font-weight:700;line-height:1.4;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:transform .25s ease;pointer-events:none}
 #toast.on{transform:translate(-50%,0)}
 #toast.bad{background:var(--warn)}
@@ -565,8 +570,10 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     </div>
     <div class="upt" id="upttl">새 버전이 나왔어요</div>
     <div class="upv"><span id="upfrom"></span><b>→</b><span id="upto" class="new"></span></div>
+    <div class="upnh" id="upnh" style="display:none">이번에 바뀐 점</div>
     <ul class="upn" id="upnotes"></ul>
     <div class="ups" id="upsub">최신 버전으로 자동 업데이트하는 중…</div>
+    <button id="upok" type="button">확인</button>
   </div>
 </div>
 <div id="gate">
@@ -3026,8 +3033,8 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-19-10";
-var APP_NOTES = ["업데이트 화면이 새로 생겼어요", "다크모드 로고 · 알림 배너 정리"];   // ← 업데이트 화면에 보여줄 '바뀐 점' (한 줄에 하나, 짧게 · 비워도 됨)
+var APP_VER = "2026-10-19-11";
+var APP_NOTES = ["알림 꺼져 있으면 모든 탭에 배너", "알림 창 새 디자인 · 켜는 법 안내", "다크모드 로고 깔끔하게", "업데이트하면 바뀐 점 보여줌"];   // ← 업데이트 화면에 보여줄 '바뀐 점' (한 줄에 하나, 짧게 · 비워도 됨)
 var UPD = { busy: false, last: 0 };
 function verLabel(v) { return "v" + String(v).slice(5).replace("-", "."); }
 
@@ -3039,7 +3046,8 @@ function showUpdate(nv, notes) {
   $("upfrom").textContent = verLabel(APP_VER);
   $("upto").textContent = verLabel(nv);
   var ul = $("upnotes"); ul.innerHTML = "";
-  (notes || []).slice(0, 4).forEach(function (n) { if (n) ul.appendChild(el("li", null, String(n))); });
+  (notes || []).slice(0, 5).forEach(function (n) { if (n) ul.appendChild(el("li", null, String(n))); });
+  $("upnh").style.display = ul.children.length ? "" : "none";
   try { sset("updFrom", APP_VER); } catch (e) {}
   var o = $("upov");
   o.className = "on";
@@ -3060,7 +3068,7 @@ function updDone() {
   sset("lastVer", APP_VER);
   if (from) {
     sdel("updFrom");
-    if (from !== APP_VER) setTimeout(function () { toast("✨ " + verLabel(APP_VER) + " 최신 버전으로 업데이트됐어요"); }, 700);
+    if (from !== APP_VER) showUpdated(from);   // 다시 열린 뒤: 바뀐 점을 천천히 보고 [확인]
     return;
   }
   if (last && last !== APP_VER) showUpdated(last);
@@ -3070,15 +3078,16 @@ function showUpdated(from) {
   $("upfrom").textContent = verLabel(from);
   $("upto").textContent = verLabel(APP_VER);
   var ul = $("upnotes"); ul.innerHTML = "";
-  (APP_NOTES || []).slice(0, 4).forEach(function (n) { if (n) ul.appendChild(el("li", null, String(n))); });
+  (APP_NOTES || []).slice(0, 5).forEach(function (n) { if (n) ul.appendChild(el("li", null, String(n))); });
+  if (!ul.children.length) ul.appendChild(el("li", null, "자잘한 개선과 오류 수정"));
+  $("upnh").style.display = "";
   $("upsub").textContent = "최신 버전이 적용됐어요";
   var o = $("upov");
-  function close() { o.className = ""; o.onclick = null; }
-  o.onclick = close;   // 누르면 바로 닫힘
   o.className = "on fast";
   setTimeout(function () { o.className = "on fast go"; }, 60);
-  setTimeout(function () { o.className = "on fast go done"; $("upsub").textContent = "최신 버전이 적용됐어요 ✓"; }, 1000);
-  setTimeout(close, 3000);
+  setTimeout(function () { o.className = "on fast go done ok"; $("upsub").textContent = "최신 버전이 적용됐어요 ✓"; }, 1000);
+  // ⏸ 자동으로 안 닫힘 → 바뀐 점 읽고 [확인]
+  $("upok").onclick = function () { o.className = ""; };
 }
 
 function checkUpdate() {
