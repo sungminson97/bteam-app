@@ -241,6 +241,7 @@ li:first-child{border-top:0}
 .psnag{width:100%;margin-top:4px;padding:11px;border-radius:12px;border:1.5px solid #f5a524;background:#fff4e5;color:#8a4b00;font-size:14px;font-weight:800;font-family:inherit}
 @media (prefers-color-scheme:dark){.psnag{background:#2f2414;border-color:#c98a1c;color:#ffcf85}}
 #pslist .p small.ng{color:#c27400;font-weight:700}
+#hcur .stale{display:block;margin-top:4px;font-size:12px;color:var(--sub)}
 .pushbar{display:grid;grid-template-columns:1fr auto;align-items:center;gap:1px 10px;margin-top:8px;background:#fff4e5;border:1.5px solid #f5a524;border-radius:12px;padding:9px 12px;cursor:pointer}
 .pushbar .t{font-size:15px;font-weight:800;color:#8a4b00}
 .pushbar .s{grid-column:1;font-size:13px;color:#9a5b10}
@@ -2640,7 +2641,13 @@ function applyMeta(m, fromCache) {
 function loadHoursMeta(silent) {
   if (!H.meta) {
     var cm = cget("hours");
-    if (cm && cm.names) { applyMeta(cm, true); $("hcur").textContent = "현재 값 확인 중…"; }
+    if (cm && cm.names) {
+      applyMeta(cm, true);
+      // ⚡ 지난번에 받아둔 전원 입력값(grid)으로 현재값·달력을 바로 그림 → 서버 응답 오면 최신으로 덮어씀
+      var q0 = gridCell($("hname").value, $("hdate").value);
+      if (q0) { applyCell(q0); $("hcur").appendChild(el("span", "stale", "🔄 최신 확인 중…")); }
+      else $("hcur").textContent = "현재 값 확인 중…";
+    }
     else $("hmonth").textContent = "시트 기준 월 확인 중…";
   }
   var name0 = $("hname").value || sget("hoursName") || "";
@@ -2835,7 +2842,7 @@ function refreshCell() {
   var t = ++H.token;
   // ⚡ 미리 받아둔 전원 입력값으로 달력·현재값을 바로 그림 → 서버 응답(schedule·수식 여부)은 뒤에서 덮어씀
   var q = gridCell(name, date);
-  if (q) { applyCell(q); H.curSched = ""; }
+  if (q) { applyCell(q); H.curSched = ""; box.appendChild(el("span", "stale", "🔄 최신 확인 중…")); }
   else { box.textContent = "현재 값 확인 중…"; monLoading(name); }
   call("getHoursCell", [name, date])
     .then(function (r) {
@@ -3033,8 +3040,8 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-19-11";
-var APP_NOTES = ["알림 꺼져 있으면 모든 탭에 배너", "알림 창 새 디자인 · 켜는 법 안내", "다크모드 로고 깔끔하게", "업데이트하면 바뀐 점 보여줌"];   // ← 업데이트 화면에 보여줄 '바뀐 점' (한 줄에 하나, 짧게 · 비워도 됨)
+var APP_VER = "2026-10-20-1";
+var APP_NOTES = ["근무시간 탭 현재값이 바로 떠요"];   // ← 업데이트 화면에 보여줄 '바뀐 점' (한 줄에 하나, 짧게 · 비워도 됨)
 var UPD = { busy: false, last: 0 };
 function verLabel(v) { return "v" + String(v).slice(5).replace("-", "."); }
 
