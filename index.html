@@ -142,7 +142,7 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .okmsg{background:rgba(31,157,85,.14);color:var(--ok);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600}
 .wkmsg{background:rgba(47,111,237,.10);color:var(--accent);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;line-height:1.6;word-break:keep-all}
 .wkmsg small{color:var(--sub);font-weight:500}
-#toast{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translate(-50%,-160%);z-index:60;width:max-content;max-width:92%;padding:12px 18px;border-radius:12px;background:var(--ok);color:#fff;font-size:15px;font-weight:700;line-height:1.4;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:transform .25s ease;pointer-events:none}
+#toast{white-space:pre-line;position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translate(-50%,-160%);z-index:60;width:max-content;max-width:92%;padding:12px 18px;border-radius:12px;background:var(--ok);color:#fff;font-size:15px;font-weight:700;line-height:1.4;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:transform .25s ease;pointer-events:none}
 #toast.on{transform:translate(-50%,0)}
 #toast.bad{background:var(--warn)}
 .card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:12px 14px}
@@ -179,6 +179,26 @@ li:first-child{border-top:0}
 #opchips .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
 #opin{font-size:16px;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);width:100%;box-sizing:border-box}
 .pushrow{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--card);border:1px dashed var(--accent);border-radius:12px;padding:10px 14px;font-size:14px;font-weight:600;color:var(--accent);cursor:pointer}
+.pushrow.off{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px;background:#fff4e5;border:1.5px solid #f5a524;color:#8a4b00;padding:12px 14px}
+.pushrow.off .t{font-size:15px;font-weight:800}
+.pushrow.off .s{grid-column:1;font-size:13px;font-weight:500;color:#9a5b10;word-break:keep-all}
+.pushrow.off .go{grid-row:1/3;grid-column:2;background:#f5a524;color:#fff;border-radius:10px;padding:9px 14px;font-size:14px;font-weight:800;white-space:nowrap}
+@media (prefers-color-scheme:dark){.pushrow.off{background:#2f2414;border-color:#c98a1c;color:#ffcf85}.pushrow.off .s{color:#e8b56a}}
+.pben{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:10px}
+.pben li{display:grid;grid-template-columns:30px 1fr;align-items:start;font-size:15px;line-height:1.4}
+.pben .i{font-size:20px;line-height:1.2}
+.pben b{color:var(--accent)}
+.pben small{display:block;color:var(--sub);font-size:12.5px;margin-top:1px}
+.pnag{background:#fff4e5;border:1px solid #f5a524;color:#8a4b00;border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.5;word-break:keep-all}
+.pnag b{display:block;font-size:15px}
+@media (prefers-color-scheme:dark){.pnag{background:#2f2414;border-color:#c98a1c;color:#ffcf85}}
+.phelp{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.6}
+.phelp h5{margin:0 0 4px;font-size:14px}
+.phelp ol{margin:0;padding-left:20px}
+.phelp b{color:var(--accent)}
+.psnag{width:100%;margin-top:4px;padding:11px;border-radius:12px;border:1.5px solid #f5a524;background:#fff4e5;color:#8a4b00;font-size:14px;font-weight:800;font-family:inherit}
+@media (prefers-color-scheme:dark){.psnag{background:#2f2414;border-color:#c98a1c;color:#ffcf85}}
+#pslist .p small.ng{color:#c27400;font-weight:700}
 .pushrow.on{border-style:solid;border-color:var(--line);color:var(--sub);font-weight:500;font-size:13px;padding:7px 14px}
 .pushrow.on b{color:var(--text)}
 #pushchips .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -646,15 +666,22 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 
 <div class="ov" id="pushov">
   <div class="box">
-    <h3>🔔 52시간·근무시간 놓치지 않게 알림을 켜주세요</h3>
-    <p>매일 <b style="color:var(--accent)">아침 8시</b>에 이번 주 52시간까지 남은 시간·내 장비·업로드를, <b style="color:var(--accent)">퇴근 전(17:30)</b>엔 근무시간 미입력일 때 알려드려요.</p>
+    <div class="pnag" id="pushnag" style="display:none"></div>
+    <h3 id="pushttl">🔔 팀 공지, 폰으로 바로 받기</h3>
+    <ul class="pben">
+      <li><span class="i">📢</span><div><b>팀 공지</b>가 오면 바로 알림<small>앱을 안 열어도 폰 화면에 떠요</small></div></li>
+      <li class="nch"><span class="i">🌅</span><div><b>아침 8시</b> 오늘 할 일<small>업로드할 장비 · 이번 주 남은 근무시간</small></div></li>
+      <li class="nch"><span class="i">⏰</span><div><b>17:30</b> 근무시간 깜빡했을 때만<small>이미 입력했으면 안 와요</small></div></li>
+    </ul>
+    <p class="sub" id="pushsub">공지 말고는 하루 최대 2번이에요. 끄는 것도 언제든 돼요.</p>
+    <div class="phelp" id="pushhelp" style="display:none"></div>
     <div class="who">내 이름</div>
     <div class="chips" id="pushchips"><span class="hint">이름 불러오는 중…</span></div>
     <div id="pushunlock" class="unl"></div>
     <p class="sub" id="pushmsg"></p>
     <div class="ob">
       <button id="pushno" type="button">나중에</button>
-      <button id="pushgo" type="button" class="go" style="background:var(--accent);border-color:var(--accent)">알림 허용</button>
+      <button id="pushgo" type="button" class="go" style="background:var(--accent);border-color:var(--accent)">알림 받기</button>
     </div>
   </div>
 </div>
@@ -856,6 +883,7 @@ function rawCall(pin, fn, args, editPin) {
       var ms = Date.now() - t0;
       if (ms >= SLOW_MS) SPD.last = { rid: rid, ms: ms, fn: fn, args: a0, at: t0 };
       if (j && j.rn && fn === "getDashboardAll") remoteRenameLater(j.rn);   // 📱 개발자가 원격으로 이름 바꿈
+      if (j && j.nag && fn === "getDashboardAll") pushNagLater(j.nag);       // 📣 관리자가 "알림 켜 주세요" 요청
       return j;
     }, function (e) {
       if (prev && !SPD.last) SPD.last = prev;   // 이번에 못 보낸 지난 기록은 다음에 다시
@@ -1157,9 +1185,9 @@ function render() {
   if (d.error) { main.appendChild(el("div", "warn", d.error)); return; }
 
   $("upd").textContent = updTxt(d, "dash");
+  if (cur === 0 && !pushOn()) { var pr = pushRow(); if (pr) main.appendChild(pr); }   // 🔔 알림 안 켠 사람만 · 맨 위 (켠 뒤엔 제목 메뉴에서 변경)
   var lb = leaveBanner(cur);
   if (lb) main.appendChild(lb);
-  if (cur === 0 && !pushOn()) { var pr = pushRow(); if (pr) main.appendChild(pr); }   // 🔔 알림 안 켠 사람만 (켠 뒤엔 제목 메뉴에서 변경)
   if (d.missing && d.missing.length)
     main.appendChild(el("div", "warn", "⚠️ 열을 찾지 못한 공정: " + d.missing.join(", ")));
 
@@ -2933,7 +2961,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-19-2";
+var APP_VER = "2026-10-19-4";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
@@ -3082,21 +3110,50 @@ $("nmgo").onclick = function () {
 };
 
 // 👥 알림 현황 (관리자)
+// ⚡ 지난번 결과를 바로 보여주고, 뒤에서 최신으로 바꿈 (서버도 10분마다 미리 계산해 둠)
+function psRender(r, checking) {
+  var L = $("pslist"); L.innerHTML = "";
+  var a = el("div", "on"); a.appendChild(el("h5", null, "✅ 알림 켬 " + r.on.length + "명"));
+  r.on.forEach(function (x) { var p = el("span", "p", x.n); if (x.dev > 1) p.appendChild(el("small", null, "기기 " + x.dev)); a.appendChild(p); });
+  if (!r.on.length) a.appendChild(el("span", "hint", "아직 없어요"));
+  var b = el("div", "off"); b.appendChild(el("h5", null, "⚠️ 안 켬 " + r.off.length + "명"));
+  var nag = r.nag || [];
+  r.off.forEach(function (n) { var p = el("span", "p", n); if (nag.indexOf(n) >= 0) p.appendChild(el("small", "ng", "요청함")); b.appendChild(p); });
+  if (!r.off.length) b.appendChild(el("span", "hint", "모두 켰어요 👍"));
+  L.appendChild(a); L.appendChild(b);
+  // 📣 안 켠 사람에게 "켜 달라고 하기" → 그 사람이 앱을 열면 창이 뜸
+  var targets = r.off.filter(function (n) { return n !== myName(); });
+  if (targets.length && !checking) {
+    var nb = el("button", "psnag", nag.length && targets.every(function (n) { return nag.indexOf(n) >= 0; }) ? "📣 다시 요청하기 (" + targets.length + "명)" : "📣 안 켠 " + targets.length + "명에게 켜 달라고 하기");
+    nb.type = "button";
+    nb.onclick = function () {
+      nb.disabled = true; nb.textContent = "요청 중…";
+      call("pushNag", [targets]).then(function (x) {
+        if (x && x.error) throw new Error(x.error);
+        r.nag = x.nag || targets; try { sset("psCache", JSON.stringify(r)); } catch (e) {}
+        psRender(r, false);
+        toast("📣 " + targets.length + "명에게 요청했어요\n그 사람이 앱을 열면 알림 켜기 창이 떠요");
+      }).catch(function (e) { nb.disabled = false; nb.textContent = "📣 다시 시도"; toast("요청 실패: " + errText(e)); });
+    };
+    L.appendChild(nb);
+  }
+  L.appendChild(el("div", "hint", "'기기 2'는 같은 이름으로 폰이 2대 등록된 경우예요." + (nag.length ? "\n'요청함' = 켜 달라고 요청 보낸 사람 (켜면 자동으로 빠져요)" : "")));
+  L.lastChild.style.whiteSpace = "pre-line";
+  if (checking) L.appendChild(el("div", "hint", "🔄 최신 상태 확인 중…"));
+}
 function openPushStatus() {
-  $("pslist").innerHTML = "";
-  $("pslist").appendChild(el("span", "hint", "불러오는 중…"));
+  var old = null;
+  try { old = JSON.parse(sget("psCache") || "null"); } catch (e) {}
+  if (old && old.on && old.off) psRender(old, true);
+  else { $("pslist").innerHTML = ""; $("pslist").appendChild(el("span", "hint", "불러오는 중…")); }
   $("psov").className = "ov on";
   call("getPushStatus").then(function (r) {
-    var L = $("pslist"); L.innerHTML = "";
-    var a = el("div", "on"); a.appendChild(el("h5", null, "✅ 알림 켬 " + r.on.length + "명"));
-    r.on.forEach(function (x) { var p = el("span", "p", x.n); if (x.dev > 1) p.appendChild(el("small", null, "기기 " + x.dev)); a.appendChild(p); });
-    if (!r.on.length) a.appendChild(el("span", "hint", "아직 없어요"));
-    var b = el("div", "off"); b.appendChild(el("h5", null, "⚠️ 안 켬 " + r.off.length + "명"));
-    r.off.forEach(function (n) { b.appendChild(el("span", "p", n)); });
-    if (!r.off.length) b.appendChild(el("span", "hint", "모두 켰어요 👍"));
-    L.appendChild(a); L.appendChild(b);
-    L.appendChild(el("div", "hint", "'기기 2'는 같은 이름으로 폰이 2대 등록된 경우예요."));
-  }).catch(function (e) { $("pslist").innerHTML = ""; $("pslist").appendChild(el("div", "warn", "불러오기 실패: " + errText(e))); });
+    try { sset("psCache", JSON.stringify(r)); } catch (e) {}
+    psRender(r, false);
+  }).catch(function (e) {
+    if (old && old.on) { psRender(old, false); $("pslist").appendChild(el("div", "warn", "최신 확인 실패: " + errText(e))); return; }
+    $("pslist").innerHTML = ""; $("pslist").appendChild(el("div", "warn", "불러오기 실패: " + errText(e)));
+  });
 }
 $("psno").onclick = function () { $("psov").className = "ov"; };
 $("psov").onclick = function (e) { if (e.target === this) $("psov").className = "ov"; };
@@ -3148,7 +3205,6 @@ function pushAutoAsk() {
   if ($("app").style.display === "none") { setTimeout(pushAutoAsk, 2000); return; }   // PIN 화면이면 기다림
   if (sget("pushLater") === ymdLocal()) return;
   if (!pushStandaloneOk()) return;   // 아이폰 사파리 탭에서는 허용이 안 돼서 안 띄움
-  try { if (window.Notification && Notification.permission === "denied") return; } catch (e) {}
   if (document.querySelector(".ov.on")) { setTimeout(pushAutoAsk, 3000); return; }   // 다른 창 떠 있으면 나중에
   mnBackHide(); openPush();
 }
@@ -3167,9 +3223,12 @@ function pushRow() {
     r.appendChild(t);
     r.appendChild(el("span", null, "변경 ›"));
   } else {
-    r = el("div", "pushrow");
-    r.appendChild(el("span", null, "🔔 52시간·근무시간 놓치지 않게 알림 켜기"));
-    r.appendChild(el("span", null, "›"));
+    // 🔕 꺼진 사람: 눈에 띄게 + 오늘 공지가 있었으면 "못 받았어요"
+    r = el("div", "pushrow off");
+    var nt = store.notice && store.notice.date === ymdLocal();
+    r.appendChild(el("span", "t", pushDenied() ? "🔕 알림이 차단돼 있어요" : "🔕 알림이 꺼져 있어요"));
+    r.appendChild(el("span", "go", pushDenied() ? "켜는 법" : "켜기"));
+    r.appendChild(el("span", "s", nt ? "오늘 온 팀 공지를 폰으로 못 받았어요" : isChief() ? "팀 공지를 폰으로 못 받아요" : "팀 공지·근무시간 깜빡을 폰으로 못 받아요"));
   }
   r.onclick = openPush;
   return r;
@@ -3214,7 +3273,36 @@ function openPush() {
   PUSH.unlocked = false;
   var msg = $("pushmsg");
   msg.textContent = "";
-  $("pushgo").disabled = false; $("pushgo").textContent = "알림 허용";
+  $("pushgo").disabled = false; $("pushgo").textContent = "알림 받기";
+  // 📣 관리자가 켜 달라고 요청한 경우 맨 위에 표시
+  var ng = $("pushnag");
+  if (PUSH.nag && PUSH.nag.from) {
+    ng.innerHTML = "";
+    ng.appendChild(el("b", null, "👋 " + PUSH.nag.from + " 님이 알림을 켜 달래요"));
+    ng.appendChild(document.createTextNode("팀 공지를 폰으로 바로 받을 수 있게 켜 주세요."));
+    ng.style.display = "";
+  } else ng.style.display = "none";
+  [].forEach.call(document.querySelectorAll("#pushov .nch"), function (x) { x.style.display = isChief() ? "none" : ""; });   // 👔 총괄팀장은 공지만 받음
+  $("pushsub").textContent = isChief() ? "공지가 올 때만 와요. 끄는 것도 언제든 돼요." : "공지 말고는 하루 최대 2번이에요. 끄는 것도 언제든 돼요.";
+  // 🔕 예전에 '허용 안 함'을 눌러서 막힌 폰 → 설정에서 켜는 방법
+  var hp = $("pushhelp"), denied = pushDenied();
+  $("pushttl").textContent = denied ? "🔕 알림이 차단돼 있어요" : "🔔 팀 공지, 폰으로 바로 받기";
+  document.querySelector("#pushov .pben").style.display = denied ? "none" : "";   // 차단된 폰은 켜는 법만 짧게
+  $("pushsub").style.display = denied ? "none" : "";
+  if (denied) {
+    hp.innerHTML = "";
+    var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    hp.appendChild(el("h5", null, "예전에 '허용 안 함'을 눌러서 막혀 있어요.\n폰 설정에서 한 번만 켜 주세요."));
+    hp.lastChild.style.whiteSpace = "pre-line";
+    var ol = el("ol");
+    var steps = ios
+      ? [["", "아이폰 ", "설정", " 앱 열기"], ["", "", "알림", " → 제조1-B"], ["", "", "알림 허용", " 켜기"], ["", "앱으로 돌아와서 ", "다시 확인", " 누르기"]]
+      : [["", "홈 화면의 ", "제조1-B 아이콘", "을 길게 누르기"], ["", "", "ⓘ 앱 정보", " → 알림"], ["", "", "알림 허용", " 켜기"], ["", "앱으로 돌아와서 ", "다시 확인", " 누르기"]];
+    steps.forEach(function (x) { var li = el("li"); li.appendChild(document.createTextNode(x[1])); li.appendChild(el("b", null, x[2])); li.appendChild(document.createTextNode(x[3])); ol.appendChild(li); });
+    hp.appendChild(ol);
+    hp.style.display = "";
+    $("pushgo").textContent = "다시 확인";
+  } else hp.style.display = "none";
   if (!pushStandaloneOk()) {
     msg.textContent = "📱 아이폰은 홈 화면에 추가한 앱으로 열어야 알림을 받을 수 있어요. 홈 화면 아이콘으로 다시 열어서 눌러 주세요.";
     $("pushgo").disabled = true;
@@ -3232,12 +3320,24 @@ function openPush() {
   $("pushov").className = "ov on";
 }
 
-function closePush() { $("pushov").className = "ov"; }
+function closePush() { $("pushov").className = "ov"; PUSH.nag = null; }
+function pushDenied() { try { return !!(window.Notification && Notification.permission === "denied"); } catch (e) { return false; } }
+
+// 📣 관리자 요청 받음 → 알림이 꺼져 있으면 (요청 1번당 한 번) 알림 창을 띄움
+function pushNagLater(ng) {
+  if (!ng || !ng.at || !ONESIGNAL_APP_ID || pushOn()) return;
+  if (sget("nagSeen") === String(ng.at)) return;
+  if ($("app").style.display === "none" || !nameDone() || document.querySelector(".ov.on")) { setTimeout(function () { pushNagLater(ng); }, 2000); return; }
+  sset("nagSeen", String(ng.at));
+  PUSH.nag = ng;
+  mnBackHide(); openPush();
+}
 $("pushno").onclick = function () { sset("pushLater", ymdLocal()); closePush(); };   // 오늘은 다시 안 띄움
 $("pushov").onclick = function (e) { if (e.target === this) closePush(); };
 $("pushgo").onclick = function () {
   var n = PUSH.pick;
   if (!n) { $("pushmsg").textContent = "내 이름을 먼저 골라 주세요."; return; }
+  if (pushDenied()) { $("pushmsg").textContent = "아직 차단돼 있어요.\n위 순서대로 폰 설정에서 켠 다음 다시 눌러 주세요."; $("pushmsg").style.whiteSpace = "pre-line"; return; }
   if (!PUSH.ready || !window.OneSignal) { $("pushmsg").textContent = "알림 준비 중이에요. 잠시 후 다시 눌러 주세요."; return; }
   $("pushgo").disabled = true; $("pushgo").textContent = "허용 중…";
   window.OneSignalDeferred.push(async function (OS) {
@@ -3257,7 +3357,7 @@ $("pushgo").onclick = function () {
     } catch (e) {
       $("pushmsg").textContent = "알림 설정 실패: " + (e && e.message ? e.message : e);
     }
-    $("pushgo").disabled = false; $("pushgo").textContent = "알림 허용";
+    $("pushgo").disabled = false; $("pushgo").textContent = pushDenied() ? "다시 확인" : "알림 받기";
     if (cur === 0 && !SR.open) render();
   });
 };
