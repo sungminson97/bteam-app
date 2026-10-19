@@ -20,8 +20,9 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,"
 header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(12px + env(safe-area-inset-top)) 16px 8px;border-bottom:1px solid var(--line)}
 .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
+picture{display:flex;align-items:center;min-width:0}
 .logo{height:20px;width:auto;max-width:110px;object-fit:contain;display:block}
-@media (prefers-color-scheme:dark){.logo{background:#fff;padding:3px 7px;border-radius:6px;height:26px}}
+/* 🌙 다크모드: logo_dark.png(밝은 색 로고)로 바꿔서 흰 바탕 없이 */
 .sep{width:1px;height:18px;background:var(--line);flex:none}
 h1{font-size:17px;margin:0;white-space:nowrap;display:flex;flex-direction:column;line-height:1.2}
 #ver{font-size:10px;font-weight:500;color:var(--sub);margin-left:5px;letter-spacing:-.2px}
@@ -199,6 +200,11 @@ li:first-child{border-top:0}
 .psnag{width:100%;margin-top:4px;padding:11px;border-radius:12px;border:1.5px solid #f5a524;background:#fff4e5;color:#8a4b00;font-size:14px;font-weight:800;font-family:inherit}
 @media (prefers-color-scheme:dark){.psnag{background:#2f2414;border-color:#c98a1c;color:#ffcf85}}
 #pslist .p small.ng{color:#c27400;font-weight:700}
+.pushbar{display:grid;grid-template-columns:1fr auto;align-items:center;gap:1px 10px;margin-top:8px;background:#fff4e5;border:1.5px solid #f5a524;border-radius:12px;padding:9px 12px;cursor:pointer}
+.pushbar .t{font-size:15px;font-weight:800;color:#8a4b00}
+.pushbar .s{grid-column:1;font-size:13px;color:#9a5b10}
+.pushbar .go{grid-row:1/3;grid-column:2;background:#f5a524;color:#fff;border-radius:10px;padding:8px 14px;font-size:14px;font-weight:800;white-space:nowrap}
+@media (prefers-color-scheme:dark){.pushbar{background:#2f2414;border-color:#c98a1c}.pushbar .t{color:#ffcf85}.pushbar .s{color:#e8b56a}}
 .pushrow.on{border-style:solid;border-color:var(--line);color:var(--sub);font-weight:500;font-size:13px;padding:7px 14px}
 .pushrow.on b{color:var(--text)}
 #pushchips .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -462,7 +468,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 #gate{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
 .gbox{width:100%;max-width:360px;text-align:center;display:grid;gap:14px;justify-items:center}
 .glogo{height:28px;width:auto;max-width:150px;object-fit:contain}
-@media (prefers-color-scheme:dark){.glogo{background:#fff;padding:4px 9px;border-radius:6px}}
+
 .gtitle{font-size:22px;font-weight:800}
 .gicon{font-size:44px;line-height:1}
 #gmsg{margin:0;font-size:15px;line-height:1.6;color:var(--text)}
@@ -507,7 +513,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 <div id="ig"><div class="w" id="igw"></div></div>
 <div id="gate">
   <div class="gbox">
-    <img class="glogo" id="glogo" src="logo.png" alt="" onerror="this.style.display='none'">
+    <picture><source srcset="logo_dark.png" media="(prefers-color-scheme: dark)"><img class="glogo" id="glogo" src="logo.png" alt="" onerror="this.style.display='none'"></picture>
     <div class="gtitle">제조1-B</div>
     <div class="gicon" id="gicon">🔒</div>
     <p id="gmsg"></p>
@@ -524,7 +530,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 <header>
   <div class="top">
     <div class="brand">
-      <img class="logo" id="logo" src="logo.png" alt="" onerror="this.style.display='none';document.getElementById('sep').style.display='none';">
+      <picture><source srcset="logo_dark.png" media="(prefers-color-scheme: dark)"><img class="logo" id="logo" src="logo.png" alt="" onerror="this.style.display='none';document.getElementById('sep').style.display='none';"></picture>
       <div class="sep" id="sep"></div>
       <h1><span id="ttlbtn">제조1-B<small id="ver"></small></span> <span id="upd"></span><span id="testtag"></span></h1>
     </div>
@@ -543,6 +549,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     <div class="tab" id="t3">근무시간<span></span></div>
     <div class="tab" id="t4">연차 현황<span></span></div>
   </div>
+  <div id="pushbar" class="pushbar" style="display:none"></div>
   <div id="sbar" class="sbar" style="display:none">
     <input id="sq" type="search" inputmode="text" enterkeyhint="search" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="장비명·담당자·업체 (예: 373, 손성민)">
     <button id="sclose" type="button">닫기</button>
@@ -1185,7 +1192,7 @@ function render() {
   if (d.error) { main.appendChild(el("div", "warn", d.error)); return; }
 
   $("upd").textContent = updTxt(d, "dash");
-  if (cur === 0 && !pushOn()) { var pr = pushRow(); if (pr) main.appendChild(pr); }   // 🔔 알림 안 켠 사람만 · 맨 위 (켠 뒤엔 제목 메뉴에서 변경)
+  pushBar();
   var lb = leaveBanner(cur);
   if (lb) main.appendChild(lb);
   if (d.missing && d.missing.length)
@@ -1974,6 +1981,7 @@ function loadStats(force) {
 
 /* ---------- 탭 ---------- */
 function setTab(n) {
+  try { pushBar(); } catch (ePb) {}
   if (SR.open) closeSearch(true);
   cur = n;
   for (var i = 0; i < 7; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
@@ -2961,7 +2969,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-19-5";
+var APP_VER = "2026-10-19-7";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
@@ -2998,7 +3006,7 @@ function refreshIfStale() {
   if (dayChanged) toast("📅 날짜가 바뀌어서 오늘 기준으로 새로 불러왔어요");
 }
 
-function onResume() { checkUpdate(); refreshIfStale(); try { adminUI(); } catch (e) {} }
+function onResume() { checkUpdate(); refreshIfStale(); try { adminUI(); } catch (e) {} try { pushBar(); } catch (e2) {} }
 document.addEventListener("visibilitychange", function () { if (!document.hidden) onResume(); });
 window.addEventListener("pageshow", function (e) { if (e.persisted) onResume(); });
 window.addEventListener("focus", onResume);
@@ -3214,6 +3222,20 @@ function pushOn() {
 }
 
 // 금일 화면 위쪽 한 줄
+// 🔕 알림 안 켠 사람: 탭 아래 고정 배너 (어느 탭이든 · 스크롤해도 보임) / 켜면 바로 사라짐
+function pushBar() {
+  var b = $("pushbar");
+  if (!b) return;
+  if (!ONESIGNAL_APP_ID || pushOn() || $("app").style.display === "none") { b.style.display = "none"; return; }
+  var den = pushDenied();
+  b.innerHTML = "";
+  b.appendChild(el("span", "t", den ? "🔕 알림이 차단돼 있어요" : "🔕 알림이 꺼져 있어요"));
+  b.appendChild(el("span", "go", den ? "켜는 법" : "알림 켜기"));
+  b.appendChild(el("span", "s", "공지가 폰으로 안 와요"));
+  b.onclick = function () { mnBackHide(); openPush(); };
+  b.style.display = "";
+}
+
 function pushRow() {
   if (!ONESIGNAL_APP_ID) return null;
   var r;
@@ -3320,7 +3342,7 @@ function openPush() {
   $("pushov").className = "ov on";
 }
 
-function closePush() { $("pushov").className = "ov"; PUSH.nag = null; }
+function closePush() { $("pushov").className = "ov"; PUSH.nag = null; pushBar(); }
 function pushDenied() { try { return !!(window.Notification && Notification.permission === "denied"); } catch (e) { return false; } }
 
 // 📣 관리자 요청 받음 → 알림이 꺼져 있으면 (요청 1번당 한 번) 알림 창을 띄움
