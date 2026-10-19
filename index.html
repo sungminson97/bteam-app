@@ -2961,7 +2961,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-19-4";
+var APP_VER = "2026-10-19-5";
 var UPD = { busy: false, last: 0 };
 
 function checkUpdate() {
@@ -3278,8 +3278,8 @@ function openPush() {
   var ng = $("pushnag");
   if (PUSH.nag && PUSH.nag.from) {
     ng.innerHTML = "";
-    ng.appendChild(el("b", null, "👋 " + PUSH.nag.from + " 님이 알림을 켜 달래요"));
-    ng.appendChild(document.createTextNode("팀 공지를 폰으로 바로 받을 수 있게 켜 주세요."));
+    ng.appendChild(el("b", null, "📣 알림을 켜 주세요"));
+    ng.appendChild(document.createTextNode("팀 공지를 폰으로 바로 받을 수 있어요. (요청: " + PUSH.nag.from + ")"));
     ng.style.display = "";
   } else ng.style.display = "none";
   [].forEach.call(document.querySelectorAll("#pushov .nch"), function (x) { x.style.display = isChief() ? "none" : ""; });   // 👔 총괄팀장은 공지만 받음
