@@ -143,6 +143,47 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .okmsg{background:rgba(31,157,85,.14);color:var(--ok);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600}
 .wkmsg{background:rgba(47,111,237,.10);color:var(--accent);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;line-height:1.6;word-break:keep-all}
 .wkmsg small{color:var(--sub);font-weight:500}
+#upov{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(120% 90% at 50% 0%,#1e3a8a 0%,#0b1220 60%,#05080f 100%);color:#fff;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility 0s .35s}
+#upov.on{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s ease}
+.upin{width:100%;max-width:340px;text-align:center;transform:translateY(14px) scale(.97);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+#upov.on .upin{transform:none}
+.uplogo picture{justify-content:center}
+.uplogo img{height:22px;width:auto;opacity:.9}
+.upring{position:relative;width:112px;height:112px;margin:28px auto 20px}
+.upring::after{content:"";position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle,rgba(122,166,255,.28),rgba(122,166,255,0) 70%)}
+#upov.on .upring::after{animation:uppulse 1.6s ease-in-out infinite}
+.upring svg{width:100%;height:100%;overflow:visible}
+.upring circle{fill:none;stroke-width:6}
+.upring .trk{stroke:rgba(255,255,255,.1)}
+.upring .arc{stroke:url(#upg);stroke-linecap:round;stroke-dasharray:314.16;stroke-dashoffset:314.16;transform:rotate(-90deg);transform-origin:60px 60px;transition:stroke-dashoffset 1.8s cubic-bezier(.4,.1,.2,1)}
+#upov.go .upring .arc{stroke-dashoffset:0}
+#upov.fast .upring .arc{transition-duration:.9s}
+.upring .arw,.upring .chk{fill:none;stroke:#fff;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.upring .arw{transition:opacity .25s}
+#upov.on .upring .arw{animation:uprise 1.1s ease-in-out infinite}
+.upring .chk{stroke-dasharray:60;stroke-dashoffset:60;opacity:0}
+#upov.on.done .upring .arw{opacity:0;animation:none}
+#upov.done .upring .chk{opacity:1;stroke-dashoffset:0;transition:stroke-dashoffset .45s cubic-bezier(.3,1.4,.5,1) .05s,opacity .1s}
+#upov.on.done .upring::after{animation:upflash .6s ease-out forwards}
+@keyframes uprise{0%{transform:translateY(8px);opacity:0}30%{opacity:1}70%{opacity:1}100%{transform:translateY(-10px);opacity:0}}
+@keyframes uppulse{0%,100%{transform:scale(.85);opacity:.6}50%{transform:scale(1.05);opacity:1}}
+@keyframes upflash{0%{transform:scale(.9);opacity:1}100%{transform:scale(1.6);opacity:0}}
+.upt{font-size:21px;font-weight:800;letter-spacing:-.3px}
+.upv{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;font-size:15px;font-weight:700}
+.upv span{padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.08);color:#aab4c3}
+.upv span.new{background:#2f6fed;color:#fff;box-shadow:0 0 0 4px rgba(47,111,237,.25)}
+.upv b{color:#7aa6ff}
+.upn{list-style:none;margin:18px 0 0;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);text-align:left;font-size:14px;line-height:1.7;color:#dbe3ef}
+.upn:empty{display:none}
+.upn li{border:0;padding:0 0 0 24px;margin:0;position:relative;word-break:keep-all}
+.upn li+li{border-top:1px solid rgba(255,255,255,.08);padding-top:4px;margin-top:4px}
+.upn li+li::before{top:4px}
+.upn li::before{content:"✨";position:absolute;left:0}
+.ups{margin-top:16px;font-size:13px;color:#9fb0c8}
+#upok{display:none;width:100%;margin-top:22px;padding:14px;border:0;border-radius:14px;background:#2f6fed;color:#fff;font-size:16px;font-weight:800;font-family:inherit;box-shadow:0 8px 24px rgba(47,111,237,.35)}
+#upov.ok #upok{display:block;animation:upin .35s ease-out}
+.upnh{margin:18px 0 -10px;font-size:13px;font-weight:700;color:#9fb0c8;text-align:left;padding-left:4px}
+@keyframes upin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 #toast{white-space:pre-line;position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translate(-50%,-160%);z-index:60;width:max-content;max-width:92%;padding:12px 18px;border-radius:12px;background:var(--ok);color:#fff;font-size:15px;font-weight:700;line-height:1.4;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:transform .25s ease;pointer-events:none}
 #toast.on{transform:translate(-50%,0)}
 #toast.bad{background:var(--warn)}
@@ -511,6 +552,30 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 
 <!-- 🔒 잠금 화면 -->
 <div id="ig"><div class="w" id="igw"></div></div>
+<!-- 🚀 업데이트 화면 (#app 밖: PIN 화면 위에도 뜨게) -->
+<div id="upov" aria-live="polite">
+  <div class="upin">
+    <div class="uplogo"><picture><source srcset="logo_dark.png" media="(prefers-color-scheme: dark)"><img src="logo_dark.png" alt="" onerror="this.style.display='none'"></picture></div>
+    <div class="upring">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="upg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7aa6ff"/><stop offset="1" stop-color="#c9d8ff"/></linearGradient>
+          <filter id="upglow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <circle class="trk" cx="60" cy="60" r="50"/>
+        <circle class="arc" cx="60" cy="60" r="50" filter="url(#upglow)"/>
+        <g class="arw"><path d="M60 78 V44"/><path d="M45 57 L60 42 L75 57"/></g>
+        <path class="chk" d="M42 61 L55 74 L79 48"/>
+      </svg>
+    </div>
+    <div class="upt" id="upttl">새 버전이 나왔어요</div>
+    <div class="upv"><span id="upfrom"></span><b>→</b><span id="upto" class="new"></span></div>
+    <div class="upnh" id="upnh" style="display:none">이번에 바뀐 점</div>
+    <ul class="upn" id="upnotes"></ul>
+    <div class="ups" id="upsub">최신 버전으로 자동 업데이트하는 중…</div>
+    <button id="upok" type="button">확인</button>
+  </div>
+</div>
 <div id="gate">
   <div class="gbox">
     <picture><source srcset="logo_dark.png" media="(prefers-color-scheme: dark)"><img class="glogo" id="glogo" src="logo.png" alt="" onerror="this.style.display='none'"></picture>
@@ -771,7 +836,6 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 </div>
 
 <div id="toast"></div>
-
 <!-- 편집 PIN 입력창 -->
 <div class="ov" id="epov">
   <div class="box">
@@ -2969,8 +3033,62 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-19-7";
+var APP_VER = "2026-10-19-11";
+var APP_NOTES = ["알림 꺼져 있으면 모든 탭에 배너", "알림 창 새 디자인 · 켜는 법 안내", "다크모드 로고 깔끔하게", "업데이트하면 바뀐 점 보여줌"];   // ← 업데이트 화면에 보여줄 '바뀐 점' (한 줄에 하나, 짧게 · 비워도 됨)
 var UPD = { busy: false, last: 0 };
+function verLabel(v) { return "v" + String(v).slice(5).replace("-", "."); }
+
+// 🚀 새 버전 발견 → 멋있게 보여주고 자동으로 다시 열기
+function showUpdate(nv, notes) {
+  if (UPD.shown) return;
+  UPD.shown = true;
+  $("upttl").textContent = "새 버전이 나왔어요";
+  $("upfrom").textContent = verLabel(APP_VER);
+  $("upto").textContent = verLabel(nv);
+  var ul = $("upnotes"); ul.innerHTML = "";
+  (notes || []).slice(0, 5).forEach(function (n) { if (n) ul.appendChild(el("li", null, String(n))); });
+  $("upnh").style.display = ul.children.length ? "" : "none";
+  try { sset("updFrom", APP_VER); } catch (e) {}
+  var o = $("upov");
+  o.className = "on";
+  setTimeout(function () { o.className = "on go"; }, 60);
+  setTimeout(function () { $("upsub").textContent = "거의 다 됐어요…"; }, 1100);
+  setTimeout(function () { o.className = "on go done"; $("upsub").textContent = "업데이트 완료 ✓"; }, 1900);
+  setTimeout(function () { location.replace(location.pathname + "?v=" + encodeURIComponent(nv)); }, 2600);
+}
+// 업데이트 뒤 처음 열렸을 때 한 번
+//  ① 앱을 켜 둔 채 새 버전을 찾은 경우: 업데이트 화면 → 다시 열림 → 완료 알림(토스트)
+//  ② 앱을 완전히 껐다 켜서 새 버전이 바로 열린 경우(아이폰에서 흔함): 지난번 버전과 비교해서 '업데이트 완료' 화면을 짧게
+function updDone() {
+  var from = sget("updFrom"), last = sget("lastVer");
+  if (!last) {   // 예전 버전 앱은 lastVer가 없음 → 기기 등록 기록(이름|버전)에서 지난 버전 찾기
+    var dr = String(sget("devReg") || "").split("|")[1] || "";
+    if (/^\d{4}-\d{2}-\d{2}-\d+$/.test(dr)) last = dr;
+  }
+  sset("lastVer", APP_VER);
+  if (from) {
+    sdel("updFrom");
+    if (from !== APP_VER) showUpdated(from);   // 다시 열린 뒤: 바뀐 점을 천천히 보고 [확인]
+    return;
+  }
+  if (last && last !== APP_VER) showUpdated(last);
+}
+function showUpdated(from) {
+  $("upttl").textContent = "업데이트 완료!";
+  $("upfrom").textContent = verLabel(from);
+  $("upto").textContent = verLabel(APP_VER);
+  var ul = $("upnotes"); ul.innerHTML = "";
+  (APP_NOTES || []).slice(0, 5).forEach(function (n) { if (n) ul.appendChild(el("li", null, String(n))); });
+  if (!ul.children.length) ul.appendChild(el("li", null, "자잘한 개선과 오류 수정"));
+  $("upnh").style.display = "";
+  $("upsub").textContent = "최신 버전이 적용됐어요";
+  var o = $("upov");
+  o.className = "on fast";
+  setTimeout(function () { o.className = "on fast go"; }, 60);
+  setTimeout(function () { o.className = "on fast go done ok"; $("upsub").textContent = "최신 버전이 적용됐어요 ✓"; }, 1000);
+  // ⏸ 자동으로 안 닫힘 → 바뀐 점 읽고 [확인]
+  $("upok").onclick = function () { o.className = ""; };
+}
 
 function checkUpdate() {
   if (UPD.busy || Date.now() - UPD.last < 60000) return;   // 1분에 한 번만
@@ -2981,7 +3099,10 @@ function checkUpdate() {
     .then(function (t) {
       UPD.busy = false;
       var m = t.match(/var APP_VER = "([^"]+)"/);
-      if (m && m[1] !== APP_VER) location.replace(location.pathname + "?v=" + encodeURIComponent(m[1]));
+      if (!m || m[1] === APP_VER) return;
+      var notes = [];
+      try { var nm = t.match(/var APP_NOTES = (\[[^\n]*?\]);/); if (nm) notes = JSON.parse(nm[1]); } catch (en) {}
+      showUpdate(m[1], notes);
     })
     .catch(function () { UPD.busy = false; });
 }
@@ -3911,6 +4032,7 @@ function boot() {
     $("testtag").appendChild(el("span", "testtag", "🧪 테스트"));
     document.title = "제조1-B 테스트";
   }
+  updDone();     // ✨ 방금 업데이트됐으면 완료 알림
   checkUpdate();
   try { pushInit(); } catch (ep) {}
   try { adminUI(); } catch (ea) {}   // 🔑 관리자 모드면 제목 빨강
