@@ -244,6 +244,21 @@ li:first-child{border-top:0}
 @media (prefers-color-scheme:dark){.psnag{background:#2f2414;border-color:#c98a1c;color:#ffcf85}}
 #pslist .p small.ng{color:#c27400;font-weight:700}
 #hcur .stale{display:block;margin-top:4px;font-size:12px;color:var(--sub)}
+.prevmiss{background:rgba(229,72,77,.1);border:1.5px solid rgba(229,72,77,.45);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.5;color:var(--warn)}
+.prevmiss b{font-weight:800}
+.prevmiss .nm{display:inline-block;margin:6px 6px 0 0;padding:5px 11px;border-radius:999px;border:1px solid rgba(229,72,77,.45);background:var(--card);color:var(--warn);font-size:13px;font-weight:700;font-family:inherit}
+.prevmiss small{display:block;color:var(--sub);font-size:12px;margin-top:4px}
+.prevbn{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;background:rgba(229,72,77,.1);border:1.5px solid rgba(229,72,77,.5);border-radius:12px;padding:10px 14px;cursor:pointer}
+.prevbn .t{font-size:15px;font-weight:800;color:var(--warn)}
+.prevbn .s{grid-column:1;font-size:13px;color:var(--sub);word-break:keep-all}
+.prevbn .go{grid-row:1/3;grid-column:2;background:var(--warn);color:#fff;border-radius:10px;padding:8px 13px;font-size:14px;font-weight:800;white-space:nowrap}
+.oprec{margin-top:4px}
+.card.up.oprec{border-left-color:var(--accent)}
+.card.up.oprec .cnt{color:var(--accent)}
+.oprec li{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px}
+.oprec .who2{grid-column:1;font-size:12.5px;color:var(--sub)}
+.oprec .ed{grid-row:1/3;grid-column:2;padding:7px 12px;border-radius:999px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);font-size:13px;font-weight:700;font-family:inherit}
+#opclr{display:none;width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--warn);background:transparent;color:var(--warn);font-size:14px;font-weight:700;font-family:inherit}
 .pushbar{display:grid;grid-template-columns:1fr auto;align-items:center;gap:1px 10px;margin-top:8px;background:#fff4e5;border:1.5px solid #f5a524;border-radius:12px;padding:9px 12px;cursor:pointer}
 .pushbar .t{font-size:15px;font-weight:800;color:#8a4b00}
 .pushbar .s{grid-column:1;font-size:13px;color:#9a5b10}
@@ -631,6 +646,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 
 <section id="hours">
   <div id="hmiss" style="display:none"></div>
+  <div id="hprev" class="prevmiss" style="display:none"></div>
   <details id="hweek" class="wk" style="display:none"></details>
   <div class="form">
     <div id="htop" class="top1" style="display:none"></div>
@@ -699,11 +715,13 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 
 <div class="ov" id="opov">
   <div class="box">
-    <h3>👷 작업자 입력(FT)</h3>
+    <h3 id="opttl">👷 작업자 입력(FT)</h3>
     <div class="who" id="opwho"></div>
+    <p class="sub" id="opnow" style="display:none"></p>
     <div class="chips" id="opchips"></div>
     <input type="text" id="opin" inputmode="text" autocomplete="off" maxlength="20" placeholder="직접 입력 (목록에 없는 이름)">
-    <p class="sub">저장하면 26_장비_LOG 작업자(F열)에 들어가요. 이미 적힌 이름은 앱에서 바꾸지 않아요. 잘못 넣었으면 시트에서 고쳐 주세요.</p>
+    <p class="sub" id="opsub">저장하면 26_장비_LOG 작업자(F열)에 들어가요.<br>잘못 넣었으면 '최근 입력한 작업자'에서 고칠 수 있어요.</p>
+    <button id="opclr" type="button">🗑 작업자 비우기 (이 장비 작업 안 함)</button>
     <div class="ob">
       <button id="opno" type="button">취소</button>
       <button id="opgo" type="button" class="go">저장</button>
@@ -947,7 +965,7 @@ function rawCall(pin, fn, args, editPin) {
   SPD.last = null;
   var a0 = (fn === "getDashboardAll" || fn === "getEquipIndex") ? [args && args[0] === true] : [];
   var body = JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev,
-    me: myName(), adm: fn === "saveHours" && adminOn() ? sget("admPin") : "" });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
+    me: myName(), adm: (fn === "saveHours" || fn === "setOperator") && adminOn() ? sget("admPin") : "" });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
   return fetchJson(body)
     .catch(function (e) {
       if (!READ_FNS[fn]) throw e;
@@ -1260,6 +1278,7 @@ function render() {
 
   $("upd").textContent = updTxt(d, "dash");
   pushBar();
+  if (cur === 0) { var pb = prevBanner(); if (pb) main.appendChild(pb); }   // ⏰ 내가 어제 근무시간 안 넣었으면
   var lb = leaveBanner(cur);
   if (lb) main.appendChild(lb);
   if (d.missing && d.missing.length)
@@ -1303,6 +1322,7 @@ function applyDash(r) {
   if (r.ship) store.ship = r.ship;
   if (r.leave) store.leave = r.leave;
   store.notice = r.notice || null;
+  store.prevMiss = r.prevMiss || null;   // ⏰ 지난 근무일 근무시간 미입력
   $("d0").textContent = r.d0.label || "";
   $("d1").textContent = r.d1.label || "";
   schedBadge();
@@ -1629,6 +1649,7 @@ function renderUpload(d) {
 
   if (U.msg) {
     box.appendChild(el("div", U.msg.err ? "warn" : "okmsg", U.msg.t));
+    box.lastChild.style.whiteSpace = "pre-line";
     U.msg = null;
   }
 
@@ -1671,6 +1692,38 @@ function renderUpload(d) {
     card.appendChild(ul);
     box.appendChild(card);
   });
+
+  // ✏️ 최근 앱에서 입력한 작업자 (14일 · 잘못 넣었으면 수정/비우기)
+  if (d.recent && d.recent.length) {
+    var me = myName();
+    var rc = el("div", "card up oprec");
+    var rh = el("div", "hd");
+    rh.appendChild(el("span", "ttl", "✏️ 최근 입력한 작업자"));
+    rh.appendChild(el("span", "cnt", d.recent.length + "대"));
+    rc.appendChild(rh);
+    var rul = el("ul");
+    d.recent.forEach(function (x) {
+      var li = el("li");
+      var top = el("span");
+      var eqn = el("span", "eq tapn", x.n); eqn.onclick = function () { openEquip(x.n); };
+      top.appendChild(eqn);
+      top.appendChild(document.createTextNode(" → "));
+      top.appendChild(el("b", null, x.op));
+      li.appendChild(top);
+      var can = adminOn() || (me && (x.by === me || x.op === me));
+      if (can) {
+        var eb = el("button", "ed", "수정"); eb.type = "button";
+        eb.onclick = function () { openOp({ row: x.row, n: x.n, t: x.t }, d.opNames, x.op); };
+        li.appendChild(eb);
+      }
+      li.appendChild(el("span", "who2", x.at + " · " + (x.by ? x.by + " 입력" : "앱 입력")));
+      rul.appendChild(li);
+    });
+    rc.appendChild(rul);
+    rc.appendChild(el("div", "hint", "잘못 넣었으면 [수정]으로 바꾸거나 비울 수 있어요.\n(입력한 사람 · 그 이름 본인 · 관리자만)"));
+    rc.lastChild.style.whiteSpace = "pre-line";
+    box.appendChild(rc);
+  }
 }
 
 /* ---------- 👷 작업자 입력 (26_장비_LOG F열) ---------- */
@@ -1682,9 +1735,15 @@ function opPick(n) {
   Array.prototype.forEach.call($("opchips").children, function (c) { c.className = "chip" + (c.textContent === n ? " on" : ""); });
 }
 
-function openOp(it, names) {
-  OP.it = it; OP.pick = "";
+function openOp(it, names, prev) {
+  OP.it = it; OP.pick = ""; OP.prev = prev || "";
   $("opwho").textContent = it.n + (it.t ? " (" + it.t + ")" : "");
+  $("opttl").textContent = prev ? "✏️ 작업자 수정(FT)" : "👷 작업자 입력(FT)";
+  $("opnow").style.display = prev ? "" : "none";
+  $("opnow").textContent = prev ? "지금 적힌 작업자: " + prev : "";
+  $("opsub").style.display = prev ? "none" : "";
+  $("opclr").style.display = prev ? "block" : "none";
+  $("opclr").disabled = false; $("opclr").textContent = "🗑 작업자 비우기 (이 장비 작업 안 함)";
   var ch = $("opchips");
   ch.innerHTML = "";
   (names || []).forEach(function (n) {
@@ -1695,9 +1754,24 @@ function openOp(it, names) {
   });
   $("opin").value = "";
   $("opgo").disabled = false; $("opno").disabled = false;
-  $("opgo").textContent = "저장";
+  $("opgo").textContent = prev ? "이 이름으로 바꾸기" : "저장";
   $("opov").className = "ov on";
 }
+// 🗑 작업자 비우기 → 다시 '작업자 미입력' 목록으로
+$("opclr").onclick = function () {
+  var it = OP.it;
+  if (!it || !OP.prev) return;
+  $("opclr").disabled = true; $("opgo").disabled = true; $("opno").disabled = true;
+  $("opclr").textContent = "비우는 중…";
+  callEdit("setOperator", [it.row, it.n, "__CLEAR__", OP.prev])
+    .then(function (r) {
+      if (r && r.error) U.msg = { err: true, t: r.error };
+      else U.msg = { err: false, t: it.n + " 작업자를 비웠어요 ✔\n다시 '작업자 미입력' 목록에 나와요." };
+      toast((U.msg.err ? "⚠️ " : "✔ ") + U.msg.t, U.msg.err);
+      closeOp(); loadUpload();
+    })
+    .catch(function (e) { U.msg = { err: true, t: "비우기 실패: " + errText(e) }; toast("⚠️ " + U.msg.t, true); closeOp(); loadUpload(); });
+};
 
 function closeOp() { $("opov").className = "ov"; }
 $("opno").onclick = closeOp;
@@ -1710,10 +1784,10 @@ $("opgo").onclick = function () {
   if (!op) { toast("⚠️ 작업자를 고르거나 이름을 입력해 주세요.", true); return; }
   $("opgo").disabled = true; $("opno").disabled = true;
   $("opgo").textContent = "저장 중…";
-  callEdit("setOperator", [it.row, it.n, op])
+  callEdit("setOperator", OP.prev ? [it.row, it.n, op, OP.prev] : [it.row, it.n, op])
     .then(function (r) {
       if (r && r.error) U.msg = { err: true, t: r.error };
-      else U.msg = { err: false, t: it.n + " 작업자 → " + op + " ✔" };
+      else U.msg = { err: false, t: it.n + " 작업자 → " + op + (OP.prev ? " (수정)" : "") + " ✔" };
       toast((U.msg.err ? "⚠️ " : "✔ ") + U.msg.t, U.msg.err);
       closeOp();
       loadUpload();
@@ -2634,6 +2708,8 @@ function applyMeta(m, fromCache) {
   $("hmonth").appendChild(document.createTextNode("시트 기준 월: "));
   $("hmonth").appendChild(el("b", null, m.month + "월"));
   renderMissing(m.missing);
+  renderPrev(m.prev || null);
+  if (m.prev) store.prevMiss = m.prev;
   renderTop(m.top);
   renderWeek(m.week);
   checkMonth();
@@ -2977,6 +3053,7 @@ function doSave(value, force, delForce) {
         if (sc && sc.ok && sc.action !== "없음") { LV.loaded = false; sdel("c_leave"); }   // 연차 탭 다시 불러오기
         $("hval").value = ""; $("hnote").value = ""; $("hdel").checked = false; H.half = ""; updNote();
         sset("hoursName", name);
+        if (r.cur !== "") prevDone(name, date);   // ⏰ 어제 미입력에서 빼기
         if (r.top !== undefined) renderTop(r.top);
         if (r.week && H.meta) { H.meta.week = r.week; renderWeek(r.week); }
         try { var gr = H.meta.grid.rows[name]; gr.v[+date.slice(8, 10) - 1] = r.cur; } catch (eg) {}   // 미리 받아둔 값도 갱신
@@ -3042,10 +3119,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-20-2";
+var APP_VER = "2026-10-20-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-20-3", ["어제 근무시간 안 넣었으면 금일·근무시간 탭에 표시", "작업자(FT) 잘못 넣었으면 수정·비우기 가능"]],
   ["2026-10-20-2", ["업데이트를 건너뛰어도 바뀐 점 전부 보여줌"]],
   ["2026-10-20-1", ["근무시간 탭 현재값이 바로 떠요"]],
   ["2026-10-19-11", ["알림 꺼져 있으면 모든 탭에 배너", "알림 창 새 디자인 · 켜는 법 안내", "다크모드 로고 깔끔하게", "업데이트하면 바뀐 점 보여줌"]]
@@ -3377,6 +3455,57 @@ function pushOn() {
 }
 
 // 금일 화면 위쪽 한 줄
+// ⏰ 지난 근무일(어제 · 월요일이면 지난 금요일) 근무시간 미입력
+function prevMissing() {
+  var pm = store.prevMiss || (H.meta && H.meta.prev) || null;
+  return pm && pm.names ? pm : null;
+}
+function goPrevInput(name, ymd) {
+  setTab(3);
+  var go = function () {
+    if (!H.meta) { setTimeout(go, 300); return; }
+    if (H.meta.names.indexOf(name) >= 0) $("hname").value = name;
+    $("hdate").value = ymd; H.otherOK = false;
+    resetConfirm(); refreshCell();
+    try { $("hval").scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+  };
+  go();
+}
+function prevBanner() {
+  var pm = prevMissing(), me = myName();
+  if (!pm || !me || pm.names.indexOf(me) < 0) return null;
+  var b = el("div", "prevbn");
+  b.appendChild(el("span", "t", "⏰ 근무시간 미입력"));
+  b.appendChild(el("span", "go", "입력하기"));
+  b.appendChild(el("span", "s", pm.label + " 아직 안 넣었어요"));
+  b.onclick = function () { goPrevInput(me, pm.ymd); };
+  return b;
+}
+// 근무시간 탭: 지난 근무일 미입력 사람 (이름 누르면 그 사람·그 날짜로)
+function renderPrev(pm) {
+  var b = $("hprev");
+  if (!b) return;
+  b.innerHTML = "";
+  if (!pm || !pm.names || !pm.names.length) { b.style.display = "none"; return; }
+  b.appendChild(el("b", null, "⏰ " + pm.label + " 근무시간 미입력 " + pm.names.length + "명"));
+  b.appendChild(document.createElement("br"));
+  pm.names.forEach(function (n) {
+    var c = el("button", "nm", n); c.type = "button";
+    c.onclick = function () { goPrevInput(n, pm.ymd); };
+    b.appendChild(c);
+  });
+  if (pm.off && pm.off.length) b.appendChild(el("small", null, "📅 휴가(schedule): " + pm.off.join(", ")));
+  b.style.display = "block";
+}
+// 저장하면 바로 목록에서 빼기
+function prevDone(name, ymd) {
+  [store.prevMiss, H.meta && H.meta.prev].forEach(function (pm) {
+    if (pm && pm.ymd === ymd && pm.names) { var i = pm.names.indexOf(name); if (i >= 0) pm.names.splice(i, 1); }
+  });
+  renderPrev(prevMissing());
+  if (cur === 0) render();
+}
+
 // 🔕 알림 안 켠 사람: 탭 아래 고정 배너 (어느 탭이든 · 스크롤해도 보임) / 켜면 바로 사라짐
 function pushBar() {
   var b = $("pushbar");
@@ -3702,6 +3831,7 @@ $("ntgo").onclick = function () {
       $("ntgo").disabled = false; $("ntgo").textContent = "보내기";
       if (r && r.error) { msg.textContent = r.error; if (r.adminPin) { NT.pin = ""; if (adminOn()) adminOff(); } if (r.chiefPin) { NT.chiefPin = ""; if (isChief()) sdel("chiefPin"); } return; }
       if (r.notice) store.notice = r.notice;
+      if (r.prevMiss !== undefined) store.prevMiss = r.prevMiss;
       closeNotice();
       toast("📢 공지를 보냈어요 · " + r.count + "명");
       if (cur === 0 && !SR.open) render();
