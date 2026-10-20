@@ -1026,7 +1026,8 @@ function rawCall(pin, fn, args, editPin) {
   var body = JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev,
     me: myName(), adm: (fn === "saveHours" || fn === "setOperator") && adminOn() ? sget("admPin") : "" });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
   // 새로고침 버튼(금일/명일 새로 계산)은 시트를 통째로 읽어서 오래 걸릴 수 있음 → 30초에 끊지 않고 90초까지 기다림
-  var to = (fn === "getDashboardAll" && args && args[0] === true) ? 90000 : 0;
+  // 저장(근무시간 저장·작업자·업로드 완료 등)도 90초: 시트가 바쁘면 30초 넘게 걸리는데, 앱만 먼저 포기하면 실제로는 저장됐는데 '실패'로 보임
+  var to = (fn === "getDashboardAll" && args && args[0] === true) || !READ_FNS[fn] ? 90000 : 0;
   return fetchJson(body, !!READ_FNS[fn], to)
     .catch(function (e) {
       if (!READ_FNS[fn]) throw e;
@@ -3241,10 +3242,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-20-9";
+var APP_VER = "2026-10-20-10";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-20-10", ["저장이 오래 걸릴 때 '실패'로 뜨던 문제 수정"]],
   ["2026-10-20-9", ["새로고침이 중간에 실패하던 문제 수정"]],
   ["2026-10-20-8", ["🚨 긴급 장비는 장비명이 빨간색 (금일·명일·검색·일정)"]],
   ["2026-10-20-7", ["앱을 다시 열 때 '갱신 중'에서 오래 멈추던 문제 수정"]],
