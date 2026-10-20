@@ -1010,7 +1010,9 @@ function rawCall(pin, fn, args, editPin) {
   return fetchJson(body)
     .catch(function (e) {
       if (!READ_FNS[fn]) throw e;
-      return new Promise(function (res) { setTimeout(res, 1500); }).then(function () { return fetchJson(body); });
+      // ⏱ 30초 넘게 응답 없음 = 서버(시트)가 바쁨 → 다시 보내면 서버에 요청만 더 쌓여서 더 느려짐 → 재시도 안 함
+      if (e && /timeout/.test(e.message || "")) throw e;
+      return new Promise(function (res) { setTimeout(res, 1500); }).then(function () { return fetchJson(body); });   // 잠깐 끊긴 경우만 한 번 더
     })
     .then(function (j) {
       var ms = Date.now() - t0;
@@ -1026,7 +1028,21 @@ function rawCall(pin, fn, args, editPin) {
     });
 }
 
+// ⚡ 같은 조회가 아직 진행 중이면 새로 보내지 않고 그 결과를 같이 씀 (탭 왔다 갔다·새로고침 연타 때 서버에 요청이 쌓이지 않게)
+var INFLIGHT = {};
 function call(fn, args, editPin) {
+  if (READ_FNS[fn] && !editPin) {
+    var key = fn + "|" + JSON.stringify(args || []);
+    if (INFLIGHT[key]) return INFLIGHT[key];
+    var pr = callRun(fn, args, editPin);
+    INFLIGHT[key] = pr;
+    var done = function () { if (INFLIGHT[key] === pr) delete INFLIGHT[key]; };
+    pr.then(done, done);
+    return pr;
+  }
+  return callRun(fn, args, editPin);
+}
+function callRun(fn, args, editPin) {
   return rawCall(getPin(), fn, args, editPin).then(function (j) {
     if (!j.ok) {
       if (j.code === "PIN") lockApp("PIN이 변경되었거나 맞지 않아요. 다시 입력해 주세요.");
@@ -3193,10 +3209,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-20-5";
+var APP_VER = "2026-10-20-6";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-20-6", ["서버가 바쁠 때도 앱이 덜 멈추게 개선"]],
   ["2026-10-20-5", ["보안 강화 (기기 관리)"]],
   ["2026-10-20-4", ["시트 업로드: 내 이름을 누르면 작업자 수정"]],
   ["2026-10-20-3", ["어제 근무시간 안 넣었으면 금일·근무시간 탭에 표시", "작업자(FT) 잘못 넣었으면 수정·비우기 가능"]],
