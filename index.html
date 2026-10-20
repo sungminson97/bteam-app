@@ -143,6 +143,33 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .okmsg{background:rgba(31,157,85,.14);color:var(--ok);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600}
 .wkmsg{background:rgba(47,111,237,.10);color:var(--accent);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;line-height:1.6;word-break:keep-all}
 .wkmsg small{color:var(--sub);font-weight:500}
+#secov{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:28px;background:var(--bg)}
+#secov.on{display:flex}
+.secin{width:100%;max-width:340px;text-align:center}
+.secic{font-size:54px;line-height:1}
+.sect{margin-top:16px;font-size:21px;font-weight:800}
+.secd{margin-top:10px;font-size:15px;line-height:1.6;color:var(--sub);white-space:pre-line;word-break:keep-all}
+.secid{margin-top:14px;display:inline-block;padding:6px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:700;color:var(--text)}
+.secid:empty{display:none}
+#secre{width:100%;margin-top:26px;padding:14px;border:0;border-radius:14px;background:var(--accent);color:#fff;font-size:16px;font-weight:800;font-family:inherit}
+#secov.blk #secre,#secov.blk #secrq,#secov.blk .secst{display:none}
+.secst{margin-top:18px;font-size:14px;font-weight:700;color:var(--ok);white-space:pre-line;word-break:keep-all}
+.secst.wait{color:var(--sub);font-weight:500}
+#secrq{width:100%;margin-top:10px;padding:13px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:15px;font-weight:700;font-family:inherit}
+.dlc.blk{border-color:var(--warn);opacity:.85}
+.dlc.wait{border-color:#f5a524;background:rgba(245,165,36,.08)}
+.dlsec{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card);display:grid;gap:8px}
+.dlsec .r{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.dlsec .r b{font-size:15px}
+.dlsec .r small{display:block;color:var(--sub);font-size:12px;font-weight:500;margin-top:2px;word-break:keep-all}
+.dlsec button{padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:13px;font-weight:700;font-family:inherit;color:var(--text);white-space:nowrap}
+.dlsec button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.dlsec button.x{color:var(--warn);border-color:var(--warn)}
+.dlsec input{font-size:15px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit}
+.dlsec .bnl{display:grid;gap:6px}
+.dlsec .bn{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
+.dlsec .bn .st{font-size:12px;font-weight:700}
+.dlsec .bn .st.on{color:var(--warn)}.dlsec .bn .st.res{color:#c27400}
 #upov{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(120% 90% at 50% 0%,#1e3a8a 0%,#0b1220 60%,#05080f 100%);color:#fff;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility 0s .35s}
 #upov.on{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s ease}
 .upin{width:100%;max-width:340px;text-align:center;transform:translateY(14px) scale(.97);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
@@ -572,6 +599,18 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 
 <!-- 🔒 잠금 화면 -->
 <div id="ig"><div class="w" id="igw"></div></div>
+<!-- 🔐 사용 중지 / 승인 대기 화면 (#app 밖: 어떤 화면보다 위) -->
+<div id="secov">
+  <div class="secin">
+    <div class="secic" id="secic">🔐</div>
+    <div class="sect" id="sect">처음 보는 기기예요</div>
+    <div class="secd" id="secd"></div>
+    <div class="secid" id="secid"></div>
+    <div class="secst" id="secst"></div>
+    <button id="secre" type="button">승인됐는지 확인</button>
+    <button id="secrq" type="button">📨 승인 요청 다시 보내기</button>
+  </div>
+</div>
 <!-- 🚀 업데이트 화면 (#app 밖: PIN 화면 위에도 뜨게) -->
 <div id="upov" aria-live="polite">
   <div class="upin">
@@ -978,6 +1017,7 @@ function rawCall(pin, fn, args, editPin) {
       if (ms >= SLOW_MS) SPD.last = { rid: rid, ms: ms, fn: fn, args: a0, at: t0 };
       if (j && j.rn && fn === "getDashboardAll") remoteRenameLater(j.rn);   // 📱 개발자가 원격으로 이름 바꿈
       if (j && j.nag && fn === "getDashboardAll") pushNagLater(j.nag);       // 📣 관리자가 "알림 켜 주세요" 요청
+      if (j && (j.code === "BLOCKED" || j.code === "PENDING")) showSec(j);    // 🔐 차단 / 승인 대기
       return j;
     }, function (e) {
       if (prev && !SPD.last) SPD.last = prev;   // 이번에 못 보낸 지난 기록은 다음에 다시
@@ -3153,10 +3193,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-20-4";
+var APP_VER = "2026-10-20-5";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-20-5", ["보안 강화 (기기 관리)"]],
   ["2026-10-20-4", ["시트 업로드: 내 이름을 누르면 작업자 수정"]],
   ["2026-10-20-3", ["어제 근무시간 안 넣었으면 금일·근무시간 탭에 표시", "작업자(FT) 잘못 넣었으면 수정·비우기 가능"]],
   ["2026-10-20-2", ["업데이트를 건너뛰어도 바뀐 점 전부 보여줌"]],
@@ -3943,28 +3984,87 @@ function applyRemoteRename(rn) {
   call("deviceRegister", [to, devInfo()]).then(function () { sset("devReg", to + "|" + APP_VER); RN.busy = ""; }).catch(function () { RN.busy = ""; });
 }
 
+/* ---------- 🔐 사용 중지 / 승인 대기 ---------- */
+function mdLabel(ymd) { var p = String(ymd || "").split("-"); return p.length === 3 ? (+p[1]) + "/" + (+p[2]) : ymd; }   // 2026-11-09 → 11/9
+var SEC = { shown: "" };
+function showSec(j) {
+  var o = $("secov"), blk = j.code === "BLOCKED";
+  var lines = String(j.error || "").split("\n");
+  $("secic").textContent = blk ? "🚫" : "🔐";
+  $("sect").textContent = (lines[0] || "").replace(/^(🚫|🔐)\s*/, "").replace(/\.$/, "") || (blk ? "사용이 중지됐어요" : "승인이 필요해요");
+  $("secd").textContent = lines.slice(1).join("\n");
+  $("secid").textContent = (myName() ? myName() + " · " : "") + "기기-" + (j.dev || devId());
+  o.className = blk ? "on blk" : "on";
+  if (SEC.shown === j.code) return;
+  SEC.shown = j.code;
+  if (blk) {   // 🚫 이 폰에 저장된 PIN·데이터 전부 지우기 + 알림 끊기
+    cwipe();
+    ["appPin", "editPin", "admPin", "admUntil", "chiefPin", "psCache", "pushName"].forEach(function (k) { sdel(k); });
+    try { if (window.OneSignalDeferred) window.OneSignalDeferred.push(async function (OS) { try { await OS.logout(); } catch (e) {} }); } catch (e) {}
+  } else {     // 🔐 승인 대기: 이 폰을 기기 목록에 올리고 → 서버가 손성민 폰으로 승인 요청 알림을 보냄
+    var st = $("secst");
+    st.className = "secst wait"; st.textContent = "승인 요청 보내는 중…";
+    rawCall(getPin(), "deviceRegister", [myName() || "", devInfo()]).then(function (r) {
+      if (r && r.ok) { st.className = "secst"; st.textContent = "📨 손성민에게 승인 요청을 보냈어요\n승인되면 [승인됐는지 확인]을 눌러 주세요"; }
+      else { st.className = "secst wait"; st.textContent = "요청을 못 보냈어요. 아래 버튼으로 다시 보내 주세요."; }
+    }).catch(function () { st.className = "secst wait"; st.textContent = "요청을 못 보냈어요. 아래 버튼으로 다시 보내 주세요."; });
+  }
+}
+$("secrq").onclick = function () {
+  var b = this; b.disabled = true; b.textContent = "보내는 중…";
+  rawCall(getPin(), "secRequest", []).then(function (j) {
+    b.disabled = false; b.textContent = "📨 승인 요청 다시 보내기";
+    var r = j && j.data;
+    if (r && r.approved) { $("secre").onclick(); return; }
+    if (j && j.ok && r && r.wait) toast("⏳ 방금 보냈어요\n5분 뒤에 다시 보낼 수 있어요", true);
+    else if (j && j.ok && r && r.ok) { $("secst").className = "secst"; $("secst").textContent = "📨 승인 요청을 다시 보냈어요\n승인되면 [승인됐는지 확인]을 눌러 주세요"; toast("📨 다시 보냈어요"); }
+    else toast("⚠️ " + ((r && r.error) || (j && j.error) || "요청 실패"), true);
+  }).catch(function () { b.disabled = false; b.textContent = "📨 승인 요청 다시 보내기"; toast("⚠️ 연결 실패", true); });
+};
+$("secre").onclick = function () {
+  var b = this; b.disabled = true; b.textContent = "확인 중…";
+  rawCall(getPin(), "ping").then(function (j) {
+    b.disabled = false; b.textContent = "승인됐는지 확인";
+    if (j && j.ok) { $("secov").className = ""; SEC.shown = ""; toast("✅ 승인됐어요"); setTimeout(function () { location.reload(); }, 600); }
+    else if (j && j.code === "PENDING") toast("⏳ 아직 승인 전이에요", true);
+  }).catch(function () { b.disabled = false; b.textContent = "승인됐는지 확인"; toast("⚠️ 연결 실패", true); });
+};
+
 /* ---------- 📱 팀 기기 목록 (Developer → 개발자 PIN) ---------- */
-var DL = { rows: [], names: [], open: "", pick: "", forget: "" };
+var DL = { rows: [], names: [], open: "", pick: "", forget: "", gate: false, all: [], bn: [], bnOpen: false, from: "", bnPick: "", block: "" };
 function openDevList() {
   $("dlov").className = "ov on";
   $("dllist").innerHTML = ""; $("dllist").appendChild(el("span", "hint", "불러오는 중…"));
   call("devList", [DV.pin]).then(function (r) {
     if (r && r.error) { dlErr(r.error); return; }
     DL.rows = r.rows || []; DL.names = r.names || []; DL.open = ""; DL.pick = ""; DL.forget = "";
+    DL.gate = !!r.gate; DL.all = r.allNames || DL.names; DL.bn = r.bn || []; DL.bnOpen = false;
     dlRender();
   }).catch(function (e) { dlErr("불러오기 실패: " + errText(e)); });
 }
 function dlErr(t) { var L = $("dllist"); L.innerHTML = ""; var w = el("div", "warn", t); w.style.whiteSpace = "pre-line"; L.appendChild(w); }
 function dlRender() {
   var L = $("dllist"); L.innerHTML = "";
+  // 🔐 새 기기 승인제
+  var gs = el("div", "dlsec"), gr = el("div", "r"), gl = el("div");
+  gl.appendChild(el("b", null, "🔐 새 기기 승인제 " + (DL.gate ? "켜짐" : "꺼짐")));
+  gl.appendChild(el("small", null, DL.gate ? "처음 보는 폰은 여기서 승인해야 쓸 수 있어요" : "켜면 지금 등록된 폰은 전부 승인, 새 폰부터 승인 필요"));
+  gr.appendChild(gl);
+  var gb = el("button", DL.gate ? "" : "on", DL.gate ? "끄기" : "켜기"); gb.type = "button";
+  var gmsg = el("div", "em");
+  gb.onclick = function () { gb.disabled = true; dlDo("secGate", [DV.pin, !DL.gate], gmsg, DL.gate ? "승인제를 껐어요" : "승인제를 켰어요 · 지금 폰들은 전부 승인"); };
+  gr.appendChild(gb); gs.appendChild(gr); gs.appendChild(gmsg);
+  L.appendChild(gs);
   if (!DL.rows.length) { L.appendChild(el("span", "hint", "아직 등록된 폰이 없어요. 업데이트 후 앱을 연 폰부터 나와요.")); return; }
   var cnt = {}; DL.rows.forEach(function (r) { cnt[r.n] = (cnt[r.n] || 0) + 1; });
   var me = devId();
   DL.rows.forEach(function (r) {
     var mine = r.dev === me;
-    var c = el("div", "dlc" + (mine ? " mine" : ""));
+    var c = el("div", "dlc" + (mine ? " mine" : "") + (r.blk ? " blk" : "") + (r.wait ? " wait" : ""));
     var h = el("div", "h"); h.appendChild(document.createTextNode(r.n)); h.appendChild(el("small", null, "기기-" + r.dev));
     if (mine) h.appendChild(el("span", "tg", "이 폰"));
+    if (r.blk) h.appendChild(el("span", "tg w", "🚫 차단됨"));
+    if (r.wait) h.appendChild(el("span", "tg w", "⏳ 승인 대기"));
     if (cnt[r.n] > 1) h.appendChild(el("span", "tg w", "같은 이름 " + cnt[r.n] + "대"));
     c.appendChild(h);
     c.appendChild(el("div", "m", [r.kind || "-", r.push ? "🔔 알림 켬" : "🔕 알림 안 켬", r.ver || "", r.at || ""].filter(Boolean).join(" · ")));
@@ -3975,6 +4075,12 @@ function dlRender() {
     var bt = el("div", "bt");
     function btn(t, cls, fn) { var b = el("button", cls, t); b.type = "button"; b.onclick = function () { fn(b); }; bt.appendChild(b); return b; }
     var msg = el("div", "em");
+    if (r.wait) btn("✅ 승인", "go", function (b) { b.disabled = true; dlDo("secApprove", [DV.pin, r.dev, true], msg, r.n + " 폰을 승인했어요"); });
+    if (!mine) btn(r.blk ? "차단 풀기" : (DL.block === r.dev ? "한 번 더 누르면 차단" : "🚫 차단"), "x", function (b) {
+      if (!r.blk && DL.block !== r.dev) { DL.block = r.dev; dlRender(); return; }
+      b.disabled = true; DL.block = "";
+      dlDo("secBlockDev", [DV.pin, r.dev, !r.blk], msg, r.blk ? "차단을 풀었어요" : r.n + " 폰을 차단했어요");
+    });
     if (r.pend) btn("예약 취소", null, function (b) { b.disabled = true; dlDo("devRenameCancel", [DV.pin, r.dev], msg, "예약을 취소했어요"); });
     btn(DL.open === r.dev ? "닫기" : "이름 바꾸기", null, function () {
       if (mine) { closeDevList(); openNameChange(); return; }   // 이 폰은 바로 바꾸기
@@ -4004,8 +4110,45 @@ function dlRender() {
     c.appendChild(msg);
     L.appendChild(c);
   });
-  var foot = el("div", "hint", "이 폰은 바로 바뀌고, 다른 폰은 앱을 열 때 바뀌어요.");
-  foot.style.wordBreak = "keep-all"; L.appendChild(foot);
+  // 🚫 이름 차단 (퇴사·팀 이동) — 시작일을 정하면 그날부터
+  var ns = el("div", "dlsec"), nr = el("div", "r"), nl = el("div");
+  var act = DL.bn.filter(function (x) { return x.on; }).length, res = DL.bn.length - act;
+  nl.appendChild(el("b", null, "🚫 이름 차단" + (DL.bn.length ? " (" + [act ? "차단 " + act : "", res ? "예약 " + res : ""].filter(Boolean).join(" · ") + ")" : "")));
+  nl.appendChild(el("small", null, "그 이름은 어떤 폰에서도 못 쓰고, 이름 선택·공지·알림에서 빠져요"));
+  nr.appendChild(nl);
+  var nb = el("button", null, DL.bnOpen ? "닫기" : "열기"); nb.type = "button";
+  nb.onclick = function () { DL.bnOpen = !DL.bnOpen; dlRender(); };
+  nr.appendChild(nb); ns.appendChild(nr);
+  if (DL.bnOpen) {
+    var dr = el("div", "r"), dl2 = el("div");
+    dl2.appendChild(el("b", null, "차단 시작일"));
+    dl2.appendChild(el("small", null, "비우면 오늘부터 바로"));
+    dr.appendChild(dl2);
+    var di = document.createElement("input"); di.type = "date"; di.value = DL.from || ""; di.onchange = function () { DL.from = di.value; };
+    dr.appendChild(di); ns.appendChild(dr);
+    var nmsg = el("div", "em");
+    var bl = el("div", "bnl");
+    DL.all.forEach(function (n) {
+      var cur2 = DL.bn.filter(function (x) { return x.n === n; })[0];
+      var row = el("div", "bn"), lt = el("div");
+      lt.appendChild(el("b", null, n));
+      if (cur2) lt.appendChild(el("span", "st " + (cur2.on ? "on" : "res"), cur2.on ? "  🚫 차단 중" : "  ⏰ " + mdLabel(cur2.from) + "부터 차단"));
+      row.appendChild(lt);
+      if (n === myName()) { row.appendChild(el("small", null, "나")); bl.appendChild(row); return; }
+      var b = el("button", cur2 ? "" : "x", cur2 ? "해제" : (DL.bnPick === n ? "한 번 더 누르면 차단" : "차단")); b.type = "button";
+      b.onclick = function () {
+        if (!cur2 && DL.bnPick !== n) { DL.bnPick = n; dlRender(); return; }
+        b.disabled = true; DL.bnPick = "";
+        dlDo("secBlockName", [DV.pin, n, !cur2, cur2 ? "" : (DL.from || "")], nmsg,
+          cur2 ? n + " 차단을 풀었어요" : n + (DL.from ? " · " + mdLabel(DL.from) + "부터 차단 예약" : " 이름을 차단했어요"));
+      };
+      row.appendChild(b); bl.appendChild(row);
+    });
+    ns.appendChild(bl); ns.appendChild(nmsg);
+  }
+  L.appendChild(ns);
+  var foot = el("div", "hint", "이름 바꾸기는 이 폰은 바로, 다른 폰은 앱을 열 때 바뀌어요.\n차단된 폰은 앱을 열면 '사용 중지' 화면만 뜨고 저장된 PIN도 지워져요.");
+  foot.style.wordBreak = "keep-all"; foot.style.whiteSpace = "pre-line"; L.appendChild(foot);
 }
 function dlDo(fn, args, msg, okText) {
   msg.textContent = "";
