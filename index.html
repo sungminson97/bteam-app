@@ -253,6 +253,8 @@ li:first-child{border-top:0}
 .prevbn .s{grid-column:1;font-size:13px;color:var(--sub);word-break:keep-all}
 .prevbn .go{grid-row:1/3;grid-column:2;background:var(--warn);color:#fff;border-radius:10px;padding:8px 13px;font-size:14px;font-weight:800;white-space:nowrap}
 .oprec{margin-top:4px}
+.ttl.opedit{cursor:pointer;text-decoration:underline dotted;text-underline-offset:4px;text-decoration-color:var(--sub)}
+.ttl.opedit small{font-size:13px;color:var(--accent);font-weight:700}
 .card.up.oprec{border-left-color:var(--accent)}
 .card.up.oprec .cnt{color:var(--accent)}
 .oprec li{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px}
@@ -1663,7 +1665,14 @@ function renderUpload(d) {
   d.people.forEach(function (p) {
     var card = el("div", "card up");
     var hd = el("div", "hd");
-    hd.appendChild(el("span", "ttl", p.name));
+    var ttl = el("span", "ttl", p.name);
+    // ✏️ 내 이름(또는 관리자 모드) → 이름을 누르면 작업자 바꾸기·비우기
+    if (p.name !== "(작업자 미입력)" && (p.name === myName() || adminOn())) {
+      ttl.className = "ttl opedit";
+      ttl.appendChild(el("small", null, " ✎"));
+      ttl.onclick = function () { openOpCard(p, d.opNames); };
+    }
+    hd.appendChild(ttl);
     hd.appendChild(el("span", "cnt", p.items.length + "대"));
     card.appendChild(hd);
     var ul = el("ul");
@@ -1737,6 +1746,11 @@ function opPick(n) {
 
 function openOp(it, names, prev) {
   OP.it = it; OP.pick = ""; OP.prev = prev || "";
+  if (!names || !names.length) {   // 서버가 이름 목록을 안 줬을 때 (작업자 미입력 장비가 없을 때) → 앱이 아는 팀 이름
+    var cn = cget("names");
+    names = (cn && cn.names) || (H.meta && H.meta.names) || PUSH.names || [];
+    names = names.filter(function (n) { return n !== CHIEF; });
+  }
   $("opwho").textContent = it.n + (it.t ? " (" + it.t + ")" : "");
   $("opttl").textContent = prev ? "✏️ 작업자 수정(FT)" : "👷 작업자 입력(FT)";
   $("opnow").style.display = prev ? "" : "none";
@@ -1744,6 +1758,7 @@ function openOp(it, names, prev) {
   $("opsub").style.display = prev ? "none" : "";
   $("opclr").style.display = prev ? "block" : "none";
   $("opclr").disabled = false; $("opclr").textContent = "🗑 작업자 비우기 (이 장비 작업 안 함)";
+  $("opin").style.display = ""; $("opgo").style.display = ""; $("opno").style.gridColumn = "";
   var ch = $("opchips");
   ch.innerHTML = "";
   (names || []).forEach(function (n) {
@@ -1757,6 +1772,25 @@ function openOp(it, names, prev) {
   $("opgo").textContent = prev ? "이 이름으로 바꾸기" : "저장";
   $("opov").className = "ov on";
 }
+// 이름 카드를 눌렀을 때: 장비가 1대면 바로 수정, 여러 대면 먼저 장비 고르기
+function openOpCard(p, names) {
+  if (p.items.length === 1) { openOp(p.items[0], names, p.name); return; }
+  OP.it = null; OP.prev = "";
+  $("opttl").textContent = "✏️ 작업자 수정(FT)";
+  $("opwho").textContent = p.name + " 이름으로 적힌 장비";
+  $("opnow").style.display = ""; $("opnow").textContent = "고칠 장비를 골라 주세요.";
+  $("opsub").style.display = "none"; $("opclr").style.display = "none";
+  $("opin").style.display = "none"; $("opgo").style.display = "none"; $("opno").style.gridColumn = "1 / -1";
+  var ch = $("opchips"); ch.innerHTML = "";
+  p.items.forEach(function (it) {
+    var c = el("button", "chip", it.n + (it.t ? " · " + it.t : "")); c.type = "button";
+    c.onclick = function () { openOp(it, names, p.name); };
+    ch.appendChild(c);
+  });
+  $("opno").disabled = false;
+  $("opov").className = "ov on";
+}
+
 // 🗑 작업자 비우기 → 다시 '작업자 미입력' 목록으로
 $("opclr").onclick = function () {
   var it = OP.it;
@@ -3119,10 +3153,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-20-3";
+var APP_VER = "2026-10-20-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-20-4", ["시트 업로드: 내 이름을 누르면 작업자 수정"]],
   ["2026-10-20-3", ["어제 근무시간 안 넣었으면 금일·근무시간 탭에 표시", "작업자(FT) 잘못 넣었으면 수정·비우기 가능"]],
   ["2026-10-20-2", ["업데이트를 건너뛰어도 바뀐 점 전부 보여줌"]],
   ["2026-10-20-1", ["근무시간 탭 현재값이 바로 떠요"]],
