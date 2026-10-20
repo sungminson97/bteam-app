@@ -1751,7 +1751,7 @@ function openOp(it, names, prev) {
     names = (cn && cn.names) || (H.meta && H.meta.names) || PUSH.names || [];
     names = names.filter(function (n) { return n !== CHIEF; });
   }
-  $("opwho").textContent = it.n + (it.t ? " (" + it.t + ")" : "");
+  $("opwho").textContent = it.n;   // 장비명만
   $("opttl").textContent = prev ? "✏️ 작업자 수정(FT)" : "👷 작업자 입력(FT)";
   $("opnow").style.display = prev ? "" : "none";
   $("opnow").textContent = prev ? "지금 적힌 작업자: " + prev : "";
@@ -1783,7 +1783,7 @@ function openOpCard(p, names) {
   $("opin").style.display = "none"; $("opgo").style.display = "none"; $("opno").style.gridColumn = "1 / -1";
   var ch = $("opchips"); ch.innerHTML = "";
   p.items.forEach(function (it) {
-    var c = el("button", "chip", it.n + (it.t ? " · " + it.t : "")); c.type = "button";
+    var c = el("button", "chip", it.n); c.type = "button";
     c.onclick = function () { openOp(it, names, p.name); };
     ch.appendChild(c);
   });
