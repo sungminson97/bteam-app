@@ -3854,6 +3854,7 @@ function openAdminGate(next) {
   if (NT.next === "notice" && isChief() && sget("chiefPin")) { NT.pin = ""; NT.chiefPin = sget("chiefPin"); openNotice(); mnBackShow("ntov"); return; }   // 👔 총괄팀장은 PIN 없이
   if (NT.next === "mode" && isChief() && sget("chiefPin")) { adminSet(sget("chiefPin")); toast("🔑 관리자 모드 켜짐 · 오늘 자정까지"); return; }   // 👔 총괄팀장은 바로 켜짐 (근무시간은 그대로 잠금)
   if (NT.next === "notice" && adminOn()) { NT.pin = sget("admPin"); openNotice(); mnBackShow("ntov"); return; }   // 관리자 모드면 PIN 생략
+  if (NT.next === "dev" && DV.pin && DV.until > Date.now()) { mnBackHide(); openDevPanel(); return; }   // 🛠 30분 안에 다시 열면 PIN·서버 확인 생략 (이 화면을 켜 둔 동안만 · 저장 안 함)
   var chief = NT.next === "chief";
   var dev = NT.next === "dev";
   $("apttl").textContent = dev ? "🛠 개발자 PIN" : chief ? "👔 총괄팀장 PIN" : "🔒 관리자 PIN";
@@ -3880,7 +3881,7 @@ $("apgo").onclick = function () {
     $("apgo").disabled = false; $("apgo").textContent = "확인";
     if (r && r.error) { msg.textContent = r.error; $("appin").value = ""; return; }
     var back = $("apov").querySelector(".mnback"), fromMenu = back && back.style.display !== "none";
-    if (dev) { DV.pin = pin; closeAdminGate(); mnBackHide(); openDevPanel(); return; }
+    if (dev) { DV.pin = pin; DV.until = Date.now() + 30 * 60000; closeAdminGate(); mnBackHide(); openDevPanel(); return; }
     if (chief) { NT.chiefPin = pin; closeAdminGate(); $("ntov").className = "ov on"; $("ntgo").click(); return; }   // 👔 확인되면 바로 보내기
     if (NT.next === "mode") { adminSet(pin); closeAdminGate(); mnBackHide(); toast("🔑 관리자 모드 켜짐 · 오늘 자정까지"); return; }   // 관리자 모드는 이 메뉴로만 켜짐 (공지 보내기로는 안 켜짐)
     NT.pin = pin;
@@ -4164,7 +4165,7 @@ $("dlback").onclick = function () { closeDevList(); openDevPanel(); };
 $("dlov").onclick = function (e) { if (e.target === this) closeDevList(); };
 
 /* ---------- 🛠 Developer (개발자 PIN 확인 후, 이 폰에서만) ---------- */
-var DV = { reset: false, pin: "" };
+var DV = { reset: false, pin: "", until: 0 };
 function openDevPanel() {
   DV.reset = false;
   var I = $("dvinfo"); I.innerHTML = "";
