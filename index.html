@@ -333,12 +333,32 @@ li:first-child{border-top:0}
 .dlc .tg.w{color:var(--warn);border-color:var(--warn)}
 .dlc .m{color:var(--sub);font-size:12px;margin-top:4px;word-break:keep-all}
 .dlc .pend{white-space:pre-line;margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--card);border:1px dashed var(--accent);color:var(--accent);font-size:13px;font-weight:600;line-height:1.5;word-break:keep-all}
-.dlc .bt{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.dlc .bt{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.dlc .bt button{white-space:nowrap}
 .dlc .bt button{padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:700;font-family:inherit;color:var(--text)}
 .dlc .bt .go{background:var(--accent);border-color:var(--accent);color:#fff}
 .dlc .bt .x{color:var(--warn)}
 .dlc .bt button:disabled{opacity:.6}
 .dlc .chips{margin-top:10px}
+.dlme{border:1px solid var(--accent);border-radius:12px;padding:10px 14px;background:var(--card);display:grid;gap:4px}
+.dlme b{font-size:13px;color:var(--accent)}
+.dlme .v{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dlme .id{font-size:18px;font-weight:800}
+.dlme small{color:var(--sub);font-size:12px;word-break:keep-all}
+.dlme .tg,.dlg .tg,.dlc .tg{font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--accent)}
+.dlg .tg.w{color:var(--warn);border-color:var(--warn)}
+.dlme .tg.t,.dlc .tg.t{color:#8b5cf6;border-color:#8b5cf6}
+.dlg{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg)}
+.dlg.mine{border-color:var(--accent)}
+.dlg.wait{border-color:#f5a524}
+.dlg .gh{all:unset;display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;cursor:pointer;box-sizing:border-box}
+.dlg .gh .h{font-weight:700;font-size:16px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;color:var(--text)}
+.dlg .gh .ar{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap}
+.dlg .m{color:var(--sub);font-size:12px;margin-top:6px;line-height:1.6}
+.dlg .sub{display:grid;gap:8px;margin-top:10px}
+.dlc.in{background:var(--card)}
+.dlc .ping{white-space:pre-line;margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--card);border:1px dashed #f5a524;color:#c27400;font-size:13px;font-weight:600;line-height:1.5;word-break:keep-all}
+.dlc .ping.ok{border-color:var(--ok);color:var(--ok)}
 .dlc .em{color:var(--warn);font-size:12px;margin-top:6px;white-space:pre-line;word-break:keep-all}
 #nmchips .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .unl{display:grid;gap:6px}
@@ -595,6 +615,14 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 #ig .url{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:12px;font-size:13px;word-break:break-all;text-align:center;color:var(--accent);font-weight:700}
 #ig .qr{display:flex;justify-content:center;padding:14px;background:#fff;border-radius:14px;border:1px solid var(--line)}
 #ig .ok{background:rgba(31,157,85,.12);color:var(--ok);border-radius:12px;padding:14px;font-weight:700;text-align:center;line-height:1.6}
+#ig a.big{display:block;text-align:center;text-decoration:none}
+#ig .wait{color:var(--sub);font-size:13px;text-align:center}
+/* 📍 아이폰: 화면 아래 공유 버튼 위치를 가리키는 화살표 */
+#igarrow{position:fixed;left:50%;bottom:calc(6px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;animation:igb 1.1s ease-in-out infinite}
+#igarrow span{background:var(--accent);color:#fff;font-size:13px;font-weight:800;padding:6px 12px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.2);white-space:nowrap}
+#igarrow i{font-style:normal;font-size:30px;line-height:1;color:var(--accent)}
+@keyframes igb{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+#ig .w.pad{padding-bottom:70px}
 </style>
 </head>
 <body>
@@ -1041,6 +1069,7 @@ function rawCall(pin, fn, args, editPin) {
       if (ms >= SLOW_MS) SPD.last = { rid: rid, ms: ms, fn: fn, args: a0, at: t0 };
       if (j && j.rn && fn === "getDashboardAll") remoteRenameLater(j.rn);   // 📱 개발자가 원격으로 이름 바꿈
       if (j && j.nag && fn === "getDashboardAll") pushNagLater(j.nag);       // 📣 관리자가 "알림 켜 주세요" 요청
+      if (j && j.ping && fn === "getDashboardAll") devPingLater(j.ping);     // 🔔 개발자가 보낸 기기 확인 요청
       if (j && (j.code === "BLOCKED" || j.code === "PENDING")) showSec(j);    // 🔐 차단 / 승인 대기
       return j;
     }, function (e) {
@@ -3242,10 +3271,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-20-10";
+var APP_VER = "2026-10-21-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-21-2", ["앱 설치 안내 더 쉽게 (갤럭시: 크롬으로 열기 버튼 · 아이폰: 공유 버튼 화살표)"]],
   ["2026-10-20-10", ["저장이 오래 걸릴 때 '실패'로 뜨던 문제 수정"]],
   ["2026-10-20-9", ["새로고침이 중간에 실패하던 문제 수정"]],
   ["2026-10-20-8", ["🚨 긴급 장비는 장비명이 빨간색 (금일·명일·검색·일정)"]],
@@ -3561,6 +3591,8 @@ function pushInit() {
         welcomeNotification: { title: "제조1-B", message: "알림이 켜졌어요. 평일 아침 8시에 오늘 할 일을 알려드릴게요." }
       });
       PUSH.ready = true;
+      osSubSave(OS);   // 🔔 이 폰 알림 ID → 기기 목록 (개발자가 이 폰에만 확인 알림 보낼 수 있게)
+      try { OS.User.PushSubscription.addEventListener("change", function () { osSubSave(OS); }); } catch (eS) {}
       var n = sget("pushName");
       if (n && OS.Notifications.permission) { try { await OS.login(n); } catch (e1) {} }
       setTimeout(pushAutoAsk, 1500);   // 알림 안 켠 사람은 앱 열면 자동으로 창 띄움
@@ -3999,17 +4031,24 @@ function openMenu() {
 function closeMenu() { $("mnov").className = "ov"; }
 
 /* ---------- 📱 이 폰 등록 (팀 기기 목록용) + 원격 이름 변경 받기 ---------- */
+// 🔔 이 폰의 OneSignal 구독 ID가 생기거나 바뀌면 저장하고 서버 기기 목록에 다시 보냄
+function osSubSave(OS) {
+  try {
+    var id = OS && OS.User && OS.User.PushSubscription && OS.User.PushSubscription.id;
+    if (id && sget("osSub") !== String(id)) { sset("osSub", String(id)); devRegister(true); }
+  } catch (e) {}
+}
 function devInfo() {
   var ua = navigator.userAgent;
   var standalone = window.navigator.standalone === true || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
   var k = /iphone|ipad|ipod/i.test(ua) ? "아이폰" : /android/i.test(ua) ? (/samsung|SM-/i.test(ua) ? "갤럭시" : "안드로이드") : "PC";
-  return { kind: k + (standalone ? " 앱" : " 브라우저"), ver: "v" + APP_VER.slice(5).replace("-", ".") + (IS_TEST ? " 테스트" : "") };
+  return { kind: k + (standalone ? " 앱" : " 브라우저"), ver: "v" + APP_VER.slice(5).replace("-", ".") + (IS_TEST ? " 테스트" : ""), sub: sget("osSub") || "" };
 }
 // 이름을 정했을 때 + 앱 버전이 바뀌었을 때만 한 번 보냄 (앱 열 때마다 보내지 않음)
 function devRegister(force) {
   var n = myName();
   if (!n) return;
-  var key = n + "|" + APP_VER;
+  var key = n + "|" + APP_VER + "|" + (sget("osSub") || "");   // 알림 ID가 바뀌어도 다시 보냄
   if (!force && sget("devReg") === key) return;
   call("deviceRegister", [n, devInfo()]).then(function () { sset("devReg", key); }).catch(function () {});
 }
@@ -4085,8 +4124,37 @@ $("secre").onclick = function () {
   }).catch(function () { b.disabled = false; b.textContent = "승인됐는지 확인"; toast("⚠️ 연결 실패", true); });
 };
 
+/* ---------- 🔔 기기 확인 요청 받기: "네, 이 폰 써요" ---------- */
+function devPingLater(pg) {
+  if (!pg || !pg.at || sget("pingSeen") === String(pg.at)) return;
+  if ($("app").style.display === "none" || !nameDone() || document.querySelector(".ov.on")) { setTimeout(function () { devPingLater(pg); }, 2000); return; }
+  var ov = $("pingov");
+  if (!ov) {
+    ov = el("div", "ov"); ov.id = "pingov";
+    var bx = el("div", "box");
+    bx.appendChild(el("h3", null, "🔔 기기 확인"));
+    var p = el("p", "sub", ""); p.id = "pingtx"; p.style.whiteSpace = "pre-line"; p.style.wordBreak = "keep-all"; p.style.margin = "0";
+    bx.appendChild(p);
+    var ob = el("div", "ob");
+    var yes = el("button", "go", "네, 이 폰 써요"); yes.type = "button"; yes.id = "pingyes";
+    yes.style.background = "var(--accent)"; yes.style.borderColor = "var(--accent)"; yes.style.color = "#fff";
+    ob.appendChild(yes); bx.appendChild(ob); ov.appendChild(bx);
+    document.body.appendChild(ov);
+  }
+  var d = devInfo();
+  $("pingtx").textContent = "이 폰을 아직 쓰는지 확인하고 있어요.\n아래 버튼만 누르면 끝이에요.\n\n이 폰: 기기-" + devId() + " · " + d.kind + (IS_TEST ? " (테스트앱)" : "") + "\n이름: " + (myName() || "-");
+  $("pingyes").disabled = false; $("pingyes").textContent = "네, 이 폰 써요";
+  $("pingyes").onclick = function () {
+    var b = $("pingyes"); b.disabled = true; b.textContent = "보내는 중…";
+    call("devPingAck", []).then(function () {
+      sset("pingSeen", String(pg.at)); ov.className = "ov"; toast("✔ 확인했어요 · 고마워요");
+    }).catch(function (e) { b.disabled = false; b.textContent = "다시 누르기"; toast("⚠️ " + errText(e), true); });
+  };
+  ov.className = "ov on";
+}
+
 /* ---------- 📱 팀 기기 목록 (Developer → 개발자 PIN) ---------- */
-var DL = { rows: [], names: [], open: "", pick: "", forget: "", gate: false, all: [], bn: [], bnOpen: false, from: "", bnPick: "", block: "" };
+var DL = { rows: [], names: [], open: "", pick: "", forget: "", gate: false, all: [], bn: [], bnOpen: false, from: "", bnPick: "", block: "", exp: {} };
 function openDevList() {
   $("dlov").className = "ov on";
   $("dllist").innerHTML = ""; $("dllist").appendChild(el("span", "hint", "불러오는 중…"));
@@ -4094,6 +4162,7 @@ function openDevList() {
     if (r && r.error) { dlErr(r.error); return; }
     DL.rows = r.rows || []; DL.names = r.names || []; DL.open = ""; DL.pick = ""; DL.forget = "";
     DL.gate = !!r.gate; DL.all = r.allNames || DL.names; DL.bn = r.bn || []; DL.bnOpen = false;
+    if (!DL.keepExp) DL.exp = {}; DL.keepExp = false;
     dlRender();
   }).catch(function (e) { dlErr("불러오기 실패: " + errText(e)); });
 }
@@ -4111,59 +4180,53 @@ function dlRender() {
   gr.appendChild(gb); gs.appendChild(gr); gs.appendChild(gmsg);
   L.appendChild(gs);
   if (!DL.rows.length) { L.appendChild(el("span", "hint", "아직 등록된 폰이 없어요. 업데이트 후 앱을 연 폰부터 나와요.")); return; }
-  var cnt = {}; DL.rows.forEach(function (r) { cnt[r.n] = (cnt[r.n] || 0) + 1; });
   var me = devId();
+  // 📍 지금 쓰는 기기 (이 폰)
+  var di = devInfo(), myRow = DL.rows.filter(function (r) { return r.dev === me; })[0];
+  var ms = el("div", "dlme");
+  ms.appendChild(el("b", null, "📍 지금 쓰는 기기"));
+  var mline = el("div", "v");
+  mline.appendChild(el("span", "id", "기기-" + me));
+  mline.appendChild(el("span", "tg" + (IS_TEST ? " t" : ""), IS_TEST ? "🧪 테스트앱" : "본앱"));
+  ms.appendChild(mline);
+  ms.appendChild(el("small", null, [(myRow && myRow.n) || myName() || "-", di.kind, di.ver].join(" · ")));
+  L.appendChild(ms);
+
+  // 👥 사람별로 묶기 (한 사람이 기기 2대 이상이면 이름을 눌러 펼침)
+  var groups = [], gmap = {};
   DL.rows.forEach(function (r) {
-    var mine = r.dev === me;
-    var c = el("div", "dlc" + (mine ? " mine" : "") + (r.blk ? " blk" : "") + (r.wait ? " wait" : ""));
-    var h = el("div", "h"); h.appendChild(document.createTextNode(r.n)); h.appendChild(el("small", null, "기기-" + r.dev));
-    if (mine) h.appendChild(el("span", "tg", "이 폰"));
-    if (r.blk) h.appendChild(el("span", "tg w", "🚫 차단됨"));
-    if (r.wait) h.appendChild(el("span", "tg w", "⏳ 승인 대기"));
-    if (cnt[r.n] > 1) h.appendChild(el("span", "tg w", "같은 이름 " + cnt[r.n] + "대"));
-    c.appendChild(h);
-    c.appendChild(el("div", "m", [r.kind || "-", r.push ? "🔔 알림 켬" : "🔕 알림 안 켬", r.ver || "", r.at || ""].filter(Boolean).join(" · ")));
-    if (r.pend) {
-      var p = el("div", "pend", "⏳ '" + r.pend + "'(으)로 바꾸기 예약됨\n그 폰에서 앱을 열면 바뀌어요");
-      c.appendChild(p);
+    if (!gmap[r.n]) { gmap[r.n] = { n: r.n, list: [] }; groups.push(gmap[r.n]); }
+    gmap[r.n].list.push(r);
+  });
+  groups.forEach(function (g) {
+    g.list.sort(function (a, b) { return (a.dev === me ? -1 : 0) - (b.dev === me ? -1 : 0) || String(b.at || "").localeCompare(String(a.at || "")); });
+    if (g.list.length === 1) { L.appendChild(dlCard(g.list[0], me, false)); return; }
+    var hasMe = g.list.some(function (r) { return r.dev === me; });
+    var nWait = g.list.filter(function (r) { return r.wait; }).length, nBlk = g.list.filter(function (r) { return r.blk; }).length;
+    var open = DL.exp[g.n] === true || (DL.exp[g.n] !== false && nWait > 0);   // 승인 대기가 있으면 처음부터 펼침
+    var gc = el("div", "dlg" + (hasMe ? " mine" : "") + (nWait ? " wait" : ""));
+    var gh = el("button", "gh"); gh.type = "button";
+    var gt = el("div", "h");
+    gt.appendChild(document.createTextNode(g.n));
+    gt.appendChild(el("span", "tg w", "기기 " + g.list.length + "대"));
+    if (hasMe) gt.appendChild(el("span", "tg", "이 폰 포함"));
+    if (nWait) gt.appendChild(el("span", "tg w", "⏳ 승인 대기 " + nWait));
+    if (nBlk) gt.appendChild(el("span", "tg w", "🚫 차단 " + nBlk));
+    gh.appendChild(gt);
+    gh.appendChild(el("span", "ar", open ? "접기 ▴" : "펼치기 ▾"));
+    gh.onclick = function () { DL.exp[g.n] = !open; dlRender(); };
+    gc.appendChild(gh);
+    if (!open) {
+      var sum = el("div", "m");
+      sum.textContent = g.list.map(function (r) { return "기기-" + r.dev + " " + (/테스트/.test(r.ver || "") ? "(테스트)" : "(본앱)") + " " + (r.at || ""); }).join("\n");
+      sum.style.whiteSpace = "pre-line";
+      gc.appendChild(sum);
+    } else {
+      var sub = el("div", "sub");
+      g.list.forEach(function (r) { sub.appendChild(dlCard(r, me, true)); });
+      gc.appendChild(sub);
     }
-    var bt = el("div", "bt");
-    function btn(t, cls, fn) { var b = el("button", cls, t); b.type = "button"; b.onclick = function () { fn(b); }; bt.appendChild(b); return b; }
-    var msg = el("div", "em");
-    if (r.wait) btn("✅ 승인", "go", function (b) { b.disabled = true; dlDo("secApprove", [DV.pin, r.dev, true], msg, r.n + " 폰을 승인했어요"); });
-    if (!mine) btn(r.blk ? "차단 풀기" : (DL.block === r.dev ? "한 번 더 누르면 차단" : "🚫 차단"), "x", function (b) {
-      if (!r.blk && DL.block !== r.dev) { DL.block = r.dev; dlRender(); return; }
-      b.disabled = true; DL.block = "";
-      dlDo("secBlockDev", [DV.pin, r.dev, !r.blk], msg, r.blk ? "차단을 풀었어요" : r.n + " 폰을 차단했어요");
-    });
-    if (r.pend) btn("예약 취소", null, function (b) { b.disabled = true; dlDo("devRenameCancel", [DV.pin, r.dev], msg, "예약을 취소했어요"); });
-    btn(DL.open === r.dev ? "닫기" : "이름 바꾸기", null, function () {
-      if (mine) { closeDevList(); openNameChange(); return; }   // 이 폰은 바로 바꾸기
-      DL.open = DL.open === r.dev ? "" : r.dev; DL.pick = ""; DL.forget = ""; dlRender();
-    });
-    btn(DL.forget === r.dev ? "한 번 더 누르면 빼기" : "목록에서 빼기", "x", function (b) {
-      if (DL.forget !== r.dev) { DL.forget = r.dev; DL.open = ""; dlRender(); return; }
-      b.disabled = true; dlDo("devForget", [DV.pin, r.dev], msg, "목록에서 뺐어요");
-    });
-    c.appendChild(bt);
-    if (DL.open === r.dev) {
-      var ch = el("div", "chips");
-      DL.names.forEach(function (n) {
-        if (n === r.n) return;
-        var b = el("button", "chip" + (n === DL.pick ? " on" : ""), n); b.type = "button";
-        b.onclick = function () { DL.pick = n; dlRender(); };
-        ch.appendChild(b);
-      });
-      c.appendChild(ch);
-      if (DL.pick) {
-        var bt2 = el("div", "bt");
-        var go = el("button", "go", "'" + r.n + "' → '" + DL.pick + "' 바꾸기 예약"); go.type = "button";
-        go.onclick = function () { go.disabled = true; dlDo("devRename", [DV.pin, r.dev, DL.pick], msg, "예약했어요 · 그 폰에서 앱을 열면 바뀌어요"); };
-        bt2.appendChild(go); c.appendChild(bt2);
-      }
-    }
-    c.appendChild(msg);
-    L.appendChild(c);
+    L.appendChild(gc);
   });
   // 🚫 이름 차단 (퇴사·팀 이동) — 시작일을 정하면 그날부터
   var ns = el("div", "dlsec"), nr = el("div", "r"), nl = el("div");
@@ -4205,11 +4268,82 @@ function dlRender() {
   var foot = el("div", "hint", "이름 바꾸기는 이 폰은 바로, 다른 폰은 앱을 열 때 바뀌어요.\n차단된 폰은 앱을 열면 '사용 중지' 화면만 뜨고 저장된 PIN도 지워져요.");
   foot.style.wordBreak = "keep-all"; foot.style.whiteSpace = "pre-line"; L.appendChild(foot);
 }
+// 기기 한 대 카드 (inGroup: 사람 묶음 안에 들어가면 이름 대신 기기 번호를 크게)
+function dlCard(r, me, inGroup) {
+    var mine = r.dev === me, test = /테스트/.test(r.ver || "");
+    var c = el("div", "dlc" + (mine ? " mine" : "") + (r.blk ? " blk" : "") + (r.wait ? " wait" : "") + (inGroup ? " in" : ""));
+    var h = el("div", "h");
+    if (inGroup) h.appendChild(document.createTextNode("기기-" + r.dev));
+    else { h.appendChild(document.createTextNode(r.n)); h.appendChild(el("small", null, "기기-" + r.dev)); }
+    if (mine) h.appendChild(el("span", "tg", "이 폰"));
+    if (test) h.appendChild(el("span", "tg t", "🧪 테스트앱"));
+    else if (inGroup) h.appendChild(el("span", "tg", "본앱"));
+    if (r.blk) h.appendChild(el("span", "tg w", "🚫 차단됨"));
+    if (r.wait) h.appendChild(el("span", "tg w", "⏳ 승인 대기"));
+    c.appendChild(h);
+    c.appendChild(el("div", "m", [r.kind || "-", r.push ? "🔔 알림 켬" : "🔕 알림 안 켬", (r.ver || "").replace(/\s*테스트$/, ""), r.at || ""].filter(Boolean).join(" · ")));
+    if (r.pend) {
+      var p = el("div", "pend", "⏳ '" + r.pend + "'(으)로 바꾸기 예약됨\n그 폰에서 앱을 열면 바뀌어요");
+      c.appendChild(p);
+    }
+    if (r.ping) {   // 🔔 기기 확인 요청 상태
+      c.appendChild(el("div", "ping" + (r.ping.ack ? " ok" : ""), r.ping.ack
+        ? "✅ " + r.ping.ack + " 응답 · 이 폰 쓰고 있어요"
+        : "🔔 " + r.ping.at + " 확인 요청 보냄 · 아직 응답 없음\n며칠 지나도 응답이 없으면 안 쓰는 폰이에요"));
+    }
+    var bt = el("div", "bt");
+    function btn(t, cls, fn) { var b = el("button", cls, t); b.type = "button"; b.onclick = function () { fn(b); }; bt.appendChild(b); return b; }
+    var msg = el("div", "em");
+    if (!mine && !r.blk) btn(r.ping && !r.ping.ack ? "🔔 다시 요청" : "🔔 확인 요청", null, function (b) {
+      b.disabled = true;
+      call("devPing", [DV.pin, r.dev]).then(function (x) {
+        if (x && x.error) { msg.textContent = x.error; b.disabled = false; return; }
+        toast(x && x.pushed ? "🔔 그 폰에 확인 알림을 보냈어요" : "🔔 확인 요청을 걸었어요 · 그 폰에서 앱을 열면 떠요");
+        if (x && x.note) msg.textContent = x.note;
+        DL.keepExp = true; openDevList();
+      }).catch(function (e) { msg.textContent = "실패: " + errText(e); b.disabled = false; });
+    });
+    if (r.wait) btn("✅ 승인", "go", function (b) { b.disabled = true; dlDo("secApprove", [DV.pin, r.dev, true], msg, r.n + " 폰을 승인했어요"); });
+    if (!mine) btn(r.blk ? "차단 풀기" : (DL.block === r.dev ? "한 번 더 누르면 차단" : "🚫 차단"), "x", function (b) {
+      if (!r.blk && DL.block !== r.dev) { DL.block = r.dev; dlRender(); return; }
+      b.disabled = true; DL.block = "";
+      dlDo("secBlockDev", [DV.pin, r.dev, !r.blk], msg, r.blk ? "차단을 풀었어요" : r.n + " 폰을 차단했어요");
+    });
+    if (r.pend) btn("예약 취소", null, function (b) { b.disabled = true; dlDo("devRenameCancel", [DV.pin, r.dev], msg, "예약을 취소했어요"); });
+    btn(DL.open === r.dev ? "닫기" : "이름 바꾸기", null, function () {
+      if (mine) { closeDevList(); openNameChange(); return; }   // 이 폰은 바로 바꾸기
+      DL.open = DL.open === r.dev ? "" : r.dev; DL.pick = ""; DL.forget = ""; dlRender();
+    });
+    btn(DL.forget === r.dev ? "한 번 더 누르면 빼기" : "목록에서 빼기", "x", function (b) {
+      if (DL.forget !== r.dev) { DL.forget = r.dev; DL.open = ""; dlRender(); return; }
+      b.disabled = true; dlDo("devForget", [DV.pin, r.dev], msg, "목록에서 뺐어요");
+    });
+    c.appendChild(bt);
+    if (DL.open === r.dev) {
+      var ch = el("div", "chips");
+      DL.names.forEach(function (n) {
+        if (n === r.n) return;
+        var b = el("button", "chip" + (n === DL.pick ? " on" : ""), n); b.type = "button";
+        b.onclick = function () { DL.pick = n; dlRender(); };
+        ch.appendChild(b);
+      });
+      c.appendChild(ch);
+      if (DL.pick) {
+        var bt2 = el("div", "bt");
+        var go = el("button", "go", "'" + r.n + "' → '" + DL.pick + "' 바꾸기 예약"); go.type = "button";
+        go.onclick = function () { go.disabled = true; dlDo("devRename", [DV.pin, r.dev, DL.pick], msg, "예약했어요 · 그 폰에서 앱을 열면 바뀌어요"); };
+        bt2.appendChild(go); c.appendChild(bt2);
+      }
+    }
+    c.appendChild(msg);
+    return c;
+}
 function dlDo(fn, args, msg, okText) {
   msg.textContent = "";
   call(fn, args).then(function (r) {
     if (r && r.error) { msg.textContent = r.error; dlRender(); return; }
     toast("📱 " + okText);
+    DL.keepExp = true;   // 펼쳐 둔 사람은 그대로
     openDevList();
   }).catch(function (e) { msg.textContent = "실패: " + errText(e); });
 }
@@ -4357,7 +4491,7 @@ function instGate() {
     W.appendChild(b);
   }
   function note(t) { W.appendChild(el("div", "note", t)); }
-  var WHY = "알림(52시간·근무시간·공지)은 홈 화면에 추가한 앱에서만 받을 수 있어요.\n한 번만 추가하면 다음부터는 아이콘으로 바로 열려요.";
+  var WHY = "제조1-B는 앱으로만 쓸 수 있어요.\n설치해야 들어갈 수 있고, 1분이면 끝나요.\n한 번 설치하면 다음부터는 아이콘으로 바로 열려요.";
 
   if (env.pc) {
     h2("📱 제조1-B는 휴대폰 전용이에요");
@@ -4380,7 +4514,7 @@ function instGate() {
     else steps(["오른쪽 위·아래 메뉴에서 <b>다른 브라우저로 열기</b> 누르기", "안 보이면 아래 <b>링크 복사</b> → " + (env.ios ? "Safari" : "Chrome") + " 주소창에 붙여넣기"]);
     copyBtn();
   } else if (env.ios) {
-    h2("📲 홈 화면에 추가해 주세요");
+    h2("📲 홈 화면에 추가해야 쓸 수 있어요");
     why(WHY);
     if (env.safari) steps([
       "화면 아래 <span class='ic'>" + IG_SHARE + "</span> 공유 버튼 누르기<br><small>(안 보이면 아래 <span class='ic'>⋯</span> 먼저 누르기)</small>",
@@ -4392,15 +4526,32 @@ function instGate() {
       "<b>홈 화면에 추가</b> 누르기 (안 보이면 아래 링크 복사 → Safari에서 열기)",
       "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]);
     if (!env.safari) copyBtn("🔗 링크 복사 (Safari에서 열기)");
+    if (env.safari) {   // 📍 공유 버튼이 있는 화면 아래쪽을 화살표로 가리킴
+      W.className = "w pad";
+      var ar = el("div"); ar.id = "igarrow";
+      ar.appendChild(el("span", null, "여기 공유 버튼 ⬆ 누르기"));
+      ar.appendChild(el("i", null, "⬇"));
+      document.body.appendChild(ar);
+    }
     note("iOS 16.4 이상에서 알림을 받을 수 있어요. · 추가했는데도 이 화면이 계속 뜨면 손성민에게 알려 주세요.");
   } else {   // 안드로이드
-    h2("📲 앱을 설치해 주세요");
+    h2("📲 앱을 설치해야 쓸 수 있어요");
     why(WHY);
+    // 🌐 삼성 인터넷: 설치 버튼이 안 뜨는 폰이 많아서 → 버튼 하나로 크롬에서 열기 (크롬은 [앱 설치하기] 버튼이 뜸)
+    if (env.samsung) {
+      var ch = document.createElement("a"); ch.className = "big";
+      ch.href = "intent://" + igUrl().replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+      ch.textContent = "🌐 Chrome으로 열어서 설치하기";
+      W.appendChild(ch);
+      W.appendChild(el("div", "note", "Chrome에서 [📲 앱 설치하기] 버튼만 누르면 돼요."));
+    }
     var bi = el("button", "big", "📲 앱 설치하기"); bi.type = "button"; bi.style.display = "none";
     W.appendChild(bi);
+    var wt = el("div", "wait", env.samsung ? "" : "설치 버튼 준비 중…"); if (!env.samsung) W.appendChild(wt);
+    setTimeout(function () { if (!IG.prompt) wt.style.display = "none"; }, 3000);
     var done = el("div", "ok", "✅ 설치됐어요!\n홈 화면의 제조1-B 아이콘으로 열어 주세요."); done.style.display = "none"; done.style.whiteSpace = "pre-line";
     W.appendChild(done);
-    function showBtn() { if (IG.prompt) bi.style.display = ""; }
+    function showBtn() { if (IG.prompt) { bi.style.display = ""; wt.style.display = "none"; } }
     bi.onclick = function () {
       if (!IG.prompt) return;
       IG.prompt.prompt();
@@ -4411,7 +4562,7 @@ function instGate() {
     W.appendChild(el("div", "note", "버튼이 안 보이면 직접 추가해 주세요 ↓"));
     steps(env.samsung
       ? ["화면 아래 <span class='ic'>≡</span> 메뉴 누르기", "<b>현재 페이지 추가</b> → <b>홈 화면</b> 누르기", "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]
-      : ["화면 오른쪽 위 <span class='ic'>⋮</span> 누르기", "<b>앱 설치</b> 또는 <b>홈 화면에 추가</b> 누르기", "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]);
+      : ["화면 오른쪽 위 <span class='ic'>⋮</span> 누르기", "<b>앱 설치</b> 누르기<br><small>'홈 화면에 추가'만 보이면 누르고, 뜨는 창에서 <b>설치</b> 선택 (바로가기 ❌)</small>", "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]);
     note("추가했는데도 이 화면이 계속 뜨면 손성민에게 알려 주세요.");
   }
   [].forEach.call(W.querySelectorAll(".why,.note"), function (x) { x.style.whiteSpace = "pre-line"; });
