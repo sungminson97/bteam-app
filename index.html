@@ -953,7 +953,7 @@ var LOCK_MIN = 10;   // 초과 시 잠금 시간(분)
 
 var cur = 0, store = {};
 var H = { meta: null, loaded: false, confirm: false, token: 0, busy: false };
-var U = { loaded: false, data: null, msg: null };
+var U = { loaded: false, data: null, msg: null, pend: [] };
 var LV = { loaded: false, data: null, open: {} };
 var ST = { loaded: false, data: null, open: {} };
 var CF = { it: null, s: null };
@@ -1220,7 +1220,7 @@ function showLocked() {
 
 function wipeScreens() {
   store = {};
-  U = { loaded: false, data: null, msg: null };
+  U = { loaded: false, data: null, msg: null, pend: [] };
   LV = { loaded: false, data: null, open: {} };
   ST = { loaded: false, data: null, open: {} };
   H = { meta: null, loaded: false, confirm: false, token: 0, busy: false };
@@ -1734,10 +1734,10 @@ $("cfgo").onclick = function () {
   callEdit("markUploadDone", [it.row, s.col, it.n])
     .then(function (r) {
       if (r && r.error) U.msg = { err: true, t: r.error };
-      else U.msg = { err: false, t: it.n + " " + s.label + " → 완료 ✔" };
+      else { U.msg = { err: false, t: it.n + " " + s.label + " → 완료 ✔" }; upLocal(it, s, false); }   // ⚡ 서버 저장 성공 → 화면에서 바로 빼기
       toast((U.msg.err ? "⚠️ " : "✔ ") + U.msg.t, U.msg.err);
       closeConfirm();
-      loadUpload();
+      loadUpload();   // 뒤에서 최신으로 다시 확인
     })
     .catch(function (e) {
       U.msg = { err: true, t: "처리 실패: " + errText(e) };
@@ -1746,6 +1746,36 @@ $("cfgo").onclick = function () {
       loadUpload();
     });
 };
+
+// ⚡ 서버 저장이 성공하면 다시 불러오기를 기다리지 않고 화면에서 바로 빼기
+//    (다시 불러오기는 방금 쓴 시트를 읽어서 재계산을 기다리느라 몇 초 걸림 → 뒤에서 조용히 확인)
+//    1분 동안은 기억해 뒀다가, 그 사이 도착한 예전 응답에도 다시 적용 (연달아 누를 때 다시 나타나지 않게)
+function upApply(d, e) {
+  if (!d || !d.people) return;
+  d.people.forEach(function (p) {
+    p.items = p.items.filter(function (x) {
+      if (x.row !== e.row || x.n !== e.n) return true;
+      if (e.col) x.sheets = (x.sheets || []).filter(function (y) { return y.col !== e.col; });
+      if (e.op) x.noOp = false;
+      return (x.sheets && x.sheets.length) || x.noOp;   // 남은 시트도 없고 작업자도 있으면 목록에서 빠짐
+    });
+  });
+  d.people = d.people.filter(function (p) { return p.items.length; });
+  d.total = d.people.reduce(function (a, p) { return a + p.items.length; }, 0);
+}
+function upPendApply(d) {
+  var now = Date.now();
+  U.pend = U.pend.filter(function (e) { return now - e.t < 60000; });
+  U.pend.forEach(function (e) { upApply(d, e); });
+}
+function upLocal(it, sheet, opDone) {
+  var e = { row: it.row, n: it.n, col: sheet ? sheet.col : 0, op: !!opDone, t: Date.now() };
+  U.pend.push(e);
+  if (!U.data || !U.data.people) return;
+  upApply(U.data, e);
+  setBadge(U.data.total);
+  if (cur === 2) renderUpload(U.data);
+}
 
 function renderUpload(d) {
   var box = $("upload");
@@ -1928,10 +1958,10 @@ $("opgo").onclick = function () {
   callEdit("setOperator", OP.prev ? [it.row, it.n, op, OP.prev] : [it.row, it.n, op])
     .then(function (r) {
       if (r && r.error) U.msg = { err: true, t: r.error };
-      else U.msg = { err: false, t: it.n + " 작업자 → " + op + (OP.prev ? " (수정)" : "") + " ✔" };
+      else { U.msg = { err: false, t: it.n + " 작업자 → " + op + (OP.prev ? " (수정)" : "") + " ✔" }; if (!OP.prev) upLocal(it, null, true); }   // ⚡ 처음 입력 성공 → 바로 반영
       toast((U.msg.err ? "⚠️ " : "✔ ") + U.msg.t, U.msg.err);
       closeOp();
-      loadUpload();
+      loadUpload();   // 뒤에서 최신으로 다시 확인
     })
     .catch(function (e) {
       U.msg = { err: true, t: "저장 실패: " + errText(e) };
@@ -1947,6 +1977,7 @@ function loadUpload() {
   return call("getUploadStatus")
     .then(function (d) {
       R.up = false;
+      if (d && !d.error) upPendApply(d);   // 방금 앱에서 완료한 건 다시 안 보이게
       U.data = d;
       if (d && !d.error) { setBadge(d.total); cset("up", d); }
       if (cur === 2) renderUpload(d);
@@ -3271,10 +3302,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-21-2";
+var APP_VER = "2026-10-21-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-21-3", ["시트 업로드 완료·작업자 입력하면 목록에서 바로 빠져요"]],
   ["2026-10-21-2", ["앱 설치 안내 더 쉽게 (갤럭시: 크롬으로 열기 버튼 · 아이폰: 공유 버튼 화살표)"]],
   ["2026-10-20-10", ["저장이 오래 걸릴 때 '실패'로 뜨던 문제 수정"]],
   ["2026-10-20-9", ["새로고침이 중간에 실패하던 문제 수정"]],
