@@ -1876,7 +1876,7 @@ function renderUpload(d) {
   });
 
   // ✏️ 최근 앱에서 입력한 작업자 (14일 · 잘못 넣었으면 수정/비우기)
-  if (d.recent && d.recent.length) {
+  if (false && d.recent && d.recent.length) {   // ✏️ 최근 입력한 작업자 칸: 2026-10-22 뺌 (작업자 수정은 내 이름 카드 ✎에서)
     var me = myName();
     var rc = el("div", "card up oprec");
     var rh = el("div", "hd");
@@ -3343,10 +3343,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-22-4";
+var APP_VER = "2026-10-22-6";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-22-6", ["시트 업로드 화면 정리"]],
+  ["2026-10-22-5", ["업데이트 후 [확인]을 누르면 시작 화면이 나와요"]],
   ["2026-10-22-4", ["작업자 입력·업로드 완료 후 '저장 실패'가 잘못 뜨던 문제 수정"]],
   ["2026-10-22-3", ["처음 쓰는 폰은 PIN → 이름 고르기 → 앱 순서로"]],
   ["2026-10-22-2", ["앱 안정성 개선 (폰에 저장된 로그인 정보가 덜 지워지게)"]],
@@ -3432,7 +3434,7 @@ function showUpdated(from) {
   setTimeout(function () { o.className = "on fast go"; }, 60);
   setTimeout(function () { o.className = "on fast go done ok"; $("upsub").textContent = "최신 버전이 적용됐어요 ✓"; }, 1000);
   // ⏸ 자동으로 안 닫힘 → 바뀐 점 읽고 [확인]
-  $("upok").onclick = function () { o.className = ""; };
+  $("upok").onclick = function () { splashReplay(); o.className = ""; };   // 🎬 확인 → 시작 화면 → 앱
 }
 
 function checkUpdate() {
@@ -4694,7 +4696,16 @@ function splashHide(now) {
   var s = document.getElementById("splash");
   if (!s) return;
   var wait = now ? 0 : Math.max(0, 1000 - (Date.now() - SPL.t0));
-  setTimeout(function () { s.className = "out"; setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); }, 450); }, wait);
+  setTimeout(function () { s.className = "out"; setTimeout(function () { s.style.display = "none"; }, 450); }, wait);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
+}
+// 🎬 업데이트 완료 [확인] → 시작 화면 애니메이션을 한 번 보여주고 앱으로 (데이터는 이미 받아 둔 상태)
+function splashReplay() {
+  var s = document.getElementById("splash");
+  if (!s) return;
+  var n = s.cloneNode(true);   // 복제해서 바꿔 끼우면 애니메이션이 처음부터 다시 재생됨
+  n.className = ""; n.style.display = "";
+  s.parentNode.replaceChild(n, s);
+  setTimeout(function () { n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450); }, 1700);
 }
 
 function boot() {
