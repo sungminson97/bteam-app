@@ -585,20 +585,23 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 /* 🎬 앱 켤 때 시작 화면 (로고 애니메이션 + 그동안 최신 데이터 받아오기) */
 #splash{position:fixed;inset:0;z-index:150;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:opacity .45s ease;padding-bottom:40px}
 #splash.out{opacity:0;pointer-events:none}
-#splash svg{width:210px;max-width:60vw;height:auto;overflow:visible}
+#splash svg{width:320px;max-width:80vw;height:auto;overflow:visible}
 #splash .tr{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.5;stroke-dasharray:200;stroke-dashoffset:200;animation:spDraw .7s ease-out forwards}
 #splash .pk{fill:none;stroke:var(--accent);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:10 190;stroke-dashoffset:200;opacity:0;animation:spPk 1.3s linear infinite}
 #splash .nd{fill:var(--accent);transform-box:fill-box;transform-origin:center;transform:scale(0);animation:spPop .3s ease-out forwards}
-#splash .pin{fill:var(--accent);opacity:.35}
+#splash .pin{fill:var(--sub);opacity:.55}
+#splash .chip .dot{fill:var(--accent)}
 #splash .chip{transform-box:fill-box;transform-origin:center;opacity:0;transform:scale(.8);animation:spIn .55s cubic-bezier(.2,.8,.2,1) .05s forwards}
 #splash .chip rect.body{fill:var(--card);stroke:var(--accent);stroke-width:2.4}
-#splash .chip rect.die{fill:var(--accent);opacity:.08}
-#splash .chip text{fill:var(--accent);font-weight:900;font-size:22px;letter-spacing:.02em;font-family:inherit}
-#splash .tt{margin-top:14px;color:var(--text);font-size:16px;font-weight:900;letter-spacing:.34em;padding-left:.34em;opacity:0;transform:translateY(6px);animation:spIn .6s ease .65s forwards;white-space:nowrap}
-#splash .st{color:var(--sub);font-size:10.5px;font-weight:700;letter-spacing:.26em;padding-left:.26em;opacity:0;animation:spFade .6s ease .85s forwards;white-space:nowrap}
+#splash .chip rect.die{fill:none;stroke:var(--line);stroke-width:1.6}
+#splash .chip text{fill:var(--text);font-weight:900;font-size:24px;letter-spacing:.02em;font-family:inherit}
+#splash .tt{margin-top:22px;color:var(--text);font-size:clamp(20px,6.3vw,30px);font-weight:900;letter-spacing:.26em;padding-left:.26em;opacity:0;transform:translateY(6px);animation:spIn .6s ease .65s forwards;white-space:nowrap}
+#splash .st{margin-top:4px;color:var(--sub);font-size:clamp(9.5px,2.75vw,13px);font-weight:700;letter-spacing:.2em;padding-left:.2em;opacity:0;animation:spFade .6s ease .85s forwards;white-space:nowrap}
 #splash .st b{color:var(--accent);font-weight:800}
+#splash .wt{order:9;margin-top:18px;color:var(--sub);font-size:12.5px;font-weight:600;opacity:0;transition:opacity .4s ease;height:0;overflow:visible}
+#splash .wt.on{opacity:1}
 #splash .ft{position:absolute;left:0;right:0;bottom:calc(34px + env(safe-area-inset-bottom));display:flex;justify-content:center;opacity:0;animation:spFadeSoft .6s ease 1s forwards}
-#splash .ft img{height:14px;width:auto}
+#splash .ft img{height:22px;width:auto}
 @keyframes spIn{to{opacity:1;transform:none}}
 @keyframes spFade{to{opacity:1}}
 @keyframes spFadeSoft{to{opacity:.75}}
@@ -657,7 +660,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 </style>
 </head>
 <body>
-<div id="splash"><svg viewBox="0 0 220 220" aria-hidden="true"><path class="tr" d="M89 64V38H60" style="animation-delay:0.25s"/><path class="tr" d="M131 64V26H170" style="animation-delay:0.32s"/><path class="tr" d="M156 89H184V60" style="animation-delay:0.39s"/><path class="tr" d="M156 131H196" style="animation-delay:0.46s"/><path class="tr" d="M131 156V184H162" style="animation-delay:0.53s"/><path class="tr" d="M89 156V196" style="animation-delay:0.60s"/><path class="tr" d="M64 131H36V164" style="animation-delay:0.67s"/><path class="tr" d="M64 89H24" style="animation-delay:0.74s"/><path class="pk" d="M89 64V38H60" style="animation-delay:1.00s"/><path class="pk" d="M131 64V26H170" style="animation-delay:1.16s"/><path class="pk" d="M156 89H184V60" style="animation-delay:1.32s"/><path class="pk" d="M156 131H196" style="animation-delay:1.48s"/><path class="pk" d="M131 156V184H162" style="animation-delay:1.64s"/><path class="pk" d="M89 156V196" style="animation-delay:1.80s"/><path class="pk" d="M64 131H36V164" style="animation-delay:1.96s"/><path class="pk" d="M64 89H24" style="animation-delay:2.12s"/><circle class="nd" cx="60" cy="38" r="3.6" style="animation-delay:0.80s"/><circle class="nd" cx="170" cy="26" r="3.6" style="animation-delay:0.87s"/><circle class="nd" cx="184" cy="60" r="3.6" style="animation-delay:0.94s"/><circle class="nd" cx="196" cy="131" r="3.6" style="animation-delay:1.01s"/><circle class="nd" cx="162" cy="184" r="3.6" style="animation-delay:1.08s"/><circle class="nd" cx="89" cy="196" r="3.6" style="animation-delay:1.15s"/><circle class="nd" cx="36" cy="164" r="3.6" style="animation-delay:1.22s"/><circle class="nd" cx="24" cy="89" r="3.6" style="animation-delay:1.29s"/><g class="chip"><rect class="pin" x="86" y="66" width="6" height="8" rx="1"/><rect class="pin" x="86" y="146" width="6" height="8" rx="1"/><rect class="pin" x="66" y="86" width="8" height="6" rx="1"/><rect class="pin" x="146" y="86" width="8" height="6" rx="1"/><rect class="pin" x="100" y="66" width="6" height="8" rx="1"/><rect class="pin" x="100" y="146" width="6" height="8" rx="1"/><rect class="pin" x="66" y="100" width="8" height="6" rx="1"/><rect class="pin" x="146" y="100" width="8" height="6" rx="1"/><rect class="pin" x="114" y="66" width="6" height="8" rx="1"/><rect class="pin" x="114" y="146" width="6" height="8" rx="1"/><rect class="pin" x="66" y="114" width="8" height="6" rx="1"/><rect class="pin" x="146" y="114" width="8" height="6" rx="1"/><rect class="pin" x="128" y="66" width="6" height="8" rx="1"/><rect class="pin" x="128" y="146" width="6" height="8" rx="1"/><rect class="pin" x="66" y="128" width="8" height="6" rx="1"/><rect class="pin" x="146" y="128" width="8" height="6" rx="1"/><rect class="body" x="74" y="74" width="72" height="72" rx="12"/><rect class="die" x="84" y="84" width="52" height="52" rx="6"/><text x="110" y="118" text-anchor="middle">1-B</text></g></svg><div class="tt">MANUFACTURING</div><div class="st" id="splsub">SEMICONDUCTOR EQUIPMENT · <b>TEAM 1-B</b></div><div class="ft"><picture><source srcset="logo_dark.png" media="(prefers-color-scheme: dark)"><img src="logo.png" alt="NINEBELL" onerror="this.style.display='none'"></picture></div></div>
+<div id="splash"><svg viewBox="0 0 220 220" aria-hidden="true"><path class="tr" d="M89 64V50L72 33" style="animation-delay:0.25s"/><path class="tr" d="M131 64V48L146 33H172" style="animation-delay:0.32s"/><path class="tr" d="M156 89H170L184 75" style="animation-delay:0.39s"/><path class="tr" d="M156 128H168L186 146V164" style="animation-delay:0.46s"/><path class="tr" d="M131 156V172L148 189" style="animation-delay:0.53s"/><path class="tr" d="M89 156V172L74 187H54" style="animation-delay:0.60s"/><path class="tr" d="M64 128H50L36 142" style="animation-delay:0.67s"/><path class="tr" d="M64 92H52L36 76V56" style="animation-delay:0.74s"/><path class="pk" d="M89 64V50L72 33" style="animation-delay:1.00s"/><path class="pk" d="M131 64V48L146 33H172" style="animation-delay:1.16s"/><path class="pk" d="M156 89H170L184 75" style="animation-delay:1.32s"/><path class="pk" d="M156 128H168L186 146V164" style="animation-delay:1.48s"/><path class="pk" d="M131 156V172L148 189" style="animation-delay:1.64s"/><path class="pk" d="M89 156V172L74 187H54" style="animation-delay:1.80s"/><path class="pk" d="M64 128H50L36 142" style="animation-delay:1.96s"/><path class="pk" d="M64 92H52L36 76V56" style="animation-delay:2.12s"/><circle class="nd" cx="72" cy="33" r="4.2" style="animation-delay:0.80s"/><circle class="nd" cx="172" cy="33" r="4.2" style="animation-delay:0.87s"/><circle class="nd" cx="184" cy="75" r="4.2" style="animation-delay:0.94s"/><circle class="nd" cx="186" cy="164" r="4.2" style="animation-delay:1.01s"/><circle class="nd" cx="148" cy="189" r="4.2" style="animation-delay:1.08s"/><circle class="nd" cx="54" cy="187" r="4.2" style="animation-delay:1.15s"/><circle class="nd" cx="36" cy="142" r="4.2" style="animation-delay:1.22s"/><circle class="nd" cx="36" cy="56" r="4.2" style="animation-delay:1.29s"/><g class="chip"><rect class="pin" x="81" y="66" width="5" height="8" rx="1"/><rect class="pin" x="81" y="146" width="5" height="8" rx="1"/><rect class="pin" x="66" y="81" width="8" height="5" rx="1"/><rect class="pin" x="146" y="81" width="8" height="5" rx="1"/><rect class="pin" x="91" y="66" width="5" height="8" rx="1"/><rect class="pin" x="91" y="146" width="5" height="8" rx="1"/><rect class="pin" x="66" y="91" width="8" height="5" rx="1"/><rect class="pin" x="146" y="91" width="8" height="5" rx="1"/><rect class="pin" x="101" y="66" width="5" height="8" rx="1"/><rect class="pin" x="101" y="146" width="5" height="8" rx="1"/><rect class="pin" x="66" y="101" width="8" height="5" rx="1"/><rect class="pin" x="146" y="101" width="8" height="5" rx="1"/><rect class="pin" x="111" y="66" width="5" height="8" rx="1"/><rect class="pin" x="111" y="146" width="5" height="8" rx="1"/><rect class="pin" x="66" y="111" width="8" height="5" rx="1"/><rect class="pin" x="146" y="111" width="8" height="5" rx="1"/><rect class="pin" x="121" y="66" width="5" height="8" rx="1"/><rect class="pin" x="121" y="146" width="5" height="8" rx="1"/><rect class="pin" x="66" y="121" width="8" height="5" rx="1"/><rect class="pin" x="146" y="121" width="8" height="5" rx="1"/><rect class="pin" x="131" y="66" width="5" height="8" rx="1"/><rect class="pin" x="131" y="146" width="5" height="8" rx="1"/><rect class="pin" x="66" y="131" width="8" height="5" rx="1"/><rect class="pin" x="146" y="131" width="8" height="5" rx="1"/><rect class="body" x="74" y="74" width="72" height="72" rx="12"/><rect class="die" x="84" y="84" width="52" height="52" rx="6"/><circle class="dot" cx="90" cy="90" r="2.4"/><text x="110" y="119" text-anchor="middle">1-B</text></g></svg><div class="tt">MANUFACTURING</div><div class="wt" id="splwait">최신 정보 받는 중…</div><div class="st" id="splsub">SEMICONDUCTOR EQUIPMENT · <b>TEAM 1-B</b></div><div class="ft"><picture><source srcset="logo_dark.png" media="(prefers-color-scheme: dark)"><img src="logo.png" alt="NINEBELL" onerror="this.style.display='none'"></picture></div></div>
 
 <!-- 🔒 잠금 화면 -->
 <div id="ig"><div class="w" id="igw"></div></div>
@@ -3343,10 +3346,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-22-6";
+var APP_VER = "2026-10-22-8";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-22-8", ["시작 화면 크게 · 최신 내용을 받아서 열려요"]],
   ["2026-10-22-6", ["시트 업로드 화면 정리"]],
   ["2026-10-22-5", ["업데이트 후 [확인]을 누르면 시작 화면이 나와요"]],
   ["2026-10-22-4", ["작업자 입력·업로드 완료 후 '저장 실패'가 잘못 뜨던 문제 수정"]],
@@ -4736,7 +4740,10 @@ function boot() {
   }).catch(function () { return null; });
   unlock(p, pre);
   pre.then(function () { splashHide(); });   // 🎬 최신 금일/명일이 그려진 뒤 시작 화면 닫기
-  setTimeout(function () { splashHide(); }, 4000);
+  // ⏱ 서버 응답 + 폰↔구글 왕복이 4초를 넘는 경우가 많아서(서버 3초 + 연결 1~3초) 최대 8초까지 기다림
+  //    2.5초가 지나면 시작 화면 아래에 "최신 정보 받는 중…" 표시 (멈춘 것처럼 안 보이게)
+  setTimeout(function () { var w = document.getElementById("splwait"); if (w && !SPL.done) w.className = "wt on"; }, 2500);
+  setTimeout(function () { splashHide(); }, 8000);
 }
 boot();
 </script>
