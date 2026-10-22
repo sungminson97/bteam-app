@@ -154,7 +154,11 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .secid{margin-top:14px;display:inline-block;padding:6px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:700;color:var(--text)}
 .secid:empty{display:none}
 #secre{width:100%;margin-top:26px;padding:14px;border:0;border-radius:14px;background:var(--accent);color:#fff;font-size:16px;font-weight:800;font-family:inherit}
-#secov.blk #secre,#secov.blk #secrq,#secov.blk .secst{display:none}
+#secov.blk #secre,#secov.blk #secrq,#secov.blk .secst,#secov.blk #secdev,#secov.blk #secdevbox{display:none!important}
+#secdev{margin-top:18px;background:none;border:0;color:var(--sub);font-size:12.5px;font-weight:600;font-family:inherit;text-decoration:underline;text-underline-offset:3px}
+#secdevbox{margin-top:10px;grid-template-columns:1fr auto;gap:8px}
+#secdevpin{padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:16px;font-family:inherit;text-align:center;letter-spacing:.3em;min-width:0}
+#secdevgo{padding:12px 16px;border-radius:12px;border:0;background:var(--accent);color:#fff;font-size:15px;font-weight:800;font-family:inherit}
 .secst{margin-top:18px;font-size:14px;font-weight:700;color:var(--ok);white-space:pre-line;word-break:keep-all}
 .secst.wait{color:var(--sub);font-weight:500}
 #secrq{width:100%;margin-top:10px;padding:13px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:15px;font-weight:700;font-family:inherit}
@@ -664,6 +668,8 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     <div class="secst" id="secst"></div>
     <button id="secre" type="button">승인됐는지 확인</button>
     <button id="secrq" type="button">📨 승인 요청 다시 보내기</button>
+    <button id="secdev" type="button">🛠 개발자 PIN으로 바로 승인</button>
+    <div id="secdevbox" style="display:none"><input id="secdevpin" type="password" inputmode="numeric" autocomplete="off" placeholder="개발자 PIN"><button id="secdevgo" type="button">승인</button></div>
   </div>
 </div>
 <!-- 🚀 업데이트 화면 (#app 밖: PIN 화면 위에도 뜨게) -->
@@ -970,7 +976,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 
 <script>
 /* ★ 실행 환경 (본 앱 index.html / 테스트 test.html 는 이 3줄만 달라요) */
-var IS_TEST = true;   // 테스트 화면이면 true (위쪽에 🧪 테스트 표시, 저장 공간 따로 씀)
+var IS_TEST = false;   // 테스트 화면이면 true (위쪽에 🧪 테스트 표시, 저장 공간 따로 씀)
 var API_URL = "https://script.google.com/macros/s/AKfycbyXGeBXjmZtWj0GqezipYO9GRmZrQ1Y2zoMzgfYfJBH9S9nTw_Scg3ZvKn1PoI4tUMt/exec";
 var SP = IS_TEST ? "t_" : "";   // 폰 저장 이름 앞에 붙임 → 테스트와 본 앱 PIN·캐시가 섞이지 않음
 var MAX_FAILS = 3;   // PIN 연속 오입력 허용 횟수
@@ -1095,7 +1101,7 @@ function rawCall(pin, fn, args, editPin) {
       if (j && j.rn && fn === "getDashboardAll") remoteRenameLater(j.rn);   // 📱 개발자가 원격으로 이름 바꿈
       if (j && j.nag && fn === "getDashboardAll") pushNagLater(j.nag);       // 📣 관리자가 "알림 켜 주세요" 요청
       if (j && j.ping && fn === "getDashboardAll") devPingLater(j.ping);     // 🔔 개발자가 보낸 기기 확인 요청
-      if (j && (j.code === "BLOCKED" || j.code === "PENDING")) showSec(j);    // 🔐 차단 / 승인 대기
+      if (j && (j.code === "BLOCKED" || j.code === "PENDING")) { if (pin) SEC.pin = pin; showSec(j); }    // 🔐 차단 / 승인 대기 (방금 넣은 PIN 기억: 아직 저장 전일 수 있음)
       return j;
     }, function (e) {
       if (prev && !SPD.last) SPD.last = prev;   // 이번에 못 보낸 지난 기록은 다음에 다시
@@ -3327,10 +3333,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-22-1";
+var APP_VER = "2026-10-22-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-22-2", ["앱 안정성 개선"]],
   ["2026-10-22-1", ["앱 켤 때 시작 화면 · 그동안 최신 내용 받아와요"]],
   ["2026-10-21-3", ["시트 업로드 완료·작업자 입력하면 목록에서 바로 빠져요"]],
   ["2026-10-21-2", ["앱 설치 안내 더 쉽게 (갤럭시: 크롬으로 열기 버튼 · 아이폰: 공유 버튼 화살표)"]],
@@ -4138,7 +4145,8 @@ function applyRemoteRename(rn) {
 
 /* ---------- 🔐 사용 중지 / 승인 대기 ---------- */
 function mdLabel(ymd) { var p = String(ymd || "").split("-"); return p.length === 3 ? (+p[1]) + "/" + (+p[2]) : ymd; }   // 2026-11-09 → 11/9
-var SEC = { shown: "" };
+var SEC = { shown: "", pin: "" };
+function secPin() { return SEC.pin || getPin(); }
 function showSec(j) {
   var o = $("secov"), blk = j.code === "BLOCKED";
   var lines = String(j.error || "").split("\n");
@@ -4156,7 +4164,7 @@ function showSec(j) {
   } else {     // 🔐 승인 대기: 이 폰을 기기 목록에 올리고 → 서버가 손성민 폰으로 승인 요청 알림을 보냄
     var st = $("secst");
     st.className = "secst wait"; st.textContent = "승인 요청 보내는 중…";
-    rawCall(getPin(), "deviceRegister", [myName() || "", devInfo()]).then(function (r) {
+    rawCall(secPin(), "deviceRegister", [myName() || "", devInfo()]).then(function (r) {
       if (r && r.ok) { st.className = "secst"; st.textContent = "📨 손성민에게 승인 요청을 보냈어요\n승인되면 [승인됐는지 확인]을 눌러 주세요"; }
       else { st.className = "secst wait"; st.textContent = "요청을 못 보냈어요. 아래 버튼으로 다시 보내 주세요."; }
     }).catch(function () { st.className = "secst wait"; st.textContent = "요청을 못 보냈어요. 아래 버튼으로 다시 보내 주세요."; });
@@ -4164,7 +4172,7 @@ function showSec(j) {
 }
 $("secrq").onclick = function () {
   var b = this; b.disabled = true; b.textContent = "보내는 중…";
-  rawCall(getPin(), "secRequest", []).then(function (j) {
+  rawCall(secPin(), "secRequest", []).then(function (j) {
     b.disabled = false; b.textContent = "📨 승인 요청 다시 보내기";
     var r = j && j.data;
     if (r && r.approved) { $("secre").onclick(); return; }
@@ -4175,11 +4183,32 @@ $("secrq").onclick = function () {
 };
 $("secre").onclick = function () {
   var b = this; b.disabled = true; b.textContent = "확인 중…";
-  rawCall(getPin(), "ping").then(function (j) {
+  rawCall(secPin(), "ping").then(function (j) {
     b.disabled = false; b.textContent = "승인됐는지 확인";
-    if (j && j.ok) { $("secov").className = ""; SEC.shown = ""; toast("✅ 승인됐어요"); setTimeout(function () { location.reload(); }, 600); }
+    if (j && j.ok) { secApproved(); }
     else if (j && j.code === "PENDING") toast("⏳ 아직 승인 전이에요", true);
   }).catch(function () { b.disabled = false; b.textContent = "승인됐는지 확인"; toast("⚠️ 연결 실패", true); });
+};
+
+// ✅ 승인되면: 방금 넣은 PIN을 저장하고 다시 열기 (PIN 다시 안 넣게)
+function secApproved() {
+  if (SEC.pin) sset("appPin", SEC.pin);
+  $("secov").className = ""; SEC.shown = "";
+  toast("✅ 승인됐어요");
+  setTimeout(function () { location.reload(); }, 600);
+}
+// 🛠 개발자 본인 폰: 개발자 PIN으로 바로 승인
+$("secdev").onclick = function () { $("secdevbox").style.display = $("secdevbox").style.display === "none" ? "grid" : "none"; try { $("secdevpin").focus(); } catch (e) {} };
+$("secdevgo").onclick = function () {
+  var v = $("secdevpin").value.trim(), b = this;
+  if (!v) { toast("⚠️ 개발자 PIN을 넣어 주세요", true); return; }
+  b.disabled = true; b.textContent = "확인 중…";
+  rawCall(secPin(), "secSelfApprove", [v]).then(function (j) {
+    b.disabled = false; b.textContent = "승인";
+    var r = j && j.data;
+    if (j && j.ok && r && r.ok) { $("secdevpin").value = ""; secApproved(); return; }
+    toast("⚠️ " + ((r && r.error) || (j && j.error) || "승인 실패"), true);
+  }).catch(function () { b.disabled = false; b.textContent = "승인"; toast("⚠️ 연결 실패", true); });
 };
 
 /* ---------- 🔔 기기 확인 요청 받기: "네, 이 폰 써요" ---------- */
