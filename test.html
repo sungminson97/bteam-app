@@ -1768,9 +1768,10 @@ $("cfgo").onclick = function () {
   $("cfgo").textContent = "처리 중…";
   callEdit("markUploadDone", [it.row, s.col, it.n])
     .then(function (r) {
-      if (r && r.error) U.msg = { err: true, t: r.error };
-      else { U.msg = { err: false, t: it.n + " " + s.label + " → 완료 ✔" }; upLocal(it, s, false); }   // ⚡ 서버 저장 성공 → 화면에서 바로 빼기
-      toast((U.msg.err ? "⚠️ " : "✔ ") + U.msg.t, U.msg.err);
+      var m = (r && r.error) ? { err: true, t: r.error } : { err: false, t: it.n + " " + s.label + " → 완료 ✔" };
+      U.msg = m;
+      if (!m.err) upLocal(it, s, false);   // ⚡ 서버 저장 성공 → 화면에서 바로 빼기 (U.msg는 화면 그릴 때 비워지니 m으로 알림)
+      toast((m.err ? "⚠️ " : "✔ ") + m.t, m.err);
       closeConfirm();
       loadUpload();   // 뒤에서 최신으로 다시 확인
     })
@@ -1982,7 +1983,11 @@ $("opclr").onclick = function () {
 function closeOp() { $("opov").className = "ov"; }
 $("opno").onclick = closeOp;
 $("opov").onclick = function (e) { if (e.target === this) closeOp(); };
-$("opin").oninput = function () { if (this.value.trim()) opPick(""); };
+$("opin").oninput = function () {   // 직접 입력하면 위에서 고른 이름 칩만 해제 (입력한 글자는 그대로 · 예전엔 글자까지 지워졌음)
+  if (!this.value.trim()) return;
+  OP.pick = "";
+  Array.prototype.forEach.call($("opchips").children, function (c) { c.className = "chip"; });
+};
 $("opgo").onclick = function () {
   var it = OP.it;
   var op = ($("opin").value.trim() || OP.pick).trim();
@@ -1992,9 +1997,10 @@ $("opgo").onclick = function () {
   $("opgo").textContent = "저장 중…";
   callEdit("setOperator", OP.prev ? [it.row, it.n, op, OP.prev] : [it.row, it.n, op])
     .then(function (r) {
-      if (r && r.error) U.msg = { err: true, t: r.error };
-      else { U.msg = { err: false, t: it.n + " 작업자 → " + op + (OP.prev ? " (수정)" : "") + " ✔" }; if (!OP.prev) upLocal(it, null, true); }   // ⚡ 처음 입력 성공 → 바로 반영
-      toast((U.msg.err ? "⚠️ " : "✔ ") + U.msg.t, U.msg.err);
+      var m = (r && r.error) ? { err: true, t: r.error } : { err: false, t: it.n + " 작업자 → " + op + (OP.prev ? " (수정)" : "") + " ✔" };
+      U.msg = m;
+      if (!m.err && !OP.prev) upLocal(it, null, true);   // ⚡ 처음 입력 성공 → 바로 반영
+      toast((m.err ? "⚠️ " : "✔ ") + m.t, m.err);
       closeOp();
       loadUpload();   // 뒤에서 최신으로 다시 확인
     })
@@ -3337,10 +3343,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-22-3";
+var APP_VER = "2026-10-22-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-22-4", ["작업자 입력·업로드 완료 후 '저장 실패'가 잘못 뜨던 문제 수정"]],
   ["2026-10-22-3", ["처음 쓰는 폰은 PIN → 이름 고르기 → 앱 순서로"]],
   ["2026-10-22-2", ["앱 안정성 개선 (폰에 저장된 로그인 정보가 덜 지워지게)"]],
   ["2026-10-22-1", ["앱 켤 때 시작 화면 · 그동안 최신 내용 받아와요"]],
