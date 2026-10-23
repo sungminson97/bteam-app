@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="제조1-B">
@@ -171,7 +171,7 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .dlsec button{padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:13px;font-weight:700;font-family:inherit;color:var(--text);white-space:nowrap}
 .dlsec button.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .dlsec button.x{color:var(--warn);border-color:var(--warn)}
-.dlsec input{font-size:15px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit}
+.dlsec input{font-size:16px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit}
 .dlsec .bnl{display:grid;gap:6px}
 .dlsec .bn{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
 .dlsec .bn .st{font-size:12px;font-weight:700}
@@ -590,6 +590,8 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
 .rv .rs.tmp{color:#c27c00}
 .rvok{background:rgba(31,157,85,.1);color:var(--ok);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700}
 /* 잠금 화면 */
+/* 📱 진짜 앱처럼: 두 손가락 확대·두 번 탭 확대 막기 (입력칸 글자는 16px 이상이라 눌러도 화면이 안 커짐) */
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* 🎬 앱 켤 때 시작 화면 (로고 애니메이션 + 그동안 최신 데이터 받아오기) */
 #splash{position:fixed;inset:0;z-index:150;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:opacity .45s ease;padding-bottom:40px}
 #splash.out{opacity:0;pointer-events:none}
@@ -3411,10 +3413,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-23-4";
+var APP_VER = "2026-10-23-5";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-23-5", ["화면이 손가락으로 확대·축소되지 않게 (진짜 앱처럼)"]],
   ["2026-10-23-4", ["아침 알림이 8시 30분에 와요"]],
   ["2026-10-23-3", ["휴대폰은 홈 화면 앱으로만 열려요 (브라우저 차단)"]],
   ["2026-10-23-2", ["시트 업로드: 장비별 SITE(동탄/본사) 선택 · 잘못 넣었으면 수정"]],
@@ -4749,6 +4752,17 @@ function instGate() {
   $("gate").style.display = "none"; $("app").style.display = "none";
   return true;
 }
+
+/* 📱 확대·축소 막기: 아이폰은 viewport 설정을 무시해서 손가락 두 개 제스처를 직접 막음 */
+(function () {
+  try {
+    ["gesturestart", "gesturechange", "gestureend"].forEach(function (ev) {
+      document.addEventListener(ev, function (e) { e.preventDefault(); }, { passive: false });
+    });
+    document.addEventListener("touchmove", function (e) { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
+    // 두 번 탭 확대는 CSS(touch-action: manipulation)로 막음 → 빠르게 연달아 누르는 버튼·탭은 그대로 동작
+  } catch (eZ) {}
+})();
 
 /* 💾 영구 저장 요청: 폰 저장 공간이 부족할 때 iOS·안드로이드가 이 앱 데이터(PIN·이름·기기 번호)를 정리하지 않게
  *    (홈 화면 아이콘을 지우거나 사파리 기록을 지우는 건 막을 수 없음) */
