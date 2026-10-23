@@ -252,6 +252,7 @@ li:first-child{border-top:0}
 .sitepick .sp{padding:16px 10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:16px;font-weight:800;font-family:inherit}
 .sitepick .sp.on{border-color:var(--accent);color:var(--accent);background:rgba(47,111,237,.08)}
 .sitepick .sp:disabled{opacity:.6}
+.sitepick .sp.clr{grid-column:1/-1;padding:12px;font-size:14px;color:var(--warn);border-style:dashed}
 .card.up .cnt{color:var(--warn)}
 .sheet{display:inline-block;margin:6px 6px 0 0;padding:8px 14px;border-radius:999px;border:1.5px solid var(--warn);background:transparent;color:var(--warn);font-size:14px;font-weight:700;font-family:inherit}
 .sheet:active{background:rgba(229,72,77,.15)}
@@ -1801,7 +1802,7 @@ function upApply(d, e) {
   d.people.forEach(function (p) {
     p.items = p.items.filter(function (x) {
       if (x.row !== e.row || x.n !== e.n) return true;
-      if (e.siteSet) { x.site = e.siteSet; return true; }   // 📍 SITE만 바꾼 기록
+      if (e.siteSet !== undefined) { x.site = e.siteSet; return true; }   // 📍 SITE만 바꾼 기록 (""면 비움)
       if (e.col) x.sheets = (x.sheets || []).filter(function (y) { return y.col !== e.col; });
       if (e.op) x.noOp = false;
       return (x.sheets && x.sheets.length) || x.noOp;   // 남은 시트도 없고 작업자도 있으면 목록에서 빠짐
@@ -1933,8 +1934,8 @@ function openSite(it) {
     var bx = el("div", "box");
     bx.appendChild(el("h3", null, "📍 SITE 선택"));
     var w = el("div", "who"); w.id = "sitewho"; bx.appendChild(w);
-    var bs = el("div", "sitepick"); bs.id = "sitepick"; bs.style.gridTemplateColumns = "1fr"; bx.appendChild(bs);
-    bx.appendChild(el("p", "sub", "고르면 26_장비_LOG SITE(E열)에 바로 저장돼요."));
+    var bs = el("div", "sitepick"); bs.id = "sitepick"; bx.appendChild(bs);
+    var hn = el("p", "sub", ""); hn.id = "sitehint"; hn.style.wordBreak = "keep-all"; bx.appendChild(hn);
     var ob = el("div", "ob"); ob.style.gridTemplateColumns = "1fr";
     var no = el("button", null, "취소"); no.type = "button"; no.onclick = function () { ov.className = "ov"; };
     ob.appendChild(no); bx.appendChild(ob); ov.appendChild(bx);
@@ -1943,18 +1944,25 @@ function openSite(it) {
   }
   $("sitewho").textContent = it.n + (it.t ? " (" + it.t + ")" : "");
   var pick = $("sitepick"); pick.innerHTML = "";
-  ["동탄"].forEach(function (s) {   // 2026-10-23: 본사 뺌 (동탄만)
+  ["동탄", "본사"].forEach(function (s) {
     var b = el("button", "sp" + (it.site === s ? " on" : ""), (s === "동탄" ? "🏭 " : "🏢 ") + s + (it.site === s ? "  ✓ 지금" : "")); b.type = "button";
     b.onclick = function () { saveSite(it, s, b); };
     pick.appendChild(b);
   });
+  // ✏️ 잘못 넣었으면: 다른 쪽을 누르면 바뀌고, 비우기로 빈칸으로 되돌림
+  if (it.site) {
+    var c = el("button", "sp clr", "🗑 SITE 비우기 (빈칸으로)"); c.type = "button";
+    c.onclick = function () { saveSite(it, "", c); };
+    pick.appendChild(c);
+  }
+  $("sitehint").textContent = it.site ? "잘못 넣었으면 다른 쪽을 누르거나 비우면 돼요. 26_장비_LOG SITE(E열)에 바로 저장돼요." : "고르면 26_장비_LOG SITE(E열)에 바로 저장돼요.";
   ov.className = "ov on";
 }
 function saveSite(it, s, b) {
   if (it.site === s) { $("siteov").className = "ov"; return; }
   [].forEach.call($("sitepick").children, function (x) { x.disabled = true; });
   b.textContent = "저장 중…";
-  callEdit("setSite", [it.row, it.n, s]).then(function (r) {
+  callEdit("setSite", [it.row, it.n, s || "__CLEAR__"]).then(function (r) {
     $("siteov").className = "ov";
     if (r && r.error) { toast("⚠️ " + r.error, true); return; }
     // ⚡ 서버 저장 성공 → 화면에 바로 반영 (다시 불러오기는 뒤에서)
@@ -1963,7 +1971,7 @@ function saveSite(it, s, b) {
     if (U.data) upApply(U.data, e);
     it.site = s;
     if (cur === 2) renderUpload(U.data);
-    toast("📍 " + it.n + " SITE → " + s + " ✔");
+    toast("📍 " + it.n + " SITE → " + (s || "빈칸") + " ✔");
     loadUpload();
   }).catch(function (e) { $("siteov").className = "ov"; toast("⚠️ 저장 실패: " + errText(e), true); });
 }
@@ -3407,9 +3415,8 @@ var APP_VER = "2026-10-23-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
-  ["2026-10-23-2", ["시트 업로드: SITE가 비어 있으면 '빈칸'으로 표시 · 눌러서 동탄 선택"]],
-  ["2026-10-23-1", ["시트 업로드: 장비별 SITE 선택"]],
-  ["2026-10-22-8", ["시작 화면 크게 · 최신 내용을 받아서 열려요"]],
+  ["2026-10-23-2", ["시트 업로드: 장비별 SITE(동탄/본사) 선택 · 잘못 넣었으면 수정"]],
+    ["2026-10-22-8", ["시작 화면 크게 · 최신 내용을 받아서 열려요"]],
   ["2026-10-22-6", ["시트 업로드 화면 정리"]],
   ["2026-10-22-5", ["업데이트 후 [확인]을 누르면 시작 화면이 나와요"]],
   ["2026-10-22-4", ["작업자 입력·업로드 완료 후 '저장 실패'가 잘못 뜨던 문제 수정"]],
