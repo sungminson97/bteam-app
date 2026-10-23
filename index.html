@@ -245,6 +245,13 @@ li:first-child{border-top:0}
 .sum b{font-size:26px;color:var(--warn)}
 .sum.zero b{color:var(--ok)}
 .card.up{border-left-color:var(--warn)}
+.sitebtn{margin-left:8px;padding:2px 9px;border-radius:999px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:12px;font-weight:800;font-family:inherit;vertical-align:1px}
+.sitebtn.hq{border-color:var(--sub);color:var(--sub)}
+.sitebtn.empty{border-style:dashed;border-color:var(--warn);color:var(--warn)}
+.sitepick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sitepick .sp{padding:16px 10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:16px;font-weight:800;font-family:inherit}
+.sitepick .sp.on{border-color:var(--accent);color:var(--accent);background:rgba(47,111,237,.08)}
+.sitepick .sp:disabled{opacity:.6}
 .card.up .cnt{color:var(--warn)}
 .sheet{display:inline-block;margin:6px 6px 0 0;padding:8px 14px;border-radius:999px;border:1.5px solid var(--warn);background:transparent;color:var(--warn);font-size:14px;font-weight:700;font-family:inherit}
 .sheet:active{background:rgba(229,72,77,.15)}
@@ -1794,6 +1801,7 @@ function upApply(d, e) {
   d.people.forEach(function (p) {
     p.items = p.items.filter(function (x) {
       if (x.row !== e.row || x.n !== e.n) return true;
+      if (e.siteSet) { x.site = e.siteSet; return true; }   // 📍 SITE만 바꾼 기록
       if (e.col) x.sheets = (x.sheets || []).filter(function (y) { return y.col !== e.col; });
       if (e.op) x.noOp = false;
       return (x.sheets && x.sheets.length) || x.noOp;   // 남은 시트도 없고 작업자도 있으면 목록에서 빠짐
@@ -1858,6 +1866,10 @@ function renderUpload(d) {
       eqn.onclick = function () { openEquip(it.n); };   // 장비명을 누르면 일정
       li.appendChild(eqn);
       if (it.t) li.appendChild(el("span", "t", it.t));
+      // 📍 SITE (E열): 누르면 동탄/본사 고르기
+      var sb = el("button", "sitebtn" + (it.site ? (it.site === "동탄" ? "" : " hq") : " empty"), "📍 " + (it.site || "빈칸")); sb.type = "button";   // 빈칸이면 빈칸으로 표시
+      sb.onclick = function () { openSite(it); };
+      li.appendChild(sb);
       li.appendChild(document.createElement("br"));
       it.sheets.forEach(function (s) {
         var b = el("button", "sheet", "☐ " + s.label);
@@ -1909,6 +1921,51 @@ function renderUpload(d) {
     rc.lastChild.style.whiteSpace = "pre-line";
     box.appendChild(rc);
   }
+}
+
+/* ---------- 📍 SITE 고르기 (26_장비_LOG E열: 동탄 / 본사) ---------- */
+var SITE = { it: null };
+function openSite(it) {
+  SITE.it = it;
+  var ov = $("siteov");
+  if (!ov) {
+    ov = el("div", "ov"); ov.id = "siteov";
+    var bx = el("div", "box");
+    bx.appendChild(el("h3", null, "📍 SITE 선택"));
+    var w = el("div", "who"); w.id = "sitewho"; bx.appendChild(w);
+    var bs = el("div", "sitepick"); bs.id = "sitepick"; bs.style.gridTemplateColumns = "1fr"; bx.appendChild(bs);
+    bx.appendChild(el("p", "sub", "고르면 26_장비_LOG SITE(E열)에 바로 저장돼요."));
+    var ob = el("div", "ob"); ob.style.gridTemplateColumns = "1fr";
+    var no = el("button", null, "취소"); no.type = "button"; no.onclick = function () { ov.className = "ov"; };
+    ob.appendChild(no); bx.appendChild(ob); ov.appendChild(bx);
+    ov.onclick = function (e) { if (e.target === ov) ov.className = "ov"; };
+    document.body.appendChild(ov);
+  }
+  $("sitewho").textContent = it.n + (it.t ? " (" + it.t + ")" : "");
+  var pick = $("sitepick"); pick.innerHTML = "";
+  ["동탄"].forEach(function (s) {   // 2026-10-23: 본사 뺌 (동탄만)
+    var b = el("button", "sp" + (it.site === s ? " on" : ""), (s === "동탄" ? "🏭 " : "🏢 ") + s + (it.site === s ? "  ✓ 지금" : "")); b.type = "button";
+    b.onclick = function () { saveSite(it, s, b); };
+    pick.appendChild(b);
+  });
+  ov.className = "ov on";
+}
+function saveSite(it, s, b) {
+  if (it.site === s) { $("siteov").className = "ov"; return; }
+  [].forEach.call($("sitepick").children, function (x) { x.disabled = true; });
+  b.textContent = "저장 중…";
+  callEdit("setSite", [it.row, it.n, s]).then(function (r) {
+    $("siteov").className = "ov";
+    if (r && r.error) { toast("⚠️ " + r.error, true); return; }
+    // ⚡ 서버 저장 성공 → 화면에 바로 반영 (다시 불러오기는 뒤에서)
+    var e = { row: it.row, n: it.n, siteSet: s, t: Date.now() };
+    U.pend.push(e);   // 1분 동안 기억 → 늦게 온 예전 목록에도 다시 적용
+    if (U.data) upApply(U.data, e);
+    it.site = s;
+    if (cur === 2) renderUpload(U.data);
+    toast("📍 " + it.n + " SITE → " + s + " ✔");
+    loadUpload();
+  }).catch(function (e) { $("siteov").className = "ov"; toast("⚠️ 저장 실패: " + errText(e), true); });
 }
 
 /* ---------- 👷 작업자 입력 (26_장비_LOG F열) ---------- */
@@ -3346,10 +3403,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-22-8";
+var APP_VER = "2026-10-23-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-23-2", ["시트 업로드: SITE가 비어 있으면 '빈칸'으로 표시 · 눌러서 동탄 선택"]],
+  ["2026-10-23-1", ["시트 업로드: 장비별 SITE 선택"]],
   ["2026-10-22-8", ["시작 화면 크게 · 최신 내용을 받아서 열려요"]],
   ["2026-10-22-6", ["시트 업로드 화면 정리"]],
   ["2026-10-22-5", ["업데이트 후 [확인]을 누르면 시작 화면이 나와요"]],
