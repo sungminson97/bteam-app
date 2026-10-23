@@ -672,35 +672,75 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 #epmsg.bad{color:var(--warn);font-weight:600}
 #epov .ob .go{background:var(--accent);border-color:var(--accent)}
 
-/* 📲 홈 화면 앱으로만 사용 (링크·PC 차단) */
-#ig{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);overflow:auto;padding:calc(28px + env(safe-area-inset-top)) 20px 40px}
-#ig .w{max-width:440px;margin:0 auto;display:grid;gap:16px}
-#ig .igtop{display:flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left}
-#ig .igtop img{width:56px;height:56px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
-#ig .igtop b{font-size:22px}
-#ig .igtop small{display:block;color:var(--sub);font-size:13px;font-weight:500}
-#ig h2{margin:4px 0 0;font-size:21px;line-height:1.4;word-break:keep-all}
-#ig .why{color:var(--sub);font-size:14px;line-height:1.6;word-break:keep-all;margin:-6px 0 0}
-#ig ol{margin:0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:s}
-#ig li{counter-increment:s;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 14px 14px 52px;position:relative;font-size:15px;line-height:1.55;word-break:keep-all}
-#ig li::before{content:counter(s);position:absolute;left:14px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
-#ig li b{color:var(--accent)}
-#ig .ic{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:24px;padding:0 5px;border:1.5px solid var(--text);border-radius:6px;font-size:13px;font-weight:800;vertical-align:-5px;margin:0 2px}
-#ig .ic svg{width:15px;height:15px}
-#ig .big{padding:16px;border-radius:14px;border:0;background:var(--accent);color:#fff;font-size:17px;font-weight:800;font-family:inherit}
-#ig .sub2{padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:15px;font-weight:700;font-family:inherit}
-#ig .note{color:var(--sub);font-size:12.5px;line-height:1.6;word-break:keep-all;text-align:center}
-#ig .url{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:12px;font-size:13px;word-break:break-all;text-align:center;color:var(--accent);font-weight:700}
-#ig .qr{display:flex;justify-content:center;padding:14px;background:#fff;border-radius:14px;border:1px solid var(--line)}
-#ig .ok{background:rgba(31,157,85,.12);color:var(--ok);border-radius:12px;padding:14px;font-weight:700;text-align:center;line-height:1.6}
-#ig a.big{display:block;text-align:center;text-decoration:none}
-#ig .wait{color:var(--sub);font-size:13px;text-align:center}
+/* 📲 홈 화면 앱으로만 사용 (링크·PC 차단) — 설치 안내 화면 */
+#ig{display:none;position:fixed;inset:0;z-index:9999;background:var(--igbg);color:var(--text);overflow:auto;-webkit-overflow-scrolling:touch;padding:calc(26px + env(safe-area-inset-top)) 22px calc(36px + env(safe-area-inset-bottom));--igbg:#f5f6f9;--igglow:rgba(47,111,237,.20);--igcard:#ffffff;--igbd:rgba(16,32,64,.07);--mk:#f1f3f7;--mkbd:rgba(16,32,64,.06);--ink2:#5d6875}
+@media (prefers-color-scheme:dark){#ig{--igbg:#08090d;--igglow:rgba(90,140,255,.28);--igcard:#12151c;--igbd:rgba(255,255,255,.07);--mk:#1b1f28;--mkbd:rgba(255,255,255,.06);--ink2:#9aa5b4}}
+#ig::before{content:"";position:fixed;left:0;right:0;top:0;height:420px;pointer-events:none;background:radial-gradient(60% 70% at 50% 0%,var(--igglow),transparent 72%)}
+#ig .w{position:relative;max-width:420px;margin:0 auto;display:grid;gap:0}
+#ig .ighero{display:flex;flex-direction:column;align-items:center;text-align:center}
+#ig .igstage{position:relative;width:84px;height:84px}
+#ig .igstage::before{content:"";position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(closest-side,var(--igglow),transparent);animation:igglow 4s ease-in-out infinite}
+#ig .igicon{position:relative;display:block;width:84px;height:84px;border-radius:21px;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 18px 36px -14px rgba(10,30,80,.55),0 0 0 .5px rgba(0,0,0,.12)}
+#ig .igeyebrow{margin-top:20px;font-size:11px;font-weight:800;letter-spacing:.22em;padding-left:.22em;color:var(--accent)}
+#ig .igeyebrow em{font-style:normal;color:#fff;background:#f59e0b;border-radius:5px;padding:2px 5px;margin-left:6px;letter-spacing:.06em}
+#ig h2{margin:8px 0 0;font-size:27px;font-weight:900;line-height:1.3;letter-spacing:-.025em;text-align:center;word-break:keep-all;white-space:pre-line}
+#ig .why{margin:10px 0 0;color:var(--ink2);font-size:15px;line-height:1.6;letter-spacing:-.01em;word-break:keep-all;text-align:center;white-space:pre-line}
+#ig .igmeta{justify-self:center;margin-top:14px;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--ink2)}
+#ig .igmeta svg{width:14px;height:14px;color:var(--accent)}
+#ig .igmeta i{width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.5}
+#ig ol{margin:24px 0 0;padding:6px 18px;list-style:none;counter-reset:s;background:var(--igcard);border:1px solid var(--igbd);border-radius:22px;box-shadow:0 1px 2px rgba(16,32,64,.04),0 18px 40px -24px rgba(16,32,64,.28)}
+#ig li{counter-increment:s;position:relative;margin:0;border:0;font-size:inherit;line-height:inherit;padding:16px 0 16px 44px;color:var(--text);text-indent:0;list-style:none}
+#ig li::before{content:counter(s);position:absolute;left:0;top:15px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 13%,transparent)}
+#ig li:not(:last-child)::after{content:"";position:absolute;left:12.5px;top:49px;bottom:-14px;width:1px;background:linear-gradient(var(--accent),transparent);opacity:.35}
+#ig li .t{margin:0;padding:0;color:var(--text);font-size:16px;font-weight:800;letter-spacing:-.02em;line-height:1.45;word-break:keep-all}
+#ig li .t b{color:var(--accent)}
+#ig li .s{margin:2px 0 0;padding:0;font-size:13px;color:var(--ink2);line-height:1.5;word-break:keep-all}
+#ig li .s b{color:var(--text)}
+/* 실제 화면처럼 보이는 미니 그림 */
+#ig .mk{margin-top:10px;background:var(--mk);border:1px solid var(--mkbd);border-radius:13px;font-size:13.5px;font-weight:600;color:var(--text)}
+#ig .mk svg{width:18px;height:18px;display:block}
+#ig .mk.tb{display:flex;justify-content:space-around;align-items:center;padding:9px 6px;color:var(--ink2)}
+#ig .mk.tb .hl{color:#fff;background:var(--accent);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;animation:igring 1.8s ease-out infinite}
+#ig .mk.row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px}
+#ig .mk.row.on{background:color-mix(in srgb,var(--accent) 12%,var(--igcard));color:var(--accent);font-weight:800}
+#ig .mk.row.on svg{color:var(--accent)}
+#ig .mk.row .dim{opacity:.38}
+#ig .mk.stack{padding:0;overflow:hidden}
+#ig .mk.stack .row{border-radius:0;border:0;margin:0;background:transparent}
+#ig .mk.stack .row+.row{border-top:1px solid var(--mkbd)}
+#ig .mk.nav{display:flex;align-items:center;justify-content:space-between;padding:11px 14px}
+#ig .mk.nav span{color:var(--ink2);font-weight:500}
+#ig .mk.nav .hl{color:#fff;background:var(--accent);font-weight:800;padding:4px 12px;border-radius:999px}
+#ig .mk.home{display:flex;justify-content:center;gap:18px;padding:12px}
+#ig .mk.home div{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10.5px;font-weight:600;color:var(--ink2)}
+#ig .mk.home u{display:block;width:40px;height:40px;border-radius:10px;background:var(--mkbd);text-decoration:none}
+#ig .mk.home img{width:40px;height:40px;border-radius:10px;box-shadow:0 0 0 2px var(--igbg),0 0 0 4px var(--accent)}
+#ig .mk.home .me{color:var(--text);font-weight:800}
+#ig .big{position:relative;overflow:hidden;margin-top:24px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:17px;border-radius:16px;border:0;background:var(--accent);color:#fff;font-size:17px;font-weight:800;letter-spacing:-.02em;font-family:inherit;text-decoration:none;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 16px 30px -14px var(--accent)}
+#ig .big svg{width:20px;height:20px}
+#ig .big::after{content:"";position:absolute;top:0;bottom:0;left:-40%;width:28%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-18deg);animation:igshine 3.2s ease-in-out 1s infinite}
+#ig .sub2{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:15px;border-radius:15px;border:1px solid var(--igbd);background:var(--igcard);color:var(--text);font-size:15px;font-weight:800;font-family:inherit}
+#ig .sub2 svg{width:17px;height:17px;color:var(--accent)}
+#ig .note{margin-top:18px;color:var(--ink2);font-size:12.5px;line-height:1.65;word-break:keep-all;text-align:center;white-space:pre-line;opacity:.85}
+#ig .bnote{margin-top:10px;color:var(--ink2);font-size:13px;text-align:center}
+#ig .url{margin-top:12px;background:var(--igcard);border:1px solid var(--igbd);border-radius:15px;padding:14px;font-size:13px;word-break:break-all;text-align:center;color:var(--accent);font-weight:700}
+#ig .qr{justify-self:center;margin-top:24px;display:flex;justify-content:center;padding:16px;background:#fff;border-radius:22px;box-shadow:0 18px 40px -20px rgba(16,32,64,.45),0 0 0 1px var(--igbd)}
+#ig .ok{margin-top:24px;background:color-mix(in srgb,var(--ok) 12%,transparent);color:var(--ok);border-radius:16px;padding:16px;font-weight:800;text-align:center;line-height:1.6;white-space:pre-line}
+#ig .wait{margin-top:14px;color:var(--ink2);font-size:13px;text-align:center}
+#ig .or{margin-top:22px;display:flex;align-items:center;gap:12px;color:var(--ink2);font-size:12px;font-weight:700}
+#ig .or::before,#ig .or::after{content:"";flex:1;height:1px;background:var(--igbd)}
+#ig .or+ol{margin-top:12px}
 /* 📍 아이폰: 화면 아래 공유 버튼 위치를 가리키는 화살표 */
-#igarrow{position:fixed;left:50%;bottom:calc(6px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;animation:igb 1.1s ease-in-out infinite}
-#igarrow span{background:var(--accent);color:#fff;font-size:13px;font-weight:800;padding:6px 12px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.2);white-space:nowrap}
-#igarrow i{font-style:normal;font-size:30px;line-height:1;color:var(--accent)}
-@keyframes igb{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
-#ig .w.pad{padding-bottom:70px}
+#igarrow{position:fixed;left:50%;bottom:calc(8px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;align-items:center;pointer-events:none;animation:igb 1.3s ease-in-out infinite}
+#igarrow span{display:flex;align-items:center;gap:7px;background:var(--accent);color:#fff;font-size:13.5px;font-weight:800;letter-spacing:-.01em;padding:10px 16px;border-radius:999px;box-shadow:0 12px 26px -10px var(--accent),0 0 0 5px color-mix(in srgb,var(--accent) 16%,transparent);white-space:nowrap}
+#igarrow span svg{width:16px;height:16px}
+#igarrow i{display:block;width:12px;height:12px;margin-top:4px;border-right:2.5px solid var(--accent);border-bottom:2.5px solid var(--accent);transform:rotate(45deg)}
+@keyframes igb{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,6px)}}
+@keyframes igglow{0%,100%{opacity:.55;transform:scale(.9)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes igshine{0%{left:-40%}55%,100%{left:120%}}
+@keyframes igring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
+@media (prefers-reduced-motion:reduce){#ig *,#igarrow{animation:none!important}}
+#ig .w.pad{padding-bottom:84px}
 </style>
 </head>
 <body>
@@ -3447,10 +3487,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-23-7";
+var APP_VER = "2026-10-24-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-24-1", ["앱 설치 안내 화면 새 디자인"]],
   ["2026-10-23-7", ["시작 화면 애니메이션을 끝까지 보여줘요"]],
   ["2026-10-23-6", ["시작 화면 새 디자인 (돌아가는 웨이퍼)"]],
   ["2026-10-23-5", ["화면이 손가락으로 확대·축소되지 않게 (진짜 앱처럼)"]],
@@ -4685,89 +4726,135 @@ function instGate() {
   if (env.standalone || (env.pc && sget("allowBrowser") === "1")) return false;
 
   var W = $("igw"); W.innerHTML = "";
-  var top = el("div", "igtop");
-  var im = document.createElement("img"); im.src = "icon-192.png"; im.alt = "";
-  top.appendChild(im);
-  var tb = el("div"); tb.appendChild(el("b", null, IS_TEST ? "제조1-B 테스트" : "제조1-B")); tb.appendChild(el("small", null, "제조B팀 업무 앱"));
-  top.appendChild(tb); W.appendChild(top);
+  function sv(p) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; }
+  var SV = {
+    share: IG_SHARE,
+    add: sv('<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8.5v7M8.5 12h7"/>'),
+    back: sv('<path d="M15 5l-7 7 7 7"/>'), fwd: sv('<path d="M9 5l7 7-7 7"/>'),
+    book: sv('<path d="M4 5.5C6.5 4 9.5 4 12 6c2.5-2 5.5-2 8-.5V19c-2.5-1.5-5.5-1.5-8 .5-2.5-2-5.5-2-8-.5z"/><path d="M12 6v13.5"/>'),
+    tabs: sv('<rect x="7" y="7" width="13" height="13" rx="3"/><path d="M4 15V6a2 2 0 0 1 2-2h9"/>'),
+    dl: sv('<path d="M12 4v11"/><path d="M7 10.5l5 5 5-5"/><path d="M5 20h14"/>'),
+    link: sv('<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>'),
+    clock: sv('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
+    dots: sv('<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>'),
+    vdots: sv('<circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="19" r="1.3"/>'),
+    menu: sv('<path d="M4 7h16M4 12h16M4 17h16"/>'),
+    compass: sv('<circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>'),
+    phone: sv('<rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/>'),
+    home: sv('<path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/>')
+  };
+  // 🎨 위쪽: 앱 아이콘 + 제목 (이미지 파일 추가 없음)
+  var hero = el("div", "ighero");
+  var stg = el("div", "igstage");
+  var im = document.createElement("img"); im.className = "igicon"; im.src = "icon-192.png"; im.alt = "";
+  stg.appendChild(im); hero.appendChild(stg);
+  var eb = el("div", "igeyebrow", "제조1-B · MANUFACTURING"); if (IS_TEST) eb.appendChild(el("em", null, "TEST"));
+  hero.appendChild(eb);
+  W.appendChild(hero);
 
   function h2(t) { W.appendChild(el("h2", null, t)); }
   function why(t) { W.appendChild(el("p", "why", t)); }
+  function meta(a, b) { var m = el("div", "igmeta"); m.innerHTML = SV.clock + "<span>" + a + "</span><i></i><span>" + b + "</span>"; W.appendChild(m); }
+  // 단계: [제목, 설명, 미니 그림]
   function steps(arr) {
     var ol = el("ol");
-    arr.forEach(function (h) { var li = el("li"); li.innerHTML = h; ol.appendChild(li); });
+    arr.forEach(function (x) {
+      var li = el("li");
+      li.innerHTML = "<div class='t'>" + x[0] + "</div>" + (x[1] ? "<div class='s'>" + x[1] + "</div>" : "") + (x[2] || "");
+      ol.appendChild(li);
+    });
     W.appendChild(ol);
   }
   function copyBtn(label) {
-    var b = el("button", "sub2", label || "🔗 링크 복사"); b.type = "button";
+    var L = label || "링크 복사";
+    var b = el("button", "sub2"); b.type = "button"; b.innerHTML = SV.link + "<span>" + L + "</span>";
     b.onclick = function () {
       var u = igUrl();
-      function ok() { b.textContent = "✅ 복사됐어요"; setTimeout(function () { b.textContent = label || "🔗 링크 복사"; }, 2000); }
+      function ok() { b.lastChild.textContent = "복사됐어요"; setTimeout(function () { b.lastChild.textContent = L; }, 2000); }
       try { navigator.clipboard.writeText(u).then(ok, function () { prompt("아래 주소를 복사하세요", u); }); }
       catch (e) { prompt("아래 주소를 복사하세요", u); }
     };
     W.appendChild(b);
   }
   function note(t) { W.appendChild(el("div", "note", t)); }
-  var WHY = "제조1-B는 앱으로만 쓸 수 있어요.\n설치해야 들어갈 수 있고, 1분이면 끝나요.\n한 번 설치하면 다음부터는 아이콘으로 바로 열려요.";
+  var HELP = "설치했는데도 이 화면이 계속 뜨면 손성민에게 알려 주세요.";
+  // 미니 그림 (실제 화면 모양)
+  var MK = {
+    safariBar: "<div class='mk tb'>" + SV.back + SV.fwd + "<span class='hl'>" + SV.share + "</span>" + SV.book + SV.tabs + "</div>",
+    addRow: "<div class='mk stack'><div class='mk row'><span class='dim'>즐겨찾기에 추가</span><span class='dim'>" + SV.book + "</span></div><div class='mk row on'><span>홈 화면에 추가</span>" + SV.add + "</div></div>",
+    nav: "<div class='mk nav'><span>취소</span><b>홈 화면에 추가</b><span class='hl'>추가</span></div>",
+    home: "<div class='mk home'><div><u></u>메모</div><div><u></u>캘린더</div><div class='me'><img src='icon-192.png' alt=''>" + (IS_TEST ? "제조1-B 테스트" : "제조1-B") + "</div></div>",
+    chromeRow: "<div class='mk stack'><div class='mk row'><span class='dim'>새 탭</span></div><div class='mk row on'><span>앱 설치</span>" + SV.phone + "</div></div>",
+    samsungRow: "<div class='mk stack'><div class='mk row'><span class='dim'>북마크 추가</span></div><div class='mk row on'><span>현재 페이지 추가 → 홈 화면</span>" + SV.home + "</div></div>"
+  };
+  var HOME4 = ["<b>제조1-B</b> 아이콘으로 열기", "다음부터는 이 아이콘만 누르면 바로 열려요", MK.home];
 
   if (env.pc) {
-    h2("📱 제조1-B는 휴대폰 전용이에요");
-    why("휴대폰으로 아래 주소를 열고 홈 화면에 추가해 주세요.");
+    h2("휴대폰에서 열어 주세요");
+    why("제조1-B는 휴대폰 앱 전용이에요.\n카메라로 QR을 찍으면 바로 열려요.");
     var qr = el("div", "qr"); qr.id = "igqr"; W.appendChild(qr);
+    W.appendChild(el("div", "or", "또는 주소로 열기"));
     W.appendChild(el("div", "url", igUrl()));
     copyBtn();
-    var qn = el("div", "note", "휴대폰 카메라로 QR을 찍으면 바로 열려요."); W.appendChild(qn);
     var sc = document.createElement("script");
     sc.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
-    sc.onload = function () { try { new QRCode($("igqr"), { text: igUrl(), width: 180, height: 180 }); } catch (e) { $("igqr").style.display = "none"; qn.style.display = "none"; } };
-    sc.onerror = function () { $("igqr").style.display = "none"; qn.style.display = "none"; };
+    sc.onload = function () { try { new QRCode($("igqr"), { text: igUrl(), width: 176, height: 176 }); } catch (e) { $("igqr").style.display = "none"; } };
+    sc.onerror = function () { $("igqr").style.display = "none"; };
     document.head.appendChild(sc);
   } else if (env.inapp) {
-    h2("📲 " + (env.ios ? "Safari로" : "Chrome으로") + " 열어 주세요");
-    why((env.kakao ? "카톡" : "앱") + " 안 브라우저에서는 홈 화면에 추가할 수 없어요.\n" + WHY);
+    var BR = env.ios ? "Safari" : "Chrome";
+    h2(BR + "에서 열어 주세요");
+    why((env.kakao ? "카톡" : "이 앱") + " 안에서는 설치할 수 없어요.\n" + BR + "로 옮기면 바로 설치할 수 있어요.");
+    meta("1분이면 끝나요", "한 번만");
     if (env.kakao) steps(env.ios
-      ? ["화면 오른쪽 아래 <span class='ic'>⋯</span> 누르기", "<b>다른 브라우저로 열기</b> 또는 <b>Safari로 열기</b> 누르기", "Safari에서 열리면 나오는 안내대로 홈 화면에 추가"]
-      : ["화면 오른쪽 위 <span class='ic'>⋮</span> 누르기", "<b>다른 브라우저로 열기</b> 누르기 (Chrome 선택)", "Chrome에서 열리면 나오는 안내대로 앱 설치"]);
-    else steps(["오른쪽 위·아래 메뉴에서 <b>다른 브라우저로 열기</b> 누르기", "안 보이면 아래 <b>링크 복사</b> → " + (env.ios ? "Safari" : "Chrome") + " 주소창에 붙여넣기"]);
-    copyBtn();
+      ? [["오른쪽 아래 <b>" + SV.dots.replace("<svg", "<svg style='width:16px;height:16px;display:inline;vertical-align:-3px'") + "</b> 누르기", ""],
+         ["<b>Safari로 열기</b> 누르기", "'다른 브라우저로 열기'로 보일 수도 있어요"],
+         ["Safari에서 <b>홈 화면에 추가</b>", "열리면 나오는 안내를 따라 주세요"]]
+      : [["오른쪽 위 <b>⋮</b> 누르기", ""],
+         ["<b>다른 브라우저로 열기</b> → <b>Chrome</b>", ""],
+         ["Chrome에서 <b>앱 설치하기</b> 누르기", "열리면 나오는 버튼을 눌러 주세요"]]);
+    else steps([["메뉴에서 <b>다른 브라우저로 열기</b>", "안 보이면 아래 링크를 복사해서 " + BR + " 주소창에 붙여넣어 주세요"]]);
+    W.appendChild(el("div", "or", "안 되면"));
+    copyBtn("링크 복사해서 " + BR + "에 붙여넣기");
   } else if (env.ios) {
-    h2("📲 홈 화면에 추가해야 쓸 수 있어요");
-    why(WHY);
+    h2("홈 화면에 추가하고\n시작하세요");
+    why("제조1-B는 홈 화면 앱에서만 열려요.");
+    meta("1분이면 끝나요", "한 번만");
     if (env.safari) steps([
-      "화면 아래 <span class='ic'>" + IG_SHARE + "</span> 공유 버튼 누르기<br><small>(안 보이면 아래 <span class='ic'>⋯</span> 먼저 누르기)</small>",
-      "아래로 내려서 <b>홈 화면에 추가</b> 누르기",
-      "오른쪽 위 <b>추가</b> 누르기",
-      "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]);
+      ["화면 아래 <b>공유</b> 버튼 누르기", "안 보이면 화면을 살짝 위로 올리거나 <b>⋯</b> 부터 눌러 주세요", MK.safariBar],
+      ["<b>홈 화면에 추가</b> 누르기", "목록을 아래로 내리면 있어요", MK.addRow],
+      ["오른쪽 위 <b>추가</b> 누르기", "", MK.nav],
+      HOME4]);
     else steps([
-      "주소창 옆 <span class='ic'>" + IG_SHARE + "</span> 공유 버튼 누르기",
-      "<b>홈 화면에 추가</b> 누르기 (안 보이면 아래 링크 복사 → Safari에서 열기)",
-      "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]);
-    if (!env.safari) copyBtn("🔗 링크 복사 (Safari에서 열기)");
+      ["주소창 옆 <b>공유</b> 버튼 누르기", "", MK.safariBar],
+      ["<b>홈 화면에 추가</b> 누르기", "안 보이면 아래 링크를 복사해서 Safari에서 열어 주세요", MK.addRow],
+      HOME4]);
+    if (!env.safari) copyBtn("링크 복사 (Safari에서 열기)");
     if (env.safari) {   // 📍 공유 버튼이 있는 화면 아래쪽을 화살표로 가리킴
       W.className = "w pad";
       var ar = el("div"); ar.id = "igarrow";
-      ar.appendChild(el("span", null, "여기 공유 버튼 ⬆ 누르기"));
-      ar.appendChild(el("i", null, "⬇"));
+      var sp = el("span"); sp.innerHTML = IG_SHARE + "여기 공유 버튼"; ar.appendChild(sp);
+      ar.appendChild(el("i"));
       document.body.appendChild(ar);
     }
-    note("iOS 16.4 이상에서 알림을 받을 수 있어요. · 추가했는데도 이 화면이 계속 뜨면 손성민에게 알려 주세요.");
+    note("알림은 iOS 16.4 이상에서 받을 수 있어요.\n" + HELP);
   } else {   // 안드로이드
-    h2("📲 앱을 설치해야 쓸 수 있어요");
-    why(WHY);
+    h2("앱을 설치하고\n시작하세요");
+    why("제조1-B는 설치한 앱에서만 열려요.");
+    meta("10초면 끝나요", "한 번만");
     // 🌐 삼성 인터넷: 설치 버튼이 안 뜨는 폰이 많아서 → 버튼 하나로 크롬에서 열기 (크롬은 [앱 설치하기] 버튼이 뜸)
     if (env.samsung) {
       var ch = document.createElement("a"); ch.className = "big";
       ch.href = "intent://" + igUrl().replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
-      ch.textContent = "🌐 Chrome으로 열어서 설치하기";
+      ch.innerHTML = SV.compass + "<span>Chrome으로 열어서 설치하기</span>";
       W.appendChild(ch);
-      W.appendChild(el("div", "note", "Chrome에서 [📲 앱 설치하기] 버튼만 누르면 돼요."));
+      W.appendChild(el("div", "bnote", "Chrome이 열리면 [앱 설치하기]만 누르면 끝나요"));
     }
-    var bi = el("button", "big", "📲 앱 설치하기"); bi.type = "button"; bi.style.display = "none";
+    var bi = el("button", "big"); bi.type = "button"; bi.innerHTML = SV.dl + "<span>앱 설치하기</span>"; bi.style.display = "none";
     W.appendChild(bi);
     var wt = el("div", "wait", env.samsung ? "" : "설치 버튼 준비 중…"); if (!env.samsung) W.appendChild(wt);
     setTimeout(function () { if (!IG.prompt) wt.style.display = "none"; }, 3000);
-    var done = el("div", "ok", "✅ 설치됐어요!\n홈 화면의 제조1-B 아이콘으로 열어 주세요."); done.style.display = "none"; done.style.whiteSpace = "pre-line";
+    var done = el("div", "ok", "✅ 설치됐어요!\n홈 화면의 제조1-B 아이콘으로 열어 주세요."); done.style.display = "none";
     W.appendChild(done);
     function showBtn() { if (IG.prompt) { bi.style.display = ""; wt.style.display = "none"; } }
     bi.onclick = function () {
@@ -4777,11 +4864,15 @@ function instGate() {
     };
     IG.onPrompt = showBtn; IG.onInstalled = function () { bi.style.display = "none"; done.style.display = ""; };
     showBtn();
-    W.appendChild(el("div", "note", "버튼이 안 보이면 직접 추가해 주세요 ↓"));
+    W.appendChild(el("div", "or", "버튼이 안 보이면 직접 설치"));
     steps(env.samsung
-      ? ["화면 아래 <span class='ic'>≡</span> 메뉴 누르기", "<b>현재 페이지 추가</b> → <b>홈 화면</b> 누르기", "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]
-      : ["화면 오른쪽 위 <span class='ic'>⋮</span> 누르기", "<b>앱 설치</b> 누르기<br><small>'홈 화면에 추가'만 보이면 누르고, 뜨는 창에서 <b>설치</b> 선택 (바로가기 ❌)</small>", "홈 화면에 생긴 <b>제조1-B</b> 아이콘으로 열기"]);
-    note("추가했는데도 이 화면이 계속 뜨면 손성민에게 알려 주세요.");
+      ? [["화면 아래 <b>≡</b> 메뉴 누르기", ""],
+         ["<b>현재 페이지 추가</b> → <b>홈 화면</b>", "", MK.samsungRow],
+         HOME4]
+      : [["오른쪽 위 <b>⋮</b> 누르기", ""],
+         ["<b>앱 설치</b> 누르기", "'홈 화면에 추가'만 보이면 누르고 <b>설치</b>를 골라 주세요 (바로가기 말고)", MK.chromeRow],
+         HOME4]);
+    note(HELP);
   }
   [].forEach.call(W.querySelectorAll(".why,.note"), function (x) { x.style.whiteSpace = "pre-line"; });
   $("ig").style.display = "block";
