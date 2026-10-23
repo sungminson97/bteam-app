@@ -879,7 +879,7 @@ details.panel summary{font-weight:700;font-size:14px;cursor:pointer}
     <h3 id="pushttl">🔔 팀 공지, 폰으로 바로 받기</h3>
     <ul class="pben">
       <li><span class="i">📢</span><div><b>팀 공지</b>가 오면 바로 알림<small>앱을 안 열어도 폰 화면에 떠요</small></div></li>
-      <li class="nch"><span class="i">🌅</span><div><b>아침 8시</b> 오늘 할 일<small>업로드할 장비 · 이번 주 남은 근무시간</small></div></li>
+      <li class="nch"><span class="i">🌅</span><div><b>아침 8시 30분</b> 오늘 할 일<small>업로드할 장비 · 이번 주 남은 근무시간</small></div></li>
       <li class="nch"><span class="i">⏰</span><div><b>17:30</b> 근무시간 깜빡했을 때만<small>이미 입력했으면 안 와요</small></div></li>
     </ul>
     <p class="sub" id="pushsub">공지 말고는 하루 최대 2번이에요. 끄는 것도 언제든 돼요.</p>
@@ -3411,10 +3411,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-23-3";
+var APP_VER = "2026-10-23-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-23-4", ["아침 알림이 8시 30분에 와요"]],
   ["2026-10-23-3", ["휴대폰은 홈 화면 앱으로만 열려요 (브라우저 차단)"]],
   ["2026-10-23-2", ["시트 업로드: 장비별 SITE(동탄/본사) 선택 · 잘못 넣었으면 수정"]],
     ["2026-10-22-8", ["시작 화면 크게 · 최신 내용을 받아서 열려요"]],
@@ -3740,7 +3741,7 @@ function pushInit() {
         serviceWorkerPath: dir.replace(/^\//, "") + "sw.js",
         serviceWorkerParam: { scope: dir },
         notifyButton: { enable: false },
-        welcomeNotification: { title: "제조1-B", message: "알림이 켜졌어요. 평일 아침 8시에 오늘 할 일을 알려드릴게요." }
+        welcomeNotification: { title: "제조1-B", message: "알림이 켜졌어요. 평일 아침 8시 30분에 오늘 할 일을 알려드릴게요." }
       });
       PUSH.ready = true;
       osSubSave(OS);   // 🔔 이 폰 알림 ID → 기기 목록 (개발자가 이 폰에만 확인 알림 보낼 수 있게)
