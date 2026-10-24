@@ -1196,6 +1196,76 @@ body.kb #tabbar{transform:translateY(140%)}
 #leave .card.lv .lvtog{grid-column:1/-1;display:block;margin-top:14px;padding:12px;border-radius:15px;text-align:center;font-size:14px;font-weight:800;color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--bg));cursor:pointer}
 #leave .card.lv .lvdays{grid-column:1/-1}
 #leave .card.lv.me .hd .ttl::after{content:"나";margin-left:8px;font-size:11px;font-weight:800;color:#fff;background:var(--grd);padding:2px 8px;border-radius:999px;vertical-align:3px}
+/* 🎞️ 움직임: 부드럽게 (transform·opacity만 써서 가볍게) */
+:root{--spring:cubic-bezier(.22,1.2,.36,1);--ease:cubic-bezier(.2,.8,.2,1)}
+/* 탭 바꿀 때 카드가 차례로 스르륵 */
+#upload.ani>*,#sched.ani>*,#stats.ani>*,#hours.ani>*,#leave.ani>*,#main.ani>*{animation:mnIn .55s var(--ease) both}
+#upload.ani>*:nth-child(2),#sched.ani>*:nth-child(2),#stats.ani>*:nth-child(2),#hours.ani>*:nth-child(2),#leave.ani>*:nth-child(2){animation-delay:.05s}
+#upload.ani>*:nth-child(3),#sched.ani>*:nth-child(3),#stats.ani>*:nth-child(3),#hours.ani>*:nth-child(3),#leave.ani>*:nth-child(3){animation-delay:.1s}
+#upload.ani>*:nth-child(4),#sched.ani>*:nth-child(4),#stats.ani>*:nth-child(4),#hours.ani>*:nth-child(4),#leave.ani>*:nth-child(4){animation-delay:.15s}
+#upload.ani>*:nth-child(5),#sched.ani>*:nth-child(5),#stats.ani>*:nth-child(5),#hours.ani>*:nth-child(5),#leave.ani>*:nth-child(5){animation-delay:.2s}
+#upload.ani>*:nth-child(n+6),#sched.ani>*:nth-child(n+6),#stats.ani>*:nth-child(n+6),#hours.ani>*:nth-child(n+6),#leave.ani>*:nth-child(n+6){animation-delay:.25s}
+@keyframes mnIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+/* 요약 카드: 빛이 한 번 쓱 지나감 */
+.hx::after,#main .sumc::after{content:"";position:absolute;inset:0;z-index:-1;width:auto;height:auto;border-radius:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.32) 48%,rgba(255,255,255,.08) 56%,transparent 70%);transform:translateX(-110%);pointer-events:none}
+.ani .hx::after,#main.ani .sumc::after{animation:sheen 1.1s var(--ease) .35s both}
+@keyframes sheen{to{transform:translateX(110%)}}
+/* 요약 칸이 톡톡 순서대로 */
+.ani .hx .tl div{animation:tilePop .5s var(--spring) both}
+.ani .hx .tl div:nth-child(1){animation-delay:.12s}.ani .hx .tl div:nth-child(2){animation-delay:.18s}.ani .hx .tl div:nth-child(3){animation-delay:.24s}
+@keyframes tilePop{from{opacity:0;transform:translateY(8px) scale(.94)}to{opacity:1;transform:none}}
+/* 통계 막대가 아래에서 자람 */
+#stats.ani .mc .bars b{transform-origin:50% 100%;animation:barUp .7s var(--spring) both;animation-delay:calc(var(--i,0) * 35ms + .15s)}
+@keyframes barUp{from{transform:scaleY(0)}to{transform:none}}
+/* 아래 탭: 색칠된 칸이 미끄러지듯 이동 */
+#tabbar #tabind{position:absolute;left:0;top:7px;height:58px;border-radius:23px;background:var(--grd);box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 10px 20px -10px rgba(80,90,255,.95);transition:transform .45s var(--spring),width .3s var(--ease);pointer-events:none;z-index:0}
+#tabbar.slide .tab.on{background:none;box-shadow:none}
+#tabbar .tab{z-index:1}
+#tabbar .tab.on svg{animation:icPop .45s var(--spring)}
+@keyframes icPop{0%{transform:scale(.8)}60%{transform:scale(1.12)}100%{transform:none}}
+#tabbar .tab em,#tabbar .tab svg{transition:color .25s ease}
+/* 아래에서 올라오는 창: 뒤는 부드럽게 어두워지고 창은 통통 */
+.ov.on:not(.first){animation:ovFade .25s ease both}
+.ov.on:not(.first)>.box{animation:sheetUp .42s var(--spring) both}
+@keyframes ovFade{from{background:rgba(0,0,0,0)}}
+@keyframes sheetUp{from{transform:translateY(60px);opacity:.4}to{transform:none;opacity:1}}
+#eqov .box.up{animation:sheetUp .42s var(--spring) both}
+/* 알림(토스트) 통통 */
+#toast{transition:transform .45s var(--spring)}
+/* 누르면 살짝 눌림 (카드·버튼 공통) */
+#app .card.tap:active,#upload .card li:active,#sched .card.sday li:active,#leave .lvtog:active,#stats .mt tr.mr:active{transform:scale(.985)}
+#app .card,#upload .card li,#sched .card.sday li,#leave .lvtog{transition:transform .18s var(--ease)}
+@media (prefers-reduced-motion:reduce){.ani *,.ani>*,#tabbar *,.ov,.ov .box{animation:none!important;transition:none!important}}
+/* 🏭 금일·명일: 공정 흐름 (세로 줄 + 공정 번호 점) */
+#main .flow{position:relative;display:grid;gap:12px;padding-left:30px}
+#main .flow::before{content:"";position:absolute;left:12px;top:26px;bottom:26px;width:2px;border-radius:2px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 55%,transparent),color-mix(in srgb,#8a6bff 35%,transparent))}
+#main .flow .card{overflow:visible}
+#main .flow .card>.sn{position:absolute;left:-30px;top:15px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:900;color:#fff;background:var(--grd);box-shadow:0 0 0 4px var(--bg),0 6px 12px -6px rgba(80,90,255,.9)}
+#main .flow .card.hasu>.sn{background:linear-gradient(140deg,#ff8a8f,var(--warn));box-shadow:0 0 0 4px var(--bg),0 6px 12px -6px var(--warn)}
+#main .card .hd .ttl small{display:block;margin-top:2px;font-size:11.5px;font-weight:700;color:var(--sub);letter-spacing:0}
+#main .card .hd .ttl small b{color:var(--warn)}
+#main .card .hd{align-items:flex-start}
+#main .card .cnt{margin-top:1px}
+#main li.it .r1 .nm{transition:color .2s}
+#main .card li.it:first-child{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+/* 연차 띠 */
+#main .lvb{display:flex;flex-wrap:wrap;align-items:center;gap:6px 6px;padding:12px 14px}
+#main .lvb>b{display:inline-flex;align-items:center;gap:4px;margin-right:4px;padding:4px 10px;border-radius:999px;font-size:12.5px;font-weight:800;color:#b45309;background:rgba(245,158,11,.14)}
+@media (prefers-color-scheme:dark){#main .lvb>b{color:#fbbf24}}
+#main .lvb .p{margin:0;padding:4px 11px;font-size:13.5px;background:var(--bg)}
+#main .lvb .tm{flex-basis:100%;margin-top:2px;padding-left:2px}
+/* 없는 공정 줄 */
+#main .nst{margin-left:30px;border-style:dashed}
+/* 움직임: 점이 톡, 장비 줄이 차례로 */
+#main.ani .flow .card>.sn{animation:snPop .5s var(--spring) both;animation-delay:inherit}
+@keyframes snPop{from{transform:scale(0)}to{transform:none}}
+#main.ani .flow::before{transform-origin:50% 0;animation:lineGrow .8s var(--ease) .1s both}
+@keyframes lineGrow{from{transform:scaleY(0)}to{transform:none}}
+#main.ani .flow>.card{animation:mnIn .55s var(--ease) both}
+#main.ani .flow>.card:nth-child(2){animation-delay:.07s}#main.ani .flow>.card:nth-child(3){animation-delay:.14s}#main.ani .flow>.card:nth-child(4){animation-delay:.21s}#main.ani .flow>.card:nth-child(5){animation-delay:.28s}#main.ani .flow>.card:nth-child(n+6){animation-delay:.35s}
+#main.ani li.it{animation:liIn .45s var(--ease) both}
+#main.ani li.it:nth-child(2){animation-delay:.06s}#main.ani li.it:nth-child(3){animation-delay:.12s}#main.ani li.it:nth-child(n+4){animation-delay:.18s}
+@keyframes liIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -1279,7 +1349,7 @@ body.kb #tabbar{transform:translateY(140%)}
 </header>
 <section id="srch"></section>
 
-<nav class="tabs" id="tabbar">
+<nav class="tabs slide" id="tabbar"><i id="tabind"></i>
   <div class="tab on" id="t0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.8" fill="currentColor" stroke="none"/></svg><em>금일</em><span id="d0"></span></div>
   <div class="tab" id="t1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4M10.5 13l2.5 2.5-2.5 2.5"/></svg><em>명일</em><span id="d1"></span></div>
   <div class="tab" id="t2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4 14v4.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V14"/></svg><em>업로드</em><span id="d2"></span></div>
@@ -2029,14 +2099,27 @@ function render() {
   var anim = RND.k !== cur; RND.k = cur;
   main.classList.toggle("ani", anim);
   main.insertBefore(sumCard(d), main.firstChild);
+  if (anim) setTimeout(function () { var b = main.querySelector('.sumc .cn b'); if (b && typeof countUp === 'function') countUp(b); }, 0);
   var me = myName(), none = [];
+  var flow = el("div", "flow");   // 🏭 공정 순서대로 세로 줄로 이음
+  main.appendChild(flow);
   d.stages.forEach(function (s, si) {
     var n = s.items.length;
     if (!n) { none.push(s.label); return; }   // 작업 없는 공정은 맨 아래 한 줄로 모음
-    var card = el("div", "card");
+    var nu = s.items.filter(function (x) { return x.u; }).length, nm2 = s.items.filter(function (x) { return me && x.owner === me; }).length;
+    var card = el("div", "card" + (nu ? " hasu" : ""));
     card.id = "stg" + si;
+    card.appendChild(el("span", "sn", String(si + 1)));   // 공정 번호
     var hd = el("div", "hd");
-    hd.appendChild(el("span", "ttl", s.label));
+    var tt = el("span", "ttl", s.label);
+    if (nu || nm2) {
+      var sm = el("small");
+      if (nu) sm.appendChild(el("b", null, "긴급 " + nu));
+      if (nu && nm2) sm.appendChild(document.createTextNode(" · "));
+      if (nm2) sm.appendChild(document.createTextNode("내 담당 " + nm2));
+      tt.appendChild(sm);
+    }
+    hd.appendChild(tt);
     hd.appendChild(el("span", "cnt", n + "건"));
     card.appendChild(hd);
     var ul = el("ul");
@@ -2058,8 +2141,9 @@ function render() {
       ul.appendChild(li);
     });
     card.appendChild(ul);
-    main.appendChild(card);
+    flow.appendChild(card);
   });
+  if (!flow.childNodes.length) main.removeChild(flow);
   if (none.length) {
     var ns = el("div", "nst", cur === 0 ? "오늘 없는 공정" : "내일 없는 공정");
     none.forEach(function (l) { ns.appendChild(el("span", null, l)); });
@@ -3174,6 +3258,7 @@ function loadStats(force) {
 
 /* ---------- 탭 ---------- */
 function setTab(n) {
+  ANI.t = Date.now(); ANI.done = {};
   try { pushBar(); } catch (ePb) {}
   if (SR.open) closeSearch(true);
   cur = n;
@@ -3199,6 +3284,47 @@ function moreSync() {
   var hit = MORE.filter(function (m) { return m[0] === cur; })[0];
   b.className = "tab" + (hit ? " on" : "");
   b.querySelector("em").textContent = hit ? hit[1].replace(/ .*/, "") : "더보기";
+  tabInd();
+}
+// 🎞️ 아래 탭의 색칠된 칸을 지금 탭 자리로 미끄러지듯 옮김
+function tabInd() {
+  var bar = $("tabbar"), ind = $("tabind"); if (!bar || !ind) return;
+  var on = bar.querySelector(".tab.on"); if (!on) return;
+  ind.style.width = on.offsetWidth + "px";
+  ind.style.transform = "translateX(" + on.offsetLeft + "px)";
+}
+window.addEventListener("resize", tabInd);
+
+// 🎞️ 탭을 바꾼 직후 그린 화면만 움직임 (새로고침으로 다시 그릴 땐 안 움직임)
+var ANI = { t: 0, done: {} };
+function countUp(e) {   // 숫자가 0부터 올라감 (0.7초)
+  var txt = e.firstChild && e.firstChild.nodeType === 3 ? e.firstChild : null;
+  if (!txt || !/^\d+(\.\d+)?$/.test(txt.nodeValue)) return;
+  var to = parseFloat(txt.nodeValue), dec = (txt.nodeValue.split(".")[1] || "").length, t0 = 0;
+  if (!to) return;
+  txt.nodeValue = (0).toFixed(dec);
+  requestAnimationFrame(function step(ts) {
+    if (!t0) t0 = ts;
+    var k = Math.min(1, (ts - t0) / 700), v = to * (1 - Math.pow(1 - k, 3));
+    txt.nodeValue = k < 1 ? v.toFixed(dec) : txt.nodeValue = (dec ? to.toFixed(dec) : String(to));
+    if (k < 1) requestAnimationFrame(step);
+  });
+}
+function animIn(sec) {
+  if (!sec) return;
+  try { if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; } catch (e) {}
+  sec.classList.remove("ani"); void sec.offsetWidth; sec.classList.add("ani");
+  [].forEach.call(sec.querySelectorAll(".hx .bg, .hx .tl b, #leave .ring .big>i, .sumc .cn b"), countUp);
+  [].forEach.call(sec.querySelectorAll("#stats .mc"), function (m, i) { [].forEach.call(m.querySelectorAll(".bars b"), function (b) { b.style.setProperty("--i", i); }); });
+  [].forEach.call(sec.querySelectorAll("#leave .ring .pg"), function (c) {   // 원이 0부터 채워짐
+    c.style.strokeDashoffset = c.getAttribute("stroke-dasharray");
+    requestAnimationFrame(function () { requestAnimationFrame(function () { c.style.strokeDashoffset = ""; }); });
+  });
+}
+function maybeAnim(id, n) {
+  if (cur !== n || ANI.done[n] || Date.now() - ANI.t > 3000) return;   // 탭 바꾼 뒤 3초 안에 처음 그릴 때만
+  if (!$(id).querySelector(".hx, .card")) return;   // "불러오는 중"일 땐 아직
+  ANI.done[n] = true; animIn($(id));
 }
 function openMore() {
   var g = $("moreg"); g.innerHTML = "";
@@ -3212,6 +3338,13 @@ function openMore() {
   $("moreov").className = "ov on";
 }
 $("tmore").onclick = openMore;
+(function () {
+  var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3]];
+  W.forEach(function (w) {
+    var f = window[w[0]]; if (typeof f !== "function") return;
+    window[w[0]] = function () { var r = f.apply(this, arguments); try { maybeAnim(w[1], w[2]); } catch (e) {} return r; };
+  });
+})();
 $("moreov").onclick = function (e) { if (e.target === this) this.className = "ov"; };
 for (var ti = 0; ti < 7; ti++) (function (k) { $("t" + k).onclick = function () { if (cur === k && !SR.open) { window.scrollTo({ top: 0, behavior: "smooth" }); return; } setTab(k); window.scrollTo(0, 0); }; })(ti);   // 같은 탭 다시 누르면 맨 위로
 // ⌨️ 글자 입력 중엔 아래 탭을 숨김 (키보드 위로 떠서 가리지 않게)
@@ -4226,10 +4359,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-24-18";
+var APP_VER = "2026-10-24-20";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-24-20", ["금일·명일 화면 새 디자인 (공정 순서대로 이어진 흐름)"]],
+  ["2026-10-24-19", ["화면 움직임을 부드럽게 (탭 바꿀 때 · 숫자 · 그래프 · 아래 탭 · 창)"]],
   ["2026-10-24-18", ["탭마다 맨 위 요약 새 디자인 (업로드 · 입출하 · 통계 · 근무시간 · 연차)", "연차: 원형 그래프 + 생성·사용·예정"]],
   ["2026-10-24-15", ["탭이 화면 아래로: 금일 · 명일 · 업로드 · 근무시간 · 더보기 (같은 탭을 한 번 더 누르면 맨 위로)", "카드 디자인 더 깔끔하게"]],
   ["2026-10-24-13", ["시트 업로드 · 입출하 일정 · 장비통계 · 근무시간 · 연차 현황 새 디자인"]],
@@ -5713,7 +5848,7 @@ function splashHide(now) {
   if (!s) return;
   if (now) { s.className = "out"; s.style.display = "none"; return; }   // 바로 숨김 (설치 안내 · 처음 시작)
   var wait = Math.max(0, SPL_MIN - (Date.now() - SPL.t0));   // 갱신이 빨리 끝나도 애니메이션은 끝까지(3.5초) 보여줌
-  setTimeout(function () { s.className = "out"; setTimeout(function () { s.style.display = "none"; }, 450); }, wait);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
+  setTimeout(function () { s.className = "out"; try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5][cur]] || "main")); tabInd(); }, 120); } catch (eA) {} setTimeout(function () { s.style.display = "none"; }, 450); }, wait);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
 }
 // 🎬 업데이트 완료 [확인] → 시작 화면 애니메이션을 한 번 보여주고 앱으로 (데이터는 이미 받아 둔 상태)
 function splashReplay() {
