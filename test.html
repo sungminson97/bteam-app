@@ -741,6 +741,114 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 @keyframes igring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
 @media (prefers-reduced-motion:reduce){#ig *,#igarrow{animation:none!important}}
 #ig .w.pad{padding-bottom:84px}
+/* 🧭 처음 시작 (① PIN → ② 이름 → ③ 확정 → ④ 알림 → ⑤ 시작 화면) 공통 디자인 · 승인 대기 화면도 같은 모양 */
+#gate,#secov,#nmov.first,#pushov.first{--obg:#f5f6f9;--oglow:rgba(47,111,237,.18);--ocard:#ffffff;--obd:rgba(16,32,64,.08);--oink:#5d6875}
+@media (prefers-color-scheme:dark){#gate,#secov,#nmov.first,#pushov.first{--obg:#08090d;--oglow:rgba(90,140,255,.26);--ocard:#141821;--obd:rgba(255,255,255,.08);--oink:#9aa5b4}}
+#gate::before,#secov::before,#nmov.first::before,#pushov.first::before{content:"";position:absolute;left:0;right:0;top:0;height:400px;pointer-events:none;background:radial-gradient(60% 70% at 50% 0%,var(--oglow),transparent 72%)}
+.obst{position:absolute;left:0;right:0;top:calc(22px + env(safe-area-inset-top));display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none;z-index:1}
+.obst .bars{display:flex;gap:6px}
+.obst .bars i{width:30px;height:4px;border-radius:4px;background:var(--obd);transition:background .3s}
+.obst .bars i.on{background:var(--accent)}
+.obst span{font-size:11.5px;font-weight:800;letter-spacing:.08em;color:var(--accent)}
+.obic{position:relative;width:76px;height:76px;border-radius:24px;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 62%,#fff),var(--accent) 58%,color-mix(in srgb,var(--accent) 78%,#000));box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 20px 36px -16px var(--accent)}
+.obic::after{content:"";position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(closest-side,var(--oglow),transparent);z-index:-1}
+.obic svg{width:34px;height:34px;display:block}
+.obic.bad{background:linear-gradient(145deg,color-mix(in srgb,var(--warn) 62%,#fff),var(--warn) 58%,color-mix(in srgb,var(--warn) 78%,#000));box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 20px 36px -16px var(--warn)}
+.obic .sp{width:30px;height:30px;border-radius:50%;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;animation:obsp .8s linear infinite}
+@keyframes obsp{to{transform:rotate(360deg)}}
+.obh{margin:26px 0 0;font-size:26px;font-weight:900;line-height:1.3;letter-spacing:-.025em;color:var(--text);text-align:center;word-break:keep-all;white-space:pre-line}
+.obp{margin:8px 0 0;font-size:15px;line-height:1.6;color:var(--oink);text-align:center;word-break:keep-all;white-space:pre-line}
+.obgo{width:100%;height:56px;border:0;border-radius:16px;background:var(--accent);color:#fff;font-size:17px;font-weight:800;letter-spacing:-.02em;font-family:inherit;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 14px 28px -14px var(--accent)}
+.obgo:disabled{opacity:.4;box-shadow:none}
+.obsub{width:100%;height:50px;border:0;background:none;color:var(--oink);font-size:15px;font-weight:700;font-family:inherit}
+
+/* ① PIN 화면 */
+#gate{background:var(--obg);padding:calc(70px + env(safe-area-inset-top)) 24px calc(70px + env(safe-area-inset-bottom))}
+#gate .gbox{position:relative;max-width:380px;gap:0;justify-items:stretch}
+#gate .gicon{justify-self:center;font-size:0;order:-1}
+#gate .gtitle{margin-top:26px;font-size:26px;font-weight:900;letter-spacing:-.025em;line-height:1.3}
+#gate #gmsg{margin:8px 0 0;font-size:15px;color:var(--oink);white-space:pre-line;word-break:keep-all}
+#gate #gmsg.bad{color:var(--warn);font-weight:700}
+#gate #gin{margin-top:28px;height:64px;font-size:28px;letter-spacing:.5em;padding:0 0 0 .5em;border-radius:18px;border:1.5px solid var(--obd);background:var(--ocard);color:var(--text);box-shadow:0 12px 30px -22px rgba(16,32,64,.45);transition:border-color .2s,box-shadow .2s}
+#gate #gin:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent)}
+#gate #gin::placeholder{letter-spacing:.06em;font-size:16px;font-weight:600;color:var(--oink);opacity:.55}
+#gate .gbtns{margin-top:14px;grid-template-columns:1fr}
+#gate #gno{display:none}
+#gate .gbtns .go,#gate #gretry{height:56px;padding:0;border:0;border-radius:16px;background:var(--accent);color:#fff;font-size:17px;font-weight:800;letter-spacing:-.02em;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 14px 28px -14px var(--accent)}
+#gate #gretry{margin-top:28px}
+#gate .glogo{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));transform:translateX(-50%);height:18px;opacity:.7}
+
+/* 🔐 승인 대기 */
+#secov{padding:calc(40px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom))}
+#secov .secin{position:relative;max-width:380px}
+#secov .secic{margin:0 auto;font-size:0}
+#secov .sect{margin-top:26px;font-size:26px;font-weight:900;letter-spacing:-.025em;line-height:1.3}
+#secov .secd{margin-top:8px;color:var(--oink)}
+#secov .secid{margin-top:16px;padding:7px 14px;background:var(--ocard);border-color:var(--obd);color:var(--oink)}
+#secov .secst{margin-top:22px;padding:14px 16px;border-radius:16px;background:color-mix(in srgb,var(--ok) 11%,transparent);font-size:14px;line-height:1.55}
+#secov .secst.wait{background:var(--ocard);border:1px solid var(--obd);color:var(--oink)}
+#secov #secre{height:56px;padding:0;margin-top:22px;border-radius:16px;font-size:17px;letter-spacing:-.02em;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 14px 28px -14px var(--accent)}
+#secov #secrq{height:52px;padding:0;border-radius:16px;background:var(--ocard);border-color:var(--obd);font-size:15px}
+#secov #secdev{display:none}
+#secov.dev #secdev{display:inline-block}
+
+/* ② 이름 고르기 · ③ 한 번 더 확정 */
+#nmov .obst,#nmov .nmic,#nmcf,#nmback{display:none}
+#nmov.first{align-items:stretch;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--obg)}
+#nmov.first .obst{display:flex}
+#nmov.first .box{position:relative;max-width:420px;width:100%;margin:0 auto;min-height:100%;align-content:start;gap:0;background:transparent;box-shadow:none;border-radius:0;padding:calc(92px + env(safe-area-inset-top)) 22px calc(26px + env(safe-area-inset-bottom))}
+#nmov.first .nmic{display:flex;justify-self:center}
+#nmov.first #nmttl{margin:26px 0 0;font-size:26px;font-weight:900;letter-spacing:-.025em;line-height:1.3;text-align:center}
+#nmov.first #nmdesc{margin:8px 0 0;font-size:15px;line-height:1.6;color:var(--oink);text-align:center;word-break:keep-all}
+#nmov.first .chips{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#nmov.first .chip{display:flex;flex-direction:column;align-items:center;gap:8px;padding:15px 4px 13px;border-radius:18px;border:1.5px solid var(--obd);background:var(--ocard);color:var(--text);font-size:15px;font-weight:800;font-family:inherit;transition:border-color .15s,box-shadow .15s,transform .1s}
+#nmov.first .chip::before{content:attr(data-i);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);font-size:17px;font-weight:900}
+#nmov.first .chip:active{background:var(--ocard);color:var(--text);transform:scale(.97)}
+#nmov.first .chip.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--ocard));color:var(--text);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)}
+#nmov.first .chip.on::before{background:var(--accent);color:#fff}
+#nmov.first .chips .hint{grid-column:1/-1;text-align:center;color:var(--oink)}
+#nmov.first #nmpin{margin-top:16px;height:56px;border-radius:16px;border:1.5px solid var(--obd);background:var(--ocard);color:var(--text);font-size:20px;text-align:center;letter-spacing:.3em}
+#nmov.first #nmmsg{margin-top:12px;text-align:center;color:var(--oink);font-size:13px}
+#nmov.first #nmmsg:empty{display:none}
+#nmov.first .ob{margin-top:28px}
+#nmov.first #nmgo{height:56px;padding:0;border:0;border-radius:16px;font-size:17px;font-weight:800;letter-spacing:-.02em;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 14px 28px -14px var(--accent)}
+#nmov.first #nmgo:disabled{opacity:.4;box-shadow:none}
+#nmov.first.cf .nmic,#nmov.first.cf #nmttl,#nmov.first.cf #nmdesc,#nmov.first.cf .chips{display:none}
+#nmov.first.cf #nmcf{display:flex;flex-direction:column;align-items:center;text-align:center}
+#nmov.first.cf #nmback{display:block;margin-top:6px}
+#nmcf .av{position:relative;width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:38px;font-weight:900;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 62%,#fff),var(--accent) 58%,color-mix(in srgb,var(--accent) 78%,#000));box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 14%,transparent),0 22px 40px -16px var(--accent);animation:obpop .45s cubic-bezier(.2,.9,.3,1.3)}
+#nmcf .nm{margin-top:24px;font-size:26px;font-weight:900;letter-spacing:-.025em;line-height:1.3;color:var(--text)}
+#nmcf .nm b{color:var(--accent)}
+#nmcf .wn{margin-top:18px;width:100%;box-sizing:border-box;padding:15px 16px;border-radius:16px;background:var(--ocard);border:1px solid var(--obd);font-size:14px;line-height:1.6;color:var(--oink);word-break:keep-all;white-space:pre-line}
+#nmcf .wn b{color:var(--text)}
+@keyframes obpop{0%{transform:scale(.6);opacity:0}100%{transform:none;opacity:1}}
+
+/* ④ 알림 받기 */
+#pushov .obst,#pushov .pushic,#pushlead{display:none}
+#pushov.first #pushlead{display:block;margin:8px 0 0;font-size:15px;line-height:1.6;color:var(--oink);text-align:center;word-break:keep-all;white-space:pre-line}
+#pushov.first #pushlead b{color:var(--text)}
+#pushov .pben .i{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
+#pushov .pben .i svg{width:18px;height:18px}
+#pushov .pben li{grid-template-columns:44px 1fr;align-items:center}
+#pushov.first{z-index:120;align-items:stretch;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--obg)}
+#pushov.first .obst{display:flex}
+#pushov.first .box{position:relative;max-width:420px;width:100%;margin:0 auto;min-height:100%;align-content:start;gap:0;background:transparent;box-shadow:none;border-radius:0;padding:calc(92px + env(safe-area-inset-top)) 22px calc(20px + env(safe-area-inset-bottom))}
+#pushov.first .pushic{display:flex;justify-self:center}
+#pushov.first #pushttl{margin:26px 0 0;font-size:26px;font-weight:900;letter-spacing:-.025em;line-height:1.3;text-align:center}
+#pushov.first .pben{margin-top:26px;padding:8px 18px;border-radius:20px;background:var(--ocard);border:1px solid var(--obd);box-shadow:0 18px 40px -26px rgba(16,32,64,.35);gap:0}
+#pushov.first .pben li{padding:14px 0;font-size:15.5px;font-weight:700;color:var(--text)}
+#pushov.first .pben li+li{border-top:1px solid var(--obd)}
+#pushov.first .pben small{font-weight:500;color:var(--oink);margin-top:2px}
+#pushov.first .pben b{color:var(--text)}
+#pushov.first #pushsub{margin-top:14px;text-align:center;color:var(--oink);font-size:13px}
+#pushov.first .who,#pushov.first #pushchips,#pushov.first #pushunlock,#pushov.first #pushnag{display:none!important}
+#pushov.first #pushmsg{margin-top:10px;text-align:center;color:var(--warn);font-size:13px;white-space:pre-line}
+#pushov.first #pushmsg:empty{display:none}
+#pushov.first .phelp{margin-top:20px}
+#pushov.first .ob{margin-top:26px;display:flex;flex-direction:column-reverse;gap:4px}
+#pushov.first #pushgo{height:56px;padding:0;border:0;border-radius:16px;font-size:17px;font-weight:800;letter-spacing:-.02em;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 14px 28px -14px var(--accent)}
+#pushov.first #pushno{height:44px;border:0;background:none;color:var(--oink);font-size:13px;font-weight:600;opacity:.75}
+@media (prefers-reduced-motion:reduce){.obic .sp,#nmcf .av{animation:none}}
 </style>
 </head>
 <body>
@@ -751,13 +859,13 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 <!-- 🔐 사용 중지 / 승인 대기 화면 (#app 밖: 어떤 화면보다 위) -->
 <div id="secov">
   <div class="secin">
-    <div class="secic" id="secic">🔐</div>
+    <div class="secic obic" id="secic"></div>
     <div class="sect" id="sect">처음 보는 기기예요</div>
     <div class="secd" id="secd"></div>
     <div class="secid" id="secid"></div>
     <div class="secst" id="secst"></div>
     <button id="secre" type="button">승인됐는지 확인</button>
-    <button id="secrq" type="button">📨 승인 요청 다시 보내기</button>
+    <button id="secrq" type="button">승인 요청 다시 보내기</button>
     <button id="secdev" type="button">🛠 개발자 PIN으로 바로 승인</button>
     <div id="secdevbox" style="display:none"><input id="secdevpin" type="password" inputmode="numeric" autocomplete="off" placeholder="개발자 PIN"><button id="secdevgo" type="button">승인</button></div>
   </div>
@@ -787,10 +895,11 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
   </div>
 </div>
 <div id="gate">
+  <div class="obst" id="gst" style="display:none"></div>
   <div class="gbox">
     <picture><source srcset="logo_dark.png" media="(prefers-color-scheme: dark)"><img class="glogo" id="glogo" src="logo.png" alt="" onerror="this.style.display='none'"></picture>
     <div class="gtitle">제조1-B</div>
-    <div class="gicon" id="gicon">🔒</div>
+    <div class="gicon obic" id="gicon"></div>
     <p id="gmsg"></p>
     <input id="gin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN">
     <div class="gbtns" id="gbtns">
@@ -950,13 +1059,18 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 </div>
 
 <div class="ov" id="pushov">
+  <div class="obst" id="pushst"></div>
   <div class="box">
+    <div class="obic pushic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></div>
     <div class="pnag" id="pushnag" style="display:none"></div>
     <h3 id="pushttl">🔔 팀 공지, 폰으로 바로 받기</h3>
+    <p id="pushlead">팀 공지 · 업로드 · 근무시간 안내는
+<b>모두 알림으로만 와요.</b>
+팀원 모두 켜는 필수 설정이에요.</p>
     <ul class="pben">
-      <li><span class="i">📢</span><div><b>팀 공지</b>가 오면 바로 알림<small>앱을 안 열어도 폰 화면에 떠요</small></div></li>
-      <li class="nch"><span class="i">🌅</span><div><b>아침 8시 30분</b> 오늘 할 일<small>업로드할 장비 · 이번 주 남은 근무시간</small></div></li>
-      <li class="nch"><span class="i">⏰</span><div><b>17:30</b> 근무시간 깜빡했을 때만<small>이미 입력했으면 안 와요</small></div></li>
+      <li><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3l7 4V6l-7 4z"/><path d="M17.5 9a4 4 0 0 1 0 6"/></svg></span><div><b>팀 공지</b>가 오면 바로 알림<small>앱을 안 열어도 폰 화면에 떠요</small></div></li>
+      <li class="nch"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="4"/><path d="M12 4v2M5.6 7.1L7 8.5M18.4 7.1L17 8.5M3 13h2M19 13h2M4 19.5h16"/></svg></span><div><b>아침 8시 30분</b> 오늘 할 일<small>업로드할 장비 · 이번 주 남은 근무시간</small></div></li>
+      <li class="nch"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span><div><b>17:30</b> 근무시간 깜빡했을 때만<small>이미 입력했으면 안 와요</small></div></li>
     </ul>
     <p class="sub" id="pushsub">공지 말고는 하루 최대 2번이에요. 끄는 것도 언제든 돼요.</p>
     <div class="phelp" id="pushhelp" style="display:none"></div>
@@ -1030,13 +1144,18 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 </div>
 
 <div class="ov" id="nmov">
+  <div class="obst" id="nmst"></div>
   <div class="box">
+    <div class="obic nmic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.8 4.2-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></svg></div>
     <h3 id="nmttl">👤 본인 이름을 선택해 주세요</h3>
     <p id="nmdesc">처음 한 번만 선택해요. 선택하면 이 폰에 <b style="color:var(--accent)">고정</b>되고, 바꾸려면 관리자에게 요청해야 해요.</p>
     <div class="chips" id="nmchips"><span class="hint">이름 불러오는 중…</span></div>
+    <div id="nmcf"><div class="av" id="nmcfav"></div><div class="nm"><b id="nmcfnm"></b> 님이 맞나요?</div><div class="wn">한 번 정하면 <b>이 폰에 고정</b>돼요.
+바꾸려면 관리자에게 요청해야 해요.</div></div>
     <input type="password" id="nmpin" inputmode="numeric" autocomplete="off" placeholder="총괄팀장 PIN" style="display:none">
     <p class="sub" id="nmmsg"></p>
     <div class="ob" id="nmob" style="grid-template-columns:1fr"><button id="nmno" type="button" style="display:none">취소</button><button id="nmgo" type="button" class="go" style="background:var(--accent);border-color:var(--accent)" disabled>이 이름으로 정하기</button></div>
+    <button id="nmback" type="button" class="obsub">다시 고르기</button>
   </div>
 </div>
 
@@ -1291,6 +1410,27 @@ function callEdit(fn, args) {
 // 로딩 중 문구 (원하는 말로 바꿔도 돼요)
 var LOAD_MSG = "데이터 불러오는 중…";
 
+// 🧭 처음 시작 흐름: ① PIN → ② 이름 → ③ 확정 → ④ 알림 → ⑤ 시작 화면(웨이퍼) → ⑥ 바로 사용
+var ONB = { on: false };
+var OB_LB = ["PIN 입력", "이름 고르기", "한 번 더 확인", "알림 받기"];
+function obSteps(id, n) {
+  var b = $(id); if (!b) return;
+  if (!n) { b.style.display = "none"; return; }
+  b.style.display = "";
+  var h = "<div class='bars'>";
+  for (var i = 1; i <= 4; i++) h += "<i" + (i <= n ? " class='on'" : "") + "></i>";
+  b.innerHTML = h + "</div><span>" + n + " / 4 · " + OB_LB[n - 1] + "</span>";
+}
+function obSvg(p) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; }
+var OB_IC = {
+  lock: obSvg('<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><path d="M12 14.5v2"/>'),
+  warn: obSvg('<path d="M12 4l9 16H3z"/><path d="M12 10v4.5"/><path d="M12 17.5v.01"/>'),
+  shield: obSvg('<path d="M12 3l7 3v5.5c0 4.3-3 7.8-7 9.5-4-1.7-7-5.2-7-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>'),
+  block: obSvg('<circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/>')
+};
+// ① PIN 화면 제목 (모드별)
+var GATE_T = { enter: "PIN을 입력해 주세요", loading: "확인하고 있어요", error: "연결할 수 없어요", locked: "잠시 잠겼어요", denied: "PIN이 필요해요" };
+
 function setGate(mode, msg, bad) {
   if (mode === "loading" && !msg) msg = LOAD_MSG;
   var m = $("gmsg");
@@ -1301,7 +1441,12 @@ function setGate(mode, msg, bad) {
   var rt = $("gretry");
   rt.style.display = (mode === "denied" || mode === "error") ? "block" : "none";
   rt.textContent = mode === "denied" ? "PIN 입력하기" : "다시 시도";
-  $("gicon").textContent = mode === "loading" ? "⏳" : mode === "error" ? "⚠️" : "🔒";
+  var gi = $("gicon");
+  gi.innerHTML = mode === "loading" ? "<div class='sp'></div>" : (mode === "error" || mode === "locked") ? OB_IC.warn : OB_IC.lock;
+  gi.className = "gicon obic" + (bad && mode !== "enter" ? " bad" : "");
+  document.querySelector("#gate .gtitle").textContent = GATE_T[mode] || "제조1-B";
+  if (mode === "enter" && (!msg || msg === "PIN을 입력해 주세요.")) m.textContent = ONB.on ? "팀 PIN을 넣으면 바로 시작할 수 있어요." : "팀 PIN을 입력해 주세요.";
+  obSteps("gst", ONB.on ? 1 : 0);
   $("gate").style.display = "flex";
   $("app").style.display = "none";
   G.mode = mode;
@@ -3487,10 +3632,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-24-1";
+var APP_VER = "2026-10-24-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-24-3", ["시작 화면 애니메이션을 끝까지 보여줘요", "처음 시작할 때 알림 켜기 안내 정리"]],
+  ["2026-10-24-2", ["처음 시작할 때 화면 새 디자인 (PIN → 이름 → 알림 → 시작 화면)"]],
   ["2026-10-24-1", ["앱 설치 안내 화면 새 디자인"]],
   ["2026-10-23-7", ["시작 화면 애니메이션을 끝까지 보여줘요"]],
   ["2026-10-23-6", ["시작 화면 새 디자인 (돌아가는 웨이퍼)"]],
@@ -3643,7 +3790,7 @@ var NM = { pick: "", confirm: false };
 function nmChips(names) {
   var b = $("nmchips"); b.innerHTML = "";
   (names || []).forEach(function (n) {
-    var c = el("button", "chip" + (n === NM.pick ? " on" : ""), n); c.type = "button";
+    var c = el("button", "chip" + (n === NM.pick ? " on" : ""), n); c.type = "button"; c.setAttribute("data-i", n.charAt(0));
     c.onclick = function () { NM.pick = n; NM.confirm = false; NM.chiefOK = false; $("nmpin").style.display = "none"; $("nmgo").disabled = false; $("nmgo").textContent = NM.change ? "이 이름으로 바꾸기" : "이 이름으로 정하기"; $("nmmsg").textContent = ""; nmChips(names); };
     b.appendChild(c);
   });
@@ -3652,16 +3799,15 @@ function nmChips(names) {
 // 첫 선택 / 관리자 변경 화면 전환
 function nmMode(change) {
   NM.change = change;
-  $("nmttl").textContent = change ? "👤 바꿀 이름을 선택해 주세요" : "👤 본인 이름을 선택해 주세요";
+  $("nmttl").textContent = change ? "👤 바꿀 이름을 선택해 주세요" : "본인 이름을 골라 주세요";
   var d = $("nmdesc"); d.innerHTML = "";
   if (change) {
     d.appendChild(document.createTextNode("지금 이름: "));
     var nb = el("b", null, myName() || "-"); nb.style.color = "var(--text)"; d.appendChild(nb);
     d.appendChild(el("br")); d.appendChild(document.createTextNode("새 이름으로 고정되고, 알림도 새 이름으로 와요."));
   } else {
-    d.appendChild(document.createTextNode("처음 한 번만 선택해요. 선택하면 이 폰에 "));
-    var g = el("b", null, "고정"); g.style.color = "var(--accent)"; d.appendChild(g);
-    d.appendChild(document.createTextNode("되고, 바꾸려면 관리자에게 요청해야 해요."));
+    d.appendChild(document.createTextNode("처음 한 번만 골라요.\n알림과 근무시간이 이 이름으로 연결돼요."));
+    d.style.whiteSpace = "pre-line";
   }
   $("nmno").style.display = change ? "" : "none";
   $("nmob").style.gridTemplateColumns = change ? "1fr 1.6fr" : "1fr";
@@ -3691,13 +3837,29 @@ function nameAsk() {
   call("getTeamNames").then(function (r) { if (r && r.names) { cset("names", r); PUSH.names = r.names; nmChips(r.names); } }).catch(function () {});
   // 🧭 처음 고르는 거면 앱 화면을 가리고 전체 화면으로 (PIN → 이름 → 앱 순서)
   $("nmov").className = "ov on first";
+  obSteps("nmst", 2);
 }
+// ③ 한 번 더 확정 화면 ↔ ② 다시 고르기
+function nmConfirmView(on) {
+  var o = $("nmov");
+  if (o.className.indexOf("first") < 0) return false;
+  o.classList.toggle("cf", on);
+  obSteps("nmst", on ? 3 : 2);
+  if (on) { $("nmcfav").textContent = NM.pick.charAt(0); $("nmcfnm").textContent = NM.pick; }
+  return true;
+}
+$("nmback").onclick = function () {
+  NM.confirm = false; NM.chiefOK = false; $("nmpin").style.display = "none";
+  $("nmgo").disabled = false; $("nmgo").textContent = "이 이름으로 정하기"; $("nmmsg").textContent = "";
+  nmConfirmView(false);
+};
 
 $("nmgo").onclick = function () {
   if (!NM.pick) return;
   if (!NM.confirm) {   // 한 번 더 확인
     if (NM.change && NM.pick === myName()) { $("nmmsg").textContent = "지금 이름과 같아요. 다른 이름을 골라 주세요."; return; }
     NM.confirm = true;
+    if (nmConfirmView(true)) { $("nmgo").textContent = "네, 맞아요"; $("nmmsg").textContent = ""; return; }   // 처음: 확정 화면
     $("nmgo").textContent = "'" + NM.pick + "' 맞아요 (확정)";
     $("nmmsg").textContent = "정한 뒤에는 직접 바꿀 수 없어요. 맞으면 한 번 더 눌러 주세요.";
     return;
@@ -3734,14 +3896,36 @@ $("nmgo").onclick = function () {
     if (window.OneSignalDeferred) window.OneSignalDeferred.push(async function (OS) { try { await OS.login(NM.pick); } catch (e) {} });
     call("pushRegister", [NM.pick]).catch(function () {});
   }
+  var onb = ONB.on && !wasChange;
+  if (onb) onbPush();   // 🧭 처음이면 ④ 알림 받기 화면을 먼저 띄우고 이름 창을 닫음 (앱 화면이 잠깐 보이지 않게)
   $("nmov").className = "ov";
   persistAsk();   // 💾 이름을 정하는 순간 영구 저장도 같이 (버튼 누른 직후라 허용될 확률이 높음)
-  toast(wasChange ? "👤 이름이 '" + NM.pick + "'(으)로 바뀌었어요" : "👤 " + NM.pick + " 님으로 정해졌어요");
+  if (!onb) toast(wasChange ? "👤 이름이 '" + NM.pick + "'(으)로 바뀌었어요" : "👤 " + NM.pick + " 님으로 정해졌어요");
   devRegister(true);
   nmMode(false);
   if (cur === 0 && !SR.open) render();
-  setTimeout(pushAutoAsk, 800);
+  if (!onb) setTimeout(pushAutoAsk, 800);
 };
+// ④ 알림 받기 (처음 시작 화면 모양) → 받을 수 없는 폰이면 바로 ⑤로
+function onbPush() {
+  var can = !!ONESIGNAL_APP_ID && !pushOn() && pushStandaloneOk() && ("Notification" in window);
+  if (!can) { onbFinish(); return; }
+  openPush();
+  $("pushov").className = "ov on first";
+  PUSH.skipAsk = false;
+  $("pushttl").textContent = pushDenied() ? "알림이 차단돼 있어요" : "알림을 켜고 시작하세요";
+  $("pushlead").style.display = pushDenied() ? "none" : "";
+  $("pushsub").textContent = isChief() ? "공지가 올 때만 와요." : "공지 말고는 하루 최대 2번만 와요.";
+  if (!pushDenied() && !$("pushgo").disabled) $("pushgo").textContent = "알림 켜고 시작하기";
+  $("pushno").textContent = "나중에 할게요";
+  obSteps("pushst", 4);
+}
+// ⑤ 시작 화면(웨이퍼)을 보여주고 → ⑥ 바로 사용 (금일/명일은 그동안 이미 받아 둠)
+function onbFinish() {
+  if (!ONB.on || !nameDone()) return;
+  ONB.on = false;
+  splashReplay();
+}
 
 // 👥 알림 현황 (관리자)
 // ⚡ 지난번 결과를 바로 보여주고, 뒤에서 최신으로 바꿈 (서버도 10분마다 미리 계산해 둠)
@@ -4021,7 +4205,7 @@ function openPush() {
   $("pushov").className = "ov on";
 }
 
-function closePush() { $("pushov").className = "ov"; PUSH.nag = null; pushBar(); }
+function closePush() { $("pushov").className = "ov"; PUSH.nag = null; pushBar(); onbFinish(); }
 function pushDenied() { try { return !!(window.Notification && Notification.permission === "denied"); } catch (e) { return false; } }
 
 // 📣 관리자 요청 받음 → 알림이 꺼져 있으면 (요청 1번당 한 번) 알림 창을 띄움
@@ -4033,8 +4217,17 @@ function pushNagLater(ng) {
   PUSH.nag = ng;
   mnBackHide(); openPush();
 }
-$("pushno").onclick = function () { sset("pushLater", ymdLocal()); closePush(); };   // 오늘은 다시 안 띄움
-$("pushov").onclick = function (e) { if (e.target === this) closePush(); };
+$("pushno").onclick = function () {
+  // 🧭 처음 시작: 한 번은 다시 권유 (알림이 필수인 이유) → 그래도 누르면 넘어감
+  if ($("pushov").className.indexOf("first") >= 0 && !PUSH.skipAsk) {
+    PUSH.skipAsk = true;
+    $("pushmsg").textContent = "알림을 안 켜면 팀 공지와 업로드 알림을 못 받아요.\n지금 켜 두는 걸 꼭 권해요.";
+    this.textContent = "그래도 나중에 하기";
+    return;
+  }
+  sset("pushLater", ymdLocal()); closePush();
+};   // 오늘은 다시 안 띄움   // 오늘은 다시 안 띄움
+$("pushov").onclick = function (e) { if (e.target === this && this.className.indexOf("first") < 0) closePush(); };
 $("pushgo").onclick = function () {
   var n = PUSH.pick;
   if (!n) { $("pushmsg").textContent = "내 이름을 먼저 골라 주세요."; return; }
@@ -4058,7 +4251,7 @@ $("pushgo").onclick = function () {
     } catch (e) {
       $("pushmsg").textContent = "알림 설정 실패: " + (e && e.message ? e.message : e);
     }
-    $("pushgo").disabled = false; $("pushgo").textContent = pushDenied() ? "다시 확인" : "알림 받기";
+    $("pushgo").disabled = false; $("pushgo").textContent = pushDenied() ? "다시 확인" : ($("pushov").className.indexOf("first") >= 0 ? "알림 켜고 시작하기" : "알림 받기");
     if (cur === 0 && !SR.open) render();
   });
 };
@@ -4318,7 +4511,8 @@ function secPin() { return SEC.pin || getPin(); }
 function showSec(j) {
   var o = $("secov"), blk = j.code === "BLOCKED";
   var lines = String(j.error || "").split("\n");
-  $("secic").textContent = blk ? "🚫" : "🔐";
+  $("secic").innerHTML = blk ? OB_IC.block : OB_IC.shield;
+  $("secic").className = "secic obic" + (blk ? " bad" : "");
   $("sect").textContent = (lines[0] || "").replace(/^(🚫|🔐)\s*/, "").replace(/\.$/, "") || (blk ? "사용이 중지됐어요" : "승인이 필요해요");
   $("secd").textContent = lines.slice(1).join("\n");
   $("secid").textContent = (myName() ? myName() + " · " : "") + "기기-" + (j.dev || devId());
@@ -4333,7 +4527,7 @@ function showSec(j) {
     var st = $("secst");
     st.className = "secst wait"; st.textContent = "승인 요청 보내는 중…";
     rawCall(secPin(), "deviceRegister", [myName() || "", devInfo()]).then(function (r) {
-      if (r && r.ok) { st.className = "secst"; st.textContent = "📨 손성민에게 승인 요청을 보냈어요\n승인되면 [승인됐는지 확인]을 눌러 주세요"; }
+      if (r && r.ok) { st.className = "secst"; st.textContent = "손성민에게 승인 요청을 보냈어요\n승인되면 [승인됐는지 확인]을 눌러 주세요"; }
       else { st.className = "secst wait"; st.textContent = "요청을 못 보냈어요. 아래 버튼으로 다시 보내 주세요."; }
     }).catch(function () { st.className = "secst wait"; st.textContent = "요청을 못 보냈어요. 아래 버튼으로 다시 보내 주세요."; });
   }
@@ -4341,13 +4535,13 @@ function showSec(j) {
 $("secrq").onclick = function () {
   var b = this; b.disabled = true; b.textContent = "보내는 중…";
   rawCall(secPin(), "secRequest", []).then(function (j) {
-    b.disabled = false; b.textContent = "📨 승인 요청 다시 보내기";
+    b.disabled = false; b.textContent = "승인 요청 다시 보내기";
     var r = j && j.data;
     if (r && r.approved) { $("secre").onclick(); return; }
     if (j && j.ok && r && r.wait) toast("⏳ 방금 보냈어요\n5분 뒤에 다시 보낼 수 있어요", true);
     else if (j && j.ok && r && r.ok) { $("secst").className = "secst"; $("secst").textContent = "📨 승인 요청을 다시 보냈어요\n승인되면 [승인됐는지 확인]을 눌러 주세요"; toast("📨 다시 보냈어요"); }
     else toast("⚠️ " + ((r && r.error) || (j && j.error) || "요청 실패"), true);
-  }).catch(function () { b.disabled = false; b.textContent = "📨 승인 요청 다시 보내기"; toast("⚠️ 연결 실패", true); });
+  }).catch(function () { b.disabled = false; b.textContent = "승인 요청 다시 보내기"; toast("⚠️ 연결 실패", true); });
 };
 $("secre").onclick = function () {
   var b = this; b.disabled = true; b.textContent = "확인 중…";
@@ -4366,6 +4560,12 @@ function secApproved() {
   setTimeout(function () { location.reload(); }, 600);
 }
 // 🛠 개발자 본인 폰: 개발자 PIN으로 바로 승인
+// 🛠 개발자 승인 버튼은 숨겨 둠 → 위 아이콘을 빠르게 5번 누르면 나타남 (팀원 화면에는 안 보이게)
+SEC.taps = 0;
+$("secic").onclick = function () {
+  SEC.taps++; clearTimeout(SEC.tapT); SEC.tapT = setTimeout(function () { SEC.taps = 0; }, 1500);
+  if (SEC.taps >= 5) { SEC.taps = 0; $("secov").classList.toggle("dev"); }
+};
 $("secdev").onclick = function () { $("secdevbox").style.display = $("secdevbox").style.display === "none" ? "grid" : "none"; try { $("secdevpin").focus(); } catch (e) {} };
 $("secdevgo").onclick = function () {
   var v = $("secdevpin").value.trim(), b = this;
@@ -4904,14 +5104,16 @@ function persistAsk() {
   } catch (e) {}
 }
 
-/* 🎬 시작 화면 닫기: 최소 3.5초는 보여주고(애니메이션 끝까지), 최신 데이터가 오면 닫음 · 늦어도 8초면 닫고 저장해 둔 화면 + "갱신 중" */
+/* 🎬 시작 화면 닫기: 최소 4.4초는 보여주고(웨이퍼 한 바퀴 + 1-B 빛까지), 최신 데이터가 오면 닫음 · 늦어도 8초면 닫고 저장해 둔 화면 + "갱신 중" */
 var SPL = { t0: Date.now(), done: false };
+var SPL_MIN = 4400;   // 🎬 웨이퍼 한 바퀴(3.4초) + 1-B 위로 빛이 끝까지 지나가는 것(4.3초)까지 보고 닫힘
 function splashHide(now) {
   if (SPL.done) return;
   SPL.done = true;
   var s = document.getElementById("splash");
   if (!s) return;
-  var wait = now ? 0 : Math.max(0, 3500 - (Date.now() - SPL.t0));   // 갱신이 빨리 끝나도 애니메이션은 끝까지(3.5초) 보여줌
+  if (now) { s.className = "out"; s.style.display = "none"; return; }   // 바로 숨김 (설치 안내 · 처음 시작)
+  var wait = Math.max(0, SPL_MIN - (Date.now() - SPL.t0));   // 갱신이 빨리 끝나도 애니메이션은 끝까지(3.5초) 보여줌
   setTimeout(function () { s.className = "out"; setTimeout(function () { s.style.display = "none"; }, 450); }, wait);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
 }
 // 🎬 업데이트 완료 [확인] → 시작 화면 애니메이션을 한 번 보여주고 앱으로 (데이터는 이미 받아 둔 상태)
@@ -4921,7 +5123,7 @@ function splashReplay() {
   var n = s.cloneNode(true);   // 복제해서 바꿔 끼우면 애니메이션이 처음부터 다시 재생됨
   n.className = ""; n.style.display = "";
   s.parentNode.replaceChild(n, s);
-  setTimeout(function () { n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450); }, 3500);
+  setTimeout(function () { n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450); }, SPL_MIN);
 }
 
 function boot() {
@@ -4941,9 +5143,10 @@ function boot() {
   try { adminUI(); } catch (ea) {}   // 🔑 관리자 모드면 제목 빨강
   setTimeout(nameAsk, 300);   // 👤 이름 고르기가 제일 먼저
   setTimeout(function () { if (nameDone()) devRegister(); }, 6000);   // 📱 기기 목록 등록 (버전 바뀔 때 한 번, 화면 로딩 끝난 뒤)
-  if (lockLeft() > 0) { showLocked(); splashHide(); return; }
+  ONB.on = !nameDone();   // 🧭 처음 시작이면 시작 화면은 맨 끝(⑤)에 보여줌
+  if (lockLeft() > 0) { showLocked(); splashHide(ONB.on); return; }
   var p = getPin();
-  if (!p) { setGate("enter", "PIN을 입력해 주세요."); splashHide(); return; }
+  if (!p) { setGate("enter", "PIN을 입력해 주세요."); splashHide(ONB.on); return; }
   // ⚡ 저장된 PIN이 있으면 PIN 확인을 기다리지 않고 지난 화면부터 바로 보여줌.
   //    금일/명일 요청이 PIN 확인을 겸하고, PIN이 바뀌었으면 그때 잠금 화면으로.
   var pre = rawCall(p, "getDashboardAll", [false]).then(function (j) {
@@ -4951,6 +5154,7 @@ function boot() {
     return j;
   }).catch(function () { return null; });
   unlock(p, pre);
+  if (ONB.on) splashHide(true);
   pre.then(function () { splashHide(); });   // 🎬 최신 금일/명일이 그려진 뒤 시작 화면 닫기
   // ⏱ 서버 응답 + 폰↔구글 왕복이 4초를 넘는 경우가 많아서(서버 3초 + 연결 1~3초) 최대 8초까지 기다림
   //    2.5초가 지나면 시작 화면 아래에 "최신 정보 받는 중…" 표시 (멈춘 것처럼 안 보이게)
