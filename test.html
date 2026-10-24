@@ -1240,7 +1240,7 @@ body.kb #tabbar{transform:translateY(140%)}
 #main .flow{position:relative;display:grid;gap:12px;padding-left:30px}
 #main .flow::before{content:"";position:absolute;left:12px;top:26px;bottom:26px;width:2px;border-radius:2px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 55%,transparent),color-mix(in srgb,#8a6bff 35%,transparent))}
 #main .flow .card{overflow:visible}
-#main .flow .card>.sn{position:absolute;left:-30px;top:15px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:900;color:#fff;background:var(--grd);box-shadow:0 0 0 4px var(--bg),0 6px 12px -6px rgba(80,90,255,.9)}
+#main .flow .card>.sn{position:absolute;left:-25px;top:20px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:900;color:#fff;background:var(--grd);box-shadow:0 0 0 4px var(--bg),0 6px 12px -6px rgba(80,90,255,.9)}
 #main .flow .card.hasu>.sn{background:linear-gradient(140deg,#ff8a8f,var(--warn));box-shadow:0 0 0 4px var(--bg),0 6px 12px -6px var(--warn)}
 #main .card .hd .ttl small{display:block;margin-top:2px;font-size:11.5px;font-weight:700;color:var(--sub);letter-spacing:0}
 #main .card .hd .ttl small b{color:var(--warn)}
@@ -2109,7 +2109,7 @@ function render() {
     var nu = s.items.filter(function (x) { return x.u; }).length, nm2 = s.items.filter(function (x) { return me && x.owner === me; }).length;
     var card = el("div", "card" + (nu ? " hasu" : ""));
     card.id = "stg" + si;
-    card.appendChild(el("span", "sn", String(si + 1)));   // 공정 번호
+    card.appendChild(el("span", "sn"));   // 흐름 점 (숫자 없이)
     var hd = el("div", "hd");
     var tt = el("span", "ttl", s.label);
     if (nu || nm2) {
@@ -3032,7 +3032,11 @@ function loadLeave(force) {
   LV.loaded = true;
   R.leave = true;
   return call("getLeaveData", [!!force])
-    .then(function (d) { R.leave = false; LV.data = d; if (!d.error) cset("leave", d); if (cur === 4) renderLeave(d); return d.error || ""; })
+    .then(function (d) {
+      var old = LV.data; R.leave = false; LV.data = d; if (!d.error) cset("leave", d);
+      if (cur === 4) { if (!d.error && old && !old.error && sameData(old, d) && $("leave").querySelector(".hx, .card")) $("upd").textContent = updTxt(d, "leave"); else renderLeave(d); }
+      return d.error || "";
+    })
     .catch(function (e) {
       R.leave = false;
       if (!LV.data || LV.data.error) LV.data = { error: "불러오기 실패: " + errText(e) };
@@ -3243,11 +3247,19 @@ function renderStats(d) {
   }
 }
 
+// 🔁 서버에서 받은 게 화면에 있는 것과 같으면(기준 시각만 다르면) 다시 그리지 않음 → 탭 열 때 "한 번 더 새로고침" 되는 느낌 없앰
+function sameData(a, b) {
+  try { var f = function (k, v) { return (k === "updated" || k === "_at" || k === "built") ? undefined : v; }; return !!a && !!b && JSON.stringify(a, f) === JSON.stringify(b, f); } catch (e) { return false; }
+}
 function loadStats(force) {
   ST.loaded = true;
   R.stats = true;
   return call("getStatsData", [!!force])
-    .then(function (d) { R.stats = false; ST.data = d; if (!d.error) cset("stats", d); if (cur === 5) renderStats(d); return d.error || ""; })
+    .then(function (d) {
+      var old = ST.data; R.stats = false; ST.data = d; if (!d.error) cset("stats", d);
+      if (cur === 5) { if (!d.error && old && !old.error && sameData(old, d) && $("stats").querySelector(".hx, .panel")) $("upd").textContent = updTxt(d, "stats"); else renderStats(d); }
+      return d.error || "";
+    })
     .catch(function (e) {
       R.stats = false;
       if (!ST.data || ST.data.error) ST.data = { error: "불러오기 실패: " + errText(e) };
@@ -3978,7 +3990,8 @@ function loadHoursMeta(silent) {
       var c = m.cell;
       delete m.cell;
       cset("hours", m);
-      applyMeta(m, false);
+      if (!(H.meta && sameData(H.meta, m))) applyMeta(m, false);   // 같으면 다시 안 그림 (깜빡임 없음)
+      else H.meta = m;
       if (t !== H.token) return "";   // 그 사이 이름/날짜를 바꿨으면 그쪽 결과를 씀
       if (c && c.name === $("hname").value && c.ymd === $("hdate").value) applyCell(c);
       else refreshCell();
@@ -4359,10 +4372,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-24-20";
+var APP_VER = "2026-10-24-21";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-24-21", ["연차 · 장비통계 · 근무시간을 열 때 화면이 한 번 더 깜빡이던 것 고침", "금일·명일 공정 옆 숫자 없앰"]],
   ["2026-10-24-20", ["금일·명일 화면 새 디자인 (공정 순서대로 이어진 흐름)"]],
   ["2026-10-24-19", ["화면 움직임을 부드럽게 (탭 바꿀 때 · 숫자 · 그래프 · 아래 탭 · 창)"]],
   ["2026-10-24-18", ["탭마다 맨 위 요약 새 디자인 (업로드 · 입출하 · 통계 · 근무시간 · 연차)", "연차: 원형 그래프 + 생성·사용·예정"]],
