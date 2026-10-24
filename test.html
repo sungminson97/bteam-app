@@ -1266,6 +1266,12 @@ body.kb #tabbar{transform:translateY(140%)}
 #main.ani li.it{animation:liIn .45s var(--ease) both}
 #main.ani li.it:nth-child(2){animation-delay:.06s}#main.ani li.it:nth-child(3){animation-delay:.12s}#main.ani li.it:nth-child(n+4){animation-delay:.18s}
 @keyframes liIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+/* 📅 아이폰 날짜칸: 글자가 위로 붙던 것 → 가운데 높이 · 왼쪽 정렬 (다른 칸과 똑같이) */
+#hours .form input[type=date]{display:block;height:auto;min-height:50px;padding:12px 14px;line-height:24px;text-align:left}
+#hours .form input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0;padding:0;line-height:24px;min-height:24px}
+#hours .form input[type=date]::-webkit-datetime-edit{padding:0;line-height:24px}
+/* 달력 칸 글자(오후반차·연차(웨…)가 잘리지 않게 조금 작게 */
+#hours .cd.txt b,#hours .cd.schv b{font-size:10px;letter-spacing:-.06em;text-overflow:clip}
 </style>
 </head>
 <body>
@@ -4372,10 +4378,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-24-21";
+var APP_VER = "2026-10-24-22";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-24-22", ["근무시간 날짜칸 글자 가운데로"]],
   ["2026-10-24-21", ["연차 · 장비통계 · 근무시간을 열 때 화면이 한 번 더 깜빡이던 것 고침", "금일·명일 공정 옆 숫자 없앰"]],
   ["2026-10-24-20", ["금일·명일 화면 새 디자인 (공정 순서대로 이어진 흐름)"]],
   ["2026-10-24-19", ["화면 움직임을 부드럽게 (탭 바꿀 때 · 숫자 · 그래프 · 아래 탭 · 창)"]],
