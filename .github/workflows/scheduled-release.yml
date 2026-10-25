@@ -4,13 +4,14 @@
 #   autotest_next.html → autotest.html  (예약 기능 시험용 · 앱과 상관없음)
 #   올려 둔 파일만 바꾸고, 없는 건 그냥 넘어감
 # 시각은 UTC 기준 (한국 시간 - 9시간)
-#   한국 2026-10-25(일) 13:20  →  UTC 04:20  →  cron: "20 4 25 10 *"
+#   한국 2026-10-25(일) 13:30  →  UTC 04:30  →  cron: "30 4 25 10 *"
 # ⚠️ GitHub 예약 실행은 몇 분~30분 정도 늦게 돌 수 있어요.
 name: 예약 배포 (○○_next → ○○)
 
 on:
   schedule:
     - cron: "30 4 25 10 *"
+  workflow_dispatch:   # Actions 화면에서 [Run workflow]로 바로 실행
 
 permissions:
   contents: write
