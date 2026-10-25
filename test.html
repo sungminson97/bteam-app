@@ -1171,6 +1171,7 @@ body.kb #tabbar{transform:translateY(140%)}
 .hx .tl span{display:block;font-size:12px;font-weight:700;opacity:.92;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hx .tl b{display:block;margin-top:3px;font-size:24px;font-weight:900;letter-spacing:-.035em;line-height:1.1;white-space:nowrap;font-variant-numeric:tabular-nums}
 .hx .tl b small{font-size:13px;font-weight:800;margin-left:2px;opacity:.9;letter-spacing:0}
+.hx .tl em{display:block;margin-top:3px;font-style:normal;font-size:12px;font-weight:800;opacity:.9;white-space:nowrap}
 .hx .tl .r{background:rgba(214,48,88,.42);border-color:rgba(255,170,180,.55)}
 .hx .ms{margin-top:6px;font-size:13.5px;font-weight:700;opacity:.92}
 #upload .sum,#sched .ssum,#sched .tcmp{display:none}
@@ -3046,6 +3047,7 @@ function heroX(pill, big, unit, tiles, chip, ok) {
     tiles.forEach(function (x) {
       var d = el("div", x[3] ? "r" : ""); d.appendChild(el("span", null, x[0]));
       var v = el("b", null, String(x[1])); if (x[2]) v.appendChild(el("small", null, x[2])); d.appendChild(v);
+      if (x[4]) d.appendChild(el("em", null, x[4]));   // 아래 작은 줄 (예: 14대 출하)
       tl.appendChild(d);
     });
     h.appendChild(tl);
@@ -3205,7 +3207,7 @@ function renderStats(d) {
     var dn2 = (cm.aCnt || 0) + (cm.bCnt || 0);
     var ap = cm.aPts || 0, bp = cm.bPts || 0;
     box.appendChild(heroX(parseInt(cm.m.slice(5), 10) + "월 (이번 달)", null, null,
-      [["A팀", cm.aPts == null ? "-" : (+cm.aPts).toFixed(1), "점"], ["B팀", cm.bPts == null ? "-" : (+cm.bPts).toFixed(1), "점"], [d.info && d.info.planned != null ? "출하 / 예정" : "출하", dn2 + (d.info && d.info.planned != null ? "/" + d.info.planned : ""), "대"]]));
+      [["A팀", cm.aPts == null ? "-" : (+cm.aPts).toFixed(1), "점", false, (cm.aCnt || 0) + "대 출하"], ["B팀", cm.bPts == null ? "-" : (+cm.bPts).toFixed(1), "점", false, (cm.bCnt || 0) + "대 출하"], [d.info && d.info.planned != null ? "출하 / 예정" : "출하", dn2 + (d.info && d.info.planned != null ? "/" + d.info.planned : ""), "대"]]));
   }
   // 요약 카드 2개
   var grid = el("div", "sgrid");
@@ -4485,10 +4487,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-24-26";
+var APP_VER = "2026-10-25-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-25-1", ["장비통계: 이번 달 팀별 출하 대수 표시"]],
   ["2026-10-24-26", ["알림 켜기 안내 문구 정리"]],
   ["2026-10-24-24", ["메뉴 · 공지 보내기 · 알림 · 작업자 · SITE · 완료 처리 창 새 디자인"]],
   ["2026-10-24-23", ["장비 검색 화면 새 디자인 (지금 · 다음 공정 · 공정 흐름)"]],
