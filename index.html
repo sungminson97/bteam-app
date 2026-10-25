@@ -45,6 +45,24 @@ li.run i{box-shadow:none;background:conic-gradient(#7aa6ff 0 30%,rgba(255,255,25
 li.ok{color:#dbe6ff}
 li.ok i{box-shadow:none;background:linear-gradient(140deg,#5b8cff,#8a6bff)}
 li.ok i::after{content:"";position:absolute;left:8px;top:5px;width:4px;height:8px;border-right:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(45deg)}
+.tk{list-style:none;margin:20px 0 0;padding:4px 16px;border-radius:18px;background:rgba(255,255,255,.06);text-align:left}
+.tk:empty{display:none}
+.tk li{display:flex;align-items:center;gap:12px;padding:12px 0;font-size:14px;font-weight:700;color:#6f7c93}
+.tk li+li{border-top:1px solid rgba(255,255,255,.07)}
+.tk li i{flex:none;position:relative;width:20px;height:20px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.16) inset}
+.tk li em{margin-left:auto;font-style:normal;font-size:11.5px;font-weight:800;white-space:nowrap}
+.tk li.run{color:#fff}
+.tk li.run i{box-shadow:none;background:conic-gradient(#7aa6ff 0 30%,rgba(255,255,255,.12) 30%);-webkit-mask:radial-gradient(closest-side,transparent 60%,#000 62%);mask:radial-gradient(closest-side,transparent 60%,#000 62%);animation:spin .9s linear infinite}
+.tk li.run em{color:#9fbaff}
+.tk li.ok{color:#cfdcff}
+.tk li.ok i{box-shadow:none;background:linear-gradient(140deg,#5b8cff,#8a6bff)}
+.tk li.ok i::after{content:"";position:absolute;left:7px;top:4px;width:4px;height:8px;border-right:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(45deg)}
+.tk li.ok em{color:#8ea6d8}
+.tk li.new{animation:pop .5s ease}
+@keyframes pop{0%{background:rgba(122,166,255,.18)}100%{background:transparent}}
+.bar{height:6px;margin:16px 4px 0;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,#5b8cff,#b9a4ff);transition:width 1s linear}
+.pc{margin-top:6px;font-size:12px;font-weight:800;color:#8ea6d8;font-variant-numeric:tabular-nums}
 .el{margin-top:14px;font-size:12px;color:#7f8ca3;font-variant-numeric:tabular-nums}
 </style>
 </head>
@@ -56,7 +74,9 @@ li.ok i::after{content:"";position:absolute;left:8px;top:5px;width:4px;height:8p
   <div class="s" id="sub">잠시만 기다려 주세요.
 업데이트가 끝나면 앱이 자동으로 다시 열려요.</div>
   <div class="pd" id="pd"></div>
-  <div class="cdw"><div class="cdh">업데이트 완료까지</div><div class="cdb" id="cd"></div></div>
+  <div class="cdw"><div class="cdh">업데이트 완료까지</div><div class="cdb" id="cd"></div>
+    <div class="bar"><i id="bar"></i></div><div class="pc" id="pc"></div>
+    <ul class="tk" id="tk"></ul></div>
   <ol id="st"><li><i></i>새 버전 확인 중</li><li><i></i>새 버전 받는 중</li><li><i></i>화면 적용 중</li></ol>
   <div class="el" id="el"></div>
 </div>
@@ -67,6 +87,8 @@ var APP_HISTORY = [];   // APP_HISTORY_END
 function $(i) { return document.getElementById(i); }
 function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
 var AT = 0, START = 0, done = false, t0 = 0, tries = 0;
+// 진행 항목: release.json 의 "tasks" (없으면 아래 기본) · 점검 시간에 맞춰 하나씩 완료로 바뀜
+var TASKS = ["새 버전 준비", "화면 디자인 업데이트", "기능 업데이트", "데이터 연결 점검", "최종 확인"], LASTK = -1;
 function P(x) { return x ? Date.parse(String(x).trim().replace(" ", "T") + ":00+09:00") : 0; }
 function when(a) { var k = new Date(a + 9 * 3600000); return (k.getUTCMonth() + 1) + "/" + k.getUTCDate() + "(" + "일월화수목금토".charAt(k.getUTCDay()) + ") " + ("0" + k.getUTCHours()).slice(-2) + ":" + ("0" + k.getUTCMinutes()).slice(-2); }
 function step(i, s) { var li = $("st").children[i]; if (li) li.className = s; }
@@ -75,6 +97,7 @@ function loadRel() {
   fetch(base() + "release.json?_=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
     if (!j) return;
     AT = P(j.at) || AT; START = P(j.start) || START;
+    if (j.tasks && j.tasks.length) { TASKS = j.tasks.map(String); LASTK = -1; }
     if (AT) $("pd").textContent = "🕐 " + when(START || AT) + (START && START < AT ? " ~ " + when(AT).slice(-5) : "");
   }).catch(function () {});
 }
@@ -87,11 +110,31 @@ function tick() {
     var put = function (v, l) { var e = el("b", null, ("0" + v).slice(-2)); e.appendChild(el("small", null, l)); b.appendChild(e); };
     if (h) { put(h, "시간"); b.appendChild(el("i", null, ":")); }
     put(m, "분"); b.appendChild(el("i", null, ":")); put(x, "초");
+    drawTasks();
     return;
   }
   if (!document.body.classList.contains("go")) { document.body.classList.add("go"); step(0, "run"); t0 = Date.now(); look(); }
   $("el").textContent = "확인 " + tries + "회 · " + Math.floor((Date.now() - t0) / 1000) + "초 지남";
   if (Date.now() - t0 > 15 * 60000) $("sub").textContent = "업데이트가 조금 늦어지고 있어요.\n끝나면 자동으로 열려요.";
+}
+// 진행 항목: 점검 시간을 항목 수만큼 나눠서, 지나간 칸은 "완료", 지금 칸은 "진행 중"
+function hm(a) { var k = new Date(a + 9 * 3600000); return ("0" + k.getUTCHours()).slice(-2) + ":" + ("0" + k.getUTCMinutes()).slice(-2); }
+function drawTasks() {
+  var st = START && START < AT ? START : 0; if (!st) { $("tk").innerHTML = ""; $("bar").style.width = "0"; $("pc").textContent = ""; return; }
+  var now = Date.now(), n = TASKS.length, span = (AT - st) / (n + 1);
+  var pct = Math.max(0, Math.min(100, (now - st) / (AT - st) * 100));
+  $("bar").style.width = pct.toFixed(1) + "%"; $("pc").textContent = Math.floor(pct) + "%";
+  var k = Math.min(n, Math.floor((now - st) / span));   // 끝난 항목 수
+  if (k === LASTK) return;
+  var first = LASTK < 0; LASTK = k;
+  var ul = $("tk"); ul.innerHTML = "";
+  TASKS.forEach(function (t, i) {
+    var li = el("li", i < k ? "ok" : i === k ? "run" : ""); li.appendChild(el("i"));
+    li.appendChild(document.createTextNode(t));
+    li.appendChild(el("em", null, i < k ? hm(st + span * (i + 1)) + " 완료" : i === k ? "진행 중…" : "대기"));
+    if (!first && i === k - 1) li.className += " new";
+    ul.appendChild(li);
+  });
 }
 // 점검 끝 → 이 자리(index.html)에 새 버전이 올라왔는지 10초마다 확인
 function look() {
