@@ -1,12 +1,16 @@
-# ⏰ 예약 배포: index_next.html 을 정해진 시각에 index.html 로 바꿔 줌
+# ⏰ 예약 배포: 정해진 시각에 "○○_next.html" 을 "○○.html" 로 바꿔 줌
+#   index_next.html    → index.html     (팀원 본앱)
+#   test_next.html     → test.html      (테스트 앱)
+#   autotest_next.html → autotest.html  (예약 기능 시험용 · 앱과 상관없음)
+#   올려 둔 파일만 바꾸고, 없는 건 그냥 넘어감
 # 시각은 UTC 기준 (한국 시간 - 9시간)
-#   한국 2026-10-26(월) 11:50  →  UTC 2026-10-26 02:50  →  cron: "50 2 26 10 *"
-# ⚠️ GitHub 예약 실행은 몇 분~20분 정도 늦게 돌 수 있어요.
-name: 예약 배포 (index_next → index)
+#   한국 2026-10-25(일) 13:20  →  UTC 04:20  →  cron: "20 4 25 10 *"
+# ⚠️ GitHub 예약 실행은 몇 분~30분 정도 늦게 돌 수 있어요.
+name: 예약 배포 (○○_next → ○○)
 
 on:
   schedule:
-    - cron: "50 2 26 10 *"
+        - cron: "30 4 25 10 *"
   workflow_dispatch:   # Actions 화면에서 [Run workflow]로 바로 실행도 가능
 
 permissions:
@@ -18,15 +22,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: index_next.html 이 있으면 index.html 로 교체
+      - name: ○○_next.html 이 있으면 ○○.html 로 교체
         run: |
-          if [ ! -f index_next.html ]; then
-            echo "index_next.html 없음 → 할 일 없음"
+          changed=""
+          for n in index test autotest; do
+            if [ -f "${n}_next.html" ]; then
+              mv -f "${n}_next.html" "${n}.html"
+              changed="$changed ${n}.html"
+            fi
+          done
+          if [ -z "$changed" ]; then
+            echo "바꿀 파일 없음 → 할 일 없음"
             exit 0
           fi
-          mv -f index_next.html index.html
           git config user.name "scheduled-release"
           git config user.email "actions@users.noreply.github.com"
           git add -A
-          git commit -m "예약 배포: index.html 교체 ($(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M') KST)"
+          git commit -m "예약 배포:$changed 교체 ($(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M') KST)"
           git push
