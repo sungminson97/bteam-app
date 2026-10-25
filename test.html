@@ -1380,6 +1380,48 @@ body.kb #tabbar{transform:translateY(140%)}
 /* 💬 위에서 내려오는 알림 */
 #toast{border-radius:18px;padding:13px 18px;font-size:14.5px;font-weight:800;letter-spacing:-.01em;background:color-mix(in srgb,var(--ok) 92%,#000);box-shadow:0 14px 34px -12px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.12) inset;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 #toast.bad{background:color-mix(in srgb,var(--warn) 92%,#000)}
+/* 🛠 예약 업데이트: 위쪽 안내 띠 + 업데이트 중 화면 (앱 사용 막음) */
+#relbar{display:none;align-items:center;gap:10px;margin-top:10px;padding:10px 14px;border-radius:16px;color:#fff;background:linear-gradient(120deg,#1f2a44,#2f3f6b);box-shadow:0 10px 22px -16px rgba(20,30,60,.9);font-size:13px;font-weight:700;line-height:1.45}
+#relbar.on{display:flex}
+#relbar i{flex:none;width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.14);font-style:normal;font-size:15px}
+#relbar b{font-weight:900}
+#relbar small{display:block;font-size:11.5px;font-weight:600;opacity:.75}
+#relbar .cd{margin-left:auto;flex:none;font-size:12px;font-weight:900;padding:4px 10px;border-radius:999px;background:var(--grd);font-variant-numeric:tabular-nums}
+#rlov{position:fixed;inset:0;z-index:190;display:none;align-items:center;justify-content:center;padding:24px;color:#fff;background:radial-gradient(120% 90% at 50% 0%,#24307a 0%,#0b1220 58%,#05080f 100%)}
+#rlov.on{display:flex;animation:rlIn .4s ease both}
+@keyframes rlIn{from{opacity:0}to{opacity:1}}
+#rlov .in{width:100%;max-width:340px;text-align:center}
+#rlov .lg img{height:20px;opacity:.85}
+#rlov .orb{position:relative;width:118px;height:118px;margin:30px auto 22px}
+#rlov .orb::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 55%,#7aa6ff 75%,#b9a4ff 92%,transparent 100%);-webkit-mask:radial-gradient(closest-side,transparent 82%,#000 84%);mask:radial-gradient(closest-side,transparent 82%,#000 84%);animation:rlSpin 1.2s linear infinite}
+#rlov .orb::after{content:"";position:absolute;inset:18px;border-radius:50%;background:radial-gradient(circle,rgba(122,166,255,.35),rgba(122,166,255,0) 70%);animation:uppulse 1.8s ease-in-out infinite}
+#rlov .orb span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;letter-spacing:.12em;color:#cfdcff}
+@keyframes rlSpin{to{transform:rotate(360deg)}}
+#rlov .t{font-size:22px;font-weight:900;letter-spacing:-.02em}
+#rlov .s{margin-top:8px;font-size:13.5px;line-height:1.6;color:#aab8d0;word-break:keep-all;white-space:pre-line}
+#rlov ol{list-style:none;margin:22px 0 0;padding:6px 16px;border-radius:18px;background:rgba(255,255,255,.06);text-align:left}
+#rlov li{display:flex;align-items:center;gap:12px;padding:13px 0;font-size:14.5px;font-weight:700;color:#7f8ca3;border:0;margin:0}
+#rlov li+li{border-top:1px solid rgba(255,255,255,.07)}
+#rlov li i{flex:none;position:relative;width:22px;height:22px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.18) inset}
+#rlov li.run{color:#fff}
+#rlov li.run i{box-shadow:none;background:conic-gradient(#7aa6ff 0 30%,rgba(255,255,255,.12) 30%);-webkit-mask:radial-gradient(closest-side,transparent 62%,#000 64%);mask:radial-gradient(closest-side,transparent 62%,#000 64%);animation:rlSpin .9s linear infinite}
+#rlov li.ok{color:#dbe6ff}
+#rlov li.ok i{box-shadow:none;background:linear-gradient(140deg,#5b8cff,#8a6bff)}
+#rlov li.ok i::after{content:"";position:absolute;left:8px;top:5px;width:4px;height:8px;border-right:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(45deg)}
+#rlov li em{margin-left:auto;font-style:normal;font-size:12px;font-weight:800;color:#8ea6d8}
+#rlov .el{margin-top:14px;font-size:12px;color:#7f8ca3;font-variant-numeric:tabular-nums}
+#rlov .esc{display:none;width:100%;margin-top:16px;height:48px;border:0;border-radius:15px;background:rgba(255,255,255,.1);color:#fff;font-size:14.5px;font-weight:800;font-family:inherit}
+#rlov .esc.on{display:block}
+#rlov .pd{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12.5px;font-weight:800;color:#cfdcff}
+#rlov .cdh{margin-top:20px;font-size:12.5px;font-weight:800;color:#8ea6d8;letter-spacing:.04em}
+#rlov .cdb{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px}
+#rlov .cdb b{min-width:52px;padding:10px 0;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));box-shadow:0 0 0 1px rgba(255,255,255,.12) inset;font-size:30px;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+#rlov .cdb i{font-style:normal;font-size:24px;font-weight:900;color:#7aa6ff;animation:uppulse 1s ease-in-out infinite}
+#rlov .cdb small{display:block;font-size:10px;font-weight:700;color:#8ea6d8;margin-top:2px}
+#rlov .cdw{display:none}
+#rlov.wait .cdw{display:block}
+#rlov.wait #rlsteps,#rlov.wait .el{display:none}
+
 </style>
 </head>
 <body>
@@ -1402,6 +1444,19 @@ body.kb #tabbar{transform:translateY(140%)}
   </div>
 </div>
 <!-- 🚀 업데이트 화면 (#app 밖: PIN 화면 위에도 뜨게) -->
+<div id="rlov" aria-live="polite">
+  <div class="in">
+    <div class="lg"><picture><source srcset="logo_dark.png" media="(prefers-color-scheme: dark)"><img src="logo_dark.png" alt="" onerror="this.style.display='none'"></picture></div>
+    <div class="orb"><span>1-B</span></div>
+    <div class="t" id="rlttl">Claude 자동 업데이트 중</div>
+    <div class="s" id="rlsub">잠시만 기다려 주세요.
+업데이트가 끝나면 앱이 자동으로 다시 열려요.</div>
+    <div class="pd" id="rlpd"></div>
+    <div class="cdw"><div class="cdh">업데이트 완료까지</div><div class="cdb" id="rlcd"></div></div>
+    <ol id="rlsteps"><li><i></i>새 버전 확인 중<em></em></li><li><i></i>새 버전 받는 중<em></em></li><li><i></i>화면 적용 중<em></em></li></ol>
+    <div class="el" id="rlel"></div>
+  </div>
+</div>
 <div id="upov" aria-live="polite">
   <div class="upin">
     <div class="uplogo"><picture><source srcset="logo_dark.png" media="(prefers-color-scheme: dark)"><img src="logo_dark.png" alt="" onerror="this.style.display='none'"></picture></div>
@@ -1455,6 +1510,7 @@ body.kb #tabbar{transform:translateY(140%)}
       <button class="ref" id="ref" type="button" aria-label="새로고침"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v4.5h-4.5"/></svg><span>새로고침</span></button>
     </div>
   </div>
+  <div id="relbar"></div>
   <div id="pushbar" class="pushbar" style="display:none"></div>
   <div id="sbar" class="sbar" style="display:none">
     <input id="sq" type="search" inputmode="text" enterkeyhint="search" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="장비명·담당자·업체 (예: 373, 손성민)">
@@ -4487,10 +4543,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-25-1";
+var APP_VER = "2026-10-25-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-25-2", ["예약 업데이트: 정해진 시각에 자동으로 업데이트 (Claude 자동 업데이트)"]],
   ["2026-10-25-1", ["장비통계: 이번 달 팀별 출하 대수 표시"]],
   ["2026-10-24-26", ["알림 켜기 안내 문구 정리"]],
   ["2026-10-24-24", ["메뉴 · 공지 보내기 · 알림 · 작업자 · SITE · 완료 처리 창 새 디자인"]],
@@ -4604,6 +4661,98 @@ function showUpdated(from) {
   $("upok").onclick = function () { splashReplay(); o.className = ""; };   // 🎬 확인 → 시작 화면 → 앱
 }
 
+/* ---------- 🛠 예약 업데이트 (Claude 자동 업데이트) ----------
+ * GitHub 저장소에 release.json({"at":"2026-10-26 11:30"}) + index_next.html 이 있으면 "예약 걸림"
+ *  · 예약 전: 위쪽에 "업데이트 예정 · 남은 시간" 띠
+ *  · 예약 시각부터: 앱 사용을 막고 "Claude 자동 업데이트 중" 화면 → 새 버전이 올라오면 단계별로 진행 → 다시 열림 → 업데이트 완료
+ * 서버(Apps Script) 요청 없음 · GitHub의 작은 파일만 확인 (앱 열 때 · 다시 켤 때, 1분에 한 번)
+ */
+var REL = { at: 0, last: 0, timer: null, tick: null, poll: null, t0: 0, done: false };
+var REL_ME = (location.pathname.split("/").pop() || "index.html").replace(/\.html$/, "");   // index 또는 test
+function relCheck() {
+  if (REL.done || Date.now() - REL.last < 60000) return;
+  REL.last = Date.now();
+  var base = location.pathname.replace(/[^\/]*$/, "");
+  fetch(base + "release.json?_=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+    var P = function (x) { return x ? Date.parse(String(x).trim().replace(" ", "T") + ":00+09:00") : 0; };
+    var at = j && P(j.at);
+    if (!at || isNaN(at)) { relClear(); return; }
+    var st = P(j.start); REL.start = (st && !isNaN(st) && st < at) ? st : at;   // 점검 시작 (없으면 업데이트 시각부터)
+    if (sget("relDone") === String(at)) { relClear(); return; }   // 이 예약으로 이미 업데이트함
+    return fetch(base + REL_ME + "_next.html?_=" + Date.now(), { method: "HEAD", cache: "no-store" }).then(function (h) {
+      if (!h.ok) { if (Date.now() >= at && REL.at === at) return; relClear(); return; }   // 내 앱은 예약 없음 (예약 시각 뒤엔 파일이 바뀌는 중일 수 있어 유지)
+      relSet(at);
+    });
+  }).catch(function () {});
+}
+function relClear() { REL.at = 0; clearTimeout(REL.timer); clearInterval(REL.tick); $("relbar").className = ""; }
+function relWhen(at) { var d = new Date(at), k = new Date(at + 9 * 3600000); return (k.getUTCMonth() + 1) + "/" + k.getUTCDate() + "(" + "일월화수목금토".charAt(k.getUTCDay()) + ") " + ("0" + k.getUTCHours()).slice(-2) + ":" + ("0" + k.getUTCMinutes()).slice(-2); }
+function relLeft(ms) { var m = Math.max(0, Math.ceil(ms / 60000)); return m >= 60 ? Math.floor(m / 60) + "시간 " + (m % 60 ? m % 60 + "분 " : "") + "남음" : m + "분 남음"; }
+function relSet(at) {
+  REL.at = at;
+  if (Date.now() >= REL.start) { relLock(); return; }
+  var b = $("relbar");
+  function draw() {
+    var left = REL.start - Date.now();
+    if (left <= 0) { relLock(); return; }
+    b.innerHTML = "";
+    b.appendChild(el("i", null, "🛠"));
+    var tx = el("div"); tx.appendChild(el("b", null, "Claude 자동 업데이트 예정 · " + relWhen(REL.start) + (REL.start < at ? " ~ " + relWhen(at).slice(-5) : "")));
+    tx.appendChild(el("small", null, REL.start < at ? "이 시간 동안은 앱을 쓸 수 없어요" : "업데이트하는 1~3분 동안은 앱을 쓸 수 없어요")); b.appendChild(tx);
+    b.appendChild(el("span", "cd", relLeft(left)));
+    b.className = "on";
+  }
+  draw();
+  clearInterval(REL.tick); REL.tick = setInterval(draw, 20000);
+  clearTimeout(REL.timer); REL.timer = setTimeout(relLock, Math.min(REL.start - Date.now() + 500, 2147483000));
+}
+function relStep(i, state, note) {
+  var li = $("rlsteps").children[i]; if (!li) return;
+  li.className = state; var em = li.querySelector("em"); if (em) em.textContent = note || "";
+}
+function relLock() {
+  if (REL.done || $("rlov").className.indexOf("on") === 0) return;
+  clearInterval(REL.tick); $("relbar").className = "";
+  $("rlpd").textContent = "🕐 " + relWhen(REL.start) + (REL.start < REL.at ? " ~ " + relWhen(REL.at).slice(-5) : "");
+  relStep(0, "run"); relStep(1, ""); relStep(2, "");
+  // ⏳ 점검 시간: 업데이트 시각까지 카운트다운 (앱 사용 막음)
+  if (Date.now() < REL.at) {
+    $("rlov").className = "on wait";
+    var cd = function () {
+      var s = Math.max(0, Math.ceil((REL.at - Date.now()) / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+      var box = $("rlcd"); box.innerHTML = "";
+      var put = function (v, l) { var b = el("b", null, ("0" + v).slice(-2)); b.appendChild(el("small", null, l)); box.appendChild(b); };
+      if (h) { put(h, "시간"); box.appendChild(el("i", null, ":")); }
+      put(m, "분"); box.appendChild(el("i", null, ":")); put(x, "초");
+      if (s <= 0) { clearInterval(REL.cdt); $("rlov").className = "on"; REL.t0 = Date.now(); look(); }
+    };
+    clearInterval(REL.cdt); REL.cdt = setInterval(cd, 1000); cd();
+  } else { $("rlov").className = "on"; }
+  REL.t0 = Date.now();
+  var tries = 0;
+  clearInterval(REL.elt); REL.elt = setInterval(function () { if (!REL.done) $("rlel").textContent = "확인 " + tries + "회 · " + Math.floor((Date.now() - REL.t0) / 1000) + "초 지남"; }, 1000);
+  function look() {
+    tries++;
+    $("rlel").textContent = "확인 " + tries + "회 · " + Math.floor((Date.now() - REL.t0) / 1000) + "초 지남";
+    if (Date.now() - REL.t0 > 15 * 60000) $("rlsub").textContent = "업데이트가 조금 늦어지고 있어요.\n끝나면 자동으로 열려요.";   // 🔒 끝날 때까지 앱 사용 못 함 (빠져나가는 버튼 없음)
+    fetch(location.pathname + "?_=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (t) {
+      var m = t.match(/var APP_VER = "([^"]+)"/);
+      if (!m || m[1] === APP_VER) { REL.poll = setTimeout(look, 10000); return; }
+      // ✅ 새 버전 올라옴 → 단계 진행 → 다시 열기 (열리면 '업데이트 완료!' 화면)
+      clearTimeout(REL.poll); REL.done = true;
+      relStep(0, "ok", "v" + m[1].slice(5).replace("-", "."));
+      relStep(1, "run");
+      setTimeout(function () { relStep(1, "ok"); relStep(2, "run"); }, 900);
+      setTimeout(function () { relStep(2, "ok"); $("rlttl").textContent = "업데이트 완료"; $("rlsub").textContent = "새 버전으로 다시 열고 있어요…"; }, 1800);
+      setTimeout(function () {
+        try { sset("relDone", String(REL.at)); sset("updFrom", APP_VER); } catch (e) {}
+        location.replace(location.pathname + "?v=" + encodeURIComponent(m[1]));
+      }, 2600);
+    }).catch(function () { REL.poll = setTimeout(look, 10000); });
+  }
+  if (Date.now() >= REL.at) look();
+}
+
 function checkUpdate() {
   if (UPD.busy || Date.now() - UPD.last < 60000) return;   // 1분에 한 번만
   if (H.busy || $("epov").className.indexOf("on") >= 0 || $("cfov").className.indexOf("on") >= 0) return;   // 저장·입력 중엔 건너뜀
@@ -4645,7 +4794,7 @@ function refreshIfStale() {
   if (dayChanged) toast("📅 날짜가 바뀌어서 오늘 기준으로 새로 불러왔어요");
 }
 
-function onResume() { checkUpdate(); refreshIfStale(); try { adminUI(); } catch (e) {} try { pushBar(); } catch (e2) {} }
+function onResume() { checkUpdate(); try { relCheck(); } catch (eR) {} refreshIfStale(); try { adminUI(); } catch (e) {} try { pushBar(); } catch (e2) {} }
 document.addEventListener("visibilitychange", function () { if (!document.hidden) onResume(); });
 window.addEventListener("pageshow", function (e) { if (e.persisted) onResume(); });
 window.addEventListener("focus", onResume);
@@ -6009,6 +6158,7 @@ function boot() {
   }
   updDone();     // ✨ 방금 업데이트됐으면 완료 알림
   checkUpdate();
+  try { relCheck(); } catch (eR) {}   // 🛠 예약 업데이트 확인
   try { pushInit(); } catch (ep) {}
   try { adminUI(); } catch (ea) {}   // 🔑 관리자 모드면 제목 빨강
   setTimeout(nameAsk, 300);   // 👤 이름 고르기가 제일 먼저
