@@ -1,42 +1,64 @@
-# ⏰ 예약 배포: 정해진 시각에 "○○_next.html" 을 "○○.html" 로 바꿔 줌
-#   index_next.html    → index.html     (팀원 본앱)
-#   test_next.html     → test.html      (테스트 앱)
-#   autotest_next.html → autotest.html  (예약 기능 시험용 · 앱과 상관없음)
-#   올려 둔 파일만 바꾸고, 없는 건 그냥 넘어감
-# 시각은 UTC 기준 (한국 시간 - 9시간)
-#   한국 2026-10-25(일) 13:30  →  UTC 04:30  →  cron: "30 4 25 10 *"
-# ⚠️ GitHub 예약 실행은 몇 분~30분 정도 늦게 돌 수 있어요.
-name: 예약 배포 (○○_next → ○○)
+# 🛠 Claude 자동 업데이트 (예약 배포)
+#  release.json 의 "at" 시각(한국 시간)에 맞춰 ○○_next.html → ○○.html 로 바꿔 줌
+#    index_next.html → index.html (본앱) · test_next.html → test.html (테스트 앱) · autotest_next.html → autotest.html (시험용)
+#  · 파일을 올리는 순간 이 작업이 시작돼서, 그 시각까지 기다렸다가 정확히 바꿈 (최대 5시간 반 전부터 기다림)
+#  · 그보다 먼 예약은 매시간 다시 확인하다가 5시간 반 안으로 들어오면 기다림
+#  · 취소: 예약 시각 전에 ○○_next.html 을 지우면 아무 일도 안 일어남
+#  · release.json 이 없으면 자동으로는 안 바꿈 → Actions 에서 [Run workflow] 누르면 바로 바꿈
+name: Claude 자동 업데이트
 
 on:
+  push:
+    paths: ["index_next.html", "test_next.html", "autotest_next.html", "release.json"]
   schedule:
-    - cron: "30 4 25 10 *"
-  workflow_dispatch:   # Actions 화면에서 [Run workflow]로 바로 실행
+    - cron: "7 * * * *"
+  workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: scheduled-release
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
 
-      - name: ○○_next.html 이 있으면 ○○.html 로 교체
+      - name: 예약 시각까지 기다렸다가 교체
+        env:
+          EVENT: ${{ github.event_name }}
         run: |
-          changed=""
-          for n in index test autotest; do
-            if [ -f "${n}_next.html" ]; then
-              mv -f "${n}_next.html" "${n}.html"
-              changed="$changed ${n}.html"
-            fi
-          done
-          if [ -z "$changed" ]; then
-            echo "바꿀 파일 없음 → 할 일 없음"
-            exit 0
+          next_files() { for n in index test autotest; do [ -f "${n}_next.html" ] && echo "$n"; done; }
+          read_at() { [ -f release.json ] && jq -r '.at // empty' release.json 2>/dev/null || true; }
+
+          if [ -z "$(next_files)" ]; then echo "바꿀 파일 없음 → 끝"; exit 0; fi
+          AT="$(read_at)"
+          if [ -z "$AT" ]; then
+            if [ "$EVENT" != "workflow_dispatch" ]; then echo "release.json(예약 시각) 없음 → 자동으로는 안 바꿈"; exit 0; fi
+            echo "손으로 실행 → 바로 바꿈"
+          else
+            T=$(TZ=Asia/Seoul date -d "$AT" +%s) || { echo "release.json 시각 형식이 틀렸어요: $AT (예: 2026-10-26 11:30)"; exit 1; }
+            W=$(( T - $(date +%s) ))
+            if [ "$EVENT" = "workflow_dispatch" ]; then W=0; echo "손으로 실행 → 기다리지 않고 바로 바꿈"; fi
+            if [ $W -gt 19800 ]; then echo "예약까지 ${W}초 (5시간 반 넘음) → 나중에 다시 확인"; exit 0; fi
+            if [ $W -gt 0 ]; then echo "예약 $AT (KST) 까지 ${W}초 기다림"; sleep $W; fi
           fi
-          git config user.name "scheduled-release"
+
+          # 기다리는 동안 취소·변경됐는지 다시 확인
+          git fetch -q origin "${GITHUB_REF_NAME}" && git reset -q --hard "origin/${GITHUB_REF_NAME}"
+          if [ -z "$(next_files)" ]; then echo "그 사이 취소됨 (○○_next.html 없음) → 끝"; exit 0; fi
+          if [ -n "$AT" ] && [ "$EVENT" != "workflow_dispatch" ] && [ "$(read_at)" != "$AT" ]; then echo "그 사이 예약 시각이 바뀜 → 새 시각으로 다시 시작된 작업이 처리"; exit 0; fi
+
+          changed=""
+          for n in $(next_files); do mv -f "${n}_next.html" "${n}.html"; changed="$changed ${n}.html"; done
+          rm -f release.json
+          git config user.name "Claude 자동 업데이트"
           git config user.email "actions@users.noreply.github.com"
           git add -A
-          git commit -m "예약 배포:$changed 교체 ($(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M') KST)"
-          git push
+          git commit -q -m "Claude 자동 업데이트:$changed 교체 ($(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M') KST)"
+          for i in 1 2 3; do git push -q origin "HEAD:${GITHUB_REF_NAME}" && break; git pull -q --rebase origin "${GITHUB_REF_NAME}"; done
+          echo "완료:$changed"
