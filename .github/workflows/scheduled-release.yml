@@ -10,8 +10,7 @@ name: 예약 배포 (○○_next → ○○)
 
 on:
   schedule:
-        - cron: "30 4 25 10 *"
-  workflow_dispatch:   # Actions 화면에서 [Run workflow]로 바로 실행도 가능
+    - cron: "30 4 25 10 *"
 
 permissions:
   contents: write
