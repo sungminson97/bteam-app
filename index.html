@@ -4544,10 +4544,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-25-5";
+var APP_VER = "2026-10-25-6";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-25-6", ["업데이트 후 [확인] → 시작화면에서 최신 정보를 다 받은 뒤 열려요"]],
   ["2026-10-25-5", ["Claude 자동 업데이트로 점검 후 업데이트됐어요"]],
   ["2026-10-25-4", ["업데이트 화면 정리 (로고 가운데 · 제목 또렷하게)"]],
   ["2026-10-25-2", ["예약 업데이트: 정해진 시각에 자동으로 업데이트 (Claude 자동 업데이트)"]],
@@ -6145,7 +6146,21 @@ function splashReplay() {
   var n = s.cloneNode(true);   // 복제해서 바꿔 끼우면 애니메이션이 처음부터 다시 재생됨
   n.className = ""; n.style.display = "";
   s.parentNode.replaceChild(n, s);
-  setTimeout(function () { n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450); }, SPL_MIN);
+  // ⏳ 애니메이션 끝(SPL_MIN) + 최신 금일/명일을 다 받은 뒤에 닫힘 · 못 받으면 계속 시작화면 (최대 20초)
+  var t0 = Date.now(), w = n.querySelector("#splwait");
+  if (w) w.className = "wt";
+  if (!R.dash && Date.now() - LAST.t > 60000 && getPin()) { try { loadDash(false); } catch (e) {} }   // 받아 둔 게 1분 넘었으면 지금 새로 받음
+  (function wait() {
+    var el2 = Date.now() - t0, fresh = !R.dash && LAST.t > 0 && Date.now() - LAST.t < 5 * 60000;
+    if (el2 > 2500 && !fresh && w) w.className = "wt on";
+    if ((el2 >= SPL_MIN && fresh) || el2 > 20000) {
+      n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450);
+      try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5][cur]] || "main")); tabInd(); } catch (eA) {}
+      if (!fresh) toast("⚠️ 최신 정보를 아직 못 받았어요\n잠시 후 새로고침해 주세요", true);
+      return;
+    }
+    setTimeout(wait, 200);
+  })();
 }
 
 function boot() {
