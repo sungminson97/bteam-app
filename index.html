@@ -3498,6 +3498,8 @@ function animIn(sec) {
   if (!sec) return;
   try { if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; } catch (e) {}
   sec.classList.remove("ani"); void sec.offsetWidth; sec.classList.add("ani");
+  var stamp = sec._aS = Date.now();
+  setTimeout(function () { if (sec._aS === stamp && sec.id !== "main") sec.classList.remove("ani"); }, 1500);   // 다 움직인 뒤엔 꺼 둠 → 나중에 다시 그려도 안 움직임
   [].forEach.call(sec.querySelectorAll(".hx .bg, .hx .tl b, #leave .ring .big>i, .sumc .cn b"), countUp);
   [].forEach.call(sec.querySelectorAll("#stats .mc"), function (m, i) { [].forEach.call(m.querySelectorAll(".bars b"), function (b) { b.style.setProperty("--i", i); }); });
   [].forEach.call(sec.querySelectorAll("#leave .ring .pg"), function (c) {   // 원이 0부터 채워짐
@@ -3506,9 +3508,9 @@ function animIn(sec) {
   });
 }
 function maybeAnim(id, n) {
-  if (cur !== n || ANI.done[n] || Date.now() - ANI.t > 3000) return;   // 탭 바꾼 뒤 3초 안에 처음 그릴 때만
-  if (!$(id).querySelector(".hx, .card")) return;   // "불러오는 중"일 땐 아직
-  ANI.done[n] = true; animIn($(id));
+  if (cur !== n || ANI.done[n] || Date.now() - ANI.t > 3000) return false;   // 탭 바꾼 뒤 3초 안에 처음 그릴 때만
+  if (!$(id).querySelector(".hx, .card")) return false;   // "불러오는 중"일 땐 아직
+  ANI.done[n] = true; animIn($(id)); return true;
 }
 function openMore() {
   var g = $("moreg"); g.innerHTML = "";
@@ -3526,7 +3528,7 @@ $("tmore").onclick = openMore;
   var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3]];
   W.forEach(function (w) {
     var f = window[w[0]]; if (typeof f !== "function") return;
-    window[w[0]] = function () { var r = f.apply(this, arguments); try { maybeAnim(w[1], w[2]); } catch (e) {} return r; };
+    window[w[0]] = function () { var r = f.apply(this, arguments); try { if (!maybeAnim(w[1], w[2])) $(w[1]).classList.remove("ani"); } catch (e) {} return r; };   // 새 데이터로 다시 그린 거면 안 움직임 (두 번 움직이는 것 방지)
   });
 })();
 $("moreov").onclick = function (e) { if (e.target === this) this.className = "ov"; };
@@ -4544,10 +4546,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-25-6";
+var APP_VER = "2026-10-25-7";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-25-7", ["시작화면: 최신 정보를 빨리 받아도 애니메이션을 끝까지 다 보고 넘어가요", "탭을 누를 때 화면이 두 번 움직이던 것(새로고침되는 느낌) 고쳤어요"]],
   ["2026-10-25-6", ["업데이트 후 [확인] → 시작화면에서 최신 정보를 다 받은 뒤 열려요"]],
   ["2026-10-25-5", ["Claude 자동 업데이트로 점검 후 업데이트됐어요"]],
   ["2026-10-25-4", ["업데이트 화면 정리 (로고 가운데 · 제목 또렷하게)"]],
@@ -6128,16 +6131,49 @@ function persistAsk() {
 }
 
 /* 🎬 시작 화면 닫기: 최소 4.4초는 보여주고(웨이퍼 한 바퀴 + 1-B 빛까지), 최신 데이터가 오면 닫음 · 늦어도 8초면 닫고 저장해 둔 화면 + "갱신 중" */
-var SPL = { t0: Date.now(), done: false };
+var SPL = { t0: Date.now(), done: false, vt: 0, hid: !!document.hidden, shut: false };
+// ⏱ 시작 화면이 "실제로 화면에 보이기 시작한" 시각 (폰이 첫 화면을 그리기까지 걸린 시간은 빼고 셈)
+(function () {
+  function f() { if (document.hidden) { requestAnimationFrame(f); return; } if (!SPL.vt) SPL.vt = Date.now(); }
+  try { requestAnimationFrame(function () { requestAnimationFrame(f); }); } catch (e) { SPL.vt = Date.now(); }
+})();
+// 📵 시작 화면이 도는 중에 앱이 가려졌다가(알림 눌러 켜기·앱 전환) 다시 보이면 → 애니메이션을 처음부터 다시
+document.addEventListener("visibilitychange", function () {
+  if (SPL.shut) return;
+  if (document.hidden) { SPL.hid = true; return; }
+  if (!SPL.hid) return;
+  SPL.hid = false;
+  var s = document.getElementById("splash"); if (!s) return;
+  var n = s.cloneNode(true); n.className = ""; n.style.display = "";
+  var w0 = s.querySelector("#splwait"), w1 = n.querySelector("#splwait"); if (w0 && w1) w1.className = w0.className;
+  s.parentNode.replaceChild(n, s);
+  SPL.vt = 0; requestAnimationFrame(function () { requestAnimationFrame(function () { SPL.vt = Date.now(); }); });
+});
+// 🎬 시작 화면 애니메이션이 실제로 돈 시간 (ms) — 웨이퍼 회전의 진짜 재생 시간과 화면에 보인 시간 중 작은 쪽
+function splEl(node, t0) {
+  var v = t0 ? Date.now() - t0 : 0, a = 1e9;
+  try {
+    var sp = node && node.querySelector(".spin"), an = sp && sp.getAnimations ? sp.getAnimations() : [];
+    for (var i = 0; i < an.length; i++) if (an[i].animationName === "sxSpin" && an[i].currentTime != null) a = an[i].currentTime;
+  } catch (e) {}
+  return Math.min(v, a);
+}
 var SPL_MIN = 4400;   // 🎬 웨이퍼 한 바퀴(3.4초) + 1-B 위로 빛이 끝까지 지나가는 것(4.3초)까지 보고 닫힘
 function splashHide(now) {
   if (SPL.done) return;
   SPL.done = true;
   var s = document.getElementById("splash");
   if (!s) return;
-  if (now) { s.className = "out"; s.style.display = "none"; return; }   // 바로 숨김 (설치 안내 · 처음 시작)
-  var wait = Math.max(0, SPL_MIN - (Date.now() - SPL.t0));   // 갱신이 빨리 끝나도 애니메이션은 끝까지(3.5초) 보여줌
-  setTimeout(function () { s.className = "out"; try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5][cur]] || "main")); tabInd(); }, 120); } catch (eA) {} setTimeout(function () { s.style.display = "none"; }, 450); }, wait);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
+  if (now) { SPL.shut = true; s.className = "out"; s.style.display = "none"; return; }   // 바로 숨김 (설치 안내 · 처음 시작)
+  // 갱신이 빨리 끝나도 애니메이션은 끝까지(4.4초) 화면에서 다 돈 다음에 닫힘 · 앱이 가려져 있으면 보일 때까지 기다림
+  (function wait() {
+    var n = document.getElementById("splash");
+    if (document.hidden || !SPL.vt || splEl(n, SPL.vt) < SPL_MIN) { setTimeout(wait, 100); return; }
+    SPL.shut = true;
+    n.className = "out";
+    try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5][cur]] || "main")); tabInd(); }, 120); } catch (eA) {}
+    setTimeout(function () { n.style.display = "none"; }, 450);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
+  })();
 }
 // 🎬 업데이트 완료 [확인] → 시작 화면 애니메이션을 한 번 보여주고 앱으로 (데이터는 이미 받아 둔 상태)
 function splashReplay() {
@@ -6147,13 +6183,15 @@ function splashReplay() {
   n.className = ""; n.style.display = "";
   s.parentNode.replaceChild(n, s);
   // ⏳ 애니메이션 끝(SPL_MIN) + 최신 금일/명일을 다 받은 뒤에 닫힘 · 못 받으면 계속 시작화면 (최대 20초)
+  SPL.shut = true;   // 처음 시작 화면은 이미 끝난 상태 (가려졌다 돌아와도 다시 안 바꿔 끼움)
   var t0 = Date.now(), w = n.querySelector("#splwait");
   if (w) w.className = "wt";
   if (!R.dash && Date.now() - LAST.t > 60000 && getPin()) { try { loadDash(false); } catch (e) {} }   // 받아 둔 게 1분 넘었으면 지금 새로 받음
   (function wait() {
     var el2 = Date.now() - t0, fresh = !R.dash && LAST.t > 0 && Date.now() - LAST.t < 5 * 60000;
     if (el2 > 2500 && !fresh && w) w.className = "wt on";
-    if ((el2 >= SPL_MIN && fresh) || el2 > 20000) {
+    if (document.hidden) { t0 = Date.now() - Math.min(el2, 2400); setTimeout(wait, 200); return; }   // 가려져 있는 동안은 시간 안 셈
+    if ((splEl(n, t0) >= SPL_MIN && fresh) || el2 > 20000) {
       n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450);
       try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5][cur]] || "main")); tabInd(); } catch (eA) {}
       if (!fresh) toast("⚠️ 최신 정보를 아직 못 받았어요\n잠시 후 새로고침해 주세요", true);
