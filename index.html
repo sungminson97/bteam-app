@@ -1197,6 +1197,12 @@ body.kb #tabbar{transform:translateY(140%)}
 #moreov .box{padding:22px 18px calc(22px + env(safe-area-inset-bottom));border-radius:26px 26px 0 0;gap:16px;position:relative}
 #moreov .box::before{content:"";position:absolute;left:50%;top:8px;width:38px;height:5px;margin-left:-19px;border-radius:5px;background:var(--line)}
 #moreov h3{margin:4px 0 0;font-size:19px;font-weight:900;letter-spacing:-.02em}
+#moreov .mh{display:flex;align-items:center;justify-content:space-between}
+#moreov .mx{width:36px;height:36px;margin:2px -4px 0 0;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--sub);transition:transform .12s}
+#moreov .mx:active{transform:scale(.88)}
+#moreov .mc{width:100%;height:52px;margin:0;padding:0;display:flex;align-items:center;justify-content:center;line-height:1;border:0;border-radius:16px;background:var(--bg);color:var(--text);font-size:15.5px;font-weight:800;font-family:inherit;transition:transform .12s}
+#moreov .mc:active{transform:scale(.98)}
+#moreov .box.drag{transition:none!important;animation:none!important}
 #moreov .mg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 #moreov .mg button{display:flex;flex-direction:column;align-items:center;gap:9px;padding:16px 6px 14px;border:0;border-radius:20px;background:var(--bg);color:var(--text);font-size:13.5px;font-weight:800;font-family:inherit;transition:transform .12s}
 #moreov .mg button:active{transform:scale(.95)}
@@ -1783,8 +1789,9 @@ body.kb #tabbar{transform:translateY(140%)}
 
 <div class="ov" id="moreov">
   <div class="box">
-    <h3>더보기</h3>
+    <div class="mh"><h3>더보기</h3><button type="button" class="mx" id="morex" aria-label="닫기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <div class="mg" id="moreg"></div>
+    <button type="button" class="mc" id="morec">닫기</button>
   </div>
 </div>
 <div class="ov" id="eqov">
@@ -3692,7 +3699,26 @@ $("tmore").onclick = openMore;
     window[w[0]] = function () { var r = f.apply(this, arguments); try { if (!maybeAnim(w[1], w[2])) $(w[1]).classList.remove("ani"); } catch (e) {} return r; };   // 새 데이터로 다시 그린 거면 안 움직임 (두 번 움직이는 것 방지)
   });
 })();
-$("moreov").onclick = function (e) { if (e.target === this) this.className = "ov"; };
+function closeMore() { var o = $("moreov"), b = o.querySelector(".box"); o.className = "ov"; b.style.transform = ""; b.classList.remove("drag"); }
+$("moreov").onclick = function (e) { if (e.target === this) closeMore(); };
+$("morex").onclick = closeMore;
+$("morec").onclick = closeMore;
+// 👇 창을 아래로 쓸어내리면 닫힘 (80px 넘게 내리면)
+(function () {
+  var b = $("moreov").querySelector(".box"), y0 = null, dy = 0;
+  b.addEventListener("touchstart", function (e) { if (e.touches.length !== 1) return; y0 = e.touches[0].clientY; dy = 0; }, { passive: true });
+  b.addEventListener("touchmove", function (e) {
+    if (y0 == null) return;
+    dy = Math.max(0, e.touches[0].clientY - y0);
+    if (dy > 4) { b.classList.add("drag"); b.style.transform = "translateY(" + dy + "px)"; }
+  }, { passive: true });
+  b.addEventListener("touchend", function () {
+    if (y0 == null) return; y0 = null;
+    if (dy > 80) { closeMore(); return; }
+    b.classList.remove("drag"); b.style.transition = "transform .25s"; b.style.transform = "";
+    setTimeout(function () { b.style.transition = ""; }, 260);
+  });
+})();
 for (var ti = 0; ti < 7; ti++) (function (k) { $("t" + k).onclick = function () { if (cur === k && !SR.open) { window.scrollTo({ top: 0, behavior: "smooth" }); return; } setTab(k); window.scrollTo(0, 0); }; })(ti);   // 같은 탭 다시 누르면 맨 위로
 // ⌨️ 글자 입력 중엔 아래 탭을 숨김 (키보드 위로 떠서 가리지 않게)
 document.addEventListener("focusin", function (e) { var t = e.target; if (t && /^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName) && t.type !== "checkbox") document.body.classList.add("kb"); });
@@ -4707,10 +4733,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-26-3";
+var APP_VER = "2026-10-26-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-26-4", ["더보기 창에 닫기 버튼이 생겼어요 (✕ · 아래 [닫기] · 아래로 쓸어내려도 닫혀요)"]],
   ["2026-10-26-3", ["연차 현황: 📅 팀 연차 달력이 생겼어요 (누가 언제 쉬는지 · 겹치는 날 주황색)", "앱 아이콘에 시트 업로드 대기 숫자가 떠요 (알림 켠 폰)", "시트 업로드 장비에 며칠째 남아 있는지 보여요"]],
   ["2026-10-26-2", ["알림 현황: 안 켬 명단에서 총괄팀장 뺐어요"]],
   ["2026-10-26-1", ["시트업로드: 이름 옆 ✏️ 연필을 누르면 누구나 작업자 이름을 바꿀 수 있어요"]],
