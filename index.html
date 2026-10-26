@@ -996,6 +996,8 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 #upload .sitebtn{height:24px;padding:0 10px;border-radius:8px;border-width:1.5px;font-size:11.5px;vertical-align:1px}
 #upload .sheet{margin:9px 6px 0 0;padding:9px 14px 9px 12px;border-radius:12px;border:1.5px solid color-mix(in srgb,var(--warn) 50%,transparent);background:color-mix(in srgb,var(--warn) 6%,var(--card));font-size:13.5px;font-weight:800;box-shadow:0 1px 2px rgba(16,32,64,.05);transition:transform .1s}
 #upload .sheet:active{transform:scale(.96)}
+#upload .sheet small.age{margin-left:7px;padding:2px 7px;border-radius:999px;font-size:11px;font-weight:800;color:var(--sub);background:color-mix(in srgb,var(--text) 7%,transparent);vertical-align:1px}
+#upload .sheet small.age.old{color:#fff;background:var(--warn)}
 #upload .sheet.op{border-color:color-mix(in srgb,var(--accent) 50%,transparent);background:color-mix(in srgb,var(--accent) 6%,var(--card))}
 #upload .card.up .hd .oppen{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin:0 auto 0 8px;padding:0;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--accent);box-shadow:0 1px 2px rgba(16,32,64,.06);transition:transform .1s}
 #upload .card.up .hd .oppen:active{transform:scale(.9);background:color-mix(in srgb,var(--accent) 10%,var(--card))}
@@ -1092,6 +1094,48 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 #hours .mis{border-radius:12px;padding:8px 14px}
 /* 연차 현황 */
 #leave .card.lv{padding:16px}
+/* 📅 팀 연차 달력 */
+#leave .card.lvcal{padding:18px 14px 14px}
+#leave .lvch{display:flex;align-items:center;justify-content:space-between;padding:0 4px}
+#leave .lvct{font-size:16px;font-weight:900;letter-spacing:-.01em}
+#leave .lvcn{display:flex;align-items:center;gap:6px}
+#leave .lvcn b{min-width:44px;text-align:center;font-size:15px;font-weight:900}
+#leave .lvcb{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:19px;font-weight:700;line-height:1;padding:0 0 2px;transition:transform .1s}
+#leave .lvcb:active{transform:scale(.9)}
+#leave .lvcb:disabled{opacity:.3}
+#leave .lvcs{display:flex;gap:14px;margin:10px 4px 12px;font-size:12.5px;color:var(--sub);font-weight:700}
+#leave .lvcs b{color:var(--text);font-weight:900;margin-left:2px}
+#leave .lvcs .dup b{color:#f97316}
+#leave .lvcg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+#leave .lvcg>i{font-style:normal;text-align:center;font-size:11.5px;font-weight:800;color:var(--sub);padding:2px 0 4px}
+#leave .lvcg>i.su{color:var(--warn)}#leave .lvcg>i.sa{color:var(--accent)}
+#leave .lvcg .d{position:relative;min-height:60px;padding:5px 2px 4px;border:0;border-radius:12px;background:color-mix(in srgb,var(--text) 3%,transparent);display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text);transition:transform .1s,background .15s}
+#leave .lvcg .d:active{transform:scale(.94)}
+#leave .lvcg .d em{font-style:normal;font-size:12.5px;font-weight:800;line-height:18px;width:22px;height:18px;border-radius:9px}
+#leave .lvcg .d.su em{color:var(--warn)}#leave .lvcg .d.sa em{color:var(--accent)}
+#leave .lvcg .d.past{opacity:.5}
+#leave .lvcg .d.today em{background:var(--grd);color:#fff}
+#leave .lvcg .d.dup{background:color-mix(in srgb,#f97316 13%,transparent)}
+#leave .lvcg .d.dup::after{content:"";position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:#f97316}
+#leave .lvcg .d.sel{box-shadow:0 0 0 2px var(--accent) inset;background:color-mix(in srgb,var(--accent) 9%,transparent)}
+#leave .lvcg .d.sel.dup{box-shadow:0 0 0 2px #f97316 inset}
+#leave .lvcg .ns{display:flex;flex-direction:column;align-items:stretch;gap:2px;width:100%}
+#leave .lvcg .ns .n{display:block;font-size:9.5px;font-weight:800;line-height:15px;border-radius:5px;padding:0 1px;white-space:nowrap;overflow:hidden;text-overflow:clip;letter-spacing:-.04em;color:color-mix(in srgb,var(--pc) 85%,var(--text));background:color-mix(in srgb,var(--pc) 17%,transparent)}
+#leave .lvcg .ns .n.half{background:linear-gradient(90deg,color-mix(in srgb,var(--pc) 17%,transparent) 50%,transparent 50%);box-shadow:0 0 0 1px color-mix(in srgb,var(--pc) 30%,transparent) inset}
+#leave .lvcg .ns .more{font-size:9.5px;font-weight:800;color:var(--sub);text-align:center;line-height:12px}
+#leave .lvcd{margin-top:12px;padding:13px 14px;border-radius:16px;background:color-mix(in srgb,var(--text) 4%,transparent)}
+#leave .lvcd.dup{background:color-mix(in srgb,#f97316 10%,transparent)}
+#leave .lvcd .dh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#leave .lvcd .dh b{font-size:15px;font-weight:900}
+#leave .lvcd .tag{font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+#leave .lvcd .tag.dup{color:#ea580c;background:color-mix(in srgb,#f97316 18%,transparent)}
+#leave .lvcd .tag.none{color:var(--sub);background:none;padding-right:0}
+#leave .lvcd .r{display:flex;align-items:center;gap:9px;margin-top:10px;font-size:14px}
+#leave .lvcd .r i{width:9px;height:9px;border-radius:50%;background:var(--pc);flex:none}
+#leave .lvcd .r .nm{font-weight:800}
+#leave .lvcd .r .k{margin-left:auto;font-size:12.5px;font-weight:800;color:var(--sub)}
+#leave .lvcd .r .k.half{color:var(--accent)}
+
 #leave .card.lv.me{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 45%,transparent),var(--csh)}
 #leave .card.lv .bar{display:none}
 #leave .dn{--dc:var(--accent);position:relative;flex:none;width:78px;height:78px;border-radius:50%;background:conic-gradient(var(--dc) calc(var(--p) * 1%),color-mix(in srgb,var(--line) 80%,transparent) 0);display:flex;align-items:center;justify-content:center}
@@ -2733,10 +2777,21 @@ function load(off, force) {
 }
 
 /* ---------- 시트 업로드 + 완료 처리 ---------- */
+var UP_STALE = 3;   // ⏳ 이 날 수부터 빨간 "N일째" + 아침에 담당자 알림 (서버 UP_STALE_DAYS와 같게)
 function setBadge(n) {
   var t = $("d2");
   t.innerHTML = "";
   if (n > 0) t.appendChild(el("span", "bd", String(n)));
+  appBadge(n);
+}
+// 🔴 홈 화면 앱 아이콘에 숫자 (시트 업로드 대기) · 알림 켠 폰만 (아이폰 16.4+ 홈 화면 앱 · 안드로이드 크롬) · 못 하는 폰은 조용히 넘어감
+function appBadge(n) {
+  try {
+    if (!("setAppBadge" in navigator)) return;
+    n = +n || 0;
+    if (n > 0) navigator.setAppBadge(n).catch(function () {});
+    else navigator.clearAppBadge().catch(function () {});
+  } catch (e) {}
 }
 
 function openConfirm(it, s) {
@@ -2870,6 +2925,7 @@ function renderUpload(d) {
       it.sheets.forEach(function (s) {
         var b = el("button", "sheet", "☐ " + s.label);
         b.type = "button";
+        if (s.age >= 1) b.appendChild(el("small", "age" + (s.age >= UP_STALE ? " old" : ""), s.age + "일 지남"));   // ⏳ 업로드로 남은 지 며칠
         b.onclick = function () { openConfirm(it, s); };
         li.appendChild(b);
       });
@@ -3134,6 +3190,103 @@ function daySec(title, list, plan) {
   return w;
 }
 
+/* ---------- 📅 팀 연차 달력 (연차 탭 · schedule 시트 기준 · 서버 요청 없음: 받아 둔 연차 데이터로 그림) ---------- */
+var LVC = { m: "", sel: "" };
+var LVC_COL = ["#3b82f6", "#f97316", "#10b981", "#a855f7", "#ef4444", "#0ea5e9", "#eab308", "#ec4899", "#14b8a6", "#6366f1"];
+function lvcDays(d) {   // { "2026-10-28": [{n, k, c}] }
+  var map = {}, y = ymdLocal().slice(0, 4);
+  (d.people || []).forEach(function (p, i) {
+    if (!p.days) return;
+    var col = LVC_COL[i % LVC_COL.length];
+    [].concat(p.days.used || [], p.days.plan || []).forEach(function (x) {
+      var ymd = x.d;
+      if (!ymd) { var m = String(x.l || "").match(/^(\d{1,2})\/(\d{1,2})/); if (!m) return; ymd = y + "-" + ("0" + m[1]).slice(-2) + "-" + ("0" + m[2]).slice(-2); }
+      (map[ymd] = map[ymd] || []).push({ n: p.name, k: x.k || "", c: col });
+    });
+  });
+  return map;
+}
+function lvcKind(k) { return k || "연차"; }
+function lvcHalf(k) { return /반차|반반/.test(k || ""); }
+function renderLeaveCal(box, d) {
+  var map = lvcDays(d), today = ymdLocal(), yy = +today.slice(0, 4);
+  if (!LVC.m) LVC.m = today.slice(0, 7);
+  var Y = +LVC.m.slice(0, 4), M = +LVC.m.slice(5, 7);
+  box.innerHTML = "";
+  // 머리: 📅 팀 연차 달력  ‹ 10월 ›
+  var hd = el("div", "lvch");
+  hd.appendChild(el("span", "lvct", "📅 팀 연차 달력"));
+  var nav = el("div", "lvcn");
+  var pv = el("button", "lvcb", "‹"), nx = el("button", "lvcb", "›"); pv.type = nx.type = "button";
+  pv.setAttribute("aria-label", "이전 달"); nx.setAttribute("aria-label", "다음 달");
+  pv.disabled = Y === yy && M === 1; nx.disabled = Y === yy && M === 12;   // 올해 1~12월 (schedule 시트가 올해만)
+  pv.onclick = function () { LVC.m = Y + "-" + ("0" + (M - 1)).slice(-2); LVC.sel = ""; renderLeaveCal(box, d); };
+  nx.onclick = function () { LVC.m = Y + "-" + ("0" + (M + 1)).slice(-2); LVC.sel = ""; renderLeaveCal(box, d); };
+  nav.appendChild(pv); nav.appendChild(el("b", null, M + "월")); nav.appendChild(nx);
+  hd.appendChild(nav);
+  box.appendChild(hd);
+
+  // 이번 달 요약: 쉬는 날 N일 · 겹치는 날 N일
+  var pre = LVC.m + "-", offDays = 0, dup = 0, firstDup = "", firstUp = "";
+  Object.keys(map).sort().forEach(function (k) {
+    if (k.indexOf(pre) !== 0) return;
+    offDays++;
+    var ppl = {}; map[k].forEach(function (x) { ppl[x.n] = 1; });
+    if (Object.keys(ppl).length >= 2) { dup++; if (!firstDup && k >= today) firstDup = k; }
+    if (!firstUp && k >= today) firstUp = k;
+  });
+  var sm = el("div", "lvcs");
+  sm.appendChild(el("span", null, "쉬는 사람 있는 날 "));
+  sm.lastChild.appendChild(el("b", null, offDays + "일"));
+  var ds = el("span", dup ? "dup" : null, "겹치는 날 "); ds.appendChild(el("b", null, dup + "일")); sm.appendChild(ds);
+  box.appendChild(sm);
+
+  // 달력
+  var g = el("div", "lvcg");
+  ["일", "월", "화", "수", "목", "금", "토"].forEach(function (w, i) { g.appendChild(el("i", "w" + (i === 0 ? " su" : i === 6 ? " sa" : ""), w)); });
+  var first = new Date(Y, M - 1, 1).getDay(), last = new Date(Y, M, 0).getDate();
+  for (var b = 0; b < first; b++) g.appendChild(el("i", "e"));
+  if (!LVC.sel) LVC.sel = (LVC.m === today.slice(0, 7)) ? (firstDup || (map[today] ? today : firstUp) || today) : (Object.keys(map).sort().filter(function (k) { return k.indexOf(pre) === 0; })[0] || pre + "01");
+  for (var dd = 1; dd <= last; dd++) (function (dd) {
+    var ymd = pre + ("0" + dd).slice(-2), list = map[ymd] || [], dow = (first + dd - 1) % 7;
+    var ppl = {}; list.forEach(function (x) { ppl[x.n] = 1; });
+    var cnt = Object.keys(ppl).length;
+    var c = el("button", "d" + (dow === 0 ? " su" : dow === 6 ? " sa" : "") + (ymd < today ? " past" : "") + (ymd === today ? " today" : "") + (cnt ? " has" : "") + (cnt >= 2 ? " dup" : "") + (ymd === LVC.sel ? " sel" : ""));
+    c.type = "button";
+    c.appendChild(el("em", null, String(dd)));
+    var nm = el("span", "ns");
+    list.slice(0, 2).forEach(function (x) {
+      var t = el("span", "n" + (lvcHalf(x.k) ? " half" : ""), x.n);
+      t.style.setProperty("--pc", x.c);
+      nm.appendChild(t);
+    });
+    if (list.length > 2) nm.appendChild(el("span", "more", "+" + (list.length - 2)));
+    c.appendChild(nm);
+    c.onclick = function () { LVC.sel = ymd; renderLeaveCal(box, d); };
+    g.appendChild(c);
+  })(dd);
+  box.appendChild(g);
+
+  // 고른 날 자세히
+  var sel = LVC.sel, sl = map[sel] || [];
+  var det = el("div", "lvcd" + (sl.length >= 2 ? " dup" : ""));
+  var sp = sel.split("-"), sdow = ["일", "월", "화", "수", "목", "금", "토"][new Date(+sp[0], +sp[1] - 1, +sp[2]).getDay()];
+  var dh = el("div", "dh");
+  dh.appendChild(el("b", null, (+sp[1]) + "/" + (+sp[2]) + "(" + sdow + ")" + (sel === today ? " · 오늘" : "")));
+  var who = {}; sl.forEach(function (x) { who[x.n] = 1; });
+  var wn = Object.keys(who).length;
+  dh.appendChild(el("span", wn >= 2 ? "tag dup" : wn ? "tag" : "tag none", wn >= 2 ? "⚠️ " + wn + "명 겹침" : wn ? wn + "명 쉬어요" : "쉬는 사람 없음"));
+  det.appendChild(dh);
+  sl.forEach(function (x) {
+    var r = el("div", "r");
+    var dot = el("i"); dot.style.setProperty("--pc", x.c); r.appendChild(dot);
+    r.appendChild(el("span", "nm", x.n));
+    r.appendChild(el("span", "k" + (lvcHalf(x.k) ? " half" : ""), lvcKind(x.k)));
+    det.appendChild(r);
+  });
+  box.appendChild(det);
+}
+
 function renderLeave(d) {
   var box = $("leave");
   box.innerHTML = "";
@@ -3145,6 +3298,9 @@ function renderLeave(d) {
   var tr = 0, tu = 0, tl = 0;
   d.people.forEach(function (p) { tr += +p.remain || 0; tu += +p.used || 0; if (p.remain != null && p.remain <= 2) tl++; });
   box.appendChild(heroX("올해 연차", d.people.length, "명", [["팀 남은 연차", fnum(tr), "일"], ["팀 사용", fnum(tu), "일"], ["2일 이하", tl, "명", tl > 0]]));
+
+  // 📅 팀 연차 달력 (날짜 기록이 있을 때만)
+  if (d.people.some(function (p) { return p.days; })) { var cal = el("div", "card lvcal"); renderLeaveCal(cal, d); box.appendChild(cal); }
 
   var hasDays = false;
   d.people.forEach(function (p) {
@@ -4551,10 +4707,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-26-2";
+var APP_VER = "2026-10-26-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-26-3", ["연차 현황: 📅 팀 연차 달력이 생겼어요 (누가 언제 쉬는지 · 겹치는 날 주황색)", "앱 아이콘에 시트 업로드 대기 숫자가 떠요 (알림 켠 폰)", "시트 업로드 장비에 며칠째 남아 있는지 보여요"]],
   ["2026-10-26-2", ["알림 현황: 안 켬 명단에서 총괄팀장 뺐어요"]],
   ["2026-10-26-1", ["시트업로드: 이름 옆 ✏️ 연필을 누르면 누구나 작업자 이름을 바꿀 수 있어요"]],
   ["2026-10-25-7", ["시작화면: 최신 정보를 빨리 받아도 애니메이션을 끝까지 다 보고 넘어가요", "탭을 누를 때 화면이 두 번 움직이던 것(새로고침되는 느낌) 고쳤어요"]],
