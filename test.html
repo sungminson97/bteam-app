@@ -4866,10 +4866,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-26-5";
+var APP_VER = "2026-10-26-6";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-26-6", ["🎄 크리스마스 미리보기를 Developer 메뉴로 옮겼어요 (누르면 시작화면부터 다시)"]],
   ["2026-10-26-5", ["🎄 12월 1일~25일 크리스마스 테마가 자동으로 켜져요 (회로 트리 시작화면 · 전구 장식 · 눈)"]],
   ["2026-10-26-4", ["더보기 창에 닫기 버튼이 생겼어요 (✕ · 아래 [닫기] · 아래로 쓸어내려도 닫혀요)"]],
   ["2026-10-26-3", ["연차 현황: 📅 팀 연차 달력이 생겼어요 (누가 언제 쉬는지 · 겹치는 날 주황색)", "앱 아이콘에 시트 업로드 대기 숫자가 떠요 (알림 켠 폰)", "시트 업로드 장비에 며칠째 남아 있는지 보여요"]],
@@ -5796,13 +5797,6 @@ function openMenu() {
   }
   if (myName()) item("👤 내 이름", myName() + " (고정)", function () { toast("이름이 틀렸으면 " + DEV_NAME + "에게 말해 주세요"); });
   if (ONESIGNAL_APP_ID) item("🔔 알림 설정", pushOn() ? "켜짐" : "꺼짐", openPush, "pushov");
-  if (myName() === DEV_NAME) {   // 🎄 개발자만: 크리스마스 테마 미리보기 (이 폰에서만 · 12/1~25는 자동)
-    var xpv = false; try { xpv = localStorage.getItem("xmasPreview") === "1"; } catch (e) {}
-    item("🎄 크리스마스 미리보기", xpv ? "켜짐 · 누르면 끄기" : "꺼짐 · 누르면 켜고 다시 열기", function () {
-      try { if (xpv) localStorage.removeItem("xmasPreview"); else localStorage.setItem("xmasPreview", "1"); } catch (e) {}
-      location.reload();
-    });
-  }
   if (noticeIsAdmin()) item("🔑 관리자 모드", adminOn() ? "켜짐 · 누르면 끄기" : "꺼짐", function () {
     if (adminOn()) { adminOff(); toast("🔑 관리자 모드 꺼짐"); } else openAdminGate("mode");
   }, adminOn() ? null : "apov");
@@ -6191,6 +6185,13 @@ function openDevPanel() {
   }
   item("👤 이 폰 이름 바꾸기", myName() || "-", function () { $("dvov").className = "ov"; openNameChange(); });
   item("📱 팀 기기 목록", "원격 이름 변경", function () { $("dvov").className = "ov"; openDevList(); });
+  // 🎄 크리스마스 미리보기 (이 폰에서만 · 12/1~25는 누구나 자동) → 누르면 시작화면부터 다시 (최신 파일로)
+  var xpv = false; try { xpv = localStorage.getItem("xmasPreview") === "1"; } catch (e) {}
+  item("🎄 크리스마스 미리보기", xpv ? "켜짐 · 누르면 끄기" : "꺼짐 · 누르면 켜기", function (b) {
+    try { if (xpv) localStorage.removeItem("xmasPreview"); else localStorage.setItem("xmasPreview", "1"); } catch (e) {}
+    b.disabled = true; $("dvmsg").style.color = ""; $("dvmsg").textContent = xpv ? "원래 화면으로 다시 시작해요…" : "🎄 크리스마스 화면으로 다시 시작해요…";
+    setTimeout(function () { location.replace(location.pathname + "?_=" + Date.now()); }, 500);
+  });
   if (ONESIGNAL_APP_ID) item("🔁 알림 다시 연결", "알림이 안 올 때", function (b) {
     var n = myName();
     if (!n || !pushOn()) { $("dvmsg").style.color = "var(--warn)"; $("dvmsg").textContent = "이 폰은 알림이 꺼져 있어요.\n🔔 알림 설정에서 먼저 켜 주세요."; return; }
