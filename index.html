@@ -395,6 +395,9 @@ li:first-child{border-top:0}
 .dlc .ping.ok{border-color:var(--ok);color:var(--ok)}
 .dlc .em{color:var(--warn);font-size:12px;margin-top:6px;white-space:pre-line;word-break:keep-all}
 #nmchips .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+#nmchips .chip.taken{opacity:.45;border-style:dashed}
+#nmchips .chip.taken small{display:block;margin-top:2px;font-size:10.5px;font-weight:800;color:var(--sub)}
+#nmchips .chip.taken.on{opacity:1}#nmchips .chip.taken.on small{color:#fff}
 .unl{display:grid;gap:6px}
 .unl .lk{border:0;background:none;color:var(--sub);font-size:12px;text-decoration:underline;font-family:inherit;justify-self:start;padding:0}
 .unl input{font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
@@ -2589,6 +2592,7 @@ function eqsList(d, off) {
   var map = {}, out = [];
   d.stages.forEach(function (s) {
     s.items.forEach(function (it) {
+      if (it.unassigned) return;   // ▲팀 미지정 장비는 진행 장비(요약 숫자·목록)에서 뺌 · 아래 공정 카드엔 그대로
       var k = normQ(it.n), e = map[k];
       if (!e) { e = map[k] = { n: it.n, t: it.t || "", loc: it.loc || "", u: it.u ? 1 : 0, nc: it.nc || 0, st: [], o: out.length }; out.push(e); }
       if (e.st.indexOf(s.label) < 0) e.st.push(s.label);   // 공정 순서대로 → 마지막이 가장 진행된 공정
@@ -4940,10 +4944,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-27-2";
+var APP_VER = "2026-10-27-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-27-3", ["금일·명일 진행 장비에서 ▲팀 미지정 장비는 뺐어요 (아래 공정 카드에는 그대로 보여요)", "이름 고르기: 다른 폰이 쓰는 이름은 🔒 사용 중 · 고르려면 관리자 PIN 필요"]],
   ["2026-10-27-2", ["화면 안정화 · 작은 개선"]],
   ["2026-10-27-1", ["화면 안정화 · 작은 개선"]],
   ["2026-10-26-7", ["화면 안정화 · 작은 개선"]],
@@ -5214,11 +5219,20 @@ function myName() { return sget("myName") || ""; }
 function nameDone() { return sget("nameOK") === "1" && !!myName(); }   // 이번 버전에서 직접 고른 적이 있는지
 var NM = { pick: "", confirm: false };
 
+// 🔒 다른 폰이 이미 등록한 이름 (서버 기기 목록 기준 · 이 폰은 빠져서 옴)
+function nmTaken() { var c = cget("names"); var t = (c && c.taken) || []; return t.filter(function (n) { return n !== myName(); }); }
 function nmChips(names) {
   var b = $("nmchips"); b.innerHTML = "";
+  var tk = nmTaken();
   (names || []).forEach(function (n) {
-    var c = el("button", "chip" + (n === NM.pick ? " on" : ""), n); c.type = "button"; c.setAttribute("data-i", n.charAt(0));
-    c.onclick = function () { NM.pick = n; NM.confirm = false; NM.chiefOK = false; $("nmpin").style.display = "none"; $("nmgo").disabled = false; $("nmgo").textContent = NM.change ? "이 이름으로 바꾸기" : "이 이름으로 정하기"; $("nmmsg").textContent = ""; nmChips(names); };
+    var used = tk.indexOf(n) >= 0;
+    var c = el("button", "chip" + (n === NM.pick ? " on" : "") + (used ? " taken" : ""), n); c.type = "button"; c.setAttribute("data-i", n.charAt(0));
+    if (used) c.appendChild(el("small", null, "🔒 사용 중"));
+    c.onclick = function () {
+      NM.pick = n; NM.confirm = false; NM.chiefOK = false; NM.admOK = false; $("nmpin").style.display = "none"; $("nmgo").disabled = false; $("nmgo").textContent = NM.change ? "이 이름으로 바꾸기" : "이 이름으로 정하기";
+      $("nmmsg").textContent = !used ? "" : NM.change ? "🔒 다른 폰에서 이미 쓰는 이름이에요. 바꾸면 두 폰이 같은 이름이 돼요." : "🔒 다른 폰에서 이미 쓰는 이름이에요. 본인이면 관리자 PIN으로 정할 수 있어요.";
+      nmChips(names);
+    };
     b.appendChild(c);
   });
 }
@@ -5276,7 +5290,7 @@ function nmConfirmView(on) {
   return true;
 }
 $("nmback").onclick = function () {
-  NM.confirm = false; NM.chiefOK = false; $("nmpin").style.display = "none";
+  NM.confirm = false; NM.chiefOK = false; NM.admOK = false; $("nmpin").style.display = "none";
   $("nmgo").disabled = false; $("nmgo").textContent = "이 이름으로 정하기"; $("nmmsg").textContent = "";
   nmConfirmView(false);
 };
@@ -5295,7 +5309,7 @@ $("nmgo").onclick = function () {
   if (NM.pick === CHIEF && !NM.chiefOK) {
     var pe = $("nmpin");
     if (pe.style.display === "none") {
-      pe.style.display = ""; pe.value = "";
+      pe.style.display = ""; pe.value = ""; pe.placeholder = "총괄팀장 PIN";
       $("nmgo").textContent = "PIN 확인";
       $("nmmsg").textContent = "총괄팀장은 PIN을 입력해야 정할 수 있어요.";
       setTimeout(function () { try { pe.focus(); } catch (e) {} }, 100);
@@ -5312,6 +5326,28 @@ $("nmgo").onclick = function () {
     }).catch(function (e) { $("nmgo").disabled = false; $("nmgo").textContent = "PIN 확인"; $("nmmsg").textContent = "확인 실패: " + errText(e); });
     return;
   }
+  // 🔒 다른 폰이 쓰는 이름 → 관리자 PIN이 맞아야 정해짐 (새 폰·재설치한 본인용) · 관리자가 메뉴에서 바꿀 땐 안내만
+  if (!NM.change && NM.pick !== CHIEF && nmTaken().indexOf(NM.pick) >= 0 && !NM.admOK) {
+    var ap = $("nmpin");
+    if (ap.style.display === "none") {
+      ap.style.display = ""; ap.value = ""; ap.placeholder = "관리자 PIN";
+      $("nmgo").textContent = "PIN 확인";
+      $("nmmsg").textContent = "🔒 '" + NM.pick + "' 이름은 다른 폰에서 이미 쓰고 있어요.\n새 폰으로 바꿨거나 앱을 다시 깔았다면 관리자 PIN을 입력해 주세요.";
+      setTimeout(function () { try { ap.focus(); } catch (e) {} }, 100);
+      return;
+    }
+    var av = ap.value.trim();
+    if (!av) { $("nmmsg").textContent = "관리자 PIN을 입력해 주세요."; return; }
+    $("nmgo").disabled = true; $("nmgo").textContent = "확인 중…";
+    call("checkAdmin", [av]).then(function (r) {
+      $("nmgo").disabled = false; $("nmgo").textContent = "PIN 확인";
+      if (r && r.error) { $("nmmsg").textContent = r.error; ap.value = ""; return; }
+      NM.admOK = true; ap.style.display = "none"; ap.placeholder = "총괄팀장 PIN";
+      $("nmgo").click();
+    }).catch(function (e) { $("nmgo").disabled = false; $("nmgo").textContent = "PIN 확인"; $("nmmsg").textContent = "확인 실패: " + errText(e); });
+    return;
+  }
+  NM.admOK = false;
   var wasChange = NM.change;
   var old = sget("pushName");
   sset("myName", NM.pick); sset("nameOK", "1");
