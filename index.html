@@ -85,6 +85,16 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .sres .nm{font-weight:700;font-size:15px}
 .sres .nm .ow{font-weight:700;color:var(--accent);margin-left:6px;font-size:14px}
 .sres .ty{color:var(--sub);font-size:12px;grid-column:2/4}
+.sres .nm.wide{grid-column:1/3}
+.sres .nm.wide~.ty{grid-column:1/4}
+.sres .ty .tmtag.unas{margin:0 6px 0 0;background:var(--warn);border-color:var(--warn);color:#fff;font-weight:900;padding:2px 7px}
+.sres .it.un{position:relative;background:color-mix(in srgb,var(--warn) 7%,var(--card))}
+.sres .it.un::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:var(--warn)}
+#srch .eqh .cps span.un{background:#fff;color:#e5484d;border-color:#fff;font-weight:900;box-shadow:0 4px 12px -4px rgba(0,0,0,.35);animation:unPulse 1.8s ease-in-out 2}
+@keyframes unPulse{50%{transform:scale(1.06)}}
+#srch .unwarn{display:flex;flex-direction:column;gap:4px;margin-top:10px;padding:13px 15px 13px 16px;border-radius:16px;border:1.5px solid color-mix(in srgb,var(--warn) 55%,transparent);background:color-mix(in srgb,var(--warn) 9%,var(--card));color:var(--text)}
+#srch .unwarn b{color:var(--warn);font-size:14.5px;font-weight:900}
+#srch .unwarn span{font-size:13px;color:var(--sub);white-space:pre-line;line-height:1.45}
 .sres .nx{font-size:12px;color:var(--sub);text-align:right;white-space:nowrap}
 .eqd{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:12px 14px;display:grid;gap:10px}
 .eqd .h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
@@ -1038,6 +1048,7 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 #sched .sday .hd .ttl small{background:var(--grd);border-radius:7px;padding:2px 8px;font-size:11.5px;font-weight:800;vertical-align:2px;box-shadow:0 4px 10px -6px rgba(80,90,255,.9)}
 #sched .card.sday li{padding:11px 0;border-top:1px solid color-mix(in srgb,var(--line) 75%,transparent);font-size:14.5px}
 #sched .tmtag{border-radius:7px;padding:2px 7px;font-size:10.5px;vertical-align:1px}
+#sched .card.sday li .tmtag.unas{margin:6px 0 0}
 #sched .dsplit span{display:inline-block;padding:2px 7px;margin-left:3px;border-radius:7px;font-size:11px;background:var(--bg)}
 #sched .fcalw{border-radius:18px;padding:14px;border:1px solid var(--cbd);box-shadow:var(--csh)}
 #sched .fc{border-radius:11px;min-height:56px;border:1px solid transparent;background:var(--bg)}
@@ -2553,7 +2564,7 @@ function render() {
       if (it.t) r2.appendChild(el("span", "t", it.t));
       if (it.loc) r2.appendChild(locEl(it.loc));
       else if (it.noLoc) r2.appendChild(el("span", "noloc", "📍 자리 정보 없음"));
-      if (it.unassigned) r2.appendChild(el("span", "tmtag u unas", "▲미지정"));
+      if (it.unassigned) r2.appendChild(el("span", "tmtag u unas", "▲팀/담당자 미지정"));
       if (r2.childNodes.length) li.appendChild(r2);
       li.onclick = function () { openEquip(it.n); };
       ul.appendChild(li);
@@ -2592,7 +2603,6 @@ function eqsList(d, off) {
   var map = {}, out = [];
   d.stages.forEach(function (s) {
     s.items.forEach(function (it) {
-      if (it.unassigned) return;   // ▲팀 미지정 장비는 진행 장비(요약 숫자·목록)에서 뺌 · 아래 공정 카드엔 그대로
       var k = normQ(it.n), e = map[k];
       if (!e) { e = map[k] = { n: it.n, t: it.t || "", loc: it.loc || "", u: it.u ? 1 : 0, nc: it.nc || 0, st: [], o: out.length }; out.push(e); }
       if (e.st.indexOf(s.label) < 0) e.st.push(s.label);   // 공정 순서대로 → 마지막이 가장 진행된 공정
@@ -2751,8 +2761,8 @@ function schedBadge() {
 function teamBars(c) {
   var mx = Math.max(c.A, c.B, c.U, 1);
   var cmp = el("div", "tcmp");
-  [["A팀", c.A, "var(--ta)"], ["B팀", c.B, "var(--tb)"], ["▲미지정", c.U, "var(--warn)"]].forEach(function (x) {
-    if (x[0] === "▲미지정" && !x[1]) return;
+  [["A팀", c.A, "var(--ta)"], ["B팀", c.B, "var(--tb)"], ["▲팀/담당자 미지정", c.U, "var(--warn)"]].forEach(function (x) {
+    if (x[0] === "▲팀/담당자 미지정" && !x[1]) return;
     var row = el("div", "row");
     var lb = el("span", null, x[0]); lb.style.color = x[2];
     row.appendChild(lb);
@@ -2788,11 +2798,12 @@ function schedDayCard(d, today) {
   urgFirst(d.items).forEach(function (it) {
     var li = el("li");
     var tk = teamKey(it).toLowerCase();
-    li.appendChild(el("span", "tmtag " + tk, it.team === "A" ? "A팀" : it.team === "B" ? "B팀" : "▲미지정"));
+    if (it.team === "A" || it.team === "B") li.appendChild(el("span", "tmtag " + tk, it.team + "팀"));
     urgName(li, it.n, it.u);
     if (it.t) li.appendChild(el("span", "t", it.t));
     if (it.loc) li.appendChild(locEl(it.loc));
     else if (it.noLoc) li.appendChild(el("span", "nl", "📍 자리 미배정"));
+    if (it.team !== "A" && it.team !== "B") { li.appendChild(document.createElement("br")); li.appendChild(el("span", "tmtag " + tk + " unas", "▲팀/담당자 미지정")); }
     li.className = "tap";
     li.onclick = function () { openEquip(it.n); };
     ul.appendChild(li);
@@ -2837,8 +2848,8 @@ function renderSched() {
   else renderSchedList(box, s);
 
   box.appendChild(el("div", "hint", out
-    ? "Backlog 출하일(Factory out date) 기준. A팀·B팀·미지정 전체를 표시해요. ▲미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."
-    : "Backlog FRAME 입고일 기준 (ROBOT은 Module 작업일). A팀·B팀·미지정 전체를 표시해요. ▲미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."));
+    ? "Backlog 출하일(Factory out date) 기준. A팀·B팀·팀/담당자 미지정 전체를 표시해요. ▲팀/담당자 미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."
+    : "Backlog FRAME 입고일 기준 (ROBOT은 Module 작업일). A팀·B팀·팀/담당자 미지정 전체를 표시해요. ▲팀/담당자 미지정은 Backlog에 팀/담당자 정보가 없는 장비예요."));
 }
 
 // 📋 목록: 오늘부터 2주
@@ -2853,7 +2864,7 @@ function renderSchedList(box, s) {
   sum.appendChild(el("b", null, c.total + "대"));
   if (c.noLoc) sum.appendChild(el("span", "bad", "📍 자리 미배정 " + c.noLoc + "대"));
   box.appendChild(heroX(SC.kind === "out" ? "앞으로 2주 출하" : "앞으로 2주 입고", c.total, "대",
-    [["A팀", c.A, "대"], ["B팀", c.B, "대"], ["팀 미지정", c.U, "대", c.U > 0]], c.noLoc ? "📍 자리 미배정 " + c.noLoc + "대" : ""));
+    [["A팀", c.A, "대"], ["B팀", c.B, "대"], ["팀/담당자", c.U, "대", c.U > 0, "미지정"]], c.noLoc ? "📍 자리 미배정 " + c.noLoc + "대" : ""));
   box.appendChild(sum);
   box.appendChild(teamBars(c));
 
@@ -2900,7 +2911,7 @@ function renderSchedCal(box, s) {
   var ms = el("div", "msum2");
   ms.appendChild(el("span", "a", "A팀 " + c.A));
   ms.appendChild(el("span", "b", "B팀 " + c.B));
-  ms.appendChild(el("span", "u", "▲미지정 " + c.U));
+  ms.appendChild(el("span", "u", "▲팀/담당자 미지정 " + c.U));
   ms.appendChild(el("span", "t", "합 " + c.total + "대"));
   wrap.appendChild(ms);
 
@@ -4073,15 +4084,17 @@ function renderSearch() {
   var list = el("div", "sres");
   hits.slice(0, 50).forEach(function (h) {
     var r = idx.rows[h.i];
-    var it = el("div", "it");
+    var it = el("div", "it" + (r[3] ? "" : " un"));   // ▲ 팀/담당자 미지정이면 줄 전체를 강조
     var tk = r[3] === "A" ? "a" : r[3] === "B" ? "b" : "u";
-    it.appendChild(el("span", "tmtag " + tk, r[3] ? r[3] + "팀" : "▲미지정"));
-    var nm = el("span", "nm" + (r[7] ? " urg" : ""), r[0]);   // 🚨 긴급이면 장비명만 빨간색
+    if (r[3]) it.appendChild(el("span", "tmtag " + tk, r[3] + "팀"));
+    var nm = el("span", "nm" + (r[7] ? " urg" : "") + (r[3] ? "" : " wide"), r[0]);   // 🚨 긴급이면 장비명만 빨간색 · 팀 미지정이면 표시는 아래 줄에
     if (r[2]) nm.appendChild(el("span", "ow", r[2]));
     it.appendChild(nm);
     var nx = eqNext(r, idx.stages, today);
     it.appendChild(el("span", "nx", nx ? (nx.done ? nx.label + " 완료" : (nx.now ? "오늘 " : "") + nx.label + " " + mdw(nx.d)) : "일정 없음"));
-    it.appendChild(el("span", "ty", r[1] + (r[4] ? " · 📍" + r[4] : "") + (r[6] && r[6][0] ? " · 🏭" + r[6][0][1] : "")));
+    var ty = el("span", "ty", r[1] + (r[4] ? " · 📍" + r[4] : "") + (r[6] && r[6][0] ? " · 🏭" + r[6][0][1] : ""));
+    if (!r[3]) ty.insertBefore(el("span", "tmtag u unas", "▲팀/담당자 미지정"), ty.firstChild);
+    it.appendChild(ty);
     it.onclick = function () { SR.sel = h.i; renderSearch(); window.scrollTo(0, 0); };
     list.appendChild(it);
   });
@@ -4114,7 +4127,7 @@ function renderEquipDetail(box, r, stages, today, canBack) {
   hx.appendChild(nr);
   hx.appendChild(el("div", "sb", [r[1], r[2]].filter(Boolean).join(" · ")));
   var cps = el("div", "cps");
-  cps.appendChild(el("span", null, r[3] ? r[3] + "팀" : "팀 미지정"));
+  cps.appendChild(r[3] ? el("span", null, r[3] + "팀") : el("span", "un", "▲ 팀/담당자 미지정"));
   cps.appendChild(el("span", null, r[4] ? "📍 " + r[4] : "📍 자리 정보 없음"));
   (r[6] || []).forEach(function (v) { cps.appendChild(el("span", null, "🏭 " + v[1])); });
   eqUploads(r[0]).forEach(function (lb) { cps.appendChild(el("span", "up", "⬆ " + lb + " 업로드 필요")); });
@@ -4128,6 +4141,12 @@ function renderEquipDetail(box, r, stages, today, canBack) {
   t2.appendChild(b2); tl2.appendChild(t2);
   hx.appendChild(tl2);
   box.appendChild(hx);
+  if (!r[3]) {   // ▲ 팀/담당자 미지정 → 상세 바로 아래 눈에 띄는 안내
+    var uw = el("div", "unwarn");
+    uw.appendChild(el("b", null, "▲ 팀/담당자 미지정 장비예요"));
+    uw.appendChild(el("span", null, "Backlog에 담당 팀(A/B)과 담당자가 아직 없어요.\nBacklog에서 지정해 주세요."));
+    box.appendChild(uw);
+  }
 
   // 🏭 아래: 공정 흐름
   var tl = el("div", "eqf");
@@ -4944,10 +4963,14 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-27-3";
+var APP_VER = "2026-10-29-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-29-4", ["장비 검색: ▲팀/담당자 미지정 장비가 눈에 잘 띄게 바뀌었어요"]],
+  ["2026-10-29-3", ["입고 일정·장비 검색도 ▲팀/담당자 미지정으로 표시가 바뀌었어요"]],
+  ["2026-10-29-2", ["금일·명일: ▲미지정 → ▲팀/담당자 미지정으로 표시가 바뀌었어요"]],
+  ["2026-10-29-1", ["금일·명일: 동탄이 아닌 미지정 장비는 빠져요 (A팀 장비)", "진행 장비 숫자에 ▲미지정 장비도 같이 세요"]],
   ["2026-10-27-3", ["금일·명일 진행 장비에서 ▲팀 미지정 장비는 뺐어요 (아래 공정 카드에는 그대로 보여요)", "이름 고르기: 다른 폰이 쓰는 이름은 🔒 사용 중 · 고르려면 관리자 PIN 필요"]],
   ["2026-10-27-2", ["화면 안정화 · 작은 개선"]],
   ["2026-10-27-1", ["화면 안정화 · 작은 개선"]],
