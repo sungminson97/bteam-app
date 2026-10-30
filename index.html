@@ -2564,7 +2564,7 @@ function render() {
       if (it.t) r2.appendChild(el("span", "t", it.t));
       if (it.loc) r2.appendChild(locEl(it.loc));
       else if (it.noLoc) r2.appendChild(el("span", "noloc", "📍 자리 정보 없음"));
-      if (it.unassigned) r2.appendChild(el("span", "tmtag u unas", "▲팀/담당자 미지정"));
+      if (it.unassigned) r2.appendChild(el("span", "tmtag u unas", "B팀 · 담당자 미지정"));   // 동탄 장비라 B팀 · Backlog 담당자 칸만 비어 있음
       if (r2.childNodes.length) li.appendChild(r2);
       li.onclick = function () { openEquip(it.n); };
       ul.appendChild(li);
@@ -4963,10 +4963,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-29-4";
+var APP_VER = "2026-10-30-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-30-1", ["금일·명일: 동탄 장비 중 Backlog 담당자가 비어 있으면 'B팀 · 담당자 미지정'으로 보여요"]],
   ["2026-10-29-4", ["장비 검색: ▲팀/담당자 미지정 장비가 눈에 잘 띄게 바뀌었어요"]],
   ["2026-10-29-3", ["입고 일정·장비 검색도 ▲팀/담당자 미지정으로 표시가 바뀌었어요"]],
   ["2026-10-29-2", ["금일·명일: ▲미지정 → ▲팀/담당자 미지정으로 표시가 바뀌었어요"]],
