@@ -361,6 +361,12 @@ li:first-child{border-top:0}
 .ntc .b{white-space:pre-wrap;font-weight:600}
 .ntbtn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 14px;font-size:14px;font-weight:700;color:var(--accent);text-align:left;cursor:pointer;font-family:inherit;width:100%}
 #ntov textarea,#ntov input,#apov input,#nmov input{font-size:16px;padding:12px 14px;margin-bottom:6px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;font-family:inherit}
+#hwarn{white-space:pre-line}
+#hwarn.info{background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent);border-color:transparent}
+#hours .mon h4{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#hours .mon h4 .mnav{margin-left:auto;display:flex;align-items:center;gap:4px}
+#hours .mon h4 .mnav button{width:34px;height:34px;border-radius:10px;border:1px solid var(--cbd,var(--line));background:var(--card);color:var(--text);font:inherit;font-size:17px;font-weight:900;line-height:1}
+#hours .mon h4 .mnav button:disabled{opacity:.3}
 #ntfrom .chip.on,#ntto .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
 #ttlbtn{cursor:pointer;-webkit-tap-highlight-color:transparent}
 #ttlbtn.adm{color:var(--warn)}
@@ -3521,7 +3527,8 @@ function renderLeaveCal(box, d) {
   var nav = el("div", "lvcn");
   var pv = el("button", "lvcb", "‹"), nx = el("button", "lvcb", "›"); pv.type = nx.type = "button";
   pv.setAttribute("aria-label", "이전 달"); nx.setAttribute("aria-label", "다음 달");
-  pv.disabled = Y === yy && M === 1; nx.disabled = Y === yy && M === 12;   // 올해 1~12월 (schedule 시트가 올해만)
+  var mNow = +today.slice(5, 7);
+  pv.disabled = Y === yy && M === 1; nx.disabled = Y > yy || (Y === yy && M >= Math.min(12, mNow + 1));   // 올해 1월 ~ 다음 달까지 (schedule 시트가 올해만)
   pv.onclick = function () { LVC.m = Y + "-" + ("0" + (M - 1)).slice(-2); LVC.sel = ""; renderLeaveCal(box, d); };
   nx.onclick = function () { LVC.m = Y + "-" + ("0" + (M + 1)).slice(-2); LVC.sel = ""; renderLeaveCal(box, d); };
   nav.appendChild(pv); nav.appendChild(el("b", null, M + "월")); nav.appendChild(nx);
@@ -4609,6 +4616,7 @@ function applyMeta(m, fromCache) {
   if (m.prev) store.prevMiss = m.prev;
   renderTop(m.top);
   renderWeek(m.week);
+  hDateRange();
   checkMonth();
   hoursHero();
 }
@@ -4668,17 +4676,29 @@ function loadHoursMeta(silent) {
     });
 }
 
+// 📅 근무시간: 올해 1월 ~ 이번 달 보기·입력 · 다음 달은 연차·반차·공가만 미리 (시트 AE1 달이 아니면 서버가 '근무_데이터'·schedule에 바로 저장)
+function hMonthInfo(d) {
+  var today = (H.meta && H.meta.today) || ymdLocal();
+  var y = +String(d).slice(0, 4), m = +String(d).slice(5, 7), ty = +today.slice(0, 4), tm = +today.slice(5, 7), nx = Math.min(12, tm + 1);
+  var view = y === ty && m >= 1 && m <= nx;
+  return { view: view, edit: view, leaveOnly: view && m > tm, m: m, tm: tm, nx: nx, cur: m === tm };
+}
+function hDateRange() {   // 날짜 고르기: 올해 1/1 ~ 다음 달 말일
+  var today = (H.meta && H.meta.today) || ymdLocal(), y = +today.slice(0, 4), m = Math.min(12, +today.slice(5, 7) + 1);
+  var i = $("hdate"); i.min = y + "-01-01"; i.max = y + "-" + ("0" + m).slice(-2) + "-" + ("0" + new Date(y, m, 0).getDate()).slice(-2);
+}
 function checkMonth() {
   var w = $("hwarn");
   var ok = true;
   var d = $("hdate").value;
+  w.className = "warn";
   if (H.meta && d) {
-    var mm = parseInt(d.split("-")[1], 10);
-    if (mm !== H.meta.month) {
-      w.style.display = "block";
-      w.textContent = "⚠️ 시트 월(" + H.meta.month + "월)과 선택한 날짜(" + mm + "월)가 달라요. 시트 AE1 월을 먼저 바꿔 주세요.";
-      ok = false;
-    } else w.style.display = "none";
+    var k = hMonthInfo(d);
+    w.style.display = "block";
+    if (!k.view) { w.textContent = "⚠️ 근무시간은 올해 1월부터 " + k.nx + "월까지만 볼 수 있어요."; ok = false; }
+    else if (k.leaveOnly) { w.className = "warn info"; w.textContent = "🌴 " + k.m + "월은 아직이라 연차·반차·공가만 미리 넣을 수 있어요.\n근무시간은 " + k.m + "월이 되면 넣어 주세요."; }
+    else if (!k.cur) { w.className = "warn info"; w.textContent = "📅 " + k.m + "월 근무시간이에요. 여기서 바로 입력·수정할 수 있어요."; }
+    else w.style.display = "none";
   }
   $("hsave").disabled = !ok;
   $("hclr").disabled = !ok;
@@ -4718,6 +4738,7 @@ function renderMonth(name, r) {
   var sel = $("hdate").value;
   var today = H.meta ? H.meta.today : "";
   var mm = parseInt(r.ym.slice(5), 10);
+  var isNow = today && r.ym === today.slice(0, 7);
   r.days.forEach(function (x) { if (WEEKEND_MARK.test(x.v)) x.v = ""; });
   // 칸은 비었지만 schedule에 휴가가 적힌 날 (시트엔 안 들어가 있음 → 표시만)
   var schm = (H.meta && H.meta.week && H.meta.week.sch) || {};
@@ -4736,10 +4757,24 @@ function renderMonth(name, r) {
   h4.appendChild(document.createTextNode("📅 "));
   h4.appendChild(el("span", null, name));
   h4.appendChild(document.createTextNode(" · " + mm + "월 입력 내역"));
+  // ‹ › 지난달 · 다음 달 (올해 1월 ~ 이번 달)
+  var nav = el("span", "mnav"), tmM = today ? Math.min(12, +today.slice(5, 7) + 1) : mm;   // › 다음 달까지 (연차류만 입력)
+  var pvb = el("button", null, "‹"), nxb = el("button", null, "›"); pvb.type = nxb.type = "button";
+  pvb.setAttribute("aria-label", "이전 달"); nxb.setAttribute("aria-label", "다음 달");
+  pvb.disabled = mm <= 1; nxb.disabled = mm >= tmM;
+  function goMon(m2) {
+    var y = +r.ym.slice(0, 4), ym2 = y + "-" + ("0" + m2).slice(-2);
+    var day = Math.min(+(sel || "01").slice(8, 10) || 1, new Date(y, m2, 0).getDate());
+    $("hdate").value = today && ym2 === today.slice(0, 7) ? today : ym2 + "-" + ("0" + day).slice(-2);
+    H.otherOK = false; resetConfirm(); refreshCell();
+  }
+  pvb.onclick = function () { goMon(mm - 1); };
+  nxb.onclick = function () { goMon(mm + 1); };
+  nav.appendChild(pvb); nav.appendChild(nxb); h4.appendChild(nav);
   b.appendChild(h4);
-  var sum = el("div", "msum", "입력 " + filled + "일 · 이번 달 계 " + (r.total || "-"));
+  var sum = el("div", "msum", "입력 " + filled + "일 · " + mm + "월 계 " + (r.total || "-"));
   var wm = wkMine(name), wl = H.meta && H.meta.week;
-  if (wm != null && wl) {
+  if (wm != null && wl && isNow) {
     sum.appendChild(document.createElement("br"));
     var wt = "⏱ 이번 주 " + wkFmt(wm) + "시간" + (wm >= wl.limit ? " · ✅ " + wl.limit + "시간 달성" : " · " + wl.limit + "시간까지 " + wkFmt(wl.limit - wm) + "시간 남음");
     if (wm >= wl.limit) sum.appendChild(el("b", "okc", wt)); else sum.appendChild(document.createTextNode(wt));
@@ -4796,7 +4831,7 @@ function applyCell(r) {
   box.appendChild(document.createTextNode("현재 입력값: "));
   box.appendChild(el("b", null, r.cur === "" ? "(비어 있음)" : r.cur + (r.formula ? " (수식)" : "")));
   box.appendChild(document.createElement("br"));
-  box.appendChild(document.createTextNode("이번 달 계: " + (r.total == null ? "갱신 중…" : (r.total || "-"))));
+  box.appendChild(document.createTextNode((r.ym ? +r.ym.slice(5) + "월" : "이번 달") + " 계: " + (r.total == null ? "갱신 중…" : (r.total || "-"))));
   H.curSched = r.sched || "";
   H.curVal = r.cur === "" && r.formula ? "(수식)" : String(r.cur == null ? "" : r.cur);
   if (H.curSched) box.appendChild(el("span", "sch", "📅 schedule: " + H.curSched));
@@ -4856,7 +4891,8 @@ function refreshCell() {
   var name = $("hname").value, date = $("hdate").value;
   var box = $("hcur");
   if (!H.meta || !name || !date) { box.textContent = "이름과 날짜를 선택하세요."; $("hmon").style.display = "none"; return; }
-  if (!checkMonth()) { box.textContent = "-"; $("hmon").style.display = "none"; return; }
+  checkMonth();
+  if (!hMonthInfo(date).view) { box.textContent = "-"; $("hmon").style.display = "none"; return; }
   var t = ++H.token;
   // ⚡ 미리 받아둔 전원 입력값으로 달력·현재값을 바로 그림 → 서버 응답(schedule·수식 여부)은 뒤에서 덮어씀
   var q = gridCell(name, date);
@@ -4950,9 +4986,15 @@ function doSave(value, force, delForce) {
   var label = $("hsave").textContent;
   var note = $("hnoteBox").style.display === "none" ? "" : $("hnote").value.trim();
   var leave = "";
+  var lo = hMonthInfo(date).leaveOnly;
+  if (lo && value !== "__CLEAR__" && !LEAVE_RX.test(String(value).trim())) {
+    var mm0 = +date.slice(5, 7);
+    showHErr(mm0 + "월은 아직이라 연차·반차·공가만 미리 넣을 수 있어요.\n근무시간은 " + mm0 + "월이 되면 넣어 주세요."); return;
+  }
   if (value !== "__CLEAR__") {
     var lm = String(value).trim().match(LEAVE_RX);
-    if (lm && HALF_HRS[lm[1]]) {   // 반차: 칸에는 근무시간 숫자, schedule에는 반차
+    if (lm && HALF_HRS[lm[1]] && lo) { leave = lm[1]; value = HALF_HRS[lm[1]]; }   // 다음 달 반차: 근무시간은 그 달에 (서버는 schedule에만 기록)
+    else if (lm && HALF_HRS[lm[1]]) {   // 반차: 칸에는 근무시간 숫자, schedule에는 반차
       var hrs = $("hhrs").value.trim();
       if (!/^\d+(\.\d+)?$/.test(hrs)) { showHErr("반차일 때는 실제 근무시간을 숫자로 넣어 주세요. (예: 4)"); return; }
       leave = lm[1]; value = hrs;
@@ -4996,14 +5038,16 @@ function doSave(value, force, delForce) {
         if (r.cur !== "") prevDone(name, date);   // ⏰ 어제 미입력에서 빼기
         if (r.top !== undefined) renderTop(r.top);
         if (r.week && H.meta) { H.meta.week = r.week; renderWeek(r.week); }
-        try { var gr = H.meta.grid.rows[name]; gr.v[+date.slice(8, 10) - 1] = r.cur; } catch (eg) {}   // 미리 받아둔 값도 갱신
-        if (H.meta) cset("hours", H.meta);
-        renderMissing(r.missing);
+        if (!r.past) {   // 📅 지난달 저장은 이번 달 표·미입력과 상관없음
+          try { if (+date.slice(5, 7) === H.meta.grid.m) { var gr = H.meta.grid.rows[name]; gr.v[+date.slice(8, 10) - 1] = r.cur; } } catch (eg) {}   // 미리 받아둔 값도 갱신
+          if (H.meta) cset("hours", H.meta);
+          renderMissing(r.missing);
+        }
         H.token++;   // 진행 중인 조회 결과는 버리고 저장 응답으로 바로 갱신
         if (r.cell && $("hname").value === name && $("hdate").value === date) applyCell(r.cell);
         else refreshCell();
         // 합계(계)·TOP1은 시트 재계산 후 값이라 뒤에서 조용히 다시 불러옴
-        if (r.total == null) setTimeout(function () { loadHoursMeta(true); }, 300);
+        if (r.total == null && !r.past) setTimeout(function () { loadHoursMeta(true); }, 300);
       }
     })
     .catch(function (e) {
@@ -5059,10 +5103,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-30-5";
+var APP_VER = "2026-10-30-7";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-30-7", ["근무시간: 달력 ‹ ›로 올해 1월부터 보고 입력할 수 있어요 (다음 달은 연차·반차·공가만 미리)", "연차 현황 달력: 올해 1월 ~ 다음 달까지 볼 수 있어요"]],
   ["2026-10-30-5", ["시트 업로드: 완료를 잘못 눌렀으면 되돌릴 수 있어요 (완료 직후 알림 · 아래 '최근 완료')"]],
   ["2026-10-30-4", ["작은 폰에서 처음 시작 화면이 잘리지 않게 고쳤어요"]],
   ["2026-10-30-1", ["금일·명일: 동탄 장비 중 Backlog 담당자가 비어 있으면 'B팀 · 담당자 미지정'으로 보여요"]],
