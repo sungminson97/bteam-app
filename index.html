@@ -4664,6 +4664,7 @@ function loadHoursMeta(silent) {
       cset("hours", m);
       if (!(H.meta && sameData(H.meta, m))) applyMeta(m, false);   // 같으면 다시 안 그림 (깜빡임 없음)
       else H.meta = m;
+      setTimeout(hpPrefetch, 1500);   // 📅 지난달 미리 받아 두기 (뒤에서 · 10분에 한 번)
       if (t !== H.token) return "";   // 그 사이 이름/날짜를 바꿨으면 그쪽 결과를 씀
       if (c && c.name === $("hname").value && c.ymd === $("hdate").value) applyCell(c);
       else refreshCell();
@@ -4873,11 +4874,39 @@ function toast(msg, bad, act) {
 }
 
 // 미리 받아둔 값(H.meta.grid)으로 getHoursCell 응답과 같은 모양 만들기 (없으면 null)
+// ⚡ 다른 달 전원 값 (서버가 지난달 칸을 줄 때 같이 옴) → 폰에 기억해 두고 다음부턴 바로 그림
+var HPG = null;
+function hpgAll() { if (!HPG) { try { HPG = cget("hpg") || {}; } catch (e) { HPG = {}; } } return HPG; }
+function hpgPut(g) {
+  if (!g || !g.ym || !g.rows) return;
+  var all = hpgAll(); g.at = Date.now(); all[g.ym] = g;
+  try { cset("hpg", all); } catch (e) {}
+}
+// 📅 지난달 미리 받아 두기 (근무시간 탭 열 때 뒤에서 조용히 · 10분 안에 받은 건 다시 안 받음)
+function hpPrefetch() {
+  try {
+    var today = (H.meta && H.meta.today) || ymdLocal(), y = +today.slice(0, 4), m = +today.slice(5, 7);
+    if (m <= 1) return;
+    var ym = y + "-" + ("0" + (m - 1)).slice(-2), g = hpgAll()[ym], nm = $("hname").value || myName();
+    if (!nm || (H.meta && H.meta.month === m - 1) || (g && Date.now() - g.at < 600000)) return;
+    call("getHoursCell", [nm, ym + "-01"]).then(function (r) { if (r && r.grid) hpgPut(r.grid); }).catch(function () {});
+  } catch (e) {}
+}
 function gridCell(name, date) {
   var g = H.meta && H.meta.grid;
-  if (!g || !g.rows || !g.rows[name] || !date) return null;
+  if (!date) return null;
   var y = +date.slice(0, 4), m = +date.slice(5, 7), day = +date.slice(8, 10);
-  if (m !== g.m) return null;
+  if (!g || m !== g.m) {   // 📅 다른 달: 받아 둔 게 있으면 그걸로
+    var pg = hpgAll()[date.slice(0, 7)];
+    if (!pg || !pg.rows || !pg.rows[name]) return null;
+    var k = hMonthInfo(date), today0 = (H.meta && H.meta.today) || ymdLocal(), ym0 = date.slice(0, 7), pr = pg.rows[name], ds = [];
+    for (var d0 = 1; d0 <= new Date(y, m, 0).getDate(); d0++) {
+      var key0 = ym0 + "-" + ("0" + d0).slice(-2);
+      ds.push({ d: d0, dow: new Date(y, m - 1, d0).getDay(), v: pr.v[d0 - 1] || "", fut: key0 > today0 });
+    }
+    return { name: name, ymd: date, cur: pr.v[day - 1] || "", formula: false, total: pr.t, ym: ym0, days: ds, sched: "", past: true, edit: true, leaveOnly: k.leaveOnly };
+  }
+  if (!g.rows || !g.rows[name]) return null;
   var row = g.rows[name], today = H.meta.today || ymdLocal(), ym = date.slice(0, 7);
   var last = new Date(y, m, 0).getDate(), days = [];
   for (var d = 1; d <= Math.min(last, row.v.length); d++) {
@@ -4900,6 +4929,7 @@ function refreshCell() {
   else { box.textContent = "현재 값 확인 중…"; monLoading(name); }
   call("getHoursCell", [name, date])
     .then(function (r) {
+      if (r && r.grid) hpgPut(r.grid);   // 📅 지난달 전원 값 기억
       if (t !== H.token) return;
       applyCell(r);
     })
@@ -5047,6 +5077,7 @@ function doSave(value, force, delForce) {
         if (r.cur !== "") prevDone(name, date);   // ⏰ 어제 미입력에서 빼기
         if (r.top !== undefined) renderTop(r.top);
         if (r.week && H.meta) { H.meta.week = r.week; renderWeek(r.week); }
+        if (r.past && r.cell && r.cell.grid) hpgPut(r.cell.grid);   // 📅 지난달 기억 값도 새로
         if (!r.past) {   // 📅 지난달 저장은 이번 달 표·미입력과 상관없음
           try { if (+date.slice(5, 7) === H.meta.grid.m) { var gr = H.meta.grid.rows[name]; gr.v[+date.slice(8, 10) - 1] = r.cur; } } catch (eg) {}   // 미리 받아둔 값도 갱신
           if (H.meta) cset("hours", H.meta);
@@ -5112,10 +5143,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-30-8";
+var APP_VER = "2026-10-30-9";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-30-9", ["근무시간: 지난달 달력이 더 빨리 떠요"]],
   ["2026-10-30-8", ["근무시간: 다음 달은 연차·반차·공가 버튼만 보여요 (근무시간은 그 달이 되면)"]],
   ["2026-10-30-7", ["근무시간: 달력 ‹ ›로 올해 1월부터 보고 입력할 수 있어요 (다음 달은 연차·반차·공가만 미리)", "연차 현황 달력: 올해 1월 ~ 다음 달까지 볼 수 있어요"]],
   ["2026-10-30-5", ["시트 업로드: 완료를 잘못 눌렀으면 되돌릴 수 있어요 (완료 직후 알림 · 아래 '최근 완료')"]],
