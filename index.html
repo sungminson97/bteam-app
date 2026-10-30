@@ -4918,10 +4918,19 @@ function updNote() {
   var m = val.match(LEAVE_RX);
   // 칩 강조
   var chips = $("chips").children, lk = leaveLocked(), ck = isChief();
+  var hd = $("hdate").value, lo = !!(H.meta && hd && hMonthInfo(hd).leaveOnly);   // 🌴 다음 달: 연차·반차·공가만
   for (var i = 0; i < chips.length; i++) {
     chips[i].className = "chip" + (chips[i].textContent === val ? " on" : "");
     chips[i].disabled = ck || (lk && LEAVE_RX.test(chips[i].textContent));   // 🔒 남의 연차류는 관리자만 (숫자 대신 입력은 됨) / 총괄팀장은 전부
+    chips[i].style.display = lo && !LEAVE_RX.test(chips[i].textContent) ? "none" : "";   // 🌴 다음 달엔 숫자 칩 숨김
   }
+  $("hval").placeholder = lo ? "연차 / 오전반차 / 공가" : "예: 8 / 10.5 / 연차";
+  var loBad = lo && !!val && !m;
+  if (lo && !ck) $("hsave").disabled = loBad;
+  var lw = $("hlonly");
+  if (!lw) { lw = el("div", "warn"); lw.id = "hlonly"; $("chips").parentNode.insertBefore(lw, $("chips")); }
+  lw.style.display = loBad ? "block" : "none";
+  if (loBad) { var mm1 = +hd.slice(5, 7); lw.textContent = "🌴 " + mm1 + "월은 아직이라 근무시간 숫자는 못 넣어요.\n연차·반차·공가만 미리 넣을 수 있어요."; lw.style.whiteSpace = "pre-line"; }
   $("hlvlock").style.display = lk ? "block" : "none";
   $("hlvlock").textContent = ck ? "🔒 총괄팀장은 근무시간을 보기만 할 수 있어요." : "🔒 다른 사람 칸은 숫자만 대신 입력할 수 있어요.\n연차류 입력·칸 비우기는 본인 또는 관리자만 돼요.";
   $("hclr").className = "clr" + (lk ? " lock" : "");
@@ -4945,7 +4954,7 @@ function updNote() {
   if (m[2] && !$("hnote").value) $("hnote").value = m[2];
 
   var isHalf = !!HALF_HRS[m[1]];
-  $("hhrsRow").style.display = isHalf ? "grid" : "none";
+  $("hhrsRow").style.display = isHalf && !lo ? "grid" : "none";   // 🌴 다음 달 반차: 근무시간은 그 달에
   if (isHalf && H.half !== m[1]) $("hhrs").value = HALF_HRS[m[1]];   // 반차 종류를 바꿀 때만 기본값
   H.half = isHalf ? m[1] : "";
 
@@ -4954,7 +4963,7 @@ function updNote() {
   var h = $("hnoteHint");
   h.innerHTML = "";
   h.appendChild(document.createTextNode("저장하면 · 근무시간 칸: "));
-  h.appendChild(el("b", null, isHalf ? ($("hhrs").value.trim() || "?") : m[1]));
+  h.appendChild(el("b", null, lo ? (isHalf ? "(" + (+hd.slice(5, 7)) + "월이 되면 근무시간 입력)" : m[1]) : isHalf ? ($("hhrs").value.trim() || "?") : m[1]));
   h.appendChild(document.createElement("br"));
   h.appendChild(document.createTextNode("　　　　 · schedule: "));
   h.appendChild(el("b", null, nm + " " + m[1] + (note ? " (" + note + ")" : "")));
@@ -5103,10 +5112,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-30-7";
+var APP_VER = "2026-10-30-8";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-30-8", ["근무시간: 다음 달은 연차·반차·공가 버튼만 보여요 (근무시간은 그 달이 되면)"]],
   ["2026-10-30-7", ["근무시간: 달력 ‹ ›로 올해 1월부터 보고 입력할 수 있어요 (다음 달은 연차·반차·공가만 미리)", "연차 현황 달력: 올해 1월 ~ 다음 달까지 볼 수 있어요"]],
   ["2026-10-30-5", ["시트 업로드: 완료를 잘못 눌렀으면 되돌릴 수 있어요 (완료 직후 알림 · 아래 '최근 완료')"]],
   ["2026-10-30-4", ["작은 폰에서 처음 시작 화면이 잘리지 않게 고쳤어요"]],
