@@ -251,6 +251,19 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 @keyframes upin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 #toast{white-space:pre-line;position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translate(-50%,-160%);z-index:60;width:max-content;max-width:92%;padding:12px 18px;border-radius:12px;background:var(--ok);color:#fff;font-size:15px;font-weight:700;line-height:1.4;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:transform .25s ease;pointer-events:none}
 #toast.on{transform:translate(-50%,0)}
+#toast.act.on{pointer-events:auto;display:flex;align-items:center;gap:12px;text-align:left}
+#toast .tact{flex:none;border:0;border-radius:10px;padding:7px 12px;background:rgba(255,255,255,.22);color:#fff;font:inherit;font-size:14px;font-weight:800}
+.card.up.dnrec .hd{cursor:pointer}
+.card.up.dnrec .hd .arr{margin-left:6px;color:var(--sub);font-size:13px;transition:transform .2s}
+.card.up.dnrec.open .hd .arr{transform:rotate(180deg)}
+.card.up.dnrec ul,.card.up.dnrec .hint{display:none}
+.card.up.dnrec.open ul,.card.up.dnrec.open .hint{display:block}
+.card.up.dnrec .hint{margin-top:8px}
+.card.up.dnrec li{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card.up.dnrec .lb{font-size:12.5px;font-weight:800;color:var(--ok)}
+.card.up.dnrec .who2{width:100%;font-size:12px;color:var(--sub)}
+.card.up.dnrec .undo{margin-left:auto;border:1.5px solid color-mix(in srgb,var(--sub) 35%,transparent);background:transparent;color:var(--text);border-radius:10px;padding:6px 11px;font:inherit;font-size:13px;font-weight:800}
+.card.up.dnrec .undo.sure{background:var(--warn);border-color:var(--warn);color:#fff}
 #toast.bad{background:var(--warn)}
 .card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:12px 14px}
 .card.empty{border-left-color:var(--line);opacity:.55;padding:9px 14px}
@@ -3055,7 +3068,7 @@ $("cfgo").onclick = function () {
       var m = (r && r.error) ? { err: true, t: r.error } : { err: false, t: it.n + " " + s.label + " → 완료 ✔" };
       U.msg = m;
       if (!m.err) upLocal(it, s, false);   // ⚡ 서버 저장 성공 → 화면에서 바로 빼기 (U.msg는 화면 그릴 때 비워지니 m으로 알림)
-      toast((m.err ? "⚠️ " : "✔ ") + m.t, m.err);
+      toast((m.err ? "⚠️ " : "✔ ") + m.t, m.err, m.err ? null : { label: "되돌리기", fn: function () { upUndo({ row: it.row, col: s.col, n: it.n, label: s.label }); } });
       closeConfirm();
       loadUpload();   // 뒤에서 최신으로 다시 확인
     })
@@ -3096,6 +3109,28 @@ function upLocal(it, sheet, opDone) {
   upApply(U.data, e);
   setBadge(U.data.total);
   if (cur === 2) renderUpload(U.data);
+}
+
+// ↩ 완료 되돌리기 (같은 markUploadDone에 "undo" · 3일 안에 완료한 것)
+function upUndo(x, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = "되돌리는 중…"; }
+  callEdit("markUploadDone", [x.row, x.col, x.n, "undo"])
+    .then(function (r) {
+      if (r && r.error) {
+        var old = /이미 '완료'/.test(r.error);   // 예전 서버 (되돌리기 없음)
+        toast("⚠️ " + (old ? "서버가 아직 되돌리기를 몰라요.\n손성민에게 알려 주세요." : r.error), true);
+        if (btn) { btn.disabled = false; btn.classList.remove("sure"); btn.textContent = "되돌리기"; }
+        return;
+      }
+      U.pend = U.pend.filter(function (e) { return !(e.row === x.row && e.n === x.n && e.col === x.col); });   // 방금 뺀 기억 지우기 → 다시 보이게
+      if (U.data && U.data.done) U.data.done = U.data.done.filter(function (y) { return !(y.row === x.row && y.col === x.col); });
+      toast("↩ " + x.n + " " + x.label + "\n다시 '업로드 필요'로 돌렸어요");
+      loadUpload();
+    })
+    .catch(function (e) {
+      toast("⚠️ 되돌리기 실패: " + errText(e), true);
+      if (btn) { btn.disabled = false; btn.classList.remove("sure"); btn.textContent = "되돌리기"; }
+    });
 }
 
 function renderUpload(d) {
@@ -3175,6 +3210,39 @@ function renderUpload(d) {
     card.appendChild(ul);
     box.appendChild(card);
   });
+
+  // ↩ 최근 완료 (3일) — 잘못 눌렀으면 되돌리기
+  if (d.done && d.done.length) {
+    var dc = el("div", "card up dnrec" + (U.dnOpen ? " open" : ""));
+    var dh = el("div", "hd");
+    dh.appendChild(el("span", "ttl", "↩ 최근 완료"));
+    dh.appendChild(el("span", "cnt", d.done.length + "건"));
+    dh.appendChild(el("span", "arr", "▾"));
+    dh.onclick = function () { U.dnOpen = !U.dnOpen; dc.className = "card up dnrec" + (U.dnOpen ? " open" : ""); };
+    dc.appendChild(dh);
+    var dul = el("ul");
+    d.done.forEach(function (x) {
+      var li = el("li");
+      var eqn = el("span", "eq tapn", x.n); eqn.onclick = function () { openEquip(x.n); };
+      li.appendChild(eqn);
+      li.appendChild(el("span", "lb", "✔ " + x.label));
+      var ub = el("button", "undo", "되돌리기"); ub.type = "button";
+      ub.onclick = function () {   // 두 번 눌러야 (실수 방지)
+        if (!ub.classList.contains("sure")) {
+          ub.classList.add("sure"); ub.textContent = "한 번 더 누르면 되돌려요";
+          setTimeout(function () { if (!ub.disabled) { ub.classList.remove("sure"); ub.textContent = "되돌리기"; } }, 4000);
+          return;
+        }
+        upUndo(x, ub);
+      };
+      li.appendChild(ub);
+      li.appendChild(el("span", "who2", x.at + " · " + (x.by === "시트" ? "시트에서 완료" : (x.by ? x.by + " 완료" : "앱에서 완료"))));
+      dul.appendChild(li);
+    });
+    dc.appendChild(dul);
+    dc.appendChild(el("div", "hint", "잘못 눌렀으면 [되돌리기] → 다시 '업로드 필요'로 돌아가요. (3일 안에 완료한 것만)"));
+    box.appendChild(dc);
+  }
 
   // ✏️ 최근 앱에서 입력한 작업자 (14일 · 잘못 넣었으면 수정/비우기)
   if (false && d.recent && d.recent.length) {   // ✏️ 최근 입력한 작업자 칸: 2026-10-22 뺌 (작업자 수정은 내 이름 카드 ✎에서)
@@ -4755,13 +4823,18 @@ function xBurst() {
     setTimeout(function () { if (box.parentNode) box.parentNode.removeChild(box); }, 1300);
   } catch (e) {}
 }
-function toast(msg, bad) {
+function toast(msg, bad, act) {
   if (!bad && /✔/.test(msg)) setTimeout(xBurst, 120);   // 🎄 완료·저장 성공
   var t = $("toast");
   t.textContent = msg;
-  t.className = (bad ? "bad " : "") + "on";
+  if (act) {   // ↩ 버튼 달린 알림 (예: 되돌리기) · 6초
+    var b = el("button", "tact", act.label); b.type = "button";
+    b.onclick = function (e) { e.stopPropagation(); clearTimeout(TT); t.className = ""; act.fn(); };
+    t.appendChild(b);
+  }
+  t.className = (bad ? "bad " : "") + (act ? "act " : "") + "on";
   clearTimeout(TT);
-  TT = setTimeout(function () { t.className = bad ? "bad" : ""; }, bad ? 3500 : 2500);
+  TT = setTimeout(function () { t.className = bad ? "bad" : ""; }, act ? 6000 : bad ? 3500 : 2500);
 }
 
 // 미리 받아둔 값(H.meta.grid)으로 getHoursCell 응답과 같은 모양 만들기 (없으면 null)
@@ -4986,10 +5059,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-30-4";
+var APP_VER = "2026-10-30-5";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-30-5", ["시트 업로드: 완료를 잘못 눌렀으면 되돌릴 수 있어요 (완료 직후 알림 · 아래 '최근 완료')"]],
   ["2026-10-30-4", ["작은 폰에서 처음 시작 화면이 잘리지 않게 고쳤어요"]],
   ["2026-10-30-1", ["금일·명일: 동탄 장비 중 Backlog 담당자가 비어 있으면 'B팀 · 담당자 미지정'으로 보여요"]],
   ["2026-10-29-4", ["장비 검색: ▲팀/담당자 미지정 장비가 눈에 잘 띄게 바뀌었어요"]],
