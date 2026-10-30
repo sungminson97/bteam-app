@@ -654,6 +654,7 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 #splash .pts i{position:absolute;bottom:20%;width:var(--ps);height:var(--ps);border-radius:50%;background:var(--accent);opacity:0;animation:sxPt var(--pt) ease-in var(--pd) infinite}
 #splash .wt{position:absolute;bottom:calc(84px + env(safe-area-inset-bottom));color:var(--sub);font-size:12px;font-weight:700;opacity:0;transition:opacity .4s}
 #splash .wt.on{opacity:.9;animation:sxPulse 1.4s ease-in-out infinite}
+#splash .wt.fst{left:24px;right:24px;text-align:center;white-space:pre-line;line-height:1.55;font-size:13px;color:var(--text);opacity:.85;animation:none}
 #splash .ft{position:absolute;bottom:calc(36px + env(safe-area-inset-bottom));opacity:0;animation:sxSoft .8s ease 2.2s forwards}
 #splash .ft img{height:20px;display:block}
 #splash .tx{display:flex;flex-direction:column;align-items:center;margin-top:18px}
@@ -871,7 +872,7 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 #pushov .pben li{grid-template-columns:44px 1fr;align-items:center}
 #pushov.first{z-index:120;align-items:stretch;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--obg)}
 #pushov.first .obst{display:flex}
-#pushov.first .box{position:relative;max-width:420px;width:100%;margin:0 auto;min-height:100%;align-content:start;gap:0;background:transparent;box-shadow:none;border-radius:0;padding:calc(92px + env(safe-area-inset-top)) 22px calc(20px + env(safe-area-inset-bottom))}
+#pushov.first .box{position:relative;max-width:420px;width:100%;margin:0 auto;min-height:100%;align-content:center;gap:0;background:transparent;box-shadow:none;border-radius:0;padding:calc(92px + env(safe-area-inset-top)) 22px calc(20px + env(safe-area-inset-bottom))}
 #pushov.first .pushic{display:flex;justify-self:center}
 #pushov.first #pushttl{margin:26px 0 0;font-size:26px;font-weight:900;letter-spacing:-.025em;line-height:1.3;text-align:center}
 #pushov.first .pben{margin-top:26px;padding:8px 18px;border-radius:20px;background:var(--ocard);border:1px solid var(--obd);box-shadow:0 18px 40px -26px rgba(16,32,64,.35);gap:0}
@@ -880,14 +881,37 @@ html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adju
 #pushov.first .pben small{font-weight:500;color:var(--oink);margin-top:2px}
 #pushov.first .pben b{color:var(--text)}
 #pushov.first #pushsub{margin-top:14px;text-align:center;color:var(--oink);font-size:13px}
-#pushov.first .who,#pushov.first #pushchips,#pushov.first #pushunlock,#pushov.first #pushnag{display:none!important}
+#pushov.first #pushlead,#pushov.first .pben,#pushov.first .who,#pushov.first #pushchips,#pushov.first #pushunlock,#pushov.first #pushnag{display:none!important}
 #pushov.first #pushmsg{margin-top:10px;text-align:center;color:var(--warn);font-size:13px;white-space:pre-line}
 #pushov.first #pushmsg:empty{display:none}
 #pushov.first .phelp{margin-top:20px}
-#pushov.first .ob{margin-top:26px;display:flex;flex-direction:column-reverse;gap:4px}
+#pushov.first .ob{margin-top:34px;display:flex;flex-direction:column-reverse;gap:4px}
 #pushov.first #pushgo{height:56px;padding:0;border:0;border-radius:16px;font-size:17px;font-weight:800;letter-spacing:-.02em;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 14px 28px -14px var(--accent)}
 #pushov.first #pushno{height:44px;border:0;background:none;color:var(--oink);font-size:13px;font-weight:600;opacity:.75}
 @media (prefers-reduced-motion:reduce){.obic .sp,#nmcf .av{animation:none}}
+/* 📱 키 작은 폰(SE·미니 등): 처음 화면이 잘리지 않게 간격·아이콘 줄임 */
+@media (max-height:760px){
+  .obst{top:calc(12px + env(safe-area-inset-top));gap:6px}
+  .obic{width:58px;height:58px;border-radius:19px}
+  .obic svg{width:27px;height:27px}
+  .obh,#nmov.first #nmttl,#pushov.first #pushttl{margin-top:14px;font-size:22px}
+  .obp,#nmov.first #nmdesc,#pushov.first #pushlead{margin-top:6px;font-size:14px;line-height:1.5}
+  #gate{padding-top:calc(52px + env(safe-area-inset-top));padding-bottom:calc(30px + env(safe-area-inset-bottom))}
+  #nmov.first .box,#pushov.first .box{padding-top:calc(54px + env(safe-area-inset-top));padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+  #nmov.first .chips{margin-top:16px;gap:8px}
+  #nmov.first .chip{padding:10px 4px 9px;gap:5px;font-size:14px}
+  #nmov.first .chip::before{width:32px;height:32px;font-size:14px}
+  #nmov.first .ob{margin-top:16px}
+  #nmov.first #nmgo,#pushov.first #pushgo,.obgo{height:50px}
+  #pushov.first .pben{margin-top:14px;padding:2px 14px}
+  #pushov.first .pben li{padding:9px 0;font-size:14.5px}
+  #pushov.first .pben .i{width:30px;height:30px}
+  #pushov.first .ob{margin-top:28px;gap:0}
+  #pushov.first #pushno{height:40px}
+  #nmcf .av{width:76px;height:76px;font-size:30px}
+  #nmcf .nm{margin-top:16px;font-size:22px}
+  #nmcf .wn{margin-top:12px;padding:12px 14px}
+}
 /* ✨ 메인 화면 디자인 (헤더 · 탭 · 오늘 요약 · 공정 카드) — 데이터·동작은 그대로, 모양만 */
 #app{--cbd:color-mix(in srgb,var(--line) 85%,transparent);--csh:0 1px 2px rgba(16,32,64,.04),0 12px 28px -22px rgba(16,32,64,.38)}
 @media (prefers-color-scheme:dark){#app{--csh:0 1px 0 rgba(255,255,255,.03) inset,0 12px 28px -20px rgba(0,0,0,.8)}}
@@ -1911,13 +1935,12 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
     <div class="obic pushic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></div>
     <div class="pnag" id="pushnag" style="display:none"></div>
     <h3 id="pushttl">🔔 팀 공지, 폰으로 바로 받기</h3>
-    <p id="pushlead">팀 공지 · 업로드 · 근무시간 안내는
-<b>모두 알림으로만 와요.</b>
-팀원 모두 켜는 필수 설정이에요.</p>
+    <p id="pushlead">필요한 순간에만 짧게 알려 드려요.
+<b>쓸데없는 알림은 안 보내요.</b></p>
     <ul class="pben">
-      <li><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3l7 4V6l-7 4z"/><path d="M17.5 9a4 4 0 0 1 0 6"/></svg></span><div><b>팀 공지</b>가 오면 바로 알림<small>앱을 안 열어도 폰 화면에 떠요</small></div></li>
-      <li class="nch"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="4"/><path d="M12 4v2M5.6 7.1L7 8.5M18.4 7.1L17 8.5M3 13h2M19 13h2M4 19.5h16"/></svg></span><div><b>아침 8시 30분</b> 오늘 할 일<small>업로드할 장비 · 이번 주 남은 근무시간</small></div></li>
-      <li class="nch"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span><div><b>17:30</b> 근무시간 깜빡했을 때만<small>이미 입력했으면 안 와요</small></div></li>
+      <li><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3l7 4V6l-7 4z"/><path d="M17.5 9a4 4 0 0 1 0 6"/></svg></span><div><b>팀 공지</b> 놓칠 걱정 없이<small>단톡방 위로 올려 찾아볼 필요 없어요</small></div></li>
+      <li class="nch"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="4"/><path d="M12 4v2M5.6 7.1L7 8.5M18.4 7.1L17 8.5M3 13h2M19 13h2M4 19.5h16"/></svg></span><div><b>출근길</b>에 오늘 일정 한눈에<small>앱 안 열어도 오늘 장비 · 근무시간이 보여요</small></div></li>
+      <li class="nch"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span><div>근무시간 깜빡해도 <b>챙겨 드려요</b><small>이미 입력했으면 안 와요</small></div></li>
     </ul>
     <p class="sub" id="pushsub" style="display:none"></p>
     <div class="phelp" id="pushhelp" style="display:none"></div>
@@ -4963,10 +4986,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-30-1";
+var APP_VER = "2026-10-30-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-30-4", ["작은 폰에서 처음 시작 화면이 잘리지 않게 고쳤어요"]],
   ["2026-10-30-1", ["금일·명일: 동탄 장비 중 Backlog 담당자가 비어 있으면 'B팀 · 담당자 미지정'으로 보여요"]],
   ["2026-10-29-4", ["장비 검색: ▲팀/담당자 미지정 장비가 눈에 잘 띄게 바뀌었어요"]],
   ["2026-10-29-3", ["입고 일정·장비 검색도 ▲팀/담당자 미지정으로 표시가 바뀌었어요"]],
@@ -5411,7 +5435,7 @@ function onbPush() {
 function onbFinish() {
   if (!ONB.on || !nameDone()) return;
   ONB.on = false;
-  splashReplay();
+  splashReplay(true);   // 🆕 처음 시작 안내 문구 같이
 }
 
 // 👥 알림 현황 (관리자)
@@ -5782,7 +5806,8 @@ function noticeBtn() {
 
 function ntChips() {
   var f = $("ntfrom"); f.innerHTML = "";
-  (isChief() ? [CHIEF] : NOTICE_ADMINS).forEach(function (n) {   // 👔 총괄팀장 폰은 총괄팀장 이름으로만
+  var me = myName() || sget("pushName") || "";
+  (isChief() ? [CHIEF] : (NOTICE_ADMINS.indexOf(me) >= 0 ? [me] : [])).forEach(function (n) {   // 👤 보낸 사람은 본인 이름만 (총괄팀장 폰은 총괄팀장)
     var c = el("button", "chip" + (n === NT.from ? " on" : ""), n); c.type = "button";
     c.onclick = function () { NT.from = n; ntChips(); ntPreview(); };
     f.appendChild(c);
@@ -6647,7 +6672,7 @@ function splashHide(now) {
   })();
 }
 // 🎬 업데이트 완료 [확인] → 시작 화면 애니메이션을 한 번 보여주고 앱으로 (데이터는 이미 받아 둔 상태)
-function splashReplay() {
+function splashReplay(first) {
   var s = document.getElementById("splash");
   if (!s) return;
   var n = s.cloneNode(true);   // 복제해서 바꿔 끼우면 애니메이션이 처음부터 다시 재생됨
@@ -6657,10 +6682,11 @@ function splashReplay() {
   SPL.shut = true;   // 처음 시작 화면은 이미 끝난 상태 (가려졌다 돌아와도 다시 안 바꿔 끼움)
   var t0 = Date.now(), w = n.querySelector("#splwait");
   if (w) w.className = "wt";
+  if (first && w) { w.textContent = "처음 한 번은 정보를 불러오느라\n조금 느릴 수 있어요. 잠시만 기다려 주세요"; w.className = "wt on fst"; }
   if (!R.dash && Date.now() - LAST.t > 60000 && getPin()) { try { loadDash(false); } catch (e) {} }   // 받아 둔 게 1분 넘었으면 지금 새로 받음
   (function wait() {
     var el2 = Date.now() - t0, fresh = !R.dash && LAST.t > 0 && Date.now() - LAST.t < 5 * 60000;
-    if (el2 > 2500 && !fresh && w) w.className = "wt on";
+    if (el2 > 2500 && !fresh && w && !first) w.className = "wt on";
     if (document.hidden) { t0 = Date.now() - Math.min(el2, 2400); setTimeout(wait, 200); return; }   // 가려져 있는 동안은 시간 안 셈
     if ((splEl(n, t0) >= SPL_MIN && fresh) || el2 > 20000) {
       n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450);
