@@ -3347,7 +3347,8 @@ function renderInsp() {
   if (d.error) { var w = el("div", "warn", d.error); w.style.whiteSpace = "pre-line"; box.appendChild(w); return; }
   $("upd").textContent = updTxt(d, "insp");
   if (IN.eq) { inspDetail(box); return; }
-  box.appendChild(heroX("수입검사 대기", d.pend, "건", [["긴급 대기", d.urg, "건", d.urg > 0], ["NG", d.ng, "건", d.ng > 0], ["장비", d.list.length, "대"]], d.year + "년 · B팀"));
+  var pendEq = d.list.filter(function (x) { return x.p > 0; }).length;
+  box.appendChild(heroX("수입검사 대기", d.pend, "건", [["긴급 대기", d.urg, "건", d.urg > 0], ["NG", d.ng, "건", d.ng > 0], ["대기 장비", pendEq, "대"]], d.year + "년 · B팀"));
   // 🔎 장비명 입력
   var q = el("label", "iq");
   q.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
@@ -3360,8 +3361,8 @@ function renderInsp() {
   var list = el("div", "il"); box.appendChild(list);
   function draw() {
     list.innerHTML = "";
-    var k = inspKey(IN.q), items = d.list.filter(function (x) { return !k || inspKey(x.e).indexOf(k) >= 0; });
-    if (!items.length) { list.appendChild(el("div", "msg", k ? "'" + IN.q + "' 장비의 수입검사가 없어요." : "올해 B팀 장비 수입검사가 없어요.")); return; }
+    var k = inspKey(IN.q), items = d.list.filter(function (x) { return k ? inspKey(x.e).indexOf(k) >= 0 : x.p > 0; });   // 검색 안 하면 검사 대기 있는 장비만
+    if (!items.length) { list.appendChild(el("div", "msg", k ? "'" + IN.q + "' 장비의 수입검사가 없어요." : "검사 대기 중인 B팀 장비가 없어요 👍")); return; }
     var lim = k || IN.all ? items.length : 30;
     items.slice(0, lim).forEach(function (x) {
       var b = el("button", "ie"); b.type = "button";
@@ -3382,25 +3383,32 @@ function renderInsp() {
   inp.onkeydown = function (e) { if (e.key === "Enter") { inp.blur(); var k = inspKey(IN.q), hit = d.list.filter(function (x) { return inspKey(x.e).indexOf(k) >= 0; }); if (hit.length === 1) inspOpen(hit[0].e); } };
   cl.onclick = function (e) { e.preventDefault(); IN.q = ""; inp.value = ""; cl.style.display = "none"; draw(); inp.focus(); };
   draw();
-  box.appendChild(el("div", "hint", "품질팀 수입검사 관리대장(성남·동탄) 기준 · 올해 검사요청 · B팀 장비만이에요. 10분마다 새로 받아요."));
+  box.appendChild(el("div", "hint", "검사 대기 중인 장비만 보여요. 검사가 다 끝난 장비는 장비명으로 검색하면 나와요.\n품질팀 수입검사 관리대장(성남·동탄) · 올해 · B팀 장비 기준 · 10분마다 새로 받아요."));
+  box.lastChild.style.whiteSpace = "pre-line";
 }
 function inspOpen(eq) {
-  IN.eq = eq; window.scrollTo(0, 0);
+  IN.eq = eq; IN.showDone = false; window.scrollTo(0, 0);
+  var sm = inspSum(eq);
+  if (!sm.p) inspLoadAll(eq);   // 검사 대기가 없는 장비(검색으로 연 것) → 완료 목록 바로 받기
   renderInsp();
+}
+function inspSum(eq) { return ((IN.data && IN.data.list) || []).filter(function (x) { return x.e === eq; })[0] || { n: 0, p: 0, u: 0, g: 0 }; }
+function inspLoadAll(eq) {   // 완료 포함 전체 (한 번 받으면 기억)
+  if (IN.rows[eq] && !IN.rows[eq].err) return;
+  IN.rows[eq] = "ld";
   call("getInspRows", [eq]).then(function (r) {
-    if (r && !r.error) IN.rows[eq] = r.rows;
+    IN.rows[eq] = r && !r.error ? r.rows : { err: (r && r.error) || "오류" };
     if (cur === 7 && IN.eq === eq) renderInsp();
-  }).catch(function (e) { if (cur === 7 && IN.eq === eq && !IN.rows[eq]) { IN.rows[eq] = { err: errText(e) }; renderInsp(); } });
+  }).catch(function (e) { IN.rows[eq] = { err: errText(e) }; if (cur === 7 && IN.eq === eq) renderInsp(); });
 }
 function inspDetail(box) {
-  var eq = IN.eq, rows = IN.rows[eq], sum = (IN.data.list || []).filter(function (x) { return x.e === eq; })[0] || { n: 0, p: 0, u: 0, g: 0 };
+  var eq = IN.eq, all = IN.rows[eq], sum = inspSum(eq);
+  var waitRows = (IN.data.wait && IN.data.wait[eq]) || (Array.isArray(all) ? all.filter(function (x) { return !x[14]; }) : null);
   var bk = el("button", "ib", "‹ 장비 목록"); bk.type = "button";
   bk.onclick = function () { IN.eq = ""; renderInsp(); };
   box.appendChild(bk);
   box.appendChild(heroX(eq, sum.p, "건 대기", [["전체", sum.n, "건"], ["긴급 대기", sum.u, "건", sum.u > 0], ["NG", sum.g, "건", sum.g > 0]], "수입검사"));
-  if (!rows) { box.appendChild(el("div", "msg", "불러오는 중…")); return; }
-  if (rows.err) { box.appendChild(el("div", "warn", "불러오기 실패: " + rows.err)); return; }
-  var wait = rows.filter(function (x) { return !x[14]; }), done = rows.filter(function (x) { return x[14]; });
+  var nDone = sum.n - sum.p;
   function sec(title, list) {
     if (!list.length) return;
     var h = el("div", "ih"); h.appendChild(el("h4", null, title + " " + list.length + "건")); box.appendChild(h);
@@ -3425,9 +3433,21 @@ function inspDetail(box) {
       box.appendChild(c);
     });
   }
-  if (!rows.length) box.appendChild(el("div", "msg", "검사 기록이 없어요."));
-  sec("⏳ 검사 대기", wait);
-  sec("✅ 검사 완료", done);
+  if (sum.p) {
+    if (waitRows) sec("⏳ 검사 대기", waitRows);
+    else box.appendChild(el("div", "msg", "불러오는 중…"));
+  }
+  // ✅ 완료: 접어 두고 누르면 그때 받음 (검사 대기 없는 장비는 바로 펼침)
+  if (nDone > 0) {
+    if (!IN.showDone && sum.p) {
+      var sb = el("button", "more", "✅ 검사 완료 " + nDone + "건 보기"); sb.type = "button";
+      sb.onclick = function () { IN.showDone = true; inspLoadAll(eq); renderInsp(); };
+      box.appendChild(sb);
+    } else if (Array.isArray(all)) sec("✅ 검사 완료", all.filter(function (x) { return x[14]; }));
+    else if (all && all.err) box.appendChild(el("div", "warn", "불러오기 실패: " + all.err));
+    else box.appendChild(el("div", "msg", "검사 완료 목록 불러오는 중…"));
+  }
+  if (!sum.n) box.appendChild(el("div", "msg", "검사 기록이 없어요."));
 }
 
 /* ---------- 📍 SITE 고르기 (26_장비_LOG E열: 동탄 / 본사) ---------- */
@@ -5293,11 +5313,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-31-3";
+var APP_VER = "2026-10-31-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
-  ["2026-10-31-3", ["더보기 → 🔍 수입검사: 장비명을 넣으면 그 장비 부품의 수입검사 목록(검사 대기·완료·Result)을 볼 수 있어요"]],
+  ["2026-10-31-4", ["더보기 → 🔍 수입검사: 장비명을 넣으면 그 장비 부품의 수입검사 목록(검사 대기·완료·Result)을 볼 수 있어요"]],
   ["2026-10-30-9", ["근무시간: 지난달 달력이 더 빨리 떠요"]],
   ["2026-10-30-8", ["근무시간: 다음 달은 연차·반차·공가 버튼만 보여요 (근무시간은 그 달이 되면)"]],
   ["2026-10-30-7", ["근무시간: 달력 ‹ ›로 올해 1월부터 보고 입력할 수 있어요 (다음 달은 연차·반차·공가만 미리)", "연차 현황 달력: 올해 1월 ~ 다음 달까지 볼 수 있어요"]],
