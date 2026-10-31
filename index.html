@@ -65,6 +65,7 @@ button.ref{border:1px solid var(--line);background:var(--card);color:var(--text)
 main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:grid;gap:10px;max-width:720px;margin:0 auto}
 #hours,#upload,#leave,#stats,#sched,#srch{display:none}
 /* 테스트 표시 */
+.testtag.vb{background:#64748b;cursor:pointer;margin-left:4px}
 .testtag{display:inline-block;margin-top:2px;align-self:flex-start;padding:1px 7px;border-radius:6px;background:#7c3aed;color:#fff;font-size:11px;font-weight:800;vertical-align:2px}
 /* 🏖️ 오늘 연차 */
 .lvb{background:var(--card);border:1px solid var(--line);border-left:5px solid #f59e0b;border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.6}
@@ -362,6 +363,51 @@ li:first-child{border-top:0}
 .ntbtn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 14px;font-size:14px;font-weight:700;color:var(--accent);text-align:left;cursor:pointer;font-family:inherit;width:100%}
 #ntov textarea,#ntov input,#apov input,#nmov input{font-size:16px;padding:12px 14px;margin-bottom:6px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;font-family:inherit}
 #hwarn{white-space:pre-line}
+/* 🔍 수입검사 */
+:is(#insp,#nc){display:none;gap:12px;padding:12px 16px calc(120px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
+:is(#insp,#nc) .iq{display:flex;align-items:center;gap:8px;padding:0 14px;height:52px;border-radius:16px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh)}
+:is(#insp,#nc) .iq svg{width:18px;height:18px;color:var(--sub);flex:none}
+:is(#insp,#nc) .iq input{flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:16px;font-weight:700;outline:0}
+:is(#insp,#nc) .iq button{border:0;background:var(--bg);color:var(--sub);width:28px;height:28px;border-radius:50%;font-size:14px;font-weight:900}
+:is(#insp,#nc) .il{display:grid;gap:8px}
+:is(#insp,#nc) .ie{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:13px 34px 13px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);position:relative;text-align:left;font:inherit;color:var(--text);width:100%}
+:is(#insp,#nc) .ie::after{content:"";position:absolute;right:15px;top:50%;width:7px;height:7px;margin-top:-4px;border-right:2px solid var(--sub);border-top:2px solid var(--sub);transform:rotate(45deg);opacity:.4}
+:is(#insp,#nc) .ie:active{transform:scale(.985)}
+:is(#insp,#nc) .ie b{font-size:15.5px;font-weight:900;letter-spacing:-.01em}
+:is(#insp,#nc) .ie .cn{display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap}
+:is(#insp,#nc) .ie small{grid-column:1/-1;color:var(--sub);font-size:12px;font-weight:600}
+:is(#insp,#nc) .bd{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:900;white-space:nowrap}
+:is(#insp,#nc) .bd.p{background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--accent)}
+:is(#insp,#nc) .bd.u{background:var(--warn);color:#fff}
+:is(#insp,#nc) .bd.ng{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn)}
+:is(#insp,#nc) .bd.ok{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+:is(#insp,#nc) .bd.s{background:var(--bg);color:var(--sub)}
+:is(#insp,#nc) .ib{height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--card);box-shadow:var(--csh);font:inherit;font-weight:800;color:var(--text);justify-self:start}
+:is(#insp,#nc) .ir{padding:13px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);display:grid;gap:6px}
+:is(#insp,#nc) .ir.wait{border-left:4px solid var(--accent)}
+:is(#insp,#nc) .ir.urg{border-left:4px solid var(--warn)}
+:is(#insp,#nc) .ir .t{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap}
+:is(#insp,#nc) .ir .t b{font-size:15px;font-weight:900;letter-spacing:-.01em;margin-right:auto;word-break:break-all}
+:is(#insp,#nc) .ir .pn{font-size:12.5px;font-weight:700;color:var(--sub);word-break:break-all}
+:is(#insp,#nc) .ir dl{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 8px;margin:2px 0 0;font-size:12.5px}
+:is(#insp,#nc) .ir dt{color:var(--sub);font-weight:600}
+:is(#insp,#nc) .ir dd{margin:0;font-weight:700;word-break:keep-all}
+:is(#insp,#nc) .ir dd.w{grid-column:2/-1;word-break:break-all}
+:is(#insp,#nc) .ir dl{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);padding-top:8px}
+:is(#insp,#nc) .ih{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 2px 0}
+:is(#insp,#nc) .ih h4{margin:0;font-size:15px;font-weight:900}
+:is(#insp,#nc) .more{border:0;background:transparent;color:var(--accent);font:inherit;font-weight:800;padding:8px}
+:is(#insp,#nc) .ir .t>b{color:var(--text)!important;opacity:1}
+:is(#insp,#nc) .ir{color:var(--text)!important}
+#insp .isort{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+#insp .isort::-webkit-scrollbar{display:none}
+#insp .isort button{flex:none;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--cbd,var(--line));background:var(--card);color:var(--sub);font:inherit;font-size:13.5px;font-weight:800}
+#insp .isort button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+:is(#insp,#nc) .ir dd:not(.late){color:var(--text)!important}
+:is(#insp,#nc) .ir dt{color:var(--sub)!important}
+#nc .bd.act{background:color-mix(in srgb,#f59e0b 16%,transparent);color:#c27803}
+#nc .ir dd.late{color:var(--warn)}
+#nc .ir .ds{font-size:13px;font-weight:600;line-height:1.5;color:var(--text);white-space:pre-line;word-break:keep-all}
 #hwarn.info{background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent);border-color:transparent}
 #hours .mon h4{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 #hours .mon h4 .mnav{margin-left:auto;display:flex;align-items:center;gap:4px}
@@ -1259,7 +1305,7 @@ body.kb #tabbar{transform:translateY(110%)}
 /* 📱 아래 탭: 떠 있는 둥근 바 (금일 · 명일 · 업로드 · 근무시간 · 더보기) */
 #tabbar.tabs{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr);gap:4px;padding:7px;border:0;border-radius:30px;background:color-mix(in srgb,var(--card) 94%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent),0 16px 36px -12px rgba(16,32,64,.32);-webkit-backdrop-filter:saturate(1.8) blur(22px);backdrop-filter:saturate(1.8) blur(22px)}
 @media (prefers-color-scheme:dark){#tabbar.tabs{box-shadow:0 0 0 1px rgba(255,255,255,.07),0 16px 36px -12px rgba(0,0,0,.9)}}
-#tabbar #t6,#tabbar #t5,#tabbar #t4{display:none}
+#tabbar #t6,#tabbar #t5,#tabbar #t4,#tabbar #t7,#tabbar #t8{display:none}
 #tabbar .tab{height:58px;border-radius:23px;gap:5px;color:var(--sub);font-size:12px;font-weight:800}
 #tabbar .tab svg{width:25px;height:25px}
 #tabbar .tab.on{color:#fff;background:var(--grd);box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 10px 20px -10px rgba(80,90,255,.95)}
@@ -1829,6 +1875,8 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
   <div class="tab" id="t6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5h11v10h-11z"/><path d="M13.5 10h4l3 3v3.5h-7"/><circle cx="6.5" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg><em>입출하</em><span id="d6"></span></div>
   <div class="tab" id="t5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><rect x="5.5" y="11" width="3" height="6.5" rx="1"/><rect x="10.5" y="6" width="3" height="11.5" rx="1"/><rect x="15.5" y="9" width="3" height="8.5" rx="1"/></svg><em>통계</em><span></span></div>
   <div class="tab" id="t4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M12 11v8.5a2 2 0 0 1-4 0"/></svg><em>연차</em><span></span></div>
+  <div class="tab" id="t7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 12.5l2.2 2.2 4.8-4.8"/></svg><em>수입검사</em><span></span></div>
+  <div class="tab" id="t8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5"/><path d="M12 17.6v.1"/></svg><em>부적합</em><span></span></div>
 </nav>
 <main id="main"><div class="msg">불러오는 중…</div></main>
 
@@ -1888,6 +1936,8 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 <section id="leave"></section>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="lvg" x1="0" y1="0" x2="1" y2="1"><stop class="s1" offset="0" stop-color="#2f6fed"/><stop class="s2" offset="1" stop-color="#8a6bff"/></linearGradient><linearGradient id="lvgr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8a8f"/><stop offset="1" stop-color="#e5484d"/></linearGradient></defs></svg>
 <section id="stats"></section>
+<section id="insp"></section>
+<section id="nc"></section>
 
 <!-- 업로드 완료 확인창 -->
 <div class="ov" id="cfov">
@@ -2424,6 +2474,7 @@ function unlock(pin, pre) {
   $("gate").style.display = "none";
   $("app").style.display = "block";
   if (!nameDone()) nameAsk();   // 🧭 이름을 아직 안 골랐으면 앱 화면보다 이름 고르기가 먼저 (깜빡임 없이)
+  vBadge();
   wipeScreens();
   cur = 0;
   // 저장해 둔 지난 화면이 있으면 먼저 바로 보여주고, 뒤에서 최신으로 갱신
@@ -2462,10 +2513,18 @@ function verify(pin, typed) {
     return j;
   }).then(function (j) {
     G.busy = false;
+    if (j.ok && j.data && j.data.level === "view" && igEnv().pc) {   // 💻 보기 PIN은 PC에서 못 씀 (휴대폰 앱만)
+      sdel("appPin");
+      setGate("enter", "보기 전용은 휴대폰 앱에서만 볼 수 있어요.", true);
+      return;
+    }
     if (j.ok) {
       // 잠금 화면에서 편집 PIN을 넣었으면 편집 권한도 같이 기억
       if (j.data && j.data.level === "edit") sset("editPin", pin);
       else if (typed) sdel("editPin");
+      // 👀 보기 PIN으로 처음 들어오면 이름 안 고르고 보기 전용 (편집 PIN이면 해제)
+      if (j.data && j.data.level === "view") { if (!nameDone()) sset("viewOnly", "1"); }
+      else if (j.data && j.data.level === "edit") sdel("viewOnly");
       unlock(pin, pre);
       return;
     }
@@ -3283,6 +3342,283 @@ function renderUpload(d) {
   }
 }
 
+/* ---------- 🔍 수입검사 (품질팀 수입검사 관리대장 · 성남·동탄 · 올해 · B팀 장비) ----------
+ * 첫 화면: 요약 + 장비 목록 (검사 대기 많은 순) · 장비명 입력하면 바로 걸러짐
+ * 장비를 누르면 그 장비의 검사 목록 (대기 → 긴급 먼저 → 최근 요청 순)
+ */
+var IN = { loaded: false, data: null, q: "", eq: "", rows: {}, all: false };
+function loadInsp(force) {
+  IN.loaded = true; R.insp = true;
+  if (!IN.data) { try { IN.data = cget("insp"); } catch (e) {} }
+  if (cur === 7) renderInsp();
+  return call("getInspData", [!!force])
+    .then(function (d) {
+      R.insp = false;
+      if (d && !d.error) { IN.data = d; cset("insp", d); if (force) IN.rows = {}; }
+      else if (!IN.data) IN.data = d;
+      if (cur === 7) { renderInsp(); if (IN.eq && force) inspOpen(IN.eq); }
+      return (d && d.error) || "";
+    })
+    .catch(function (e) { R.insp = false; if (!IN.data) IN.data = { error: "불러오기 실패: " + errText(e) }; if (cur === 7) renderInsp(); return errText(e); });
+}
+function inspKey(s) { return String(s || "").replace(/\s+/g, "").toUpperCase(); }
+function inspDate(s) { var m = String(s || "").match(/^\d{4}-(\d{2})-(\d{2})/); return m ? (+m[1]) + "/" + (+m[2]) : (s || "-"); }
+function renderInsp() {
+  var box = $("insp"); box.innerHTML = "";
+  var d = IN.data;
+  if (!d) { box.appendChild(el("div", "msg", "불러오는 중…")); return; }
+  if (d.error) { var w = el("div", "warn", d.error); w.style.whiteSpace = "pre-line"; box.appendChild(w); return; }
+  $("upd").textContent = updTxt(d, "insp");
+  if (IN.eq) { inspDetail(box); return; }
+  var pendEq = d.list.filter(function (x) { return x.p > 0; }).length;
+  box.appendChild(heroX("수입검사 대기", d.pend, "건", [["긴급 대기", d.urg, "건", d.urg > 0], ["NG", d.ng, "건", d.ng > 0], ["대기 장비", pendEq, "대"]], d.year + "년 · B팀"));
+  // 🔎 장비명 입력
+  var q = el("label", "iq");
+  q.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+  var inp = el("input"); inp.type = "search"; inp.placeholder = "장비명(프로젝트) 입력 · 예: ECP324"; inp.value = IN.q;
+  inp.setAttribute("autocomplete", "off"); inp.setAttribute("autocapitalize", "characters");
+  q.appendChild(inp);
+  var cl = el("button", null, "✕"); cl.type = "button"; cl.style.display = IN.q ? "" : "none";
+  q.appendChild(cl);
+  box.appendChild(q);
+  // ↕ 정렬: 최근 요청순(기본) · 긴급 먼저 · 대기 많은 순 (폰에 기억)
+  if (!IN.sort) IN.sort = sget("inspSort") || "new";
+  var so = el("div", "isort");
+  [["new", "최근 요청순"], ["urg", "긴급 먼저"], ["cnt", "대기 많은 순"]].forEach(function (o) {
+    var b = el("button", IN.sort === o[0] ? "on" : "", o[1]); b.type = "button";
+    b.onclick = function () { IN.sort = o[0]; sset("inspSort", o[0]); [].forEach.call(so.children, function (c) { c.className = ""; }); b.className = "on"; draw(); };
+    so.appendChild(b);
+  });
+  box.appendChild(so);
+  var list = el("div", "il"); box.appendChild(list);
+  function inspSorted(arr) {
+    var byNew = function (a, b) { return a.l < b.l ? 1 : a.l > b.l ? -1 : 0; };
+    return arr.slice().sort(function (a, b) {
+      if (IN.sort === "urg") return (b.u - a.u) || byNew(a, b);
+      if (IN.sort === "cnt") return (b.p - a.p) || byNew(a, b);
+      return byNew(a, b) || (b.u - a.u);
+    });
+  }
+  function draw() {
+    list.innerHTML = "";
+    var k = inspKey(IN.q), items = inspSorted(d.list.filter(function (x) { return k ? inspKey(x.e).indexOf(k) >= 0 : x.p > 0; }));   // 검색 안 하면 검사 대기 있는 장비만
+    if (!items.length) { list.appendChild(el("div", "msg", k ? "'" + IN.q + "' 장비의 수입검사가 없어요." : "검사 대기 중인 B팀 장비가 없어요 👍")); return; }
+    var lim = k || IN.all ? items.length : 30;
+    items.slice(0, lim).forEach(function (x) {
+      var b = el("button", "ie"); b.type = "button";
+      b.appendChild(el("b", null, x.e));
+      var cn = el("span", "cn");
+      if (x.u) cn.appendChild(el("span", "bd u", "긴급 " + x.u));
+      if (x.p) cn.appendChild(el("span", "bd p", "대기 " + x.p));
+      else cn.appendChild(el("span", "bd ok", "완료"));
+      if (x.g) cn.appendChild(el("span", "bd ng", "NG " + x.g));
+      b.appendChild(cn);
+      b.appendChild(el("small", null, "검사 " + x.n + "건 · 최근 요청 " + inspDate(x.l)));
+      b.onclick = function () { inspOpen(x.e); };
+      list.appendChild(b);
+    });
+    if (items.length > lim) { var mb = el("button", "more", "전체 " + items.length + "대 보기"); mb.type = "button"; mb.onclick = function () { IN.all = true; draw(); }; list.appendChild(mb); }
+  }
+  inp.oninput = function () { IN.q = inp.value; cl.style.display = IN.q ? "" : "none"; draw(); };
+  inp.onkeydown = function (e) { if (e.key === "Enter") { inp.blur(); var k = inspKey(IN.q), hit = d.list.filter(function (x) { return inspKey(x.e).indexOf(k) >= 0; }); if (hit.length === 1) inspOpen(hit[0].e); } };
+  cl.onclick = function (e) { e.preventDefault(); IN.q = ""; inp.value = ""; cl.style.display = "none"; draw(); inp.focus(); };
+  draw();
+  box.appendChild(el("div", "hint", "검사 대기 중인 장비만 보여요. 검사가 다 끝난 장비는 장비명으로 검색하면 나와요.\n품질팀 수입검사 관리대장(성남·동탄) · 올해 · B팀 장비 기준 · 10분마다 새로 받아요."));
+  box.lastChild.style.whiteSpace = "pre-line";
+}
+function inspOpen(eq) {
+  IN.eq = eq; IN.showDone = false; window.scrollTo(0, 0);
+  var sm = inspSum(eq);
+  if (!sm.p) inspLoadAll(eq);   // 검사 대기가 없는 장비(검색으로 연 것) → 완료 목록 바로 받기
+  renderInsp();
+}
+function inspSum(eq) { return ((IN.data && IN.data.list) || []).filter(function (x) { return x.e === eq; })[0] || { n: 0, p: 0, u: 0, g: 0 }; }
+function inspLoadAll(eq) {   // 완료 포함 전체 (한 번 받으면 기억)
+  if (IN.rows[eq] && !IN.rows[eq].err) return;
+  IN.rows[eq] = "ld";
+  call("getInspRows", [eq]).then(function (r) {
+    IN.rows[eq] = r && !r.error ? r.rows : { err: (r && r.error) || "오류" };
+    if (cur === 7 && IN.eq === eq) renderInsp();
+  }).catch(function (e) { IN.rows[eq] = { err: errText(e) }; if (cur === 7 && IN.eq === eq) renderInsp(); });
+}
+function inspDetail(box) {
+  var eq = IN.eq, all = IN.rows[eq], sum = inspSum(eq);
+  var waitRows = (IN.data.wait && IN.data.wait[eq]) || (Array.isArray(all) ? all.filter(function (x) { return !x[14]; }) : null);
+  var bk = el("button", "ib", "‹ 장비 목록"); bk.type = "button";
+  bk.onclick = function () { IN.eq = ""; renderInsp(); };
+  box.appendChild(bk);
+  box.appendChild(heroX(eq, sum.p, "건 대기", [["전체", sum.n, "건"], ["긴급 대기", sum.u, "건", sum.u > 0], ["NG", sum.g, "건", sum.g > 0]], "수입검사"));
+  var nDone = sum.n - sum.p;
+  function sec(title, list) {
+    if (!list.length) return;
+    var h = el("div", "ih"); h.appendChild(el("h4", null, title + " " + list.length + "건")); box.appendChild(h);
+    list.forEach(function (x) {
+      // [곳, 요청일, 긴급, 의뢰자, 프로젝트, TYPE, PART NO., Part Desc., 수량, 업체, 품목, 검사자, 검수완료일, Result, 완료]
+      var c = el("div", "ir" + (!x[14] ? (x[2] ? " urg" : " wait") : ""));
+      var t = el("div", "t");
+      t.appendChild(el("b", null, x[7] || "-"));
+      if (x[2]) t.appendChild(el("span", "bd u", "긴급"));
+      if (x[13]) t.appendChild(el("span", "bd " + (/NG/i.test(x[13]) ? "ng" : /OK/i.test(x[13]) ? "ok" : "s"), x[13]));
+      if (x[15]) t.appendChild(el("span", "bd u", x[15]));   // 🔁 재검사 (예: 재검필요)
+      t.appendChild(el("span", "bd " + (x[14] ? "ok" : "p"), x[14] ? "검사 완료" : "검사 대기"));
+      c.appendChild(t);
+      var dl = el("dl");
+      // 긴 값은 한 줄 통째로 (이름표 붙여서)
+      [["PART NO.", x[6] || "-"], ["TYPE", x[5] || "-"]].concat(x[4] && inspKey(x[4]) !== inspKey(eq) ? [["프로젝트", x[4]]] : []).forEach(function (p) {
+        dl.appendChild(el("dt", null, p[0])); dl.appendChild(el("dd", "w", p[1]));
+      });
+      [["검사요청일", inspDate(x[1])], ["의뢰자", x[3] || "-"], ["요청수량", (x[8] || "-") + " EA"], ["품목", x[10] || "-"], ["업체", x[9] || "-"], ["검사자", x[11] || "-"], ["검수완료일", x[12] ? inspDate(x[12]) : "-"], ["사업장", x[0]]]
+        .concat(x[15] || x[16] ? [["NG 수량", x[16] ? x[16] + " EA" : "-"], ["재검사", x[15] || "-"]] : []).forEach(function (p) {
+        dl.appendChild(el("dt", null, p[0])); dl.appendChild(el("dd", null, p[1]));
+      });
+      c.appendChild(dl);
+      box.appendChild(c);
+    });
+  }
+  if (sum.p) {
+    if (waitRows) sec("⏳ 검사 대기", waitRows);
+    else box.appendChild(el("div", "msg", "불러오는 중…"));
+  }
+  // ✅ 완료: 접어 두고 누르면 그때 받음 (검사 대기 없는 장비는 바로 펼침)
+  if (nDone > 0) {
+    if (!IN.showDone && sum.p) {
+      var sb = el("button", "more", "✅ 검사 완료 " + nDone + "건 보기"); sb.type = "button";
+      sb.onclick = function () { IN.showDone = true; inspLoadAll(eq); renderInsp(); };
+      box.appendChild(sb);
+    } else if (Array.isArray(all)) sec("✅ 검사 완료", all.filter(function (x) { return x[14]; }));
+    else if (all && all.err) box.appendChild(el("div", "warn", "불러오기 실패: " + all.err));
+    else box.appendChild(el("div", "msg", "검사 완료 목록 불러오는 중…"));
+  }
+  if (!sum.n) box.appendChild(el("div", "msg", "검사 기록이 없어요."));
+}
+
+/* ---------- ⚠️ 부적합 처리현황 (품질팀 공정별 부적합 관리대장 · B팀 장비) ----------
+ * 첫 화면: 미처리 있는 장비만 · 장비명 검색하면 처리 끝난 장비도
+ * 장비를 누르면 미처리 목록 바로 (처리 완료는 접어 두고 누르면 받음)
+ * 행 = [완료, 조치사항, 발생일, 재납일/조치일, 발주 프로젝트명, 품명/위치, 품번, 불량수량, 귀책업체, 불량(소분류), 발견자, 담당자, 불량내용, 비고, NO.]
+ */
+var NC = { loaded: false, data: null, q: "", eq: "", rows: {}, all: false, showDone: false };
+function loadNc(force) {
+  NC.loaded = true; R.nc = true;
+  if (!NC.data) { try { NC.data = cget("nc"); } catch (e) {} }
+  if (cur === 8) renderNc();
+  return call("getNcData", [!!force])
+    .then(function (d) {
+      R.nc = false;
+      if (d && !d.error) { NC.data = d; cset("nc", d); if (force) NC.rows = {}; }
+      else if (!NC.data) NC.data = d;
+      if (cur === 8) renderNc();
+      return (d && d.error) || "";
+    })
+    .catch(function (e) { R.nc = false; if (!NC.data) NC.data = { error: "불러오기 실패: " + errText(e) }; if (cur === 8) renderNc(); return errText(e); });
+}
+function ncMd(s) { var m = String(s || "").match(/(\d{1,2})\/(\d{1,2})/); return m ? ("0" + m[1]).slice(-2) + "/" + ("0" + m[2]).slice(-2) : ""; }
+function ncShow(s) { var m = String(s || "").match(/(\d{1,2})\/(\d{1,2})/); return m ? (+m[1]) + "/" + (+m[2]) : (String(s || "").trim() || "-"); }
+function ncSum(eq) { return ((NC.data && NC.data.list) || []).filter(function (x) { return x.e === eq; })[0] || { n: 0, p: 0 }; }
+function renderNc() {
+  var box = $("nc"); box.innerHTML = "";
+  var d = NC.data;
+  if (!d) { box.appendChild(el("div", "msg", "불러오는 중…")); return; }
+  if (d.error) { var w = el("div", "warn", d.error); w.style.whiteSpace = "pre-line"; box.appendChild(w); return; }
+  $("upd").textContent = updTxt(d, "nc");
+  if (NC.eq) { ncDetail(box); return; }
+  var pendEq = d.list.filter(function (x) { return x.c != null ? x.c : x.p > 0; }).length;
+  box.appendChild(heroX("부적합 미처리", d.pend, "건", [["업체반출", d.out, "건"], ["재납일 지남", d.late, "건", d.late > 0], ["대기 장비", pendEq, "대"]], "출하 전 · 최근 " + (d.days || 30) + "일"));
+  var q = el("label", "iq");
+  q.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+  var inp = el("input"); inp.type = "search"; inp.placeholder = "장비명(프로젝트) 입력 · 예: CC04-164"; inp.value = NC.q;
+  inp.setAttribute("autocomplete", "off"); inp.setAttribute("autocapitalize", "characters");
+  q.appendChild(inp);
+  var cl = el("button", null, "✕"); cl.type = "button"; cl.style.display = NC.q ? "" : "none";
+  q.appendChild(cl);
+  box.appendChild(q);
+  var list = el("div", "il"); box.appendChild(list);
+  function draw() {
+    list.innerHTML = "";
+    var k = inspKey(NC.q), items = d.list.filter(function (x) { return k ? inspKey(x.e).indexOf(k) >= 0 : (x.c != null ? x.c : x.p > 0); });   // 검색 안 하면 출하 전 + 최근 미처리 장비만
+    if (!items.length) { list.appendChild(el("div", "msg", k ? "'" + NC.q + "' 장비의 부적합이 없어요." : "출하 전 장비 중 최근 미처리 부적합이 없어요 👍")); return; }
+    var lim = k || NC.all ? items.length : 30;
+    items.slice(0, lim).forEach(function (x) {
+      var b = el("button", "ie"); b.type = "button";
+      b.appendChild(el("b", null, x.e));
+      var cn = el("span", "cn");
+      cn.appendChild(x.p ? el("span", "bd u", "미처리 " + x.p) : el("span", "bd ok", "처리 완료"));
+      b.appendChild(cn);
+      var td = ymdLocal();
+      b.appendChild(el("small", null, "부적합 " + x.n + "건 · 최근 발생 " + ncShow(x.l) + (x.s ? " · " + (x.s >= td ? "출하 예정 " : "출하 ") + (+x.s.slice(5, 7)) + "/" + (+x.s.slice(8, 10)) : "")));
+      b.onclick = function () { ncOpen(x.e); };
+      list.appendChild(b);
+    });
+    if (items.length > lim) { var mb = el("button", "more", "전체 " + items.length + "대 보기"); mb.type = "button"; mb.onclick = function () { NC.all = true; draw(); }; list.appendChild(mb); }
+  }
+  inp.oninput = function () { NC.q = inp.value; cl.style.display = NC.q ? "" : "none"; draw(); };
+  inp.onkeydown = function (e) { if (e.key === "Enter") { inp.blur(); var k = inspKey(NC.q), hit = d.list.filter(function (x) { return inspKey(x.e).indexOf(k) >= 0; }); if (hit.length === 1) ncOpen(hit[0].e); } };
+  cl.onclick = function (e) { e.preventDefault(); NC.q = ""; inp.value = ""; cl.style.display = "none"; draw(); inp.focus(); };
+  draw();
+  box.appendChild(el("div", "hint", "출하 전 장비 중 최근 " + (d.days || 30) + "일 안에 생긴 미처리가 있는 장비만 보여요.\n출하한 장비·처리 끝난 장비는 장비명으로 검색하면 나와요.\n품질팀 공정별 부적합 관리대장 '부적합 처리현황' · B팀 장비 기준 · 10분마다 새로 받아요."));
+  box.lastChild.style.whiteSpace = "pre-line";
+}
+function ncOpen(eq) {
+  NC.eq = eq; NC.showDone = false; window.scrollTo(0, 0);
+  if (!ncSum(eq).p || !(NC.data.wait && NC.data.wait[eq])) ncLoadAll(eq);   // 미리 안 받아 둔 장비(검색으로 연 것)는 이때 받음
+  renderNc();
+}
+function ncLoadAll(eq) {
+  if (NC.rows[eq] && !NC.rows[eq].err) return;
+  NC.rows[eq] = "ld";
+  call("getNcRows", [eq]).then(function (r) {
+    NC.rows[eq] = r && !r.error ? r.rows : { err: (r && r.error) || "오류" };
+    if (cur === 8 && NC.eq === eq) renderNc();
+  }).catch(function (e) { NC.rows[eq] = { err: errText(e) }; if (cur === 8 && NC.eq === eq) renderNc(); });
+}
+function ncDetail(box) {
+  var eq = NC.eq, all = NC.rows[eq], sum = ncSum(eq);
+  var waitRows = (NC.data.wait && NC.data.wait[eq]) || (Array.isArray(all) ? all.filter(function (x) { return !x[0]; }) : null);
+  var bk = el("button", "ib", "‹ 장비 목록"); bk.type = "button";
+  bk.onclick = function () { NC.eq = ""; renderNc(); };
+  box.appendChild(bk);
+  box.appendChild(heroX(eq, sum.p, "건 미처리", [["전체", sum.n, "건"], ["처리 완료", sum.n - sum.p, "건"]], "부적합"));
+  var today = (H.meta && H.meta.today) || ymdLocal(), tmd = today.slice(5, 7) + "/" + today.slice(8, 10);
+  function sec(title, list) {
+    if (!list.length) return;
+    var h = el("div", "ih"); h.appendChild(el("h4", null, title + " " + list.length + "건")); box.appendChild(h);
+    list.forEach(function (x) {
+      var f = ncMd(x[3]), late = !x[0] && f && f < tmd;
+      var c = el("div", "ir" + (!x[0] ? (late ? " urg" : " wait") : ""));
+      var t = el("div", "t");
+      t.appendChild(el("b", null, x[5] || "-"));
+      if (x[1]) t.appendChild(el("span", "bd act", x[1]));
+      t.appendChild(el("span", "bd " + (x[0] ? "ok" : "u"), x[0] ? "처리 완료" : "미처리"));
+      c.appendChild(t);
+      if (x[12]) c.appendChild(el("div", "ds", x[12]));
+      var dl = el("dl");
+      [["품번(도번)", x[6] || "-"]].concat(x[13] ? [["비고", x[13]]] : []).concat(x[4] && inspKey(x[4]) !== inspKey(eq) ? [["프로젝트", x[4]]] : []).forEach(function (p) {
+        dl.appendChild(el("dt", null, p[0])); dl.appendChild(el("dd", "w", p[1]));
+      });
+      [["발생일", ncShow(x[2])], ["재납/조치일", ncShow(x[3]), late], ["불량수량", (x[7] || "-") + " EA"], ["귀책업체", x[8] || "-"], ["불량 분류", x[9] || "-"], ["발견자", x[10] || "-"], ["담당(품질)", x[11] || "-"], ["NO.", x[14] || "-"]].forEach(function (p) {
+        dl.appendChild(el("dt", null, p[0])); dl.appendChild(el("dd", p[2] ? "late" : null, p[1] + (p[2] ? " ⚠" : "")));
+      });
+      c.appendChild(dl);
+      box.appendChild(c);
+    });
+  }
+  if (sum.p) {
+    if (waitRows) sec("⏳ 미처리", waitRows);
+    else box.appendChild(el("div", "msg", "불러오는 중…"));
+  }
+  var nDone = sum.n - sum.p;
+  if (nDone > 0) {
+    if (!NC.showDone && sum.p) {
+      var sb = el("button", "more", "✅ 처리 완료 " + nDone + "건 보기"); sb.type = "button";
+      sb.onclick = function () { NC.showDone = true; ncLoadAll(eq); renderNc(); };
+      box.appendChild(sb);
+    } else if (Array.isArray(all)) sec("✅ 처리 완료", all.filter(function (x) { return x[0]; }));
+    else if (all && all.err) box.appendChild(el("div", "warn", "불러오기 실패: " + all.err));
+    else box.appendChild(el("div", "msg", "처리 완료 목록 불러오는 중…"));
+  }
+  if (!sum.n) box.appendChild(el("div", "msg", "부적합 기록이 없어요."));
+}
+
 /* ---------- 📍 SITE 고르기 (26_장비_LOG E열: 동탄 / 본사) ---------- */
 var SITE = { it: null };
 function openSite(it) {
@@ -3916,14 +4252,18 @@ function setTab(n) {
   try { pushBar(); } catch (ePb) {}
   if (SR.open) closeSearch(true);
   cur = n;
-  for (var i = 0; i < 7; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
+  for (var i = 0; i < 9; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
   $("main").style.display = n < 2 ? "grid" : "none";
   $("upload").style.display = n === 2 ? "grid" : "none";
   $("hours").style.display = n === 3 ? "grid" : "none";
   $("leave").style.display = n === 4 ? "grid" : "none";
   $("stats").style.display = n === 5 ? "grid" : "none";
   $("sched").style.display = n === 6 ? "grid" : "none";
+  $("insp").style.display = n === 7 ? "grid" : "none";
+  $("nc").style.display = n === 8 ? "grid" : "none";
   if (n < 2) render();
+  else if (n === 7) { renderInsp(); if (!IN.loaded) loadInsp(false); }
+  else if (n === 8) { renderNc(); if (!NC.loaded) loadNc(false); }
   else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
   else if (n === 3) { $("upd").textContent = ""; updLock(); if (!H.loaded) loadHoursMeta(); }
@@ -3932,7 +4272,7 @@ function setTab(n) {
   moreSync();
 }
 // ⋯ 더보기: 입출하 일정 · 장비통계 · 연차 현황 (지금 보고 있으면 더보기 버튼이 그 이름으로 바뀜)
-var MORE = [[6, "입출하 일정"], [5, "장비통계"], [4, "연차 현황"]];
+var MORE = [[6, "입출하 일정"], [5, "장비통계"], [4, "연차 현황"], [7, "수입검사"], [8, "부적합"]];
 function moreSync() {
   var b = $("tmore"); if (!b) return;
   var hit = MORE.filter(function (m) { return m[0] === cur; })[0];
@@ -3995,7 +4335,7 @@ function openMore() {
 }
 $("tmore").onclick = openMore;
 (function () {
-  var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3]];
+  var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3], ["renderInsp", "insp", 7], ["renderNc", "nc", 8]];
   W.forEach(function (w) {
     var f = window[w[0]]; if (typeof f !== "function") return;
     window[w[0]] = function () { var r = f.apply(this, arguments); try { if (!maybeAnim(w[1], w[2])) $(w[1]).classList.remove("ani"); } catch (e) {} return r; };   // 새 데이터로 다시 그린 거면 안 움직임 (두 번 움직이는 것 방지)
@@ -4031,7 +4371,7 @@ document.addEventListener("focusout", function () { setTimeout(function () { var
  * → 글자를 칠 때마다 폰 안에서 바로 찾음 (서버 요청 없음, 평소 화면 속도 영향 없음)
  */
 var SR = { open: false, idx: null, loading: false, at: 0, sel: -1, err: "" };
-var SECTIONS = ["main", "upload", "hours", "leave", "stats", "sched"];
+var SECTIONS = ["main", "upload", "hours", "leave", "stats", "sched", "insp", "nc"];
 
 function normQ(s) { return String(s || "").toUpperCase().replace(/[\s\-_#.]/g, ""); }
 
@@ -4274,6 +4614,8 @@ $("ref").onclick = function () {
   else if (cur === 2) { p = loadUpload(); renderUpload(U.data); }
   else if (cur === 4) { p = loadLeave(true); renderLeave(LV.data); }
   else if (cur === 5) { p = loadStats(true); renderStats(ST.data); }
+  else if (cur === 7) { p = loadInsp(true); }
+  else if (cur === 8) { p = loadNc(true); }
   else { p = loadDash(true); if (cur === 6) renderSched(); }
 
   REF = true;
@@ -5143,10 +5485,14 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-30-9";
+var APP_VER = "2026-10-31-10";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-31-10", ["화면 안정화 · 작은 개선"]],
+  ["2026-10-31-8", ["수입검사: 최근 요청순 · 긴급 먼저 · 대기 많은 순으로 정렬할 수 있어요"]],
+  ["2026-10-31-7", ["더보기 → ⚠️ 부적합: 출하 전 장비의 최근 부적합 처리현황(업체반출·재납일·불량내용)을 볼 수 있어요"]],
+  ["2026-10-31-4", ["더보기 → 🔍 수입검사: 장비명을 넣으면 그 장비 부품의 수입검사 목록(검사 대기·완료·Result)을 볼 수 있어요"]],
   ["2026-10-30-9", ["근무시간: 지난달 달력이 더 빨리 떠요"]],
   ["2026-10-30-8", ["근무시간: 다음 달은 연차·반차·공가 버튼만 보여요 (근무시간은 그 달이 되면)"]],
   ["2026-10-30-7", ["근무시간: 달력 ‹ ›로 올해 1월부터 보고 입력할 수 있어요 (다음 달은 연차·반차·공가만 미리)", "연차 현황 달력: 올해 1월 ~ 다음 달까지 볼 수 있어요"]],
@@ -5474,8 +5820,20 @@ function openNameChange() {
 }
 $("nmno").onclick = function () { $("nmov").className = "ov"; nmMode(false); };
 
-function nameAsk() {
+// 👀 보기 전용: 보기 PIN으로 들어오고 이름을 안 고른 폰 (이름 고르기·알림 권유 안 함)
+function viewOnly() { return sget("viewOnly") === "1" && !nameDone(); }
+function vBadge() {
+  var t = $("testtag"); if (!t) return;
+  var b = $("vbadge");
+  if (!viewOnly()) { if (b) b.parentNode.removeChild(b); return; }
+  if (b) return;
+  b = el("span", "testtag vb", "👀 보기 전용"); b.id = "vbadge";
+  b.onclick = function (e) { e.stopPropagation(); nameAsk(true); };   // 팀원이면 눌러서 이름 고르기
+  t.appendChild(b);
+}
+function nameAsk(force) {
   if (nameDone()) return;   // 이미 직접 고른 사람만 통과 (예전에 알림 켠 사람도 한 번은 다시 고름)
+  if (!force && viewOnly()) { ONB.on = false; vBadge(); return; }   // 👀 보기 전용은 이름 안 물어봄 (배지를 누르면 고를 수 있음)
   if ($("app").style.display === "none") { setTimeout(nameAsk, 500); return; }   // PIN 화면이면 기다림
   var o = document.querySelector(".ov.on");
   if (o && o.id !== "nmov") { if (o.id === "pushov") closePush(); else { setTimeout(nameAsk, 800); return; } }   // 알림 창보다 이름이 먼저
@@ -5559,7 +5917,7 @@ $("nmgo").onclick = function () {
   NM.admOK = false;
   var wasChange = NM.change;
   var old = sget("pushName");
-  sset("myName", NM.pick); sset("nameOK", "1");
+  sset("myName", NM.pick); sset("nameOK", "1"); sdel("viewOnly"); vBadge();
   if (NM.pick !== CHIEF) sdel("chiefPin");
   NM.chiefOK = false;
   if (wasChange || !sget("hoursName") || sget("hoursName") === old) sset("hoursName", NM.pick);
@@ -5693,7 +6051,7 @@ function pushInit() {
 
 // 알림 안 켠 사람에게 앱 열 때 자동으로 창 띄우기 ("나중에" 누르면 그날은 안 띄움)
 function pushAutoAsk() {
-  if (!ONESIGNAL_APP_ID || pushOn()) return;
+  if (!ONESIGNAL_APP_ID || pushOn() || viewOnly()) return;   // 👀 보기 전용은 알림 권유 안 함
   if (!nameDone()) { setTimeout(pushAutoAsk, 3000); return; }   // 이름 먼저
   if ($("app").style.display === "none") { setTimeout(pushAutoAsk, 2000); return; }   // PIN 화면이면 기다림
   if (sget("pushLater") === ymdLocal()) return;
@@ -5762,7 +6120,7 @@ function prevDone(name, ymd) {
 function pushBar() {
   var b = $("pushbar");
   if (!b) return;
-  if (!ONESIGNAL_APP_ID || pushOn() || $("app").style.display === "none") { b.style.display = "none"; return; }
+  if (!ONESIGNAL_APP_ID || pushOn() || viewOnly() || $("app").style.display === "none") { b.style.display = "none"; return; }
   var den = pushDenied();
   b.innerHTML = "";
   b.appendChild(el("span", "t", den ? "🔕 알림이 차단돼 있어요" : "🔕 알림이 꺼져 있어요"));
@@ -6828,7 +7186,7 @@ function splashHide(now) {
     if (document.hidden || !SPL.vt || splEl(n, SPL.vt) < SPL_MIN) { setTimeout(wait, 100); return; }
     SPL.shut = true;
     n.className = "out";
-    try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5][cur]] || "main")); tabInd(); }, 120); } catch (eA) {}
+    try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7][cur]] || "main")); tabInd(); }, 120); } catch (eA) {}
     setTimeout(function () { n.style.display = "none"; }, 450);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
   })();
 }
@@ -6851,7 +7209,7 @@ function splashReplay(first) {
     if (document.hidden) { t0 = Date.now() - Math.min(el2, 2400); setTimeout(wait, 200); return; }   // 가려져 있는 동안은 시간 안 셈
     if ((splEl(n, t0) >= SPL_MIN && fresh) || el2 > 20000) {
       n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450);
-      try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5][cur]] || "main")); tabInd(); } catch (eA) {}
+      try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7][cur]] || "main")); tabInd(); } catch (eA) {}
       if (!fresh) toast("⚠️ 최신 정보를 아직 못 받았어요\n잠시 후 새로고침해 주세요", true);
       return;
     }
@@ -6880,6 +7238,7 @@ function boot() {
   ONB.on = !nameDone();   // 🧭 처음 시작이면 시작 화면은 맨 끝(⑤)에 보여줌
   if (lockLeft() > 0) { showLocked(); splashHide(ONB.on); return; }
   var p = getPin();
+  if (p && viewOnly() && igEnv().pc) { sdel("appPin"); p = ""; }   // 💻 보기 전용은 PC에서 못 씀
   if (!p) { setGate("enter", "PIN을 입력해 주세요."); splashHide(ONB.on); return; }
   // ⚡ 저장된 PIN이 있으면 PIN 확인을 기다리지 않고 지난 화면부터 바로 보여줌.
   //    금일/명일 요청이 PIN 확인을 겸하고, PIN이 바뀌었으면 그때 잠금 화면으로.
