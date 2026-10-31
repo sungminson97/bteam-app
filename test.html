@@ -65,6 +65,7 @@ button.ref{border:1px solid var(--line);background:var(--card);color:var(--text)
 main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:grid;gap:10px;max-width:720px;margin:0 auto}
 #hours,#upload,#leave,#stats,#sched,#srch{display:none}
 /* 테스트 표시 */
+.testtag.vb{background:#64748b;cursor:pointer;margin-left:4px}
 .testtag{display:inline-block;margin-top:2px;align-self:flex-start;padding:1px 7px;border-radius:6px;background:#7c3aed;color:#fff;font-size:11px;font-weight:800;vertical-align:2px}
 /* 🏖️ 오늘 연차 */
 .lvb{background:var(--card);border:1px solid var(--line);border-left:5px solid #f59e0b;border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.6}
@@ -398,6 +399,10 @@ li:first-child{border-top:0}
 :is(#insp,#nc) .more{border:0;background:transparent;color:var(--accent);font:inherit;font-weight:800;padding:8px}
 :is(#insp,#nc) .ir .t>b{color:var(--text)!important;opacity:1}
 :is(#insp,#nc) .ir{color:var(--text)!important}
+#nc .isort{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+#nc .isort::-webkit-scrollbar{display:none}
+#nc .isort button{flex:none;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--cbd,var(--line));background:var(--card);color:var(--sub);font:inherit;font-size:13.5px;font-weight:800}
+#nc .isort button.on{background:var(--accent);border-color:var(--accent);color:#fff}
 #insp .isort{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
 #insp .isort::-webkit-scrollbar{display:none}
 #insp .isort button{flex:none;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--cbd,var(--line));background:var(--card);color:var(--sub);font:inherit;font-size:13.5px;font-weight:800}
@@ -1563,41 +1568,63 @@ body.kb #tabbar{transform:translateY(140%)}
 #relbar b{font-weight:900}
 #relbar small{display:block;font-size:11.5px;font-weight:600;opacity:.75}
 #relbar .cd{margin-left:auto;flex:none;font-size:12px;font-weight:900;padding:4px 10px;border-radius:999px;background:var(--grd);font-variant-numeric:tabular-nums}
-#rlov{position:fixed;inset:0;z-index:190;display:none;align-items:center;justify-content:center;padding:24px;color:#fff;background:radial-gradient(120% 90% at 50% 0%,#24307a 0%,#0b1220 58%,#05080f 100%)}
-#rlov.on{display:flex;animation:rlIn .4s ease both}
+#rlov{position:fixed;inset:0;z-index:190;display:none;align-items:safe center;justify-content:center;overflow-y:auto;padding:28px 20px;color:#fff;background:#05060a;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+#rlov.on{display:flex;animation:rlIn .5s ease both}
 @keyframes rlIn{from{opacity:0}to{opacity:1}}
-#rlov .in{width:100%;max-width:340px;text-align:center}
-#rlov .lg img{height:20px;opacity:.85}
-#rlov .orb{position:relative;width:118px;height:118px;margin:30px auto 22px}
-#rlov .orb::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 55%,#7aa6ff 75%,#b9a4ff 92%,transparent 100%);-webkit-mask:radial-gradient(closest-side,transparent 82%,#000 84%);mask:radial-gradient(closest-side,transparent 82%,#000 84%);animation:rlSpin 1.2s linear infinite}
-#rlov .orb::after{content:"";position:absolute;inset:18px;border-radius:50%;background:radial-gradient(circle,rgba(122,166,255,.35),rgba(122,166,255,0) 70%);animation:uppulse 1.8s ease-in-out infinite}
-#rlov .orb span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;letter-spacing:.12em;color:#cfdcff}
 @keyframes rlSpin{to{transform:rotate(360deg)}}
+#rlov .au{position:fixed;inset:0;overflow:hidden;pointer-events:none}
+#rlov .au i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55}
+#rlov .au i:nth-child(1){width:360px;height:360px;left:-120px;top:-120px;background:#2563eb;animation:rlA 16s ease-in-out infinite alternate}
+#rlov .au i:nth-child(2){width:320px;height:320px;right:-140px;top:120px;background:#7c3aed;animation:rlA 19s ease-in-out infinite alternate-reverse}
+#rlov .au i:nth-child(3){width:300px;height:300px;left:10%;bottom:-170px;background:#0891b2;opacity:.4;animation:rlA 22s ease-in-out infinite alternate}
+@keyframes rlA{to{transform:translate(60px,50px) scale(1.15)}}
+#rlov .au::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:28px 28px;-webkit-mask:radial-gradient(70% 55% at 50% 30%,#000,transparent);mask:radial-gradient(70% 55% at 50% 30%,#000,transparent)}
+#rlov .in{position:relative;width:100%;max-width:350px;text-align:center}
+#rlov .lg img{height:18px;opacity:.9}
 #rlov .lg picture{justify-content:center}
-#rlov .t{margin:0;color:#fff;font-size:23px;font-weight:900;letter-spacing:-.02em;text-shadow:0 2px 18px rgba(122,166,255,.45)}
-#rlov .s{margin-top:8px;font-size:13.5px;line-height:1.6;color:#aab8d0;word-break:keep-all;white-space:pre-line}
-#rlov ol{list-style:none;margin:22px 0 0;padding:6px 16px;border-radius:18px;background:rgba(255,255,255,.06);text-align:left}
-#rlov li{display:flex;align-items:center;gap:12px;padding:13px 0;font-size:14.5px;font-weight:700;color:#7f8ca3;border:0;margin:0}
-#rlov li+li{border-top:1px solid rgba(255,255,255,.07)}
-#rlov li i{flex:none;position:relative;width:22px;height:22px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.18) inset}
-#rlov li.run{color:#fff}
-#rlov li.run i{box-shadow:none;background:conic-gradient(#7aa6ff 0 30%,rgba(255,255,255,.12) 30%);-webkit-mask:radial-gradient(closest-side,transparent 62%,#000 64%);mask:radial-gradient(closest-side,transparent 62%,#000 64%);animation:rlSpin .9s linear infinite}
-#rlov li.ok{color:#dbe6ff}
-#rlov li.ok i{box-shadow:none;background:linear-gradient(140deg,#5b8cff,#8a6bff)}
+#rlov .tag{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:5px 12px 5px 10px;border-radius:999px;background:rgba(255,255,255,.06);box-shadow:0 0 0 1px rgba(255,255,255,.09) inset;font-size:11.5px;font-weight:800;letter-spacing:.08em;color:#c7d2fe}
+#rlov .tag i{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:rlDot 1.8s ease-out infinite}
+@keyframes rlDot{70%{box-shadow:0 0 0 7px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+#rlov .ring{position:relative;width:184px;height:184px;margin:18px auto 14px}
+#rlov .ring svg{width:100%;height:100%;overflow:visible}
+#rlov .ring .tk{fill:none;stroke:rgba(255,255,255,.13);stroke-width:5;stroke-dasharray:1.2 8.85}
+#rlov .ring .tr{fill:none;stroke:rgba(255,255,255,.07);stroke-width:11}
+#rlov .ring .pg{fill:none;stroke:url(#rlg);stroke-width:11;stroke-linecap:round;stroke-dasharray:527.79;stroke-dashoffset:527.79;transition:stroke-dashoffset .8s cubic-bezier(.3,.7,.3,1);filter:drop-shadow(0 0 7px rgba(129,140,248,.65))}
+#rlov .ring .hd{transform-origin:100px 100px;transition:transform .8s cubic-bezier(.3,.7,.3,1)}
+#rlov .ring .hd circle{fill:#fff;filter:drop-shadow(0 0 6px #a5b4fc)}
+#rlov .ring .ct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#rlov .ring b{font-size:50px;font-weight:900;letter-spacing:-.04em;line-height:1;background:linear-gradient(180deg,#fff 30%,#c7d2fe);-webkit-background-clip:text;background-clip:text;color:transparent}
+#rlov .ring b small{font-size:20px;margin-left:2px;letter-spacing:0}
+#rlov .ring em{margin-top:6px;font-style:normal;font-size:11.5px;font-weight:800;letter-spacing:.06em;color:#94a3b8}
+#rlov.fin .ring .pg{stroke:url(#rlg2);filter:drop-shadow(0 0 9px rgba(52,211,153,.7))}
+#rlov .t{margin:0;font-size:21px;font-weight:900;letter-spacing:-.02em;color:#fff}
+#rlov .s{margin-top:6px;font-size:13px;line-height:1.55;color:#94a3b8;word-break:keep-all;white-space:pre-line}
+#rlov ol{list-style:none;margin:18px 0 0;padding:6px;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));box-shadow:0 0 0 1px rgba(255,255,255,.08) inset,0 20px 40px -20px rgba(0,0,0,.6);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);text-align:left}
+#rlov li{position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:0 11px;margin:0;padding:10px 10px;border:0;border-radius:14px;font-size:14px;font-weight:700;color:#64748b;transition:background .4s,color .4s}
+#rlov li i{flex:none;position:relative;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-style:normal;font-size:10.5px;font-weight:900;color:#64748b;box-shadow:0 0 0 1.5px rgba(255,255,255,.14) inset}
+#rlov li span{flex:1;min-width:0}
+#rlov li em{font-style:normal;font-size:11.5px;font-weight:800;color:#64748b}
+#rlov li.ok{color:#cbd5e1}
+#rlov li.ok i{font-size:0;box-shadow:none;background:linear-gradient(140deg,#38bdf8,#6366f1 60%,#a855f7);animation:rlPop .45s ease both}
 #rlov li.ok i::after{content:"";position:absolute;left:8px;top:5px;width:4px;height:8px;border-right:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(45deg)}
-#rlov li em{margin-left:auto;font-style:normal;font-size:12px;font-weight:800;color:#8ea6d8}
-#rlov .el{margin-top:14px;font-size:12px;color:#7f8ca3;font-variant-numeric:tabular-nums}
-#rlov .esc{display:none;width:100%;margin-top:16px;height:48px;border:0;border-radius:15px;background:rgba(255,255,255,.1);color:#fff;font-size:14.5px;font-weight:800;font-family:inherit}
-#rlov .esc.on{display:block}
-#rlov .pd{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12.5px;font-weight:800;color:#cfdcff}
-#rlov .cdh{margin-top:20px;font-size:12.5px;font-weight:800;color:#8ea6d8;letter-spacing:.04em}
-#rlov .cdb{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px}
-#rlov .cdb b{min-width:52px;padding:10px 0;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));box-shadow:0 0 0 1px rgba(255,255,255,.12) inset;font-size:30px;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-#rlov .cdb i{font-style:normal;font-size:24px;font-weight:900;color:#7aa6ff;animation:uppulse 1s ease-in-out infinite}
-#rlov .cdb small{display:block;font-size:10px;font-weight:700;color:#8ea6d8;margin-top:2px}
-#rlov .cdw{display:none}
-#rlov.wait .cdw{display:block}
-#rlov.wait #rlsteps,#rlov.wait .el{display:none}
+#rlov li.ok em{color:#7dd3fc}
+@keyframes rlPop{0%{transform:scale(.3)}70%{transform:scale(1.18)}100%{transform:scale(1)}}
+#rlov li.run{color:#fff;background:rgba(129,140,248,.13);box-shadow:0 0 0 1px rgba(129,140,248,.28) inset}
+#rlov li.run i{font-size:0;box-shadow:none;background:conic-gradient(#818cf8 0 28%,rgba(255,255,255,.12) 28%);-webkit-mask:radial-gradient(closest-side,transparent 62%,#000 64%);mask:radial-gradient(closest-side,transparent 62%,#000 64%);animation:rlSpin .9s linear infinite}
+#rlov li.run em{color:#c7d2fe}
+#rlov li .bar{display:none;flex-basis:100%;height:4px;margin:8px 0 1px 33px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}
+#rlov li.run .bar{display:block}
+#rlov li .bar s{display:block;position:relative;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,#38bdf8,#818cf8,#c084fc);transition:width .8s ease;overflow:hidden}
+#rlov li .bar s::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:rlSh 1.6s ease-in-out infinite}
+#rlov li.ind .bar s{width:35%!important;animation:rlInd 1.3s ease-in-out infinite}
+@keyframes rlSh{to{transform:translateX(100%)}}
+@keyframes rlInd{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+#rlov .st{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:12px}
+#rlov .st div{padding:9px 4px 8px;border-radius:14px;background:rgba(255,255,255,.05);box-shadow:0 0 0 1px rgba(255,255,255,.07) inset}
+#rlov .st small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.04em;color:#64748b}
+#rlov .st b{display:block;margin-top:3px;font-size:13.5px;font-weight:900;color:#e2e8f0;white-space:nowrap}
+#rlov .el{margin-top:12px;font-size:11.5px;color:#64748b}
+@media (max-height:740px){#rlov{padding:16px 18px}#rlov .ring{width:140px;height:140px;margin:10px auto 8px}#rlov .ring b{font-size:38px}#rlov .ring b small{font-size:16px}#rlov .tag{margin-top:10px}#rlov li{padding:7px 10px;font-size:13.5px}#rlov ol{margin-top:12px}#rlov .s{display:none}}
 
 
 /* ===================== 🎄 크리스마스 테마 (html.xmas · 12/1~25) ===================== */
@@ -1733,6 +1760,12 @@ html.xmas{--xsn:#e4edf7}
 @media (prefers-color-scheme:dark){html.xmas{--xsn:rgba(235,242,255,.82)}}
 /* 업로드 카드: 리본 */
 html.xmas #upload .card.up::after{content:"";position:absolute;right:16px;top:-9px;width:28px;height:20px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 40'%3E%3Cpath d='M28 18 C20 6 6 4 6 14 C6 22 18 22 28 18Z' fill='%23e11d38'/%3E%3Cpath d='M28 18 C36 6 50 4 50 14 C50 22 38 22 28 18Z' fill='%23e11d38'/%3E%3Cpath d='M28 18 C22 10 12 9 11 14 C13 12 20 13 28 18Z' fill='%239f0b24'/%3E%3Cpath d='M28 18 C34 10 44 9 45 14 C43 12 36 13 28 18Z' fill='%239f0b24'/%3E%3Cpath d='M26 20 L18 38 L23 35 L26 39 L28 22Z' fill='%23c41634'/%3E%3Cpath d='M30 20 L38 38 L33 35 L30 39 L28 22Z' fill='%23c41634'/%3E%3Cellipse cx='28' cy='18' rx='5' ry='4.4' fill='%23f0435a'/%3E%3Cellipse cx='26.6' cy='16.6' rx='1.6' ry='1.1' fill='%23ffb3bd'/%3E%3C/svg%3E") center/contain no-repeat;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))}
+/* 🔍 수입검사 · ⚠️ 부적합: 카드 위 눈 + 상세 카드 리본 (2026-10-31) */
+html.xmas :is(#insp,#nc) .ie,html.xmas :is(#insp,#nc) .ir{background-image:radial-gradient(circle at 50% 0,var(--xsn) 0 5.5px,transparent 6px),radial-gradient(circle at 50% 0,var(--xsn) 0 3.5px,transparent 4px);background-size:16px 8px,16px 6px;background-position:0 -2px,8px -1px;background-repeat:repeat-x}
+html.xmas :is(#insp,#nc) .ir{position:relative}
+html.xmas :is(#insp,#nc) .ir::before{content:"";position:absolute;right:16px;top:-9px;width:28px;height:20px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 40'%3E%3Cpath d='M28 18 C20 6 6 4 6 14 C6 22 18 22 28 18Z' fill='%23e11d38'/%3E%3Cpath d='M28 18 C36 6 50 4 50 14 C50 22 38 22 28 18Z' fill='%23e11d38'/%3E%3Cpath d='M28 18 C22 10 12 9 11 14 C13 12 20 13 28 18Z' fill='%239f0b24'/%3E%3Cpath d='M28 18 C34 10 44 9 45 14 C43 12 36 13 28 18Z' fill='%239f0b24'/%3E%3Cpath d='M26 20 L18 38 L23 35 L26 39 L28 22Z' fill='%23c41634'/%3E%3Cpath d='M30 20 L38 38 L33 35 L30 39 L28 22Z' fill='%23c41634'/%3E%3Cellipse cx='28' cy='18' rx='5' ry='4.4' fill='%23f0435a'/%3E%3Cellipse cx='26.6' cy='16.6' rx='1.6' ry='1.1' fill='%23ffb3bd'/%3E%3C/svg%3E") center/contain no-repeat}
+html.xmas :is(#insp,#nc) .ir .t{padding-right:22px}
+
 /* ── 장비통계: 막대 위에 눈 + 사탕 줄무늬 + 이번 달 금빛 ── */
 html.xmas #stats .mc .bars b::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:5px;border-radius:5px 5px 3px 3px;background:#fff;z-index:1;box-shadow:0 1px 1px rgba(0,0,0,.12)}
 html.xmas #stats .mc .bars b{overflow:visible}
@@ -1789,15 +1822,27 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 </div>
 <!-- 🚀 업데이트 화면 (#app 밖: PIN 화면 위에도 뜨게) -->
 <div id="rlov" aria-live="polite">
+  <div class="au"><i></i><i></i><i></i></div>
   <div class="in">
     <div class="lg"><picture><source srcset="logo_dark.png" media="(prefers-color-scheme: dark)"><img src="logo_dark.png" alt="" onerror="this.style.display='none'"></picture></div>
-    <div class="orb"><span>1-B</span></div>
+    <div class="tag"><i></i>SYSTEM UPDATE</div>
+    <div class="ring">
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        <defs>
+          <linearGradient id="rlg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset=".55" stop-color="#818cf8"/><stop offset="1" stop-color="#c084fc"/></linearGradient>
+          <linearGradient id="rlg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#38bdf8"/></linearGradient>
+        </defs>
+        <circle class="tk" cx="100" cy="100" r="96"/>
+        <circle class="tr" cx="100" cy="100" r="84"/>
+        <circle class="pg" id="rlring" cx="100" cy="100" r="84" transform="rotate(-90 100 100)"/>
+        <g class="hd" id="rlhd"><circle cx="100" cy="16" r="5.5"/></g>
+      </svg>
+      <div class="ct"><b id="rlpct">0<small>%</small></b><em id="rlstg">진행률</em></div>
+    </div>
     <div class="t" id="rlttl">Claude 자동 업데이트 중</div>
-    <div class="s" id="rlsub">잠시만 기다려 주세요.
-업데이트가 끝나면 앱이 자동으로 다시 열려요.</div>
-    <div class="pd" id="rlpd"></div>
-    <div class="cdw"><div class="cdh">업데이트 완료까지</div><div class="cdb" id="rlcd"></div></div>
-    <ol id="rlsteps"><li><i></i>새 버전 확인 중<em></em></li><li><i></i>새 버전 받는 중<em></em></li><li><i></i>화면 적용 중<em></em></li></ol>
+    <div class="s" id="rlsub">업데이트가 끝나면 앱이 자동으로 다시 열려요.</div>
+    <ol id="rlsteps"></ol>
+    <div class="st"><div><small>시작</small><b id="rlst1">-</b></div><div><small>남은 시간</small><b id="rlst2">-</b></div><div><small>완료 예정</small><b id="rlst3">-</b></div></div>
     <div class="el" id="rlel"></div>
   </div>
 </div>
@@ -2473,6 +2518,7 @@ function unlock(pin, pre) {
   $("gate").style.display = "none";
   $("app").style.display = "block";
   if (!nameDone()) nameAsk();   // 🧭 이름을 아직 안 골랐으면 앱 화면보다 이름 고르기가 먼저 (깜빡임 없이)
+  vBadge();
   wipeScreens();
   cur = 0;
   // 저장해 둔 지난 화면이 있으면 먼저 바로 보여주고, 뒤에서 최신으로 갱신
@@ -2511,10 +2557,18 @@ function verify(pin, typed) {
     return j;
   }).then(function (j) {
     G.busy = false;
+    if (j.ok && j.data && j.data.level === "view" && igEnv().pc) {   // 💻 보기 PIN은 PC에서 못 씀 (휴대폰 앱만)
+      sdel("appPin");
+      setGate("enter", "보기 전용은 휴대폰 앱에서만 볼 수 있어요.", true);
+      return;
+    }
     if (j.ok) {
       // 잠금 화면에서 편집 PIN을 넣었으면 편집 권한도 같이 기억
       if (j.data && j.data.level === "edit") sset("editPin", pin);
       else if (typed) sdel("editPin");
+      // 👀 보기 PIN으로 처음 들어오면 이름 안 고르고 보기 전용 (편집 PIN이면 해제)
+      if (j.data && j.data.level === "view") { if (!nameDone()) sset("viewOnly", "1"); }
+      else if (j.data && j.data.level === "edit") sdel("viewOnly");
       unlock(pin, pre);
       return;
     }
@@ -3522,10 +3576,27 @@ function renderNc() {
   var cl = el("button", null, "✕"); cl.type = "button"; cl.style.display = NC.q ? "" : "none";
   q.appendChild(cl);
   box.appendChild(q);
+  // ↕ 정렬: 최근 발생순(기본) · 출하 빠른 순 · 미처리 많은 순 (폰에 기억)
+  if (!NC.sort) NC.sort = sget("ncSort") || "new";
+  var so = el("div", "isort");
+  [["new", "최근 발생순"], ["ship", "출하 빠른 순"], ["cnt", "미처리 많은 순"]].forEach(function (o) {
+    var b = el("button", NC.sort === o[0] ? "on" : "", o[1]); b.type = "button";
+    b.onclick = function () { NC.sort = o[0]; sset("ncSort", o[0]); [].forEach.call(so.children, function (c) { c.className = ""; }); b.className = "on"; draw(); };
+    so.appendChild(b);
+  });
+  box.appendChild(so);
   var list = el("div", "il"); box.appendChild(list);
+  function ncSorted(arr) {
+    var byNew = function (a, b) { return a.l < b.l ? 1 : a.l > b.l ? -1 : 0; };
+    return arr.slice().sort(function (a, b) {
+      if (NC.sort === "ship") { var sa = a.s || "9999", sb = b.s || "9999"; return (sa < sb ? -1 : sa > sb ? 1 : 0) || byNew(a, b); }   // 출하일 없는 장비는 맨 뒤
+      if (NC.sort === "cnt") return (b.p - a.p) || byNew(a, b);
+      return byNew(a, b) || (b.p - a.p);
+    });
+  }
   function draw() {
     list.innerHTML = "";
-    var k = inspKey(NC.q), items = d.list.filter(function (x) { return k ? inspKey(x.e).indexOf(k) >= 0 : (x.c != null ? x.c : x.p > 0); });   // 검색 안 하면 출하 전 + 최근 미처리 장비만
+    var k = inspKey(NC.q), items = ncSorted(d.list.filter(function (x) { return k ? inspKey(x.e).indexOf(k) >= 0 : (x.c != null ? x.c : x.p > 0); }));   // 검색 안 하면 출하 전 + 최근 미처리 장비만
     if (!items.length) { list.appendChild(el("div", "msg", k ? "'" + NC.q + "' 장비의 부적합이 없어요." : "출하 전 장비 중 최근 미처리 부적합이 없어요 👍")); return; }
     var lim = k || NC.all ? items.length : 30;
     items.slice(0, lim).forEach(function (x) {
@@ -5475,10 +5546,13 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-31-8";
+var APP_VER = "2026-10-31-18";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-31-18", ["업데이트 화면: 진행률(%)과 이번 업데이트 항목이 차례로 체크돼요"]],
+  ["2026-10-31-14", ["부적합: 최근 발생순 · 출하 빠른 순 · 미처리 많은 순으로 정렬할 수 있어요"]],
+  ["2026-10-31-10", ["화면 안정화 · 작은 개선"]],
   ["2026-10-31-8", ["수입검사: 최근 요청순 · 긴급 먼저 · 대기 많은 순으로 정렬할 수 있어요"]],
   ["2026-10-31-7", ["더보기 → ⚠️ 부적합: 출하 전 장비의 최근 부적합 처리현황(업체반출·재납일·불량내용)을 볼 수 있어요"]],
   ["2026-10-31-4", ["더보기 → 🔍 수입검사: 장비명을 넣으면 그 장비 부품의 수입검사 목록(검사 대기·완료·Result)을 볼 수 있어요"]],
@@ -5637,7 +5711,8 @@ function relCheck() {
     var at = j && P(j.at);
     if (!at || isNaN(at)) { relClear(); return; }
     var st = P(j.start); REL.start = (st && !isNaN(st) && st < at) ? st : at;   // 점검 시작 (없으면 업데이트 시각부터)
-    if (sget("relDone") === String(at)) { relClear(); return; }   // 이 예약으로 이미 업데이트함
+    REL.items = (j.items && j.items.length) ? j.items.map(String).slice(0, 8) : null;   // 이번 업데이트 항목 (없으면 기본 목록)
+    if (sget("relDone") === String(at) && Date.now() >= at) { relClear(); return; }   // 이 예약으로 이미 업데이트함 (점검 시간 안이면 계속 막음)
     return fetch(base + REL_ME + "_next.html?_=" + Date.now(), { method: "HEAD", cache: "no-store" }).then(function (h) {
       if (!h.ok) { if (Date.now() >= at && REL.at === at) return; relClear(); return; }   // 내 앱은 예약 없음 (예약 시각 뒤엔 파일이 바뀌는 중일 수 있어 유지)
       relSet(at);
@@ -5646,6 +5721,8 @@ function relCheck() {
 }
 function relClear() { REL.at = 0; clearTimeout(REL.timer); clearInterval(REL.tick); $("relbar").className = ""; }
 function relWhen(at) { var d = new Date(at), k = new Date(at + 9 * 3600000); return (k.getUTCMonth() + 1) + "/" + k.getUTCDate() + "(" + "일월화수목금토".charAt(k.getUTCDay()) + ") " + ("0" + k.getUTCHours()).slice(-2) + ":" + ("0" + k.getUTCMinutes()).slice(-2); }
+// 시작 ~ 끝 (날짜가 다르면 끝도 날짜까지: 10/31(토) 19:00 ~ 11/1(일) 17:00)
+function relRange(st, at) { if (!(st < at)) return relWhen(st); var a = relWhen(st), b = relWhen(at); return a + " ~ " + (a.split(" ")[0] === b.split(" ")[0] ? b.slice(-5) : b); }
 function relLeft(ms) { var m = Math.max(0, Math.ceil(ms / 60000)); return m >= 60 ? Math.floor(m / 60) + "시간 " + (m % 60 ? m % 60 + "분 " : "") + "남음" : m + "분 남음"; }
 function relSet(at) {
   REL.at = at;
@@ -5656,7 +5733,7 @@ function relSet(at) {
     if (left <= 0) { relLock(); return; }
     b.innerHTML = "";
     b.appendChild(el("i", null, "🛠"));
-    var tx = el("div"); tx.appendChild(el("b", null, "Claude 자동 업데이트 예정 · " + relWhen(REL.start) + (REL.start < at ? " ~ " + relWhen(at).slice(-5) : "")));
+    var tx = el("div"); tx.appendChild(el("b", null, "Claude 자동 업데이트 예정 · " + relRange(REL.start, at)));
     tx.appendChild(el("small", null, REL.start < at ? "이 시간 동안은 앱을 쓸 수 없어요" : "업데이트하는 1~3분 동안은 앱을 쓸 수 없어요")); b.appendChild(tx);
     b.appendChild(el("span", "cd", relLeft(left)));
     b.className = "on";
@@ -5665,51 +5742,94 @@ function relSet(at) {
   clearInterval(REL.tick); REL.tick = setInterval(draw, 20000);
   clearTimeout(REL.timer); REL.timer = setTimeout(relLock, Math.min(REL.start - Date.now() + 500, 2147483000));
 }
-function relStep(i, state, note) {
+// 이번 업데이트 항목 (release.json 의 "items" 가 있으면 그걸로)
+var REL_ITEMS = ["업데이트 준비", "수입검사 연동 (성남·동탄)", "부적합 처리현황 연동", "근무시간·연차 1월부터 보기", "시트 업로드 되돌리기", "목록 정렬 · 화면 개선"];
+function relHM(t) { return relWhen(t).slice(-5); }
+function relShort(t) { var w = relWhen(t), d = relWhen(Date.now()); return w.split(" ")[0] === d.split(" ")[0] ? w.slice(-5) : w.split("(")[0] + " " + w.slice(-5); }
+function relDur(ms) { var m = Math.max(0, Math.ceil(ms / 60000)); return m >= 60 ? Math.floor(m / 60) + "시간 " + (m % 60) + "분" : m + "분"; }
+function relStep(i, state, note, sub) {
   var li = $("rlsteps").children[i]; if (!li) return;
-  li.className = state; var em = li.querySelector("em"); if (em) em.textContent = note || "";
+  var c = state + (sub === -1 ? " ind" : "");
+  if (li.className !== c) li.className = c;
+  var em = li.querySelector("em"); if (em.textContent !== (note || "")) em.textContent = note || "";
+  if (sub >= 0) li.querySelector(".bar s").style.width = Math.round(sub * 100) + "%";
+}
+function relPct(p, f) {
+  $("rlpct").innerHTML = p + "<small>%</small>";
+  var ff = f == null ? p / 100 : f;
+  $("rlring").style.strokeDashoffset = (527.79 * (1 - ff)).toFixed(2);
+  $("rlhd").style.transform = "rotate(" + (ff * 360).toFixed(2) + "deg)";
 }
 function relLock() {
   if (REL.done || $("rlov").className.indexOf("on") === 0) return;
-  clearInterval(REL.tick); $("relbar").className = "";
-  $("rlpd").textContent = "🕐 " + relWhen(REL.start) + (REL.start < REL.at ? " ~ " + relWhen(REL.at).slice(-5) : "");
-  relStep(0, "run"); relStep(1, ""); relStep(2, "");
-  // ⏳ 점검 시간: 업데이트 시각까지 카운트다운 (앱 사용 막음)
-  if (Date.now() < REL.at) {
-    $("rlov").className = "on wait";
-    var cd = function () {
-      var s = Math.max(0, Math.ceil((REL.at - Date.now()) / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
-      var box = $("rlcd"); box.innerHTML = "";
-      var put = function (v, l) { var b = el("b", null, ("0" + v).slice(-2)); b.appendChild(el("small", null, l)); box.appendChild(b); };
-      if (h) { put(h, "시간"); box.appendChild(el("i", null, ":")); }
-      put(m, "분"); box.appendChild(el("i", null, ":")); put(x, "초");
-      if (s <= 0) { clearInterval(REL.cdt); $("rlov").className = "on"; REL.t0 = Date.now(); look(); }
-    };
-    clearInterval(REL.cdt); REL.cdt = setInterval(cd, 1000); cd();
-  } else { $("rlov").className = "on"; }
-  REL.t0 = Date.now();
-  var tries = 0;
-  clearInterval(REL.elt); REL.elt = setInterval(function () { if (!REL.done) $("rlel").textContent = "확인 " + tries + "회 · " + Math.floor((Date.now() - REL.t0) / 1000) + "초 지남"; }, 1000);
+  clearInterval(REL.tick); clearInterval(REL.cdt); $("relbar").className = "";
+  $("rlov").className = "on";
+  var early = function () { return Date.now() < REL.at; };
+  // ✅ 항목별 체크: 점검 시간(시작~끝)을 항목 수로 나눠 차례로 완료 → 마지막 '새 버전 적용'은 새 버전이 실제로 올라와야 완료
+  var items = (REL.items || REL_ITEMS).concat(["새 버전 적용"]), N = items.length, T = N - 1;
+  var ol = $("rlsteps"); ol.innerHTML = "";
+  items.forEach(function (t, i) {
+    var li = el("li"); li.appendChild(el("i", null, String(i + 1))); li.appendChild(el("span", null, t)); li.appendChild(el("em"));
+    var bar = el("div", "bar"); bar.appendChild(el("s")); li.appendChild(bar); ol.appendChild(li);
+  });
+  var span = Math.max(1, REL.at - REL.start);
+  var due = function (i) { return i >= T ? REL.at : REL.start + span * i / T; };   // i번째 항목 완료 시각 (준비는 시작하자마자 ✓)
+  $("rlst1").textContent = relShort(REL.start); $("rlst3").textContent = relShort(REL.at);
+  var tries = 0, lastPct = -1;
+  function paint() {
+    if (REL.done) return;
+    var now = Date.now(), f = Math.min(1, Math.max(0, (now - REL.start) / span));
+    var pct = Math.min(99, Math.floor(f * 100));   // 새 버전 확인 전엔 99%까지
+    if (pct !== lastPct || now % 10000 < 1000) { lastPct = pct; relPct(pct, Math.min(f, .995)); }
+    var run = -1;
+    for (var i = 0; i < N; i++) {
+      if (i < T && now >= due(i)) relStep(i, "ok", relHM(due(i)));
+      else if (run < 0) {
+        run = i;
+        var s0 = i ? due(i - 1) : REL.start, sub = Math.min(1, Math.max(0, (now - s0) / Math.max(1, due(i) - s0)));
+        if (i === T && !early()) relStep(i, "run", "확인 중", -1);
+        else relStep(i, "run", Math.floor(sub * 100) + "%", sub);
+      }
+      else relStep(i, "wt", relHM(due(i)));
+    }
+    $("rlstg").textContent = "단계 " + (run + 1) + " / " + N;
+    var left = REL.at - now;
+    $("rlst2").textContent = left > 0 ? relDur(left) : "곧 완료";
+    $("rlel").textContent = left > 0 ? "새 버전이 올라오면 자동으로 다시 열려요" : "새 버전 확인 중 · " + tries + "회";
+  }
+  clearInterval(REL.elt); REL.elt = setInterval(paint, 1000); paint();
   function look() {
     tries++;
-    $("rlel").textContent = "확인 " + tries + "회 · " + Math.floor((Date.now() - REL.t0) / 1000) + "초 지남";
-    if (Date.now() - REL.t0 > 15 * 60000) $("rlsub").textContent = "업데이트가 조금 늦어지고 있어요.\n끝나면 자동으로 열려요.";   // 🔒 끝날 때까지 앱 사용 못 함 (빠져나가는 버튼 없음)
+    if (Date.now() - REL.at > 15 * 60000) $("rlsub").textContent = "업데이트가 조금 늦어지고 있어요. 끝나면 자동으로 열려요.";   // 🔒 끝날 때까지 앱 사용 못 함 (빠져나가는 버튼 없음)
     fetch(location.pathname + "?_=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (t) {
       var m = t.match(/var APP_VER = "([^"]+)"/);
-      if (!m || m[1] === APP_VER) { REL.poll = setTimeout(look, 10000); return; }
-      // ✅ 새 버전 올라옴 → 단계 진행 → 다시 열기 (열리면 '업데이트 완료!' 화면)
-      clearTimeout(REL.poll); REL.done = true;
-      relStep(0, "ok", "v" + m[1].slice(5).replace("-", "."));
-      relStep(1, "run");
-      setTimeout(function () { relStep(1, "ok"); relStep(2, "run"); }, 900);
-      setTimeout(function () { relStep(2, "ok"); $("rlttl").textContent = "업데이트 완료"; $("rlsub").textContent = "새 버전으로 다시 열고 있어요…"; }, 1800);
-      setTimeout(function () {
-        try { sset("relDone", String(REL.at)); sset("updFrom", APP_VER); } catch (e) {}
-        location.replace(location.pathname + "?v=" + encodeURIComponent(m[1]));
-      }, 2600);
-    }).catch(function () { REL.poll = setTimeout(look, 10000); });
+      if (!m || m[1] === APP_VER) { REL.poll = setTimeout(look, early() ? 60000 : 10000); return; }   // 점검 중엔 1분마다 · 끝나면 10초마다
+      // ✅ 새 버전 올라옴 → 남은 항목 차례로 체크 → 100% → 다시 열기 (열리면 '업데이트 완료!' 화면)
+      clearTimeout(REL.poll); clearInterval(REL.elt); REL.done = true;
+      var k = 0; while (k < N && $("rlsteps").children[k].className === "ok") k++;
+      var p0 = lastPct < 0 ? 0 : lastPct, steps = Math.max(1, N - k), vv = "v" + m[1].slice(5).replace("-", ".");
+      (function next(j) {
+        var p = j >= steps ? 100 : Math.round(p0 + (100 - p0) * j / steps);
+        relPct(p);
+        if (j >= steps) {
+          $("rlov").className = "on fin"; $("rlstg").textContent = "완료";
+          $("rlttl").textContent = "업데이트 완료"; $("rlsub").textContent = "새 버전으로 다시 열고 있어요…";
+          $("rlst2").textContent = "0분"; $("rlel").textContent = vv + " 적용됨";
+          setTimeout(function () {
+            try { sset("relDone", String(REL.at)); sset("updFrom", APP_VER); } catch (e) {}
+            location.replace(location.pathname + "?v=" + encodeURIComponent(m[1]));
+          }, 1500);
+          return;
+        }
+        var i = k + j;
+        relStep(i, "ok", i === N - 1 ? vv : relHM(Date.now()));
+        if (i + 1 < N) relStep(i + 1, "run", "", 1);
+        $("rlstg").textContent = "단계 " + Math.min(N, i + 2) + " / " + N;
+        setTimeout(function () { next(j + 1); }, 280);
+      })(0);
+    }).catch(function () { REL.poll = setTimeout(look, early() ? 60000 : 10000); });
   }
-  if (Date.now() >= REL.at) look();
+  look();
 }
 
 function checkUpdate() {
@@ -5809,8 +5929,20 @@ function openNameChange() {
 }
 $("nmno").onclick = function () { $("nmov").className = "ov"; nmMode(false); };
 
-function nameAsk() {
+// 👀 보기 전용: 보기 PIN으로 들어오고 이름을 안 고른 폰 (이름 고르기·알림 권유 안 함)
+function viewOnly() { return sget("viewOnly") === "1" && !nameDone(); }
+function vBadge() {
+  var t = $("testtag"); if (!t) return;
+  var b = $("vbadge");
+  if (!viewOnly()) { if (b) b.parentNode.removeChild(b); return; }
+  if (b) return;
+  b = el("span", "testtag vb", "👀 보기 전용"); b.id = "vbadge";
+  b.onclick = function (e) { e.stopPropagation(); nameAsk(true); };   // 팀원이면 눌러서 이름 고르기
+  t.appendChild(b);
+}
+function nameAsk(force) {
   if (nameDone()) return;   // 이미 직접 고른 사람만 통과 (예전에 알림 켠 사람도 한 번은 다시 고름)
+  if (!force && viewOnly()) { ONB.on = false; vBadge(); return; }   // 👀 보기 전용은 이름 안 물어봄 (배지를 누르면 고를 수 있음)
   if ($("app").style.display === "none") { setTimeout(nameAsk, 500); return; }   // PIN 화면이면 기다림
   var o = document.querySelector(".ov.on");
   if (o && o.id !== "nmov") { if (o.id === "pushov") closePush(); else { setTimeout(nameAsk, 800); return; } }   // 알림 창보다 이름이 먼저
@@ -5894,7 +6026,7 @@ $("nmgo").onclick = function () {
   NM.admOK = false;
   var wasChange = NM.change;
   var old = sget("pushName");
-  sset("myName", NM.pick); sset("nameOK", "1");
+  sset("myName", NM.pick); sset("nameOK", "1"); sdel("viewOnly"); vBadge();
   if (NM.pick !== CHIEF) sdel("chiefPin");
   NM.chiefOK = false;
   if (wasChange || !sget("hoursName") || sget("hoursName") === old) sset("hoursName", NM.pick);
@@ -6028,7 +6160,7 @@ function pushInit() {
 
 // 알림 안 켠 사람에게 앱 열 때 자동으로 창 띄우기 ("나중에" 누르면 그날은 안 띄움)
 function pushAutoAsk() {
-  if (!ONESIGNAL_APP_ID || pushOn()) return;
+  if (!ONESIGNAL_APP_ID || pushOn() || viewOnly()) return;   // 👀 보기 전용은 알림 권유 안 함
   if (!nameDone()) { setTimeout(pushAutoAsk, 3000); return; }   // 이름 먼저
   if ($("app").style.display === "none") { setTimeout(pushAutoAsk, 2000); return; }   // PIN 화면이면 기다림
   if (sget("pushLater") === ymdLocal()) return;
@@ -6097,7 +6229,7 @@ function prevDone(name, ymd) {
 function pushBar() {
   var b = $("pushbar");
   if (!b) return;
-  if (!ONESIGNAL_APP_ID || pushOn() || $("app").style.display === "none") { b.style.display = "none"; return; }
+  if (!ONESIGNAL_APP_ID || pushOn() || viewOnly() || $("app").style.display === "none") { b.style.display = "none"; return; }
   var den = pushDenied();
   b.innerHTML = "";
   b.appendChild(el("span", "t", den ? "🔕 알림이 차단돼 있어요" : "🔕 알림이 꺼져 있어요"));
@@ -7215,6 +7347,7 @@ function boot() {
   ONB.on = !nameDone();   // 🧭 처음 시작이면 시작 화면은 맨 끝(⑤)에 보여줌
   if (lockLeft() > 0) { showLocked(); splashHide(ONB.on); return; }
   var p = getPin();
+  if (p && viewOnly() && igEnv().pc) { sdel("appPin"); p = ""; }   // 💻 보기 전용은 PC에서 못 씀
   if (!p) { setGate("enter", "PIN을 입력해 주세요."); splashHide(ONB.on); return; }
   // ⚡ 저장된 PIN이 있으면 PIN 확인을 기다리지 않고 지난 화면부터 바로 보여줌.
   //    금일/명일 요청이 PIN 확인을 겸하고, PIN이 바뀌었으면 그때 잠금 화면으로.
