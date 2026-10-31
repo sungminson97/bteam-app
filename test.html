@@ -363,39 +363,46 @@ li:first-child{border-top:0}
 #ntov textarea,#ntov input,#apov input,#nmov input{font-size:16px;padding:12px 14px;margin-bottom:6px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;font-family:inherit}
 #hwarn{white-space:pre-line}
 /* 🔍 수입검사 */
-#insp{display:none;gap:12px;padding:12px 16px calc(120px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
-#insp .iq{display:flex;align-items:center;gap:8px;padding:0 14px;height:52px;border-radius:16px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh)}
-#insp .iq svg{width:18px;height:18px;color:var(--sub);flex:none}
-#insp .iq input{flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:16px;font-weight:700;outline:0}
-#insp .iq button{border:0;background:var(--bg);color:var(--sub);width:28px;height:28px;border-radius:50%;font-size:14px;font-weight:900}
-#insp .il{display:grid;gap:8px}
-#insp .ie{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:13px 34px 13px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);position:relative;text-align:left;font:inherit;color:var(--text);width:100%}
-#insp .ie::after{content:"";position:absolute;right:15px;top:50%;width:7px;height:7px;margin-top:-4px;border-right:2px solid var(--sub);border-top:2px solid var(--sub);transform:rotate(45deg);opacity:.4}
-#insp .ie:active{transform:scale(.985)}
-#insp .ie b{font-size:15.5px;font-weight:900;letter-spacing:-.01em}
-#insp .ie .cn{display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap}
-#insp .ie small{grid-column:1/-1;color:var(--sub);font-size:12px;font-weight:600}
-#insp .bd{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:900;white-space:nowrap}
-#insp .bd.p{background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--accent)}
-#insp .bd.u{background:var(--warn);color:#fff}
-#insp .bd.ng{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn)}
-#insp .bd.ok{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
-#insp .bd.s{background:var(--bg);color:var(--sub)}
-#insp .ib{height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--card);box-shadow:var(--csh);font:inherit;font-weight:800;color:var(--text);justify-self:start}
-#insp .ir{padding:13px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);display:grid;gap:6px}
-#insp .ir.wait{border-left:4px solid var(--accent)}
-#insp .ir.urg{border-left:4px solid var(--warn)}
-#insp .ir .t{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap}
-#insp .ir .t b{font-size:15px;font-weight:900;letter-spacing:-.01em;margin-right:auto;word-break:break-all}
-#insp .ir .pn{font-size:12.5px;font-weight:700;color:var(--sub);word-break:break-all}
-#insp .ir dl{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 8px;margin:2px 0 0;font-size:12.5px}
-#insp .ir dt{color:var(--sub);font-weight:600}
-#insp .ir dd{margin:0;font-weight:700;word-break:keep-all}
-#insp .ir dd.w{grid-column:2/-1;word-break:break-all}
-#insp .ir dl{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);padding-top:8px}
-#insp .ih{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 2px 0}
-#insp .ih h4{margin:0;font-size:15px;font-weight:900}
-#insp .more{border:0;background:transparent;color:var(--accent);font:inherit;font-weight:800;padding:8px}
+:is(#insp,#nc){display:none;gap:12px;padding:12px 16px calc(120px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
+:is(#insp,#nc) .iq{display:flex;align-items:center;gap:8px;padding:0 14px;height:52px;border-radius:16px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh)}
+:is(#insp,#nc) .iq svg{width:18px;height:18px;color:var(--sub);flex:none}
+:is(#insp,#nc) .iq input{flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:16px;font-weight:700;outline:0}
+:is(#insp,#nc) .iq button{border:0;background:var(--bg);color:var(--sub);width:28px;height:28px;border-radius:50%;font-size:14px;font-weight:900}
+:is(#insp,#nc) .il{display:grid;gap:8px}
+:is(#insp,#nc) .ie{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:13px 34px 13px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);position:relative;text-align:left;font:inherit;color:var(--text);width:100%}
+:is(#insp,#nc) .ie::after{content:"";position:absolute;right:15px;top:50%;width:7px;height:7px;margin-top:-4px;border-right:2px solid var(--sub);border-top:2px solid var(--sub);transform:rotate(45deg);opacity:.4}
+:is(#insp,#nc) .ie:active{transform:scale(.985)}
+:is(#insp,#nc) .ie b{font-size:15.5px;font-weight:900;letter-spacing:-.01em}
+:is(#insp,#nc) .ie .cn{display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap}
+:is(#insp,#nc) .ie small{grid-column:1/-1;color:var(--sub);font-size:12px;font-weight:600}
+:is(#insp,#nc) .bd{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:900;white-space:nowrap}
+:is(#insp,#nc) .bd.p{background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--accent)}
+:is(#insp,#nc) .bd.u{background:var(--warn);color:#fff}
+:is(#insp,#nc) .bd.ng{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn)}
+:is(#insp,#nc) .bd.ok{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+:is(#insp,#nc) .bd.s{background:var(--bg);color:var(--sub)}
+:is(#insp,#nc) .ib{height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--card);box-shadow:var(--csh);font:inherit;font-weight:800;color:var(--text);justify-self:start}
+:is(#insp,#nc) .ir{padding:13px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);display:grid;gap:6px}
+:is(#insp,#nc) .ir.wait{border-left:4px solid var(--accent)}
+:is(#insp,#nc) .ir.urg{border-left:4px solid var(--warn)}
+:is(#insp,#nc) .ir .t{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap}
+:is(#insp,#nc) .ir .t b{font-size:15px;font-weight:900;letter-spacing:-.01em;margin-right:auto;word-break:break-all}
+:is(#insp,#nc) .ir .pn{font-size:12.5px;font-weight:700;color:var(--sub);word-break:break-all}
+:is(#insp,#nc) .ir dl{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 8px;margin:2px 0 0;font-size:12.5px}
+:is(#insp,#nc) .ir dt{color:var(--sub);font-weight:600}
+:is(#insp,#nc) .ir dd{margin:0;font-weight:700;word-break:keep-all}
+:is(#insp,#nc) .ir dd.w{grid-column:2/-1;word-break:break-all}
+:is(#insp,#nc) .ir dl{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);padding-top:8px}
+:is(#insp,#nc) .ih{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 2px 0}
+:is(#insp,#nc) .ih h4{margin:0;font-size:15px;font-weight:900}
+:is(#insp,#nc) .more{border:0;background:transparent;color:var(--accent);font:inherit;font-weight:800;padding:8px}
+:is(#insp,#nc) .ir .t>b{color:var(--text)!important;opacity:1}
+:is(#insp,#nc) .ir{color:var(--text)!important}
+:is(#insp,#nc) .ir dd:not(.late){color:var(--text)!important}
+:is(#insp,#nc) .ir dt{color:var(--sub)!important}
+#nc .bd.act{background:color-mix(in srgb,#f59e0b 16%,transparent);color:#c27803}
+#nc .ir dd.late{color:var(--warn)}
+#nc .ir .ds{font-size:13px;font-weight:600;line-height:1.5;color:var(--text);white-space:pre-line;word-break:keep-all}
 #hwarn.info{background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent);border-color:transparent}
 #hours .mon h4{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 #hours .mon h4 .mnav{margin-left:auto;display:flex;align-items:center;gap:4px}
@@ -1293,7 +1300,7 @@ body.kb #tabbar{transform:translateY(110%)}
 /* 📱 아래 탭: 떠 있는 둥근 바 (금일 · 명일 · 업로드 · 근무시간 · 더보기) */
 #tabbar.tabs{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr);gap:4px;padding:7px;border:0;border-radius:30px;background:color-mix(in srgb,var(--card) 94%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent),0 16px 36px -12px rgba(16,32,64,.32);-webkit-backdrop-filter:saturate(1.8) blur(22px);backdrop-filter:saturate(1.8) blur(22px)}
 @media (prefers-color-scheme:dark){#tabbar.tabs{box-shadow:0 0 0 1px rgba(255,255,255,.07),0 16px 36px -12px rgba(0,0,0,.9)}}
-#tabbar #t6,#tabbar #t5,#tabbar #t4,#tabbar #t7{display:none}
+#tabbar #t6,#tabbar #t5,#tabbar #t4,#tabbar #t7,#tabbar #t8{display:none}
 #tabbar .tab{height:58px;border-radius:23px;gap:5px;color:var(--sub);font-size:12px;font-weight:800}
 #tabbar .tab svg{width:25px;height:25px}
 #tabbar .tab.on{color:#fff;background:var(--grd);box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 10px 20px -10px rgba(80,90,255,.95)}
@@ -1864,6 +1871,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
   <div class="tab" id="t5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><rect x="5.5" y="11" width="3" height="6.5" rx="1"/><rect x="10.5" y="6" width="3" height="11.5" rx="1"/><rect x="15.5" y="9" width="3" height="8.5" rx="1"/></svg><em>통계</em><span></span></div>
   <div class="tab" id="t4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M12 11v8.5a2 2 0 0 1-4 0"/></svg><em>연차</em><span></span></div>
   <div class="tab" id="t7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 12.5l2.2 2.2 4.8-4.8"/></svg><em>수입검사</em><span></span></div>
+  <div class="tab" id="t8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5"/><path d="M12 17.6v.1"/></svg><em>부적합</em><span></span></div>
 </nav>
 <main id="main"><div class="msg">불러오는 중…</div></main>
 
@@ -1924,6 +1932,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="lvg" x1="0" y1="0" x2="1" y2="1"><stop class="s1" offset="0" stop-color="#2f6fed"/><stop class="s2" offset="1" stop-color="#8a6bff"/></linearGradient><linearGradient id="lvgr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8a8f"/><stop offset="1" stop-color="#e5484d"/></linearGradient></defs></svg>
 <section id="stats"></section>
 <section id="insp"></section>
+<section id="nc"></section>
 
 <!-- 업로드 완료 확인창 -->
 <div class="ov" id="cfov">
@@ -3419,6 +3428,7 @@ function inspDetail(box) {
       t.appendChild(el("b", null, x[7] || "-"));
       if (x[2]) t.appendChild(el("span", "bd u", "긴급"));
       if (x[13]) t.appendChild(el("span", "bd " + (/NG/i.test(x[13]) ? "ng" : /OK/i.test(x[13]) ? "ok" : "s"), x[13]));
+      if (x[15]) t.appendChild(el("span", "bd u", x[15]));   // 🔁 재검사 (예: 재검필요)
       t.appendChild(el("span", "bd " + (x[14] ? "ok" : "p"), x[14] ? "검사 완료" : "검사 대기"));
       c.appendChild(t);
       var dl = el("dl");
@@ -3426,7 +3436,8 @@ function inspDetail(box) {
       [["PART NO.", x[6] || "-"], ["TYPE", x[5] || "-"]].concat(x[4] && inspKey(x[4]) !== inspKey(eq) ? [["프로젝트", x[4]]] : []).forEach(function (p) {
         dl.appendChild(el("dt", null, p[0])); dl.appendChild(el("dd", "w", p[1]));
       });
-      [["검사요청일", inspDate(x[1])], ["의뢰자", x[3] || "-"], ["요청수량", (x[8] || "-") + " EA"], ["품목", x[10] || "-"], ["업체", x[9] || "-"], ["검사자", x[11] || "-"], ["검수완료일", x[12] ? inspDate(x[12]) : "-"], ["사업장", x[0]]].forEach(function (p) {
+      [["검사요청일", inspDate(x[1])], ["의뢰자", x[3] || "-"], ["요청수량", (x[8] || "-") + " EA"], ["품목", x[10] || "-"], ["업체", x[9] || "-"], ["검사자", x[11] || "-"], ["검수완료일", x[12] ? inspDate(x[12]) : "-"], ["사업장", x[0]]]
+        .concat(x[15] || x[16] ? [["NG 수량", x[16] ? x[16] + " EA" : "-"], ["재검사", x[15] || "-"]] : []).forEach(function (p) {
         dl.appendChild(el("dt", null, p[0])); dl.appendChild(el("dd", null, p[1]));
       });
       c.appendChild(dl);
@@ -3448,6 +3459,132 @@ function inspDetail(box) {
     else box.appendChild(el("div", "msg", "검사 완료 목록 불러오는 중…"));
   }
   if (!sum.n) box.appendChild(el("div", "msg", "검사 기록이 없어요."));
+}
+
+/* ---------- ⚠️ 부적합 처리현황 (품질팀 공정별 부적합 관리대장 · B팀 장비) ----------
+ * 첫 화면: 미처리 있는 장비만 · 장비명 검색하면 처리 끝난 장비도
+ * 장비를 누르면 미처리 목록 바로 (처리 완료는 접어 두고 누르면 받음)
+ * 행 = [완료, 조치사항, 발생일, 재납일/조치일, 발주 프로젝트명, 품명/위치, 품번, 불량수량, 귀책업체, 불량(소분류), 발견자, 담당자, 불량내용, 비고, NO.]
+ */
+var NC = { loaded: false, data: null, q: "", eq: "", rows: {}, all: false, showDone: false };
+function loadNc(force) {
+  NC.loaded = true; R.nc = true;
+  if (!NC.data) { try { NC.data = cget("nc"); } catch (e) {} }
+  if (cur === 8) renderNc();
+  return call("getNcData", [!!force])
+    .then(function (d) {
+      R.nc = false;
+      if (d && !d.error) { NC.data = d; cset("nc", d); if (force) NC.rows = {}; }
+      else if (!NC.data) NC.data = d;
+      if (cur === 8) renderNc();
+      return (d && d.error) || "";
+    })
+    .catch(function (e) { R.nc = false; if (!NC.data) NC.data = { error: "불러오기 실패: " + errText(e) }; if (cur === 8) renderNc(); return errText(e); });
+}
+function ncMd(s) { var m = String(s || "").match(/(\d{1,2})\/(\d{1,2})/); return m ? ("0" + m[1]).slice(-2) + "/" + ("0" + m[2]).slice(-2) : ""; }
+function ncShow(s) { var m = String(s || "").match(/(\d{1,2})\/(\d{1,2})/); return m ? (+m[1]) + "/" + (+m[2]) : (String(s || "").trim() || "-"); }
+function ncSum(eq) { return ((NC.data && NC.data.list) || []).filter(function (x) { return x.e === eq; })[0] || { n: 0, p: 0 }; }
+function renderNc() {
+  var box = $("nc"); box.innerHTML = "";
+  var d = NC.data;
+  if (!d) { box.appendChild(el("div", "msg", "불러오는 중…")); return; }
+  if (d.error) { var w = el("div", "warn", d.error); w.style.whiteSpace = "pre-line"; box.appendChild(w); return; }
+  $("upd").textContent = updTxt(d, "nc");
+  if (NC.eq) { ncDetail(box); return; }
+  var pendEq = d.list.filter(function (x) { return x.p > 0; }).length;
+  box.appendChild(heroX("부적합 미처리", d.pend, "건", [["업체반출", d.out, "건"], ["재납일 지남", d.late, "건", d.late > 0], ["대기 장비", pendEq, "대"]], "B팀 장비"));
+  var q = el("label", "iq");
+  q.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+  var inp = el("input"); inp.type = "search"; inp.placeholder = "장비명(프로젝트) 입력 · 예: CC04-164"; inp.value = NC.q;
+  inp.setAttribute("autocomplete", "off"); inp.setAttribute("autocapitalize", "characters");
+  q.appendChild(inp);
+  var cl = el("button", null, "✕"); cl.type = "button"; cl.style.display = NC.q ? "" : "none";
+  q.appendChild(cl);
+  box.appendChild(q);
+  var list = el("div", "il"); box.appendChild(list);
+  function draw() {
+    list.innerHTML = "";
+    var k = inspKey(NC.q), items = d.list.filter(function (x) { return k ? inspKey(x.e).indexOf(k) >= 0 : x.p > 0; });
+    if (!items.length) { list.appendChild(el("div", "msg", k ? "'" + NC.q + "' 장비의 부적합이 없어요." : "미처리 부적합이 있는 B팀 장비가 없어요 👍")); return; }
+    var lim = k || NC.all ? items.length : 30;
+    items.slice(0, lim).forEach(function (x) {
+      var b = el("button", "ie"); b.type = "button";
+      b.appendChild(el("b", null, x.e));
+      var cn = el("span", "cn");
+      cn.appendChild(x.p ? el("span", "bd u", "미처리 " + x.p) : el("span", "bd ok", "처리 완료"));
+      b.appendChild(cn);
+      b.appendChild(el("small", null, "부적합 " + x.n + "건 · 최근 발생 " + ncShow(x.l)));
+      b.onclick = function () { ncOpen(x.e); };
+      list.appendChild(b);
+    });
+    if (items.length > lim) { var mb = el("button", "more", "전체 " + items.length + "대 보기"); mb.type = "button"; mb.onclick = function () { NC.all = true; draw(); }; list.appendChild(mb); }
+  }
+  inp.oninput = function () { NC.q = inp.value; cl.style.display = NC.q ? "" : "none"; draw(); };
+  inp.onkeydown = function (e) { if (e.key === "Enter") { inp.blur(); var k = inspKey(NC.q), hit = d.list.filter(function (x) { return inspKey(x.e).indexOf(k) >= 0; }); if (hit.length === 1) ncOpen(hit[0].e); } };
+  cl.onclick = function (e) { e.preventDefault(); NC.q = ""; inp.value = ""; cl.style.display = "none"; draw(); inp.focus(); };
+  draw();
+  box.appendChild(el("div", "hint", "미처리 부적합이 있는 장비만 보여요. 처리가 끝난 장비는 장비명으로 검색하면 나와요.\n품질팀 공정별 부적합 관리대장 '부적합 처리현황' · B팀 장비 기준 · 10분마다 새로 받아요."));
+  box.lastChild.style.whiteSpace = "pre-line";
+}
+function ncOpen(eq) {
+  NC.eq = eq; NC.showDone = false; window.scrollTo(0, 0);
+  if (!ncSum(eq).p) ncLoadAll(eq);
+  renderNc();
+}
+function ncLoadAll(eq) {
+  if (NC.rows[eq] && !NC.rows[eq].err) return;
+  NC.rows[eq] = "ld";
+  call("getNcRows", [eq]).then(function (r) {
+    NC.rows[eq] = r && !r.error ? r.rows : { err: (r && r.error) || "오류" };
+    if (cur === 8 && NC.eq === eq) renderNc();
+  }).catch(function (e) { NC.rows[eq] = { err: errText(e) }; if (cur === 8 && NC.eq === eq) renderNc(); });
+}
+function ncDetail(box) {
+  var eq = NC.eq, all = NC.rows[eq], sum = ncSum(eq);
+  var waitRows = (NC.data.wait && NC.data.wait[eq]) || (Array.isArray(all) ? all.filter(function (x) { return !x[0]; }) : null);
+  var bk = el("button", "ib", "‹ 장비 목록"); bk.type = "button";
+  bk.onclick = function () { NC.eq = ""; renderNc(); };
+  box.appendChild(bk);
+  box.appendChild(heroX(eq, sum.p, "건 미처리", [["전체", sum.n, "건"], ["처리 완료", sum.n - sum.p, "건"]], "부적합"));
+  var today = (H.meta && H.meta.today) || ymdLocal(), tmd = today.slice(5, 7) + "/" + today.slice(8, 10);
+  function sec(title, list) {
+    if (!list.length) return;
+    var h = el("div", "ih"); h.appendChild(el("h4", null, title + " " + list.length + "건")); box.appendChild(h);
+    list.forEach(function (x) {
+      var f = ncMd(x[3]), late = !x[0] && f && f < tmd;
+      var c = el("div", "ir" + (!x[0] ? (late ? " urg" : " wait") : ""));
+      var t = el("div", "t");
+      t.appendChild(el("b", null, x[5] || "-"));
+      if (x[1]) t.appendChild(el("span", "bd act", x[1]));
+      t.appendChild(el("span", "bd " + (x[0] ? "ok" : "u"), x[0] ? "처리 완료" : "미처리"));
+      c.appendChild(t);
+      if (x[12]) c.appendChild(el("div", "ds", x[12]));
+      var dl = el("dl");
+      [["품번(도번)", x[6] || "-"]].concat(x[13] ? [["비고", x[13]]] : []).concat(x[4] && inspKey(x[4]) !== inspKey(eq) ? [["프로젝트", x[4]]] : []).forEach(function (p) {
+        dl.appendChild(el("dt", null, p[0])); dl.appendChild(el("dd", "w", p[1]));
+      });
+      [["발생일", ncShow(x[2])], ["재납/조치일", ncShow(x[3]), late], ["불량수량", (x[7] || "-") + " EA"], ["귀책업체", x[8] || "-"], ["불량 분류", x[9] || "-"], ["발견자", x[10] || "-"], ["담당(품질)", x[11] || "-"], ["NO.", x[14] || "-"]].forEach(function (p) {
+        dl.appendChild(el("dt", null, p[0])); dl.appendChild(el("dd", p[2] ? "late" : null, p[1] + (p[2] ? " ⚠" : "")));
+      });
+      c.appendChild(dl);
+      box.appendChild(c);
+    });
+  }
+  if (sum.p) {
+    if (waitRows) sec("⏳ 미처리", waitRows);
+    else box.appendChild(el("div", "msg", "불러오는 중…"));
+  }
+  var nDone = sum.n - sum.p;
+  if (nDone > 0) {
+    if (!NC.showDone && sum.p) {
+      var sb = el("button", "more", "✅ 처리 완료 " + nDone + "건 보기"); sb.type = "button";
+      sb.onclick = function () { NC.showDone = true; ncLoadAll(eq); renderNc(); };
+      box.appendChild(sb);
+    } else if (Array.isArray(all)) sec("✅ 처리 완료", all.filter(function (x) { return x[0]; }));
+    else if (all && all.err) box.appendChild(el("div", "warn", "불러오기 실패: " + all.err));
+    else box.appendChild(el("div", "msg", "처리 완료 목록 불러오는 중…"));
+  }
+  if (!sum.n) box.appendChild(el("div", "msg", "부적합 기록이 없어요."));
 }
 
 /* ---------- 📍 SITE 고르기 (26_장비_LOG E열: 동탄 / 본사) ---------- */
@@ -4083,7 +4220,7 @@ function setTab(n) {
   try { pushBar(); } catch (ePb) {}
   if (SR.open) closeSearch(true);
   cur = n;
-  for (var i = 0; i < 8; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
+  for (var i = 0; i < 9; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
   $("main").style.display = n < 2 ? "grid" : "none";
   $("upload").style.display = n === 2 ? "grid" : "none";
   $("hours").style.display = n === 3 ? "grid" : "none";
@@ -4091,8 +4228,10 @@ function setTab(n) {
   $("stats").style.display = n === 5 ? "grid" : "none";
   $("sched").style.display = n === 6 ? "grid" : "none";
   $("insp").style.display = n === 7 ? "grid" : "none";
+  $("nc").style.display = n === 8 ? "grid" : "none";
   if (n < 2) render();
   else if (n === 7) { renderInsp(); if (!IN.loaded) loadInsp(false); }
+  else if (n === 8) { renderNc(); if (!NC.loaded) loadNc(false); }
   else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
   else if (n === 3) { $("upd").textContent = ""; updLock(); if (!H.loaded) loadHoursMeta(); }
@@ -4101,7 +4240,7 @@ function setTab(n) {
   moreSync();
 }
 // ⋯ 더보기: 입출하 일정 · 장비통계 · 연차 현황 (지금 보고 있으면 더보기 버튼이 그 이름으로 바뀜)
-var MORE = [[6, "입출하 일정"], [5, "장비통계"], [4, "연차 현황"], [7, "수입검사"]];
+var MORE = [[6, "입출하 일정"], [5, "장비통계"], [4, "연차 현황"], [7, "수입검사"], [8, "부적합"]];
 function moreSync() {
   var b = $("tmore"); if (!b) return;
   var hit = MORE.filter(function (m) { return m[0] === cur; })[0];
@@ -4164,7 +4303,7 @@ function openMore() {
 }
 $("tmore").onclick = openMore;
 (function () {
-  var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3], ["renderInsp", "insp", 7]];
+  var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3], ["renderInsp", "insp", 7], ["renderNc", "nc", 8]];
   W.forEach(function (w) {
     var f = window[w[0]]; if (typeof f !== "function") return;
     window[w[0]] = function () { var r = f.apply(this, arguments); try { if (!maybeAnim(w[1], w[2])) $(w[1]).classList.remove("ani"); } catch (e) {} return r; };   // 새 데이터로 다시 그린 거면 안 움직임 (두 번 움직이는 것 방지)
@@ -4200,7 +4339,7 @@ document.addEventListener("focusout", function () { setTimeout(function () { var
  * → 글자를 칠 때마다 폰 안에서 바로 찾음 (서버 요청 없음, 평소 화면 속도 영향 없음)
  */
 var SR = { open: false, idx: null, loading: false, at: 0, sel: -1, err: "" };
-var SECTIONS = ["main", "upload", "hours", "leave", "stats", "sched", "insp"];
+var SECTIONS = ["main", "upload", "hours", "leave", "stats", "sched", "insp", "nc"];
 
 function normQ(s) { return String(s || "").toUpperCase().replace(/[\s\-_#.]/g, ""); }
 
@@ -4444,6 +4583,7 @@ $("ref").onclick = function () {
   else if (cur === 4) { p = loadLeave(true); renderLeave(LV.data); }
   else if (cur === 5) { p = loadStats(true); renderStats(ST.data); }
   else if (cur === 7) { p = loadInsp(true); }
+  else if (cur === 8) { p = loadNc(true); }
   else { p = loadDash(true); if (cur === 6) renderSched(); }
 
   REF = true;
@@ -5313,10 +5453,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-31-4";
+var APP_VER = "2026-10-31-6";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-31-6", ["더보기 → ⚠️ 부적합: 장비별 부적합 처리현황(업체반출·재납일·불량내용)을 볼 수 있어요"]],
   ["2026-10-31-4", ["더보기 → 🔍 수입검사: 장비명을 넣으면 그 장비 부품의 수입검사 목록(검사 대기·완료·Result)을 볼 수 있어요"]],
   ["2026-10-30-9", ["근무시간: 지난달 달력이 더 빨리 떠요"]],
   ["2026-10-30-8", ["근무시간: 다음 달은 연차·반차·공가 버튼만 보여요 (근무시간은 그 달이 되면)"]],
@@ -6999,7 +7140,7 @@ function splashHide(now) {
     if (document.hidden || !SPL.vt || splEl(n, SPL.vt) < SPL_MIN) { setTimeout(wait, 100); return; }
     SPL.shut = true;
     n.className = "out";
-    try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6][cur]] || "main")); tabInd(); }, 120); } catch (eA) {}
+    try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7][cur]] || "main")); tabInd(); }, 120); } catch (eA) {}
     setTimeout(function () { n.style.display = "none"; }, 450);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
   })();
 }
@@ -7022,7 +7163,7 @@ function splashReplay(first) {
     if (document.hidden) { t0 = Date.now() - Math.min(el2, 2400); setTimeout(wait, 200); return; }   // 가려져 있는 동안은 시간 안 셈
     if ((splEl(n, t0) >= SPL_MIN && fresh) || el2 > 20000) {
       n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450);
-      try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6][cur]] || "main")); tabInd(); } catch (eA) {}
+      try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7][cur]] || "main")); tabInd(); } catch (eA) {}
       if (!fresh) toast("⚠️ 최신 정보를 아직 못 받았어요\n잠시 후 새로고침해 주세요", true);
       return;
     }
