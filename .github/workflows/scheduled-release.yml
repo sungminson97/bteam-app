@@ -7,7 +7,7 @@ name: 예약 배포 (index_next → index)
 
 on:
   schedule:
-    - cron: "50 7 1 11 *"
+    - cron: "50 3 1 11 *"
   workflow_dispatch:   # Actions 화면에서 [Run workflow]로 바로 실행도 가능
 
 permissions:
