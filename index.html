@@ -4927,6 +4927,8 @@ function renderWeek(w) {
   });
   b.appendChild(tb);
   var hint = "초록 = " + w.limit + "시간 달성 · 빨강 = 끝난 주인데 " + w.limit + "시간 미달. 이번 주는 진행 중이라 판정하지 않아요. 근무 숫자가 없는 주(입사 전 등)는 빼고 봐요. 연차·공가·대휴는 8시간, 반차는 4시간, 반반차는 2시간으로 쳐요(작은 글씨 휴8 = 합계 중 휴가로 넣은 시간 8시간). 숫자를 누르면 하루씩 상세, 이름을 누르면 입력 내역으로 이동해요.";
+  if (w.weeks.some(function (k) { return k.mix; }))
+    hint += " 달이 걸친 주(예: " + wkMd(w.weeks.filter(function (k) { return k.mix; })[0].from) + "~)는 앞뒤 달 기록까지 합쳐서 봐요.";
   if (w.weeks.some(function (k) { return k.part; }))
     hint += " * 달이 걸친 주는 시트에 이 달(" + w.m + "월) 날짜만 있어서 판정하지 않아요.";
   b.appendChild(el("div", "hint", hint));
@@ -5000,10 +5002,11 @@ function openWeekDetail(r, i) {
     var c = el("div");
     c.appendChild(el("i", null, (n === 0 || d === 1 ? m + "/" : "") + d + " " + wd[dow]));
     var cl = dow === 0 ? "su" : dow === 6 ? "sa" : "";
-    if (!row || m !== g.m) { c.appendChild(document.createTextNode("·")); cl += " out"; c.title = "다른 달 (시트에 없음)"; }
+    var xv = (!g || m !== g.m) && k.mix ? ((k.x && k.x[r.n]) || [])[n] : undefined;   // 📅 달이 걸친 주: 다른 달 날짜도 서버가 채워 줌
+    if ((!row || m !== g.m) && !k.mix) { c.appendChild(document.createTextNode("·")); cl += " out"; c.title = "다른 달 (시트에 없음)"; }
     else {
-      var v = String(row.v[d - 1] || "").trim();
-      var sc = sch[r.n + "|" + d];
+      var v = xv !== undefined ? String((xv && xv[0]) || "") : String(row.v[d - 1] || "").trim();
+      var sc = xv !== undefined ? (xv && xv[1] ? [xv[1], xv[2]] : null) : sch[r.n + "|" + d];
       if (/^\d+(\.\d+)?$/.test(v)) {
         c.appendChild(document.createTextNode(v));
         if (sc && sc[0] < 8) { c.appendChild(el("em", null, (SHORT[sc[1]] || sc[1]) + "+" + sc[0])); cl += " hf"; }
@@ -5638,10 +5641,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-01-1";
+var APP_VER = "2026-11-01-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-01-2", ["근무시간: 주 52시간 표에서 달이 걸친 주(10/26~11/1 같은)도 지난달 기록까지 합쳐서 보여줘요"]],
   ["2026-11-01-1", ["화면 안정화 · 작은 개선"]],
   ["2026-10-31-19", ["장비통계: 맨 위 요약에서 ‹ ›로 올해 1월부터 지난 달 점수도 볼 수 있어요 (아래 그래프 막대를 눌러도 돼요)", "접는 폰·넓은 화면에서도 제목줄과 아래 탭이 가운데로 깔끔하게 보여요"]],
   ["2026-10-31-18", ["업데이트 화면: 진행률(%)과 이번 업데이트 항목이 차례로 체크돼요"]],
