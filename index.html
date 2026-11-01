@@ -1799,6 +1799,30 @@ html.xmas #moreov .box::before{width:44px;height:6px;background:repeating-linear
 /* ── 입출하: 오늘 날짜 카드 금빛 ── */
 html.xmas #sched .card.sday .hd .ttl{position:relative}
 
+
+/* 📱 접는 폰 · 넓은 화면: 위 제목줄과 아래 탭바도 내용 폭(가운데)에 맞춤 */
+@media (min-width:720px){
+  header>*{max-width:688px;margin-left:auto;margin-right:auto}
+}
+@media (min-width:600px){
+  #tabbar.tabs{left:max(12px,calc(50% - 280px));right:max(12px,calc(50% - 280px))}
+}
+/* 두 화면 폰(가운데 경첩): 경첩에 걸리지 않게 왼쪽 화면에만 */
+@media (horizontal-viewport-segments:2){
+  body{max-width:env(viewport-segment-width 0 0,100%)}
+  #tabbar.tabs{left:12px;right:calc(100vw - env(viewport-segment-right 0 0,100vw) + 12px)}
+}
+
+/* 📅 장비통계: 위 요약 달 넘기기 */
+.hx .snav{display:flex;align-items:center;gap:6px}
+.hx .snav .sv{width:32px;height:32px;padding:0;border:1px solid rgba(255,255,255,.38);border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-size:20px;font-weight:900;line-height:1;font-family:inherit;display:flex;align-items:center;justify-content:center;box-shadow:none}
+.hx .snav .sv:active{transform:scale(.9)}
+.hx .snav .sv:disabled{opacity:.3}
+.hx .snav .pl{min-width:96px;text-align:center}
+.hx .snow{margin-left:auto;height:30px;padding:0 12px;border:0;border-radius:999px;background:#fff;color:#4f5bd5;font-size:12.5px;font-weight:900;font-family:inherit;box-shadow:0 6px 14px -8px rgba(0,0,0,.4)}
+#stats .mc.pk{cursor:pointer}
+#stats .mc.sel{background:color-mix(in srgb,var(--accent) 16%,transparent);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--accent) 55%,transparent) inset}
+#stats .mc.sel label{color:var(--accent);font-weight:900}
 </style>
 </head>
 <body>
@@ -2195,7 +2219,7 @@ var cur = 0, store = {};
 var H = { meta: null, loaded: false, confirm: false, token: 0, busy: false };
 var U = { loaded: false, data: null, msg: null, pend: [] };
 var LV = { loaded: false, data: null, open: {} };
-var ST = { loaded: false, data: null, open: {} };
+var ST = { loaded: false, data: null, open: {}, sel: "" };   // sel: 위 요약에서 고른 달 (비면 이번 달)
 var CF = { it: null, s: null };
 var G = { busy: false, timer: null };
 var mem = {};
@@ -4123,30 +4147,52 @@ function renderStats(d) {
   $("upd").textContent = updTxt(d, "stats");
 
   var months = d.months || [];
+  // 📅 위 요약은 올해 1월 ~ 이번 달 중 고른 달 (‹ › 또는 아래 그래프 막대를 눌러 바꿈)
+  var okM = months.filter(function (m) { return m.m <= d.current; }).map(function (m) { return m.m; });
+  if (!ST.sel || okM.indexOf(ST.sel) < 0) ST.sel = d.current;
   var cm = null;
-  months.forEach(function (m) { if (m.m === d.current) cm = m; });
+  months.forEach(function (m) { if (m.m === ST.sel) cm = m; });
+  var isCur = ST.sel === d.current, mLbl = parseInt(ST.sel.slice(5), 10) + "월" + (isCur ? " (이번 달)" : "");
+  var si = okM.indexOf(ST.sel);
+  var goM = function (k) { var n = okM[si + k]; if (!n) return; ST.sel = n; renderStats(ST.data); };
+  var plan = isCur && d.info && d.info.planned != null;
 
-  // 🌟 맨 위 요약 (이번 달)
-  if (cm) {
-    var dn2 = (cm.aCnt || 0) + (cm.bCnt || 0);
-    var ap = cm.aPts || 0, bp = cm.bPts || 0;
-    box.appendChild(heroX(parseInt(cm.m.slice(5), 10) + "월 (이번 달)", null, null,
-      [["A팀", cm.aPts == null ? "-" : (+cm.aPts).toFixed(1), "점", false, (cm.aCnt || 0) + "대 출하"], ["B팀", cm.bPts == null ? "-" : (+cm.bPts).toFixed(1), "점", false, (cm.bCnt || 0) + "대 출하"], [d.info && d.info.planned != null ? "출하 / 예정" : "출하", dn2 + (d.info && d.info.planned != null ? "/" + d.info.planned : ""), "대"]]));
+  // 🌟 맨 위 요약 (고른 달)
+  if (cm || okM.length) {
+    var ca = cm || {};
+    var dn2 = (ca.aCnt || 0) + (ca.bCnt || 0);
+    var hx = heroX(mLbl, null, null,
+      [["A팀", ca.aPts == null ? "-" : (+ca.aPts).toFixed(1), "점", false, (ca.aCnt || 0) + "대 출하"], ["B팀", ca.bPts == null ? "-" : (+ca.bPts).toFixed(1), "점", false, (ca.bCnt || 0) + "대 출하"], [plan ? "출하 / 예정" : "출하", dn2 + (plan ? "/" + d.info.planned : ""), "대"]]);
+    var ht = hx.querySelector(".ht"), pl = ht.querySelector(".pl");
+    var nv = el("div", "snav");
+    var pv = el("button", "sv", "‹"); pv.type = "button"; pv.setAttribute("aria-label", "이전 달"); pv.disabled = si <= 0; pv.onclick = function () { goM(-1); };
+    var nx = el("button", "sv", "›"); nx.type = "button"; nx.setAttribute("aria-label", "다음 달"); nx.disabled = si >= okM.length - 1; nx.onclick = function () { goM(1); };
+    nv.appendChild(pv); nv.appendChild(pl); nv.appendChild(nx);
+    ht.insertBefore(nv, ht.firstChild);
+    if (!isCur) { var bk = el("button", "snow", "이번 달로"); bk.type = "button"; bk.onclick = function () { ST.sel = d.current; renderStats(ST.data); }; ht.appendChild(bk); }
+    // 옆으로 밀어서도 달 넘기기
+    var sx = 0, sy = 0;
+    hx.addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    hx.addEventListener("touchend", function (e) { var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) goM(dx < 0 ? 1 : -1); }, { passive: true });
+    box.appendChild(hx);
   }
   // 요약 카드 2개
   var grid = el("div", "sgrid");
   var c1 = el("div", "sc");
-  c1.appendChild(el("h4", null, cm ? parseInt(cm.m.slice(5), 10) + "월 (이번 달)" : "이번 달"));
+  c1.appendChild(el("h4", null, mLbl));
   if (cm) {
     c1.appendChild(srow("A", cm.aPts, cm.aCnt, (cm.aPts || 0) > (cm.bPts || 0)));
     c1.appendChild(srow("B", cm.bPts, cm.bCnt, (cm.bPts || 0) > (cm.aPts || 0)));
-  } else c1.appendChild(el("div", "sdiff", "이번 달 데이터 없음"));
-  if (d.info && d.info.planned != null) {   // 🚚 현재까지 출하 / 이번 달 예정
+  } else c1.appendChild(el("div", "sdiff", "이 달 데이터 없음"));
+  if (plan) {   // 🚚 현재까지 출하 / 이번 달 예정
     var done = cm ? (cm.aCnt || 0) + (cm.bCnt || 0) : null;
     var sd = el("div", "sdiff");
     if (done != null) { sd.appendChild(document.createTextNode("현재까지 ")); sd.appendChild(el("b", null, done + "대")); sd.appendChild(document.createTextNode(" 출하")); sd.appendChild(el("br")); sd.appendChild(document.createTextNode("/ 예정 " + d.info.planned + "대")); }
     else sd.appendChild(document.createTextNode("출하 예정 " + d.info.planned + "대"));
     c1.appendChild(sd);
+  } else if (cm && (cm.aPts != null || cm.bPts != null)) {
+    var dd = Math.round(((cm.bPts || 0) - (cm.aPts || 0)) * 10) / 10;
+    c1.appendChild(el("div", "sdiff", dd === 0 ? "동점" : (dd > 0 ? "B팀 +" : "A팀 +") + Math.abs(dd).toFixed(1) + "점"));
   }
   grid.appendChild(c1);
 
@@ -4210,7 +4256,8 @@ function renderStats(d) {
   months.forEach(function (m) { max = Math.max(max, m.aPts || 0, m.bPts || 0); });
   var chart = el("div", "chart");
   months.forEach(function (m) {
-    var col = el("div", "mc" + (m.m === d.current ? " now" : ""));
+    var col = el("div", "mc" + (m.m === d.current ? " now" : "") + (m.m === ST.sel ? " sel" : "") + (m.m <= d.current ? " pk" : ""));
+    if (m.m <= d.current) col.onclick = function () { ST.sel = m.m; renderStats(ST.data); window.scrollTo({ top: 0, behavior: "smooth" }); };
     var bars = el("div", "bars");
     var a = el("b", "a"), b = el("b", "b");
     a.style.height = max ? Math.round((m.aPts || 0) / max * 100) + "%" : "0";
@@ -5546,10 +5593,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-31-18";
+var APP_VER = "2026-10-31-19";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-10-31-19", ["장비통계: 맨 위 요약에서 ‹ ›로 올해 1월부터 지난 달 점수도 볼 수 있어요 (아래 그래프 막대를 눌러도 돼요)", "접는 폰·넓은 화면에서도 제목줄과 아래 탭이 가운데로 깔끔하게 보여요"]],
   ["2026-10-31-18", ["업데이트 화면: 진행률(%)과 이번 업데이트 항목이 차례로 체크돼요"]],
   ["2026-10-31-14", ["부적합: 최근 발생순 · 출하 빠른 순 · 미처리 많은 순으로 정렬할 수 있어요"]],
   ["2026-10-31-10", ["화면 안정화 · 작은 개선"]],
