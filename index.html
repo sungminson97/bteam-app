@@ -1823,6 +1823,33 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #stats .mc.pk{cursor:pointer}
 #stats .mc.sel{background:color-mix(in srgb,var(--accent) 16%,transparent);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--accent) 55%,transparent) inset}
 #stats .mc.sel label{color:var(--accent);font-weight:900}
+
+/* 👀 보기 전용 안내 */
+#vwov{--obg:#f5f6f9;--ocard:#fff;--obd:rgba(16,32,64,.08);--oink:#5d6875;--oglow:rgba(47,111,237,.18);position:fixed;inset:0;z-index:120;display:none;align-items:safe center;justify-content:center;overflow-y:auto;padding:calc(40px + env(safe-area-inset-top)) 24px calc(30px + env(safe-area-inset-bottom));background:radial-gradient(90% 50% at 50% 0%,var(--oglow),transparent 70%),var(--obg);color:var(--text)}
+@media (prefers-color-scheme:dark){#vwov{--obg:#08090d;--ocard:#141821;--obd:rgba(255,255,255,.08);--oink:#9aa5b4;--oglow:rgba(90,140,255,.26)}}
+#vwov.on{display:flex;animation:vwIn .4s ease both}
+#vwov.out{animation:vwOut .35s ease both}
+@keyframes vwIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes vwOut{to{opacity:0;transform:scale(1.03)}}
+#vwov .vin{width:100%;max-width:380px;text-align:center}
+#vwov .vic{width:84px;height:84px;margin:0 auto;border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:42px;background:var(--ocard);box-shadow:0 0 0 1px var(--obd),0 18px 36px -18px rgba(47,111,237,.55)}
+#vwov .vtt{margin-top:24px;font-size:25px;font-weight:900;letter-spacing:-.03em;line-height:1.3}
+#vwov .vsb{margin-top:10px;font-size:15px;line-height:1.6;color:var(--oink);white-space:pre-line;word-break:keep-all}
+#vwov .vsb span{display:inline-block;margin-top:8px;padding:4px 11px;border-radius:999px;font-size:12.5px;font-weight:800;color:var(--accent);background:color-mix(in srgb,var(--accent) 11%,transparent)}
+#vwov .vcd{margin-top:26px;padding:6px 16px;border-radius:22px;background:var(--ocard);box-shadow:0 0 0 1px var(--obd),0 14px 30px -24px rgba(16,32,64,.5);text-align:left}
+#vwov .vrw{display:flex;gap:13px;align-items:flex-start;padding:14px 0}
+#vwov .vrw+.vrw{border-top:1px solid var(--obd)}
+#vwov .vrw i{flex:none;width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:19px;background:color-mix(in srgb,var(--accent) 10%,transparent)}
+#vwov .vrw b{display:block;font-size:15px;font-weight:900;letter-spacing:-.01em}
+#vwov .vrw p{margin:3px 0 0;font-size:13.5px;line-height:1.5;color:var(--oink);word-break:keep-all}
+#vwov .vst{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-size:13px;color:var(--oink)}
+#vwov .vst b{font-weight:800}
+#vwov .vst s{width:15px;height:15px;border-radius:50%;border:2px solid color-mix(in srgb,var(--accent) 25%,transparent);border-top-color:var(--accent);animation:rlSpin .8s linear infinite}
+#vwov .vst.ok{color:var(--ok,#16a34a)}
+#vwov .vst.ok s{animation:none;border:0;background:var(--ok,#16a34a);position:relative}
+#vwov .vst.ok s::after{content:"";position:absolute;left:5px;top:2.5px;width:3.5px;height:7px;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg)}
+#vwov .vgo{width:100%;height:58px;margin-top:18px;border:0;border-radius:18px;background:var(--grd);color:#fff;font-size:17px;font-weight:900;font-family:inherit;box-shadow:var(--grdsh)}
+#vwov .vgo:active{transform:scale(.98)}
 </style>
 </head>
 <body>
@@ -1845,6 +1872,22 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
   </div>
 </div>
 <!-- 🚀 업데이트 화면 (#app 밖: PIN 화면 위에도 뜨게) -->
+<!-- 👀 보기 전용 안내 (보기 PIN 넣은 직후) -->
+<div id="vwov" role="dialog" aria-modal="true" aria-labelledby="vwttl">
+  <div class="vin">
+    <div class="vic">👀</div>
+    <div class="vtt" id="vwttl">보기 전용으로 시작합니다</div>
+    <div class="vsb">금일·명일 진행 장비, 입고 일정,
+수입검사·부적합 현황 등을 볼 수 있어요.
+<span>입력·수정은 할 수 없어요.</span></div>
+    <div class="vcd">
+      <div class="vrw"><i>⏳</i><div><b>처음엔 조금 느릴 수 있어요</b><p>앱을 처음 설치해서 데이터를 처음 불러오는 중이에요.</p></div></div>
+      <div class="vrw"><i>⚡</i><div><b>쓰다 보면 자동으로 빨라져요</b><p>한 번 불러온 화면은 폰에 저장돼서 다음부턴 바로 떠요.</p></div></div>
+    </div>
+    <div class="vst" id="vwst"><s></s><b>첫 화면 불러오는 중…</b></div>
+    <button type="button" class="vgo" id="vwgo">확인</button>
+  </div>
+</div>
 <div id="rlov" aria-live="polite">
   <div class="au"><i></i><i></i><i></i></div>
   <div class="in">
@@ -2593,6 +2636,8 @@ function verify(pin, typed) {
       // 👀 보기 PIN으로 처음 들어오면 이름 안 고르고 보기 전용 (편집 PIN이면 해제)
       if (j.data && j.data.level === "view") { if (!nameDone()) sset("viewOnly", "1"); }
       else if (j.data && j.data.level === "edit") sdel("viewOnly");
+      // 👀 보기 PIN으로 처음 들어오면 안내 화면 먼저 → [확인] 누르면 메인 (그동안 금일·명일은 뒤에서 계속 불러옴)
+      if (typed && j.data && j.data.level === "view" && !nameDone()) { vIntro(pre, function () { unlock(pin, pre); }); return; }
       unlock(pin, pre);
       return;
     }
@@ -5593,10 +5638,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-10-31-19";
+var APP_VER = "2026-11-01-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-01-1", ["화면 안정화 · 작은 개선"]],
   ["2026-10-31-19", ["장비통계: 맨 위 요약에서 ‹ ›로 올해 1월부터 지난 달 점수도 볼 수 있어요 (아래 그래프 막대를 눌러도 돼요)", "접는 폰·넓은 화면에서도 제목줄과 아래 탭이 가운데로 깔끔하게 보여요"]],
   ["2026-10-31-18", ["업데이트 화면: 진행률(%)과 이번 업데이트 항목이 차례로 체크돼요"]],
   ["2026-10-31-14", ["부적합: 최근 발생순 · 출하 빠른 순 · 미처리 많은 순으로 정렬할 수 있어요"]],
@@ -5977,6 +6023,23 @@ function openNameChange() {
 }
 $("nmno").onclick = function () { $("nmov").className = "ov"; nmMode(false); };
 
+// 👀 보기 전용 안내 화면 (보기 PIN 넣은 직후 한 번)
+function vIntro(pre, done) {
+  var o = $("vwov"), st = $("vwst"), go = $("vwgo");
+  st.className = "vst"; st.querySelector("b").textContent = "첫 화면 불러오는 중…";
+  o.className = "on";
+  try { go.focus({ preventScroll: true }); } catch (e) {}
+  if (pre) pre.then(function (pj) {
+    if (pj && pj.ok) { st.className = "vst ok"; st.querySelector("b").textContent = "첫 화면 준비 완료"; }
+    else { st.className = "vst"; st.querySelector("b").textContent = "들어가서 마저 불러올게요"; }
+  });
+  go.onclick = function () {
+    go.onclick = null;
+    o.className = "on out";
+    done();
+    setTimeout(function () { o.className = ""; }, 380);
+  };
+}
 // 👀 보기 전용: 보기 PIN으로 들어오고 이름을 안 고른 폰 (이름 고르기·알림 권유 안 함)
 function viewOnly() { return sget("viewOnly") === "1" && !nameDone(); }
 function vBadge() {
