@@ -1850,6 +1850,12 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #vwov .vst.ok s::after{content:"";position:absolute;left:5px;top:2.5px;width:3.5px;height:7px;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg)}
 #vwov .vgo{width:100%;height:58px;margin-top:18px;border:0;border-radius:18px;background:var(--grd);color:#fff;font-size:17px;font-weight:900;font-family:inherit;box-shadow:var(--grdsh)}
 #vwov .vgo:active{transform:scale(.98)}
+
+/* 담당자 옆 업체 (동탄: "업체,담당자") */
+#main .r1 .own.vnd{color:var(--sub);font-weight:700;font-size:12px}
+#main .r1 .own small.ovn{display:inline;margin:0;font-size:11px;font-weight:600;color:var(--sub);white-space:nowrap}
+#main .r1 .own.me small.ovn{color:color-mix(in srgb,var(--accent) 70%,var(--sub))}
+#main .r1 .own small.ovn::before{content:"· ";opacity:.6}
 </style>
 </head>
 <body>
@@ -2749,7 +2755,7 @@ function render() {
   d.stages.forEach(function (s, si) {
     var n = s.items.length;
     if (!n) { none.push(s.label); return; }   // 작업 없는 공정은 맨 아래 한 줄로 모음
-    var nu = s.items.filter(function (x) { return x.u; }).length, nm2 = s.items.filter(function (x) { return me && x.owner === me; }).length;
+    var nu = s.items.filter(function (x) { return x.u; }).length, nm2 = s.items.filter(function (x) { return me && ownIs(x.owner, me); }).length;
     var card = el("div", "card" + (nu ? " hasu" : ""));
     card.id = "stg" + si;
     card.appendChild(el("span", "sn"));   // 흐름 점 (숫자 없이)
@@ -2772,7 +2778,12 @@ function render() {
       urgName(nm, it.n, it.u);
       r1.appendChild(nm);
       if (it.tag) r1.appendChild(el("span", "tag " + (it.tagKind || ""), it.tag));
-      if (it.owner) { var ow = el("span", "own" + (it.owner === me ? " me" : ""), it.owner); ow.setAttribute("data-i", it.owner.charAt(0)); r1.appendChild(ow); }
+      if (it.owner) {   // "손성민 · 동오정밀" → 이름 + 작은 글씨 업체
+        var op = String(it.owner).split(" · ");
+        var ow = el("span", "own" + (ownIs(it.owner, me) ? " me" : ""), op[0]); ow.setAttribute("data-i", op[0].charAt(0));
+        if (op.length > 1) ow.appendChild(el("small", "ovn", op.slice(1).join(" · ")));
+        r1.appendChild(ow);
+      } else if (it.v) r1.appendChild(el("span", "own vnd", "🏭 " + it.v));   // 다른 공정: 업체 이름만 (동탄 "업체,담당자")
       li.appendChild(r1);
       var r2 = el("div", "r2");
       if (it.t) r2.appendChild(el("span", "t", it.t));
@@ -3927,6 +3938,8 @@ function loadUpload() {
 
 /* ---------- 연차 현황 ---------- */
 // 🌟 탭 맨 위 요약: [알약] 큰 숫자 (오른쪽 빨간 칩) + 유리 칸 3개 [[이름, 숫자, 단위, 빨강?]]
+// 담당자 글자("손성민 · 동오정밀", "고현우, 나영훈 · 시노드")에 이 사람이 있는지
+function ownIs(o, me) { return !!me && String(o || "").split(" · ")[0].split(/\s*,\s*/).indexOf(me) >= 0; }
 function heroX(pill, big, unit, tiles, chip, ok) {
   var h = el("div", "hx" + (ok ? " ok" : ""));
   var t = el("div", "ht");
@@ -5641,10 +5654,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-01-2";
+var APP_VER = "2026-11-01-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-01-3", ["금일·명일: 동탄 장비는 업체 이름이 같이 보여요 (제조완료는 손성민 · 동오정밀처럼 담당자와 함께)", "장비 상세: 담당자 앞에 업체 이름도 보여요 (예: 시노드 · 고현우)"]],
   ["2026-11-01-2", ["근무시간: 주 52시간 표에서 달이 걸친 주(10/26~11/1 같은)도 지난달 기록까지 합쳐서 보여줘요"]],
   ["2026-11-01-1", ["화면 안정화 · 작은 개선"]],
   ["2026-10-31-19", ["장비통계: 맨 위 요약에서 ‹ ›로 올해 1월부터 지난 달 점수도 볼 수 있어요 (아래 그래프 막대를 눌러도 돼요)", "접는 폰·넓은 화면에서도 제목줄과 아래 탭이 가운데로 깔끔하게 보여요"]],
