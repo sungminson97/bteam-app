@@ -1862,11 +1862,18 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #srch .vsh{margin:6px 2px -2px;font-size:13.5px;font-weight:900;color:var(--text)}
 #srch .vlist .nm{font-weight:900}
 #srch .sres .it.vit{display:block}
+#srch .vjump{display:flex;flex-direction:column;gap:3px;padding:14px 16px;border-radius:18px;color:#fff;background:var(--grd);box-shadow:var(--grdsh);cursor:pointer}
+#srch .vjump b{font-size:15.5px;font-weight:900}
+#srch .vjump span{font-size:12.5px;font-weight:700;opacity:.9}
+#srch .vjump:active{transform:scale(.985)}
 #srch .sres .it.vit .nm,#srch .sres .it.vit .nx,#srch .sres .it.vit .ty{display:block;text-align:left;white-space:normal}
 #srch .sres .it.vit .nm .ow{font-size:13px;font-weight:800}
 #srch .sres .it.vit .nx{margin-top:4px;font-size:13px;font-weight:800}
 #srch .sres .it.vit .ty{margin-top:2px;font-size:12.5px}
 #srch .cps .vlink{cursor:pointer;background:rgba(255,255,255,.28)!important;font-weight:900}
+
+/* 🎌 공휴일 */
+#hours .cd.hol.we b{font-size:11px;font-weight:800;color:color-mix(in srgb,var(--warn) 75%,var(--sub))}
 </style>
 </head>
 <body>
@@ -4678,6 +4685,7 @@ function renderSearch() {
   if (SR.ven != null && !q) { renderVendor(box, idx, today); return; }   // 🏭 업체 현황
 
   if (!q) {
+    var vb3 = el("div", "vjump"); vb3.appendChild(el("b", null, "🏭 업체 현황")); vb3.appendChild(el("span", null, "업체별 진행 중·출하 대수 보기 ›")); vb3.onclick = function () { openVendor(""); }; box.appendChild(vb3);
     box.appendChild(el("div", "hint", "장비명 일부(예: 373), 담당자 이름(예: 손성민), 업체명을 입력하세요. Backlog 전체 " +
       idx.rows.length + "대에서 찾아요." + (SR.loading ? " · 최신 목록 받는 중…" : " · " + (idx.built || "") + " 기준")));
     return;
@@ -4701,6 +4709,18 @@ function renderSearch() {
     return da < db ? -1 : da > db ? 1 : 0;
   });
 
+  // 🏭 업체 이름으로 찾으면 맨 위에 "업체 현황" 바로가기
+  if (SR.sel < 0) {
+    var vs = {};
+    idx.rows.forEach(function (r) { if (r[8] && normQ(r[8]).indexOf(q) >= 0) vs[r[8]] = (vs[r[8]] || 0) + 1; });
+    Object.keys(vs).forEach(function (v) {
+      var vl = el("div", "vjump");
+      vl.appendChild(el("b", null, "🏭 " + v + " 업체 현황"));
+      vl.appendChild(el("span", null, "진행 중·출하 대수와 장비 목록 보기 ›"));
+      vl.onclick = function () { openVendor(v); };
+      box.appendChild(vl);
+    });
+  }
   if (!hits.length) { box.appendChild(el("div", "msg", "'" + $("sq").value.trim() + "' 장비를 찾지 못했어요.")); return; }
   if (SR.sel < 0 && hits.length === 1) SR.sel = hits[0].i;
 
@@ -4718,7 +4738,7 @@ function renderSearch() {
     it.appendChild(nm);
     var nx = eqNext(r, idx.stages, today);
     it.appendChild(el("span", "nx", nx ? (nx.done ? nx.label + " 완료" : (nx.now ? "오늘 " : "") + nx.label + " " + mdw(nx.d)) : "일정 없음"));
-    var ty = el("span", "ty", r[1] + (r[4] ? " · 📍" + r[4] : "") + (r[6] && r[6][0] ? " · 🏭" + r[6][0][1] : ""));
+    var ty = el("span", "ty", r[1] + (r[4] ? " · 📍" + r[4] : "") + (r[6] && r[6][0] ? " · 🧱" + r[6][0][1] : ""));
     if (!r[3]) ty.insertBefore(el("span", "tmtag u unas", "▲팀/담당자 미지정"), ty.firstChild);
     it.appendChild(ty);
     it.onclick = function () { SR.sel = h.i; renderSearch(); window.scrollTo(0, 0); };
@@ -5356,6 +5376,12 @@ function monLoading(name) {
   }
 }
 
+// 🎌 공휴일 (빨간 날 · 대체휴일 포함) — 주말처럼 봐서 '빈 평일' 경고 안 함 · 내년 것은 연말에 추가
+var KR_HOLI = {
+  "2026-01-01": "신정", "2026-03-01": "삼일절", "2026-05-24": "부처님", "2026-06-06": "현충일", "2026-08-15": "광복절", "2026-10-03": "개천절", "2026-02-16": "설날", "2026-02-17": "설날", "2026-02-18": "설날", "2026-03-02": "대체",
+  "2026-05-01": "노동절", "2026-05-05": "어린이날", "2026-05-25": "대체", "2026-06-03": "선거", "2026-08-17": "대체",
+  "2026-09-24": "추석", "2026-09-25": "추석", "2026-09-26": "추석", "2026-10-05": "대체", "2026-10-09": "한글날", "2026-12-25": "성탄"
+};
 function renderMonth(name, r) {
   var b = $("hmon");
   var changed = b.getAttribute("data-name") !== name;
@@ -5379,7 +5405,7 @@ function renderMonth(name, r) {
   });
   var filled = 0, gaps = [];
   r.days.forEach(function (x) {
-    var we = x.dow === 0 || x.dow === 6;
+    var we = x.dow === 0 || x.dow === 6 || !!KR_HOLI[r.ym + "-" + ("0" + x.d).slice(-2)];   // 공휴일도 주말처럼
     if (x.v) filled++;
     else if (!x.fut && !we && !x.sv) gaps.push(x.d + "일");
   });
@@ -5424,14 +5450,16 @@ function renderMonth(name, r) {
 
   r.days.forEach(function (x) {
     var ymd = r.ym + "-" + ("0" + x.d).slice(-2);
-    var we = x.dow === 0 || x.dow === 6;
-    var cls = "cd" + (x.dow === 0 ? " su" : x.dow === 6 ? " sa" : "");
+    var hol = KR_HOLI[ymd];
+    var we = x.dow === 0 || x.dow === 6 || !!hol;
+    var cls = "cd" + (x.dow === 0 || hol ? " su" : x.dow === 6 ? " sa" : "") + (hol ? " hol" : "");
     var txt;
     if (x.v) {
       txt = SHORT[x.v] || x.v;
       if (!/^\d+(\.\d+)?$/.test(x.v)) cls += " txt";
     } else if (x.sv) { txt = SHORT[x.sv] || x.sv; cls += " txt schv" + (x.fut ? " fut" : ""); }   // schedule에만 있는 휴가
     else if (x.fut) { txt = ""; cls += " fut"; }
+    else if (hol) { txt = hol; cls += " we txt"; }   // 🎌 빈 공휴일: 이름 표시 (추석 · 대체 등)
     else if (we) { txt = "-"; cls += " we"; }
     else { txt = "!"; cls += " gap"; }
     if (ymd === today) cls += " today";
@@ -5441,7 +5469,8 @@ function renderMonth(name, r) {
     c.setAttribute("data-d", ymd.slice(5));   // 🎄 12-24 · 12-25 장식용
     c.appendChild(el("i", null, x.d));
     c.appendChild(el("b", null, txt || " "));
-    if (x.v) c.title = x.v;
+    if (hol) c.title = (hol === "대체" ? "대체휴일" : hol) + (x.v ? " · " + x.v : "");
+    else if (x.v) c.title = x.v;
     else if (x.sv) c.title = x.sv + " (schedule에만 있음 · 근무시간 칸은 비어 있음)";
     c.onclick = function () {
       $("hdate").value = ymd;
@@ -5452,7 +5481,7 @@ function renderMonth(name, r) {
     cal.appendChild(c);
   });
   b.appendChild(cal);
-  b.appendChild(el("div", "hint", "날짜를 누르면 아래 입력칸이 그 날로 바뀌어요. 빨간 칸은 비어 있는 평일이에요. 점선 칸은 schedule에만 적힌 휴가예요(근무시간 칸은 비어 있음)."));
+  b.appendChild(el("div", "hint", "날짜를 누르면 아래 입력칸이 그 날로 바뀌어요. 빨간 날짜는 공휴일(대체휴일 포함)이에요. 빨간 칸은 비어 있는 평일이에요. 점선 칸은 schedule에만 적힌 휴가예요(근무시간 칸은 비어 있음)."));
 }
 
 // 현재 입력값 박스 + 달력 그리기
@@ -5773,10 +5802,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-01-4";
+var APP_VER = "2026-11-01-5";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-01-5", ["근무시간: 공휴일·대체휴일(추석, 10/5 등)은 빨간 날로 보이고 '빈 평일'에서 빠져요"]],
   ["2026-11-01-4", ["더보기 → 🏭 업체 현황: 업체별로 진행 중·이번 달 출하·올해 출하 대수와 장비 목록을 볼 수 있어요 (금일·명일의 업체 이름을 눌러도 돼요)"]],
   ["2026-11-01-3", ["금일·명일: 동탄 장비는 업체 이름이 같이 보여요 (제조완료는 손성민 · 동오정밀처럼 담당자와 함께)", "장비 상세: 담당자 앞에 업체 이름도 보여요 (예: 시노드 · 고현우)"]],
   ["2026-11-01-2", ["근무시간: 주 52시간 표에서 달이 걸친 주(10/26~11/1 같은)도 지난달 기록까지 합쳐서 보여줘요"]],
