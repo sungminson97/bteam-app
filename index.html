@@ -1856,6 +1856,17 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #main .r1 .own small.ovn{display:inline;margin:0;font-size:11px;font-weight:600;color:var(--sub);white-space:nowrap}
 #main .r1 .own.me small.ovn{color:color-mix(in srgb,var(--accent) 70%,var(--sub))}
 #main .r1 .own small.ovn::before{content:"· ";opacity:.6}
+
+/* 🏭 업체 현황 */
+#main .r1 .own.vnd{cursor:pointer}
+#srch .vsh{margin:6px 2px -2px;font-size:13.5px;font-weight:900;color:var(--text)}
+#srch .vlist .nm{font-weight:900}
+#srch .sres .it.vit{display:block}
+#srch .sres .it.vit .nm,#srch .sres .it.vit .nx,#srch .sres .it.vit .ty{display:block;text-align:left;white-space:normal}
+#srch .sres .it.vit .nm .ow{font-size:13px;font-weight:800}
+#srch .sres .it.vit .nx{margin-top:4px;font-size:13px;font-weight:800}
+#srch .sres .it.vit .ty{margin-top:2px;font-size:12.5px}
+#srch .cps .vlink{cursor:pointer;background:rgba(255,255,255,.28)!important;font-weight:900}
 </style>
 </head>
 <body>
@@ -2781,9 +2792,13 @@ function render() {
       if (it.owner) {   // "손성민 · 동오정밀" → 이름 + 작은 글씨 업체
         var op = String(it.owner).split(" · ");
         var ow = el("span", "own" + (ownIs(it.owner, me) ? " me" : ""), op[0]); ow.setAttribute("data-i", op[0].charAt(0));
-        if (op.length > 1) ow.appendChild(el("small", "ovn", op.slice(1).join(" · ")));
+        if (op.length > 1) { var ovs = el("small", "ovn", op.slice(1).join(" · ")); ovs.onclick = function (e) { e.stopPropagation(); openVendor(it.v || op[1]); }; ow.appendChild(ovs); }
         r1.appendChild(ow);
-      } else if (it.v) r1.appendChild(el("span", "own vnd", "🏭 " + it.v));   // 다른 공정: 업체 이름만 (동탄 "업체,담당자")
+      } else if (it.v) {   // 다른 공정: 업체 이름만 (동탄 "업체,담당자") · 누르면 🏭 업체 현황
+        var vb = el("span", "own vnd", "🏭 " + it.v);
+        vb.onclick = function (e) { e.stopPropagation(); openVendor(it.v); };
+        r1.appendChild(vb);
+      }
       li.appendChild(r1);
       var r2 = el("div", "r2");
       if (it.t) r2.appendChild(el("span", "t", it.t));
@@ -4497,6 +4512,11 @@ function openMore() {
     bt.onclick = function () { $("moreov").className = "ov"; ovLock(false); setTab(m[0]); window.scrollTo(0, 0); };
     g.appendChild(bt);
   });
+  var vb2 = el("button", SR.open && SR.ven != null ? "on" : ""); vb2.type = "button";   // 🏭 업체 현황 (탭 아님 · 장비 검색 화면에 띄움)
+  var vi = el("i"); vi.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V10l5 3V10l5 3V6l8 4v11z"/><path d="M7 17h2M12 17h2M17 17h1"/></svg>';
+  vb2.appendChild(vi); vb2.appendChild(document.createTextNode("업체 현황"));
+  vb2.onclick = function () { $("moreov").className = "ov"; ovLock(false); openVendor(""); };
+  g.appendChild(vb2);
   $("moreov").className = "ov on";
 }
 $("tmore").onclick = openMore;
@@ -4536,7 +4556,7 @@ document.addEventListener("focusout", function () { setTimeout(function () { var
  * 장비 목록은 🔍를 처음 눌렀을 때 한 번만 받아서 폰에 저장 (서버가 10분마다 미리 만들어 둠)
  * → 글자를 칠 때마다 폰 안에서 바로 찾음 (서버 요청 없음, 평소 화면 속도 영향 없음)
  */
-var SR = { open: false, idx: null, loading: false, at: 0, sel: -1, err: "" };
+var SR = { open: false, idx: null, loading: false, at: 0, sel: -1, err: "", ven: null, venBack: null };   // ven: 🏭 업체 현황 ("" = 업체 목록)
 var SECTIONS = ["main", "upload", "hours", "leave", "stats", "sched", "insp", "nc"];
 
 function normQ(s) { return String(s || "").toUpperCase().replace(/[\s\-_#.]/g, ""); }
@@ -4566,7 +4586,7 @@ function loadEquipIndex(force) {
 }
 
 function openSearch() {
-  SR.open = true; SR.sel = -1; SR.want = "";
+  SR.open = true; SR.sel = -1; SR.want = ""; SR.ven = null; SR.venBack = null;
   $("sq").value = "";   // 🔍 버튼으로 열면 항상 빈 검색창부터
   $("sbar").style.display = "flex";
   SECTIONS.forEach(function (id) { $(id).style.display = "none"; });
@@ -4578,6 +4598,7 @@ function openSearch() {
 
 // 📋 금일/명일·입고 일정·업로드 목록에서 장비를 누르면 그 장비 일정(검색 상세)을 바로 보여줌
 function openEquip(name) {
+  SR.ven = null; SR.venBack = null;
   SR.want = String(name || "").trim();
   SR.backY = window.pageYOffset || 0;   // 닫으면 원래 보던 위치로
   SR.open = true; SR.sel = -1;
@@ -4593,7 +4614,7 @@ function openEquip(name) {
 function closeSearch(silent) {
   SR.lastDet = ""; $("srch").classList.remove("ani");
   var backY = SR.backY; SR.backY = null;
-  SR.open = false;
+  SR.open = false; SR.ven = null; SR.venBack = null;
   $("sq").value = ""; SR.sel = -1;   // 닫으면 검색어도 지움
   $("sbar").style.display = "none";
   $("srch").style.display = "none";
@@ -4605,7 +4626,7 @@ function closeSearch(silent) {
 
 $("srchbtn").onclick = function () { if (SR.open) closeSearch(); else openSearch(); };
 $("sclose").onclick = function () { closeSearch(); };
-$("sq").oninput = function () { SR.sel = -1; renderSearch(); };
+$("sq").oninput = function () { SR.sel = -1; SR.ven = null; SR.venBack = null; renderSearch(); };
 $("sq").onkeydown = function (e) { if (e.key === "Enter") { try { $("sq").blur(); } catch (x) {} } };
 
 function eqStatus(d, today) { return !d ? "none" : d < today ? "done" : d === today ? "now" : "next"; }
@@ -4654,6 +4675,7 @@ function renderSearch() {
   }
   if (SR.err) box.appendChild(el("div", "warn", SR.err));
   var today = ymdLocal();
+  if (SR.ven != null && !q) { renderVendor(box, idx, today); return; }   // 🏭 업체 현황
 
   if (!q) {
     box.appendChild(el("div", "hint", "장비명 일부(예: 373), 담당자 이름(예: 손성민), 업체명을 입력하세요. Backlog 전체 " +
@@ -4705,6 +4727,97 @@ function renderSearch() {
   box.appendChild(list);
 }
 
+/* ---------- 🏭 업체 현황 ----------
+ * 동탄 담당자 칸 "업체,담당자"의 업체별로: 진행 중 · 출하 대수 · 장비 목록
+ * 🔍 장비 검색 목록(이미 폰에 받아 둔 것)으로 폰 안에서 계산 → 서버 요청·시트 읽기 없음
+ */
+function openVendor(v) {
+  SR.backY = SR.open ? SR.backY : (window.pageYOffset || 0);
+  SR.open = true; SR.sel = -1; SR.want = ""; SR.ven = v || ""; SR.venBack = null;
+  $("sq").value = "";
+  $("sbar").style.display = "flex";
+  SECTIONS.forEach(function (id) { $(id).style.display = "none"; });
+  $("srch").style.display = "grid";
+  var old = SR.idx && SR.idx.rows && SR.idx.rows.length && SR.idx.rows[0].length < 9;   // 예전 목록(업체 칸 없음) → 새로 받기
+  loadEquipIndex(!!old);
+  renderSearch();
+  window.scrollTo(0, 0);
+}
+function venInfo(r, stages, today) {
+  var si = -1; stages.forEach(function (s, i) { if (s[0] === "ship") si = i; });
+  var sd = si >= 0 ? r[5][si] : "", nowI = -1, nxI = -1;
+  stages.forEach(function (st, i) { var d = r[5][i]; if (!d) return; if (d <= today) nowI = i; else if (nxI < 0) nxI = i; });
+  var st = sd && sd <= today ? "out" : nowI >= 0 ? "ing" : "pre";
+  return { st: st, sd: sd, nowI: nowI, nxI: nxI };
+}
+function venGroups(idx, today) {
+  var by = {}, y = today.slice(0, 4), m = today.slice(0, 7);
+  idx.rows.forEach(function (r) {
+    var v = r[8]; if (!v) return;
+    var k = venInfo(r, idx.stages, today);
+    if (k.st === "out" && k.sd.slice(0, 4) !== y) return;   // 출하는 올해 것만
+    var g = by[v] = by[v] || { v: v, ing: [], pre: [], out: [], om: 0 };
+    g[k.st].push({ r: r, k: k });
+    if (k.st === "out" && k.sd.slice(0, 7) === m) g.om++;
+  });
+  return Object.keys(by).map(function (v) { return by[v]; });
+}
+function renderVendor(box, idx, today) {
+  if (!idx.rows.length || idx.rows[0].length < 9) { box.appendChild(el("div", "msg", SR.loading ? "업체 정보 받는 중…" : "서버(DashboardApp.gs)를 새 버전으로 배포해 주세요.")); return; }
+  var gs = venGroups(idx, today), m = +today.slice(5, 7);
+  if (SR.ven === "") {   // 📋 업체 목록
+    gs.sort(function (a, b) { return (b.ing.length - a.ing.length) || (b.out.length - a.out.length) || (a.v < b.v ? -1 : 1); });
+    var ti = 0, tom = 0, to = 0; gs.forEach(function (g) { ti += g.ing.length; tom += g.om; to += g.out.length; });
+    box.appendChild(heroX("🏭 업체 현황", gs.length, "곳", [["진행 중", ti, "대"], [m + "월 출하", tom, "대"], ["올해 출하", to, "대"]]));
+    if (!gs.length) { box.appendChild(el("div", "msg", "Backlog 담당자 칸에 업체가 적힌 장비가 없어요.")); return; }
+    var list = el("div", "sres vlist");
+    gs.forEach(function (g) {
+      var it = el("div", "it vit");
+      it.appendChild(el("span", "nm", "🏭 " + g.v));
+      it.appendChild(el("span", "nx", "진행 " + g.ing.length + "대"));
+      it.appendChild(el("span", "ty", (g.pre.length ? "시작 전 " + g.pre.length + "대 · " : "") + m + "월 출하 " + g.om + "대 · 올해 출하 " + g.out.length + "대"));
+      it.onclick = function () { SR.ven = g.v; renderSearch(); window.scrollTo(0, 0); };
+      list.appendChild(it);
+    });
+    box.appendChild(list);
+    box.appendChild(el("div", "hint", "Backlog '제조1팀 담당자' 칸의 업체 기준 (예: 동오정밀,손성민 → 동오정밀) · 출하는 올해 것만 · " + (idx.built || "") + " 기준"));
+    return;
+  }
+  // 🏭 한 업체
+  var g = gs.filter(function (x) { return x.v === SR.ven; })[0] || { v: SR.ven, ing: [], pre: [], out: [], om: 0 };
+  var bk = el("button", "sback", "← 업체 목록"); bk.type = "button";
+  bk.onclick = function () { SR.ven = ""; renderSearch(); window.scrollTo(0, 0); };
+  box.appendChild(bk);
+  box.appendChild(heroX("🏭 " + g.v, null, null, [["진행 중", g.ing.length, "대"], [m + "월 출하", g.om, "대"], ["올해 출하", g.out.length, "대"]]));
+  var st = idx.stages;
+  var sec = function (title, arr, line) {
+    if (!arr.length) return;
+    box.appendChild(el("div", "vsh", title + " " + arr.length + "대"));
+    var list = el("div", "sres");
+    arr.forEach(function (x) {
+      var r = x.r, it = el("div", "it vit");
+      var nm = el("span", "nm" + (r[7] ? " urg" : ""), r[0]);
+      var who = String(r[2] || "").split(" · ").slice(1).join(" · ");   // "동오정밀 · 손성민" → 손성민
+      if (who) nm.appendChild(el("span", "ow", who));
+      it.appendChild(nm);
+      it.appendChild(el("span", "nx", line(x.k, r)));
+      it.appendChild(el("span", "ty", r[1] + (r[4] ? " · 📍" + r[4] : "")));
+      it.onclick = function () { SR.venBack = SR.ven; SR.ven = null; SR.want = r[0]; $("sq").value = r[0]; renderSearch(); window.scrollTo(0, 0); };
+      list.appendChild(it);
+    });
+    box.appendChild(list);
+  };
+  var byD = function (a, b, k) { var x = a.k[k] || "9999", y2 = b.k[k] || "9999"; return x < y2 ? -1 : x > y2 ? 1 : 0; };
+  g.ing.sort(function (a, b) { var x = a.k.nxI >= 0 ? a.r[5][a.k.nxI] : "9999", y2 = b.k.nxI >= 0 ? b.r[5][b.k.nxI] : "9999"; return ((b.r[7] || 0) - (a.r[7] || 0)) || (x < y2 ? -1 : x > y2 ? 1 : 0); });
+  g.pre.sort(function (a, b) { var x = a.k.nxI >= 0 ? a.r[5][a.k.nxI] : "9999", y2 = b.k.nxI >= 0 ? b.r[5][b.k.nxI] : "9999"; return x < y2 ? -1 : x > y2 ? 1 : 0; });
+  g.out.sort(function (a, b) { return -byD(a, b, "sd"); });
+  sec("🔧 진행 중", g.ing, function (k) { return "지금 " + st[k.nowI][1] + (k.sd ? " · 출하 " + mdw(k.sd) : ""); });
+  sec("⏳ 시작 전", g.pre, function (k, r) { return k.nxI >= 0 ? st[k.nxI][1] + " " + mdw(r[5][k.nxI]) : "일정 없음"; });
+  sec("🚚 출하 완료 (올해)", g.out, function (k) { return "출하 " + mdw(k.sd); });
+  if (!g.ing.length && !g.pre.length && !g.out.length) box.appendChild(el("div", "msg", "이 업체 장비가 없어요."));
+  box.appendChild(el("div", "hint", "Backlog 날짜 기준 · 출하일이 지났으면 출하 완료로 봐요 · 장비를 누르면 상세 일정"));
+}
+
 // 🚨 긴급 장비(PR. = 1): 장비명만 빨간색, 목록 맨 위로
 function urgName(li, n, u) {
   if (!u) { li.appendChild(document.createTextNode(n)); return; }
@@ -4717,7 +4830,12 @@ function urgFirst(arr) {
 }
 
 function renderEquipDetail(box, r, stages, today, canBack) {
-  if (canBack) {
+  if (SR.venBack != null) {   // 🏭 업체 현황에서 들어온 장비 → 업체 화면으로 돌아가기
+    var vbk = el("button", "sback", "← 🏭 " + (SR.venBack || "업체 현황"));
+    vbk.type = "button";
+    vbk.onclick = function () { SR.ven = SR.venBack; SR.venBack = null; SR.sel = -1; $("sq").value = ""; renderSearch(); window.scrollTo(0, 0); };
+    box.appendChild(vbk);
+  } else if (canBack) {
     var bk = el("button", "sback", "← 목록");
     bk.type = "button";
     bk.onclick = function () { SR.sel = -1; renderSearch(); };
@@ -4733,7 +4851,8 @@ function renderEquipDetail(box, r, stages, today, canBack) {
   var cps = el("div", "cps");
   cps.appendChild(r[3] ? el("span", null, r[3] + "팀") : el("span", "un", "▲ 팀/담당자 미지정"));
   cps.appendChild(el("span", null, r[4] ? "📍 " + r[4] : "📍 자리 정보 없음"));
-  (r[6] || []).forEach(function (v) { cps.appendChild(el("span", null, "🏭 " + v[1])); });
+  (r[6] || []).forEach(function (v) { cps.appendChild(el("span", null, "🧱 FRAME " + v[1])); });
+  if (r[8]) { var vc = el("span", "vlink", "🏭 " + r[8] + " 현황 ›"); vc.onclick = function () { openVendor(r[8]); }; cps.appendChild(vc); }
   eqUploads(r[0]).forEach(function (lb) { cps.appendChild(el("span", "up", "⬆ " + lb + " 업로드 필요")); });
   hx.appendChild(cps);
   var tl2 = el("div", "tl");
@@ -5654,10 +5773,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-01-3";
+var APP_VER = "2026-11-01-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-01-4", ["더보기 → 🏭 업체 현황: 업체별로 진행 중·이번 달 출하·올해 출하 대수와 장비 목록을 볼 수 있어요 (금일·명일의 업체 이름을 눌러도 돼요)"]],
   ["2026-11-01-3", ["금일·명일: 동탄 장비는 업체 이름이 같이 보여요 (제조완료는 손성민 · 동오정밀처럼 담당자와 함께)", "장비 상세: 담당자 앞에 업체 이름도 보여요 (예: 시노드 · 고현우)"]],
   ["2026-11-01-2", ["근무시간: 주 52시간 표에서 달이 걸친 주(10/26~11/1 같은)도 지난달 기록까지 합쳐서 보여줘요"]],
   ["2026-11-01-1", ["화면 안정화 · 작은 개선"]],
