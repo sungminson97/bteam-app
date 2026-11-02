@@ -364,41 +364,41 @@ li:first-child{border-top:0}
 #ntov textarea,#ntov input,#apov input,#nmov input{font-size:16px;padding:12px 14px;margin-bottom:6px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);width:100%;box-sizing:border-box;font-family:inherit}
 #hwarn{white-space:pre-line}
 /* 🔍 수입검사 */
-:is(#insp,#nc){display:none;gap:12px;padding:12px 16px calc(120px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
-:is(#insp,#nc) .iq{display:flex;align-items:center;gap:8px;padding:0 14px;height:52px;border-radius:16px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh)}
-:is(#insp,#nc) .iq svg{width:18px;height:18px;color:var(--sub);flex:none}
-:is(#insp,#nc) .iq input{flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:16px;font-weight:700;outline:0}
-:is(#insp,#nc) .iq button{border:0;background:var(--bg);color:var(--sub);width:28px;height:28px;border-radius:50%;font-size:14px;font-weight:900}
-:is(#insp,#nc) .il{display:grid;gap:8px}
-:is(#insp,#nc) .ie{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:13px 34px 13px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);position:relative;text-align:left;font:inherit;color:var(--text);width:100%}
-:is(#insp,#nc) .ie::after{content:"";position:absolute;right:15px;top:50%;width:7px;height:7px;margin-top:-4px;border-right:2px solid var(--sub);border-top:2px solid var(--sub);transform:rotate(45deg);opacity:.4}
-:is(#insp,#nc) .ie:active{transform:scale(.985)}
-:is(#insp,#nc) .ie b{font-size:15.5px;font-weight:900;letter-spacing:-.01em}
-:is(#insp,#nc) .ie .cn{display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap}
-:is(#insp,#nc) .ie small{grid-column:1/-1;color:var(--sub);font-size:12px;font-weight:600}
-:is(#insp,#nc) .bd{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:900;white-space:nowrap}
-:is(#insp,#nc) .bd.p{background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--accent)}
-:is(#insp,#nc) .bd.u{background:var(--warn);color:#fff}
-:is(#insp,#nc) .bd.ng{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn)}
-:is(#insp,#nc) .bd.ok{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
-:is(#insp,#nc) .bd.s{background:var(--bg);color:var(--sub)}
-:is(#insp,#nc) .ib{height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--card);box-shadow:var(--csh);font:inherit;font-weight:800;color:var(--text);justify-self:start}
-:is(#insp,#nc) .ir{padding:13px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);display:grid;gap:6px}
-:is(#insp,#nc) .ir.wait{border-left:4px solid var(--accent)}
-:is(#insp,#nc) .ir.urg{border-left:4px solid var(--warn)}
-:is(#insp,#nc) .ir .t{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap}
-:is(#insp,#nc) .ir .t b{font-size:15px;font-weight:900;letter-spacing:-.01em;margin-right:auto;word-break:break-all}
-:is(#insp,#nc) .ir .pn{font-size:12.5px;font-weight:700;color:var(--sub);word-break:break-all}
-:is(#insp,#nc) .ir dl{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 8px;margin:2px 0 0;font-size:12.5px}
-:is(#insp,#nc) .ir dt{color:var(--sub);font-weight:600}
-:is(#insp,#nc) .ir dd{margin:0;font-weight:700;word-break:keep-all}
-:is(#insp,#nc) .ir dd.w{grid-column:2/-1;word-break:break-all}
-:is(#insp,#nc) .ir dl{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);padding-top:8px}
-:is(#insp,#nc) .ih{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 2px 0}
-:is(#insp,#nc) .ih h4{margin:0;font-size:15px;font-weight:900}
-:is(#insp,#nc) .more{border:0;background:transparent;color:var(--accent);font:inherit;font-weight:800;padding:8px}
-:is(#insp,#nc) .ir .t>b{color:var(--text)!important;opacity:1}
-:is(#insp,#nc) .ir{color:var(--text)!important}
+:is(#insp,#nc,#mat){display:none;gap:12px;padding:12px 16px calc(120px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
+:is(#insp,#nc,#mat) .iq{display:flex;align-items:center;gap:8px;padding:0 14px;height:52px;border-radius:16px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh)}
+:is(#insp,#nc,#mat) .iq svg{width:18px;height:18px;color:var(--sub);flex:none}
+:is(#insp,#nc,#mat) .iq input{flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:16px;font-weight:700;outline:0}
+:is(#insp,#nc,#mat) .iq button{border:0;background:var(--bg);color:var(--sub);width:28px;height:28px;border-radius:50%;font-size:14px;font-weight:900}
+:is(#insp,#nc,#mat) .il{display:grid;gap:8px}
+:is(#insp,#nc,#mat) .ie{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:13px 34px 13px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);position:relative;text-align:left;font:inherit;color:var(--text);width:100%}
+:is(#insp,#nc,#mat) .ie::after{content:"";position:absolute;right:15px;top:50%;width:7px;height:7px;margin-top:-4px;border-right:2px solid var(--sub);border-top:2px solid var(--sub);transform:rotate(45deg);opacity:.4}
+:is(#insp,#nc,#mat) .ie:active{transform:scale(.985)}
+:is(#insp,#nc,#mat) .ie b{font-size:15.5px;font-weight:900;letter-spacing:-.01em}
+:is(#insp,#nc,#mat) .ie .cn{display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap}
+:is(#insp,#nc,#mat) .ie small{grid-column:1/-1;color:var(--sub);font-size:12px;font-weight:600}
+:is(#insp,#nc,#mat) .bd{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:900;white-space:nowrap}
+:is(#insp,#nc,#mat) .bd.p{background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--accent)}
+:is(#insp,#nc,#mat) .bd.u{background:var(--warn);color:#fff}
+:is(#insp,#nc,#mat) .bd.ng{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn)}
+:is(#insp,#nc,#mat) .bd.ok{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+:is(#insp,#nc,#mat) .bd.s{background:var(--bg);color:var(--sub)}
+:is(#insp,#nc,#mat) .ib{height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--card);box-shadow:var(--csh);font:inherit;font-weight:800;color:var(--text);justify-self:start}
+:is(#insp,#nc,#mat) .ir{padding:13px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);display:grid;gap:6px}
+:is(#insp,#nc,#mat) .ir.wait{border-left:4px solid var(--accent)}
+:is(#insp,#nc,#mat) .ir.urg{border-left:4px solid var(--warn)}
+:is(#insp,#nc,#mat) .ir .t{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap}
+:is(#insp,#nc,#mat) .ir .t b{font-size:15px;font-weight:900;letter-spacing:-.01em;margin-right:auto;word-break:break-all}
+:is(#insp,#nc,#mat) .ir .pn{font-size:12.5px;font-weight:700;color:var(--sub);word-break:break-all}
+:is(#insp,#nc,#mat) .ir dl{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 8px;margin:2px 0 0;font-size:12.5px}
+:is(#insp,#nc,#mat) .ir dt{color:var(--sub);font-weight:600}
+:is(#insp,#nc,#mat) .ir dd{margin:0;font-weight:700;word-break:keep-all}
+:is(#insp,#nc,#mat) .ir dd.w{grid-column:2/-1;word-break:break-all}
+:is(#insp,#nc,#mat) .ir dl{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);padding-top:8px}
+:is(#insp,#nc,#mat) .ih{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 2px 0}
+:is(#insp,#nc,#mat) .ih h4{margin:0;font-size:15px;font-weight:900}
+:is(#insp,#nc,#mat) .more{border:0;background:transparent;color:var(--accent);font:inherit;font-weight:800;padding:8px}
+:is(#insp,#nc,#mat) .ir .t>b{color:var(--text)!important;opacity:1}
+:is(#insp,#nc,#mat) .ir{color:var(--text)!important}
 #nc .isort{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
 #nc .isort::-webkit-scrollbar{display:none}
 #nc .isort button{flex:none;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--cbd,var(--line));background:var(--card);color:var(--sub);font:inherit;font-size:13.5px;font-weight:800}
@@ -407,8 +407,8 @@ li:first-child{border-top:0}
 #insp .isort::-webkit-scrollbar{display:none}
 #insp .isort button{flex:none;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--cbd,var(--line));background:var(--card);color:var(--sub);font:inherit;font-size:13.5px;font-weight:800}
 #insp .isort button.on{background:var(--accent);border-color:var(--accent);color:#fff}
-:is(#insp,#nc) .ir dd:not(.late){color:var(--text)!important}
-:is(#insp,#nc) .ir dt{color:var(--sub)!important}
+:is(#insp,#nc,#mat) .ir dd:not(.late){color:var(--text)!important}
+:is(#insp,#nc,#mat) .ir dt{color:var(--sub)!important}
 #nc .bd.act{background:color-mix(in srgb,#f59e0b 16%,transparent);color:#c27803}
 #nc .ir dd.late{color:var(--warn)}
 #nc .ir .ds{font-size:13px;font-weight:600;line-height:1.5;color:var(--text);white-space:pre-line;word-break:keep-all}
@@ -1309,7 +1309,7 @@ body.kb #tabbar{transform:translateY(110%)}
 /* 📱 아래 탭: 떠 있는 둥근 바 (금일 · 명일 · 업로드 · 근무시간 · 더보기) */
 #tabbar.tabs{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr);gap:4px;padding:7px;border:0;border-radius:30px;background:color-mix(in srgb,var(--card) 94%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent),0 16px 36px -12px rgba(16,32,64,.32);-webkit-backdrop-filter:saturate(1.8) blur(22px);backdrop-filter:saturate(1.8) blur(22px)}
 @media (prefers-color-scheme:dark){#tabbar.tabs{box-shadow:0 0 0 1px rgba(255,255,255,.07),0 16px 36px -12px rgba(0,0,0,.9)}}
-#tabbar #t6,#tabbar #t5,#tabbar #t4,#tabbar #t7,#tabbar #t8{display:none}
+#tabbar #t6,#tabbar #t5,#tabbar #t4,#tabbar #t7,#tabbar #t8,#tabbar #t9{display:none}
 #tabbar .tab{height:58px;border-radius:23px;gap:5px;color:var(--sub);font-size:12px;font-weight:800}
 #tabbar .tab svg{width:25px;height:25px}
 #tabbar .tab.on{color:#fff;background:var(--grd);box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 10px 20px -10px rgba(80,90,255,.95)}
@@ -1761,10 +1761,10 @@ html.xmas{--xsn:#e4edf7}
 /* 업로드 카드: 리본 */
 html.xmas #upload .card.up::after{content:"";position:absolute;right:16px;top:-9px;width:28px;height:20px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 40'%3E%3Cpath d='M28 18 C20 6 6 4 6 14 C6 22 18 22 28 18Z' fill='%23e11d38'/%3E%3Cpath d='M28 18 C36 6 50 4 50 14 C50 22 38 22 28 18Z' fill='%23e11d38'/%3E%3Cpath d='M28 18 C22 10 12 9 11 14 C13 12 20 13 28 18Z' fill='%239f0b24'/%3E%3Cpath d='M28 18 C34 10 44 9 45 14 C43 12 36 13 28 18Z' fill='%239f0b24'/%3E%3Cpath d='M26 20 L18 38 L23 35 L26 39 L28 22Z' fill='%23c41634'/%3E%3Cpath d='M30 20 L38 38 L33 35 L30 39 L28 22Z' fill='%23c41634'/%3E%3Cellipse cx='28' cy='18' rx='5' ry='4.4' fill='%23f0435a'/%3E%3Cellipse cx='26.6' cy='16.6' rx='1.6' ry='1.1' fill='%23ffb3bd'/%3E%3C/svg%3E") center/contain no-repeat;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))}
 /* 🔍 수입검사 · ⚠️ 부적합: 카드 위 눈 + 상세 카드 리본 (2026-10-31) */
-html.xmas :is(#insp,#nc) .ie,html.xmas :is(#insp,#nc) .ir{background-image:radial-gradient(circle at 50% 0,var(--xsn) 0 5.5px,transparent 6px),radial-gradient(circle at 50% 0,var(--xsn) 0 3.5px,transparent 4px);background-size:16px 8px,16px 6px;background-position:0 -2px,8px -1px;background-repeat:repeat-x}
-html.xmas :is(#insp,#nc) .ir{position:relative}
-html.xmas :is(#insp,#nc) .ir::before{content:"";position:absolute;right:16px;top:-9px;width:28px;height:20px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 40'%3E%3Cpath d='M28 18 C20 6 6 4 6 14 C6 22 18 22 28 18Z' fill='%23e11d38'/%3E%3Cpath d='M28 18 C36 6 50 4 50 14 C50 22 38 22 28 18Z' fill='%23e11d38'/%3E%3Cpath d='M28 18 C22 10 12 9 11 14 C13 12 20 13 28 18Z' fill='%239f0b24'/%3E%3Cpath d='M28 18 C34 10 44 9 45 14 C43 12 36 13 28 18Z' fill='%239f0b24'/%3E%3Cpath d='M26 20 L18 38 L23 35 L26 39 L28 22Z' fill='%23c41634'/%3E%3Cpath d='M30 20 L38 38 L33 35 L30 39 L28 22Z' fill='%23c41634'/%3E%3Cellipse cx='28' cy='18' rx='5' ry='4.4' fill='%23f0435a'/%3E%3Cellipse cx='26.6' cy='16.6' rx='1.6' ry='1.1' fill='%23ffb3bd'/%3E%3C/svg%3E") center/contain no-repeat}
-html.xmas :is(#insp,#nc) .ir .t{padding-right:22px}
+html.xmas :is(#insp,#nc,#mat) .ie,html.xmas :is(#insp,#nc,#mat) .ir{background-image:radial-gradient(circle at 50% 0,var(--xsn) 0 5.5px,transparent 6px),radial-gradient(circle at 50% 0,var(--xsn) 0 3.5px,transparent 4px);background-size:16px 8px,16px 6px;background-position:0 -2px,8px -1px;background-repeat:repeat-x}
+html.xmas :is(#insp,#nc,#mat) .ir{position:relative}
+html.xmas :is(#insp,#nc,#mat) .ir::before{content:"";position:absolute;right:16px;top:-9px;width:28px;height:20px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 40'%3E%3Cpath d='M28 18 C20 6 6 4 6 14 C6 22 18 22 28 18Z' fill='%23e11d38'/%3E%3Cpath d='M28 18 C36 6 50 4 50 14 C50 22 38 22 28 18Z' fill='%23e11d38'/%3E%3Cpath d='M28 18 C22 10 12 9 11 14 C13 12 20 13 28 18Z' fill='%239f0b24'/%3E%3Cpath d='M28 18 C34 10 44 9 45 14 C43 12 36 13 28 18Z' fill='%239f0b24'/%3E%3Cpath d='M26 20 L18 38 L23 35 L26 39 L28 22Z' fill='%23c41634'/%3E%3Cpath d='M30 20 L38 38 L33 35 L30 39 L28 22Z' fill='%23c41634'/%3E%3Cellipse cx='28' cy='18' rx='5' ry='4.4' fill='%23f0435a'/%3E%3Cellipse cx='26.6' cy='16.6' rx='1.6' ry='1.1' fill='%23ffb3bd'/%3E%3C/svg%3E") center/contain no-repeat}
+html.xmas :is(#insp,#nc,#mat) .ir .t{padding-right:22px}
 
 /* ── 장비통계: 막대 위에 눈 + 사탕 줄무늬 + 이번 달 금빛 ── */
 html.xmas #stats .mc .bars b::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:5px;border-radius:5px 5px 3px 3px;background:#fff;z-index:1;box-shadow:0 1px 1px rgba(0,0,0,.12)}
@@ -2084,6 +2084,36 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #nc .nfrec button b{color:var(--accent);font-size:15.5px}
 #nc .nfrec button.on{border-color:#16a34a;background:color-mix(in srgb,#16a34a 9%,var(--card))}
 #nc .nfrec button.on b{color:#15803d}
+/* ---- 📦 입고 · 불출 ---- */
+#mat .mtrec{display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:none}
+#mat .mtrec span{flex:none;font-size:12px;font-weight:800;color:var(--sub)}
+#mat .mtrec button,#mat .mtlist button{flex:none;height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
+#mat .mtlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#mat .mtlist button{height:46px;text-align:left;padding:0 14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-shadow:var(--csh)}
+#mat .mtf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:var(--bg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 60%,transparent)}
+#mat .mtf button{height:38px;border:0;border-radius:10px;background:transparent;color:var(--sub);font:inherit;font-size:13px;font-weight:800;white-space:nowrap}
+#mat .mtf button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.06)}
+#mat .mtw{display:grid;gap:12px}
+#mat .mtg{display:grid;gap:0;padding:0;border-radius:18px;overflow:hidden;background:var(--card);box-shadow:var(--csh)}
+#mat .mtgh{display:flex;align-items:baseline;gap:8px;padding:12px 14px;background:color-mix(in srgb,var(--accent) 6%,var(--card));border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+#mat .mtgh b{font-size:14.5px;font-weight:900}
+#mat .mtgh span{margin-left:auto;font-size:12px;font-weight:800;color:var(--sub)}
+#mat .mti{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 14px;border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+#mat .mti:first-of-type{border-top:0}
+#mat .mta{min-width:0;display:grid;gap:2px}
+#mat .mtt{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#mat .mtt b{font-size:14.5px;font-weight:900;word-break:break-all}
+#mat .mtt i{font-style:normal;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:6px;background:var(--bg);color:var(--sub)}
+#mat .mtt i.out{background:color-mix(in srgb,#8b5cf6 14%,var(--card));color:#7c3aed}
+#mat .mtn{font-size:13px;color:var(--text);opacity:.85}
+#mat .mts{font-size:11.5px;color:var(--sub)}
+#mat .mtq{display:grid;grid-template-columns:repeat(4,38px);gap:3px;text-align:center}
+#mat .mtq div{display:grid;gap:1px;padding:4px 0;border-radius:8px;background:var(--bg)}
+#mat .mtq span{font-size:9.5px;font-weight:800;color:var(--sub)}
+#mat .mtq b{font-size:13.5px;font-weight:900}
+#mat .mtq div.lack{background:color-mix(in srgb,var(--warn) 12%,var(--card))}
+#mat .mtq div.lack b{color:var(--warn)}
+#mat .mti.wait .mtt b{color:var(--warn)}
 #nc .nfps{display:flex;flex-direction:column;gap:6px}
 #nc .nfps:empty{display:none}
 #nc .nfps button{display:flex;align-items:baseline;gap:8px;text-align:left;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;cursor:pointer}
@@ -2228,6 +2258,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
   <div class="tab" id="t4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M12 11v8.5a2 2 0 0 1-4 0"/></svg><em>연차</em><span></span></div>
   <div class="tab" id="t7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 12.5l2.2 2.2 4.8-4.8"/></svg><em>수입검사</em><span></span></div>
   <div class="tab" id="t8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5"/><path d="M12 17.6v.1"/></svg><em>부적합</em><span></span></div>
+  <div class="tab" id="t9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5L12 12l8.5-4.5"/><path d="M12 12v9"/></svg><em>입고 불출</em><span></span></div>
 </nav>
 <main id="main"><div class="msg">불러오는 중…</div></main>
 
@@ -2289,6 +2320,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 <section id="stats"></section>
 <section id="insp"></section>
 <section id="nc"></section>
+<section id="mat"></section>
 
 <!-- 업로드 완료 확인창 -->
 <div class="ov" id="cfov">
@@ -4368,6 +4400,132 @@ function ocrLabel(shot, v) {
       .then(function () { return w.recognize(ocrCrop(shot, 1400, v.gray)); });
   }).then(function (r) { return (r && r.data && r.data.text) || ""; });
 }
+/* ---------- 📦 입고 · 불출 (자재팀 '양산장비 입고 불출 시트' 보기 · 읽기만) ----------
+ *  장비 고르기 → 그 장비 탭을 서버가 바로 읽어 줌 (2분 기억) · 업체별로 묶어서 발주 · 입고 · 3공장 · 1공장 수량
+ *  행 = [납기예정일, 상위품목, 상위품목명, 거래처, 품목, 품목명, 규격명, 발주, 입고, 3공장, 1공장, 발주번호]
+ */
+var MT = { list: null, ld: false, prj: "", data: {}, q: "", f: "all", s: "", err: "" };
+function mtNum(x) { var n = parseFloat(String(x == null ? "" : x).replace(/,/g, "")); return isNaN(n) ? 0 : n; }
+function mtDue(s) { var m = String(s || "").match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? (+m[2]) + "/" + (+m[3]) : String(s || ""); }
+function mtOut(r) { return /외주\s*조립/.test(r[6] || ""); }
+function mtVen(v) { return String(v || "").replace(/\(주\)|㈜|주식회사|\s+/g, " ").replace(/\s+/g, " ").trim(); }
+function loadMatList(force) {
+  if (MT.ld && !force) return Promise.resolve();
+  if (!MT.list) { try { var c = cget("matlist"); if (c && c.list) MT.list = c.list; } catch (e) {} }
+  MT.ld = true;
+  return call("getMatList", []).then(function (r) {
+    MT.ld = false; MT.lt = Date.now();
+    if (r && r.list) { MT.list = r.list; MT.err = r.list.length ? "" : (r.note || ""); try { cset("matlist", { list: r.list }); } catch (e) {} }
+    if (cur === 9 && !MT.prj) renderMat();
+  }).catch(function (e) { MT.ld = false; MT.lt = Date.now(); MT.err = errText(e); if (cur === 9) renderMat(); return errText(e); });
+}
+function loadMatTab(prj, force) {
+  var d = MT.data[prj];
+  if (!force && d && (d.ld || (d.t && Date.now() - d.t < 120000))) return Promise.resolve();
+  MT.data[prj] = Object.assign(d || {}, { ld: true });
+  if (cur === 9 && MT.prj === prj && !d) renderMat();
+  return call("getMatTab", [prj]).then(function (r) {
+    MT.data[prj] = r && !r.error ? { rows: r.rows || [], tabs: r.tabs || [], at: r.at, t: Date.now() } : { err: (r && r.error) || "불러오기 실패", t: Date.now() };
+    if (cur === 9 && MT.prj === prj) renderMat();
+  }).catch(function (e) { MT.data[prj] = { err: errText(e) }; if (cur === 9 && MT.prj === prj) renderMat(); return errText(e); });
+}
+function openMat(prj) {
+  MT.prj = prj; MT.f = "all"; MT.s = "";
+  try { var rc = JSON.parse(sget("matRecent") || "[]").filter(function (x) { return x !== prj; }); rc.unshift(prj); sset("matRecent", JSON.stringify(rc.slice(0, 6))); } catch (e) {}
+  loadMatTab(prj, false); renderMat(); window.scrollTo(0, 0);
+}
+function renderMat() {
+  var box = $("mat"); box.innerHTML = "";
+  if (!MT.prj) {
+    // 🔎 장비 고르기
+    box.appendChild(heroX("자재팀 입고 · 불출", MT.list ? MT.list.length : "-", "대"));
+    var q = el("label", "iq");
+    q.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+    var inp = el("input"); inp.type = "search"; inp.placeholder = "장비명 찾기 (예: 159)"; inp.value = MT.q;
+    inp.setAttribute("autocomplete", "off"); inp.setAttribute("autocapitalize", "characters");
+    q.appendChild(inp); box.appendChild(q);
+    var rc = []; try { rc = JSON.parse(sget("matRecent") || "[]"); } catch (e) {}
+    if (rc.length) { var rw = el("div", "mtrec"); rw.appendChild(el("span", null, "최근")); rc.forEach(function (p) { var b = el("button", null, p); b.type = "button"; b.onclick = function () { openMat(p); }; rw.appendChild(b); }); box.appendChild(rw); }
+    var lst = el("div", "mtlist"); box.appendChild(lst);
+    var draw = function () {
+      lst.innerHTML = "";
+      if (!MT.list) { lst.appendChild(el("div", "msg", MT.err || "장비 목록 불러오는 중…")); return; }
+      var k = nfPrjKey(MT.q), L = MT.list.filter(function (p) { return !k || nfPrjKey(p).indexOf(k) >= 0; });
+      if (!L.length) { lst.appendChild(el("div", "msg", "'" + MT.q + "' 장비가 없어요")); return; }
+      L.slice(0, 80).forEach(function (p) { var b = el("button", null, p); b.type = "button"; b.onclick = function () { openMat(p); }; lst.appendChild(b); });
+      if (L.length > 80) lst.appendChild(el("div", "hint", "외 " + (L.length - 80) + "대 · 더 쳐서 좁혀 주세요"));
+    };
+    inp.oninput = function () { MT.q = inp.value; draw(); };
+    inp.onkeydown = function (e) { if (e.key === "Enter") { var k = nfPrjKey(MT.q), L = (MT.list || []).filter(function (p) { return nfPrjKey(p).indexOf(k) >= 0; }); if (L.length === 1) openMat(L[0]); } };
+    draw();
+    if (!MT.ld && !MT.lt) loadMatList(false);
+    return;
+  }
+  // 📋 장비 하나
+  var bk = el("button", "ib", "‹ 장비 목록"); bk.type = "button"; bk.onclick = function () { MT.prj = ""; renderMat(); window.scrollTo(0, 0); }; box.appendChild(bk);
+  var d = MT.data[MT.prj] || {};
+  if (!d.rows) { box.appendChild(el("div", d.err ? "warn" : "msg", d.err || "'" + MT.prj + "' 불러오는 중…")); return; }
+  $("upd").textContent = d.at ? d.at + " 기준" : "";
+  var R = d.rows, nOut = R.filter(mtOut).length, nWait = R.filter(function (r) { return mtNum(r[8]) < mtNum(r[7]); }).length;
+  box.appendChild(heroX(MT.prj, R.length, "품목", [["입고 완료", R.length - nWait, "건"], ["미입고", nWait, "건", nWait > 0], ["외주조립", nOut, "건"]]));
+  // 거르기 · 찾기
+  var fb = el("div", "mtf");
+  [["all", "전체"], ["wait", "미입고"], ["noout", "외주조립 빼고"], ["out", "외주조립만"]].forEach(function (o) {
+    var b = el("button", MT.f === o[0] ? "on" : "", o[1]); b.type = "button";
+    b.onclick = function () { MT.f = o[0]; [].forEach.call(fb.children, function (c) { c.className = ""; }); b.className = "on"; draw(); };
+    fb.appendChild(b);
+  });
+  box.appendChild(fb);
+  var q2 = el("label", "iq");
+  q2.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+  var si = el("input"); si.type = "search"; si.placeholder = "품목 · 품목명 · 업체 찾기"; si.value = MT.s; si.setAttribute("autocomplete", "off");
+  q2.appendChild(si); box.appendChild(q2);
+  var wrap = el("div", "mtw"); box.appendChild(wrap);
+  var draw = function () {
+    wrap.innerHTML = "";
+    var ws = MT.s.toUpperCase().split(/\s+/).filter(Boolean);
+    var L = R.filter(function (r) {
+      if (MT.f === "wait" && !(mtNum(r[8]) < mtNum(r[7]))) return false;
+      if (MT.f === "out" && !mtOut(r)) return false;
+      if (MT.f === "noout" && mtOut(r)) return false;
+      if (!ws.length) return true;
+      var t = (r[4] + " " + r[5] + " " + r[3] + " " + r[6]).toUpperCase();
+      return ws.every(function (w) { return t.indexOf(w) >= 0; });
+    });
+    if (!L.length) { wrap.appendChild(el("div", "msg", "해당하는 품목이 없어요")); return; }
+    // 업체별로 묶기 (시트 순서대로)
+    var G = [], gi = {};
+    L.forEach(function (r) { var k = mtVen(r[3]) || "(업체 없음)"; if (gi[k] == null) { gi[k] = G.length; G.push({ v: k, rows: [] }); } G[gi[k]].rows.push(r); });
+    var shown = 0;
+    G.forEach(function (g) {
+      if (shown > 400) return;
+      var c = el("div", "card mtg"), h = el("div", "mtgh"), wt = g.rows.filter(function (r) { return mtNum(r[8]) < mtNum(r[7]); }).length;
+      h.appendChild(el("b", null, g.v)); h.appendChild(el("span", null, g.rows.length + "건" + (wt ? " · 미입고 " + wt : "")));
+      c.appendChild(h);
+      g.rows.forEach(function (r) {
+        if (shown++ > 400) return;
+        var it = el("div", "mti" + (mtNum(r[8]) < mtNum(r[7]) ? " wait" : ""));
+        var a = el("div", "mta");
+        var t1 = el("div", "mtt"); t1.appendChild(el("b", null, r[4])); if (r[6]) t1.appendChild(el("i", mtOut(r) ? "out" : "", r[6])); a.appendChild(t1);
+        if (r[5]) a.appendChild(el("div", "mtn", r[5]));
+        a.appendChild(el("div", "mts", ["납기 " + mtDue(r[0]), r[2] || r[1]].filter(Boolean).join(" · ")));
+        it.appendChild(a);
+        var q = el("div", "mtq");
+        [["발주", r[7]], ["입고", r[8]], ["3공장", r[9]], ["1공장", r[10]]].forEach(function (x, i) {
+          var cl = el("div", i === 1 && mtNum(r[8]) < mtNum(r[7]) ? "lack" : ""); cl.appendChild(el("span", null, x[0])); cl.appendChild(el("b", null, String(x[1] === "" ? "-" : x[1]))); q.appendChild(cl);
+        });
+        it.appendChild(q);
+        c.appendChild(it);
+      });
+      wrap.appendChild(c);
+    });
+    if (shown > 400) wrap.appendChild(el("div", "hint", "너무 많아서 400개까지만 보여요 · 찾기로 좁혀 주세요"));
+  };
+  var tm;
+  si.oninput = function () { MT.s = si.value; clearTimeout(tm); tm = setTimeout(draw, 150); };
+  draw();
+  if (d.t && Date.now() - d.t > 120000) loadMatTab(MT.prj, true);
+}
 function nfHist() { try { var a = JSON.parse(sget("nfHist") || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
 function nfHistAdd(f) {
   try {
@@ -5771,7 +5929,7 @@ function setTab(n) {
   try { pushBar(); } catch (ePb) {}
   if (SR.open) closeSearch(true);
   cur = n;
-  for (var i = 0; i < 9; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
+  for (var i = 0; i < 10; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
   $("main").style.display = n < 2 ? "grid" : "none";
   $("upload").style.display = n === 2 ? "grid" : "none";
   $("hours").style.display = n === 3 ? "grid" : "none";
@@ -5780,9 +5938,11 @@ function setTab(n) {
   $("sched").style.display = n === 6 ? "grid" : "none";
   $("insp").style.display = n === 7 ? "grid" : "none";
   $("nc").style.display = n === 8 ? "grid" : "none";
+  $("mat").style.display = n === 9 ? "grid" : "none";
   if (n < 2) render();
   else if (n === 7) { renderInsp(); if (!IN.loaded) loadInsp(false); }
   else if (n === 8) { renderNc(); if (!NC.loaded) loadNc(false); }
+  else if (n === 9) { $("upd").textContent = ""; renderMat(); }
   else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
   else if (n === 3) { $("upd").textContent = ""; updLock(); if (!H.loaded) loadHoursMeta(); }
@@ -5791,7 +5951,7 @@ function setTab(n) {
   moreSync();
 }
 // ⋯ 더보기: 입출하 일정 · 장비통계 · 연차 현황 (지금 보고 있으면 더보기 버튼이 그 이름으로 바뀜)
-var MORE = [[6, "입출하 일정"], [5, "장비통계"], [4, "연차 현황"], [7, "수입검사"], [8, "부적합"]];
+var MORE = [[6, "입출하 일정"], [5, "장비통계"], [4, "연차 현황"], [7, "수입검사"], [8, "부적합"], [9, "입고 불출"]];
 function moreSync() {
   var b = $("tmore"); if (!b) return;
   var hit = MORE.filter(function (m) { return m[0] === cur; })[0];
@@ -5859,7 +6019,7 @@ function openMore() {
 }
 $("tmore").onclick = openMore;
 (function () {
-  var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3], ["renderInsp", "insp", 7], ["renderNc", "nc", 8]];
+  var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3], ["renderInsp", "insp", 7], ["renderNc", "nc", 8], ["renderMat", "mat", 9]];
   W.forEach(function (w) {
     var f = window[w[0]]; if (typeof f !== "function") return;
     window[w[0]] = function () { var r = f.apply(this, arguments); try { if (!maybeAnim(w[1], w[2])) $(w[1]).classList.remove("ani"); } catch (e) {} return r; };   // 새 데이터로 다시 그린 거면 안 움직임 (두 번 움직이는 것 방지)
@@ -6252,6 +6412,7 @@ $("ref").onclick = function () {
   else if (cur === 5) { p = loadStats(true); renderStats(ST.data); }
   else if (cur === 7) { p = loadInsp(true); }
   else if (cur === 8) { p = loadNc(true); }
+  else if (cur === 9) { p = MT.prj ? loadMatTab(MT.prj, true) : loadMatList(true); }
   else { p = loadDash(true); if (cur === 6) renderSched(); }
 
   REF = true;
@@ -7134,10 +7295,13 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-02-17";
+var APP_VER = "2026-11-02-18";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-02-18", [
+    "📦 더보기 → 입고 불출 (NEW): 장비별로 자재팀 입고 불출 시트를 업체별로 보기 · 발주 · 입고 · 3공장 · 1공장 수량 · 미입고만 보기 · 외주조립 거르기"
+  ]],
   ["2026-11-02-17", [
     "📦 품번 · 품명 · 업체는 자재팀 입고 불출 시트 하나로만 찾아요 (더 정확하고 빨라요)",
     "🏷️ 찾은 업체는 귀책 아래 버튼으로 보여줘요 · 맞으면 누르기 (제조1팀 · 제조2팀 귀책일 수도 있어서 자동으로는 안 넣어요)"
