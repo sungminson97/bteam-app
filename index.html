@@ -3500,9 +3500,10 @@ function loadInsp(force) {
   return call("getInspData", [!!force])
     .then(function (d) {
       R.insp = false;
+      var old = IN.data, same = !force && old && !old.error && d && !d.error && sameData(old, d);   // ⚡ 받아 둔 것과 같으면 다시 안 그림
       if (d && !d.error) { IN.data = d; cset("insp", d); if (force) IN.rows = {}; }
       else if (!IN.data) IN.data = d;
-      if (cur === 7) { renderInsp(); if (IN.eq && force) inspOpen(IN.eq); }
+      if (cur === 7) { if (same) $("upd").textContent = updTxt(d, "insp"); else reRender(renderInsp, "insp"); if (IN.eq && force) inspOpen(IN.eq); }
       return (d && d.error) || "";
     })
     .catch(function (e) { R.insp = false; if (!IN.data) IN.data = { error: "불러오기 실패: " + errText(e) }; if (cur === 7) renderInsp(); return errText(e); });
@@ -3644,6 +3645,15 @@ function inspDetail(box) {
  * 행 = [완료, 조치사항, 발생일, 재납일/조치일, 발주 프로젝트명, 품명/위치, 품번, 불량수량, 귀책업체, 불량(소분류), 발견자, 담당자, 불량내용, 비고, NO.]
  */
 var NC = { loaded: false, data: null, q: "", eq: "", rows: {}, all: false, showDone: false };
+// 🔁 다시 그릴 때 검색창에 글자 치던 중이면 그대로 이어서 (키보드 안 닫힘)
+function reRender(fn, id) {
+  var a = document.activeElement, box = $(id), keep = !!(a && box && box.contains(a) && a.tagName === "INPUT"), ss = 0;
+  try { ss = keep ? a.selectionStart : 0; } catch (e) {}
+  fn();
+  if (!keep) return;
+  var ni = box.querySelector(".iq input");
+  if (ni) { try { ni.focus({ preventScroll: true }); ni.setSelectionRange(ss, ss); } catch (e) {} }
+}
 function loadNc(force) {
   NC.loaded = true; R.nc = true;
   if (!NC.data) { try { NC.data = cget("nc"); } catch (e) {} }
@@ -3651,9 +3661,10 @@ function loadNc(force) {
   return call("getNcData", [!!force])
     .then(function (d) {
       R.nc = false;
+      var old = NC.data, same = !force && old && !old.error && d && !d.error && sameData(old, d);   // ⚡ 받아 둔 것과 같으면 다시 안 그림
       if (d && !d.error) { NC.data = d; cset("nc", d); if (force) NC.rows = {}; }
       else if (!NC.data) NC.data = d;
-      if (cur === 8) renderNc();
+      if (cur === 8) { if (same) $("upd").textContent = updTxt(d, "nc"); else reRender(renderNc, "nc"); }
       return (d && d.error) || "";
     })
     .catch(function (e) { R.nc = false; if (!NC.data) NC.data = { error: "불러오기 실패: " + errText(e) }; if (cur === 8) renderNc(); return errText(e); });
@@ -3945,9 +3956,10 @@ function loadUpload() {
     .then(function (d) {
       R.up = false;
       if (d && !d.error) upPendApply(d);   // 방금 앱에서 완료한 건 다시 안 보이게
+      var old = U.data, same = old && !old.error && d && !d.error && sameData(old, d) && $("upload").querySelector(".card");   // ⚡ 같으면 다시 안 그림 (누르던 버튼·되돌리기 확인 상태 유지)
       U.data = d;
       if (d && !d.error) { setBadge(d.total); cset("up", d); }
-      if (cur === 2) renderUpload(d);
+      if (cur === 2 && !same) renderUpload(d);
       return (d && d.error) || "";
     })
     .catch(function (e) {
@@ -5803,10 +5815,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-02-2";
+var APP_VER = "2026-11-02-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-02-3", ["수입검사·부적합: 검색창에 입력하는 중에 화면이 다시 그려지며 끊기던 문제 수정", "시트 업로드: 열 때 화면이 한 번 더 깜빡이던 문제 수정"]],
   ["2026-11-02-2", ["화면 안정화 · 작은 개선"]],
   ["2026-11-02-1", ["근무시간: 탭을 열 때 저장된 달력이 바로 보이고 최신 값은 뒤에서 바꿔요 ('불러오는 중' 기다림 줄임)"]],
   ["2026-11-01-5", ["근무시간: 공휴일·대체휴일(추석, 10/5 등)은 빨간 날로 보이고 '빈 평일'에서 빠져요"]],
