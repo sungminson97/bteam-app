@@ -2134,6 +2134,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 /* ---- 📦 입고 · 불출 ---- */
 #nc .nfps button em.lrn{flex:none;margin-left:auto;align-self:center;font-style:normal;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--accent) 12%,var(--card));color:var(--accent);white-space:nowrap}
 #nc .nfps .nfpsh.lrn{color:var(--accent)}
+#nc input.nflock{background:var(--bg);color:var(--text);font-weight:800;pointer-events:none}
 #nc .nfps button:has(>.nfpb){flex-direction:row!important;align-items:center!important}
 #nc .nfps .nfpb{display:grid;gap:2px;min-width:0;flex:1}
 #nc .nfdq button.lrn{border-style:dashed}
@@ -2141,6 +2142,23 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .hrecb{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;padding:10px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));background:linear-gradient(110deg,color-mix(in srgb,var(--accent) 10%,var(--card)),color-mix(in srgb,#8b5cf6 9%,var(--card)));color:var(--text);font:inherit;text-align:left;cursor:pointer;box-shadow:0 4px 14px -8px color-mix(in srgb,var(--accent) 50%,transparent)}
 .hrecb b{font-size:14.5px;font-weight:900;color:var(--accent)}
 .hrecb span{font-size:12px;color:var(--sub);font-weight:600}
+#mat .mthome{display:grid;gap:18px}
+#mat .mtsec{display:grid;gap:8px}
+#mat .mtsech{display:flex;align-items:baseline;gap:8px;padding:0 4px}
+#mat .mtsech b{font-size:14.5px;font-weight:900}
+#mat .mtsech span{font-size:11.5px;font-weight:700;color:var(--sub)}
+#mat .mtcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#mat .mtc{display:grid;gap:4px;align-content:start;min-width:0;text-align:left;padding:12px 14px;border-radius:16px;border:1px solid color-mix(in srgb,var(--line) 80%,transparent);background:var(--card);box-shadow:var(--csh);font:inherit;color:var(--text);cursor:pointer}
+#mat .mtct{display:flex;align-items:center;gap:6px;min-width:0}
+#mat .mtct b{font-size:15px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-.1px}
+#mat .mtct i{flex:none;font-style:normal;font-size:10.5px;font-weight:900;padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--accent) 12%,var(--card));color:var(--accent)}
+#mat .mtc span{font-size:11.5px;font-weight:700;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mat .mtc span.w{color:var(--warn)}
+#mat .mtc span.ok{color:#16a34a}
+#mat .mtc span.dim{opacity:.7;font-weight:600}
+#mat .mtempty{display:grid;gap:4px;justify-items:center;text-align:center;padding:20px 16px;border-radius:18px;border:1.5px dashed color-mix(in srgb,var(--line) 90%,transparent);color:var(--sub)}
+#mat .mtempty b{font-size:14px;font-weight:900;color:var(--text)}
+#mat .mtempty span{font-size:12px;font-weight:600}
 #mat .mtrec{display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:none}
 #mat .mtrec span{flex:none;font-size:12px;font-weight:800;color:var(--sub)}
 #mat .mtrec button,#mat .mtlist button{flex:none;height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
@@ -4546,18 +4564,69 @@ function renderMat() {
     var inp = el("input"); inp.type = "search"; inp.placeholder = "장비명 찾기 (예: 159)"; inp.value = MT.q;
     inp.setAttribute("autocomplete", "off"); inp.setAttribute("autocapitalize", "characters");
     q.appendChild(inp); box.appendChild(q);
-    var rc = []; try { rc = JSON.parse(sget("matRecent") || "[]"); } catch (e) {}
-    if (rc.length) { var rw = el("div", "mtrec"); rw.appendChild(el("span", null, "최근")); rc.forEach(function (p) { var b = el("button", null, p); b.type = "button"; b.onclick = function () { openMat(p); }; rw.appendChild(b); }); box.appendChild(rw); }
-    var lst = el("div", "mtlist"); box.appendChild(lst);
+    // 🏠 처음 화면: 전체 목록 대신 → 오늘·내일 일정 장비 · 최근 본 장비 · 자주 여는 장비 (요청 없음 · 폰에 있는 것만)
+    var lst = el("div", "mtlist"), home = el("div", "mthome"); box.appendChild(lst); box.appendChild(home);
+    var MC = {}; try { MC = JSON.parse(sget("matCnt") || "{}"); } catch (e) {}
+    var inList = function (n) {
+      if (!MT.list) return "";
+      var k = nfPrjKey(n), i;
+      for (i = 0; i < MT.list.length; i++) if (nfPrjKey(MT.list[i]) === k) return MT.list[i];
+      var c = (String(n || "").toUpperCase().match(/[A-Z]{2}\d{2}-\d{3}/) || [])[0];
+      if (c) { c = nfPrjKey(c); for (i = 0; i < MT.list.length; i++) if (nfPrjKey(MT.list[i]).indexOf(c) === 0) return MT.list[i]; }
+      return "";
+    };
+    var sum = function (p) {
+      var d = MT.data[p], c = d && d.rows ? d : cget("mt_" + p);
+      if (!c || !c.rows) return null;
+      var R = c.rows, w = R.filter(function (r) { return mtNum(r[8]) < mtNum(r[7]); }).length;
+      return { t: (w ? "미입고 " + w + "건" : "전부 입고 ✓") + " · " + R.length + "품목", w: w, at: c.at || "" };
+    };
+    var card = function (p, tag, sub) {
+      var b = el("button", "mtc"); b.type = "button";
+      var t = el("div", "mtct"); t.appendChild(el("b", null, p)); if (tag) t.appendChild(el("i", null, tag)); b.appendChild(t);
+      var s = sum(p);
+      if (sub) b.appendChild(el("span", null, sub));
+      b.appendChild(el("span", s ? (s.w ? "w" : "ok") : "dim", s ? s.t : "눌러서 확인"));
+      b.onclick = function () { openMat(p); };
+      return b;
+    };
+    var sec2 = function (title, note, list) {
+      if (!list.length) return;
+      var w = el("div", "mtsec"), h = el("div", "mtsech"); h.appendChild(el("b", null, title)); if (note) h.appendChild(el("span", null, note)); w.appendChild(h);
+      var g = el("div", "mtcs"); list.forEach(function (x) { g.appendChild(card(x[0], x[1], x[2])); }); w.appendChild(g);
+      home.appendChild(w);
+    };
+    var drawHome = function () {
+      home.innerHTML = "";
+      if (!MT.list) { home.appendChild(el("div", "msg", MT.err || "장비 목록 불러오는 중…")); return; }
+      var seen = {}, sch = [];
+      [[typeof store !== "undefined" && store[0], "오늘"], [typeof store !== "undefined" && store[1], "내일"]].forEach(function (x) {
+        var d = x[0]; if (!d || !d.stages) return;
+        d.stages.forEach(function (st) { (st.items || []).forEach(function (it) { var p = inList(it.n); if (!p || seen[p]) return; seen[p] = 1; sch.push([p, x[1], st.label]); }); });
+      });
+      sec2("📅 오늘 · 내일 일정 장비", "금일 · 명일 화면 기준", sch.slice(0, 8));
+      var rc = []; try { rc = JSON.parse(sget("matRecent") || "[]"); } catch (e) {}
+      var rl = rc.filter(function (p) { return !seen[p]; }).map(function (p) { seen[p] = 1; return [p, "", ""]; });
+      sec2("🕘 최근 본 장비", "", rl.slice(0, 6));
+      var fq = Object.keys(MC).filter(function (p) { return MC[p] >= 3 && !seen[p] && MT.list.indexOf(p) >= 0; }).sort(function (a, b) { return MC[b] - MC[a]; }).slice(0, 4).map(function (p) { return [p, "", ""]; });
+      sec2("⭐ 자주 여는 장비", "", fq);
+      var tip = el("div", "mtempty");
+      tip.appendChild(el("b", null, home.children.length ? "다른 장비는 위에서 찾아 주세요" : "장비명을 찾아 보세요"));
+      tip.appendChild(el("span", null, "전체 " + MT.list.length + "대 · 몇 글자만 쳐도 돼요 (예: 159, GY03, MISC)"));
+      home.appendChild(tip);
+    };
     var draw = function () {
       lst.innerHTML = "";
+      var k = nfPrjKey(MT.q);
+      home.style.display = k ? "none" : "";
+      lst.style.display = k ? "" : "none";
+      if (!k) { drawHome(); return; }
       if (!MT.list) { lst.appendChild(el("div", "msg", MT.err || "장비 목록 불러오는 중…")); return; }
-      var k = nfPrjKey(MT.q), L = MT.list.filter(function (p) { return !k || nfPrjKey(p).indexOf(k) >= 0; });
+      var L = MT.list.filter(function (p) { return nfPrjKey(p).indexOf(k) >= 0; });
       if (!L.length) { lst.appendChild(el("div", "msg", "'" + MT.q + "' 장비가 없어요")); return; }
-      var MC = {}; try { MC = JSON.parse(sget("matCnt") || "{}"); } catch (e) {}
-      L = L.map(function (p, i) { return [p, i]; }).sort(function (a, b) { return ((MC[b[0]] || 0) >= 2 ? MC[b[0]] : 0) - ((MC[a[0]] || 0) >= 2 ? MC[a[0]] : 0) || a[1] - b[1]; }).map(function (x) { return x[0]; });
-      L.slice(0, 80).forEach(function (p) { var b = el("button", null, p); b.type = "button"; b.onclick = function () { openMat(p); }; lst.appendChild(b); });
-      if (L.length > 80) lst.appendChild(el("div", "hint", "외 " + (L.length - 80) + "대 · 더 쳐서 좁혀 주세요"));
+      L = L.map(function (p, i) { return [p, i, nfPrjKey(p).indexOf(k)]; }).sort(function (a, b) { return a[2] - b[2] || (MC[b[0]] || 0) - (MC[a[0]] || 0) || a[1] - b[1]; }).map(function (x) { return x[0]; });
+      L.slice(0, 40).forEach(function (p) { var b = el("button", null, p); b.type = "button"; b.onclick = function () { openMat(p); }; lst.appendChild(b); });
+      if (L.length > 40) lst.appendChild(el("div", "hint", "외 " + (L.length - 40) + "대 · 더 쳐서 좁혀 주세요"));
     };
     inp.oninput = function () { MT.q = inp.value; draw(); };
     inp.onkeydown = function (e) { if (e.key === "Enter") { var k = nfPrjKey(MT.q), L = (MT.list || []).filter(function (p) { return nfPrjKey(p).indexOf(k) >= 0; }); if (L.length === 1) openMat(L[0]); } };
@@ -4706,7 +4775,7 @@ function nfForm(box) {
       var E = nfEntries(h.f), dt = new Date(h.t), b = el("button"); b.type = "button";
       b.appendChild(el("b", null, (dt.getMonth() + 1) + "/" + dt.getDate() + " " + ("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2)));
       b.appendChild(el("span", null, [E.map(function (e) { return e.proj; }).filter(Boolean).filter(function (v, i, a) { return a.indexOf(v) === i; }).join(", "), E.map(function (e) { return e.pn; }).filter(Boolean).join(", "), nfClean(h.f.desc)].filter(Boolean).join(" · ")));
-      b.onclick = function () { NC.f = JSON.parse(JSON.stringify(h.f)); NC.f.req = NC.f.req || myName() || ""; nfSave(); renderNc(); window.scrollTo(0, 0); toast("최근 요청을 불러왔어요 · 바꿀 곳만 고치세요"); };
+      b.onclick = function () { NC.f = JSON.parse(JSON.stringify(h.f)); NC.f.req = myName() || NC.f.req || ""; nfSave(); renderNc(); window.scrollTo(0, 0); toast("최근 요청을 불러왔어요 · 바꿀 곳만 고치세요"); };
       hdt.appendChild(b);
     });
     top.appendChild(hdt);
@@ -5194,10 +5263,13 @@ function nfForm(box) {
   r6.appendChild(ask);
   sec("요청");
   // 7 요청자
-  var r7 = row("🙋", "요청자", "", "요청자"), rin = inp(f.req, "이름", function (t) { f.req = t; }, true);
+  var ME7 = myName();   // 👤 요청자 = 이 폰에 정한 본인 이름만 (다른 사람 이름으로 못 보냄)
+  if (ME7) f.req = ME7;
+  var r7 = row("🙋", "요청자", ME7 ? "본인 이름으로 고정돼요" : "", "요청자"), rin = inp(f.req, "이름", function (t) { if (ME7) { rin.value = ME7; return; } f.req = t; }, true);
+  if (ME7) { rin.readOnly = true; rin.tabIndex = -1; rin.classList.add("nflock"); }
   r7.appendChild(rin); r7.appendChild(hn("req"));
   var rq7 = el("div", "nfc nfg4"); r7.appendChild(rq7);
-  function drawReq() { rq7.innerHTML = ""; ((R && R.who) || []).forEach(function (n) { var b = el("button", null, n); b.type = "button"; b.onclick = function () { f.req = n; rin.value = n; upd(); }; rq7.appendChild(b); }); }
+  function drawReq() { rq7.innerHTML = ""; if (ME7) { rq7.style.display = "none"; return; } ((R && R.who) || []).forEach(function (n) { var b = el("button", null, n); b.type = "button"; b.onclick = function () { f.req = n; rin.value = n; upd(); }; rq7.appendChild(b); }); }
   drawReq();
   // 8 비고 + 자체처리
   var r8 = row("", "비고", ""), r8o = r8.querySelector(".nfl").appendChild(el("em", "nfst opt", "선택")), nin = inp(f.note, "필요할 때만 · 예) 재납 요청", function (t) { f.note = t; });
@@ -7462,10 +7534,14 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-03-7";
+var APP_VER = "2026-11-03-9";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-03-9", [
+    "부적합 요청: 요청자는 본인 이름으로 고정돼요",
+    "📦 입고 불출: 전체 목록 대신 장비명으로 바로 찾기 · 오늘 · 내일 일정 장비 · 최근 본 장비를 미입고 건수와 같이 보여줘요"
+  ]],
   ["2026-11-03-7", [
     "🤖 B팀이 쓸수록 똑똑해지는 AI · 팀원들이 남긴 기록을 배워서 날마다 더 정확하게 추천해요",
     "💿 새 시작 화면: 웨이퍼를 AI 비전이 검사해요",
