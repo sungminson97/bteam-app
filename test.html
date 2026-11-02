@@ -2094,25 +2094,31 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #mat .mtf button{height:38px;border:0;border-radius:10px;background:transparent;color:var(--sub);font:inherit;font-size:13px;font-weight:800;white-space:nowrap}
 #mat .mtf button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.06)}
 #mat .mtw{display:grid;gap:12px}
-#mat .mtg{display:grid;gap:0;padding:0;border-radius:18px;overflow:hidden;background:var(--card);box-shadow:var(--csh)}
-#mat .mtgh{display:flex;align-items:baseline;gap:8px;padding:12px 14px;background:color-mix(in srgb,var(--accent) 6%,var(--card));border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
-#mat .mtgh b{font-size:14.5px;font-weight:900}
-#mat .mtgh span{margin-left:auto;font-size:12px;font-weight:800;color:var(--sub)}
-#mat .mti{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 14px;border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
-#mat .mti:first-of-type{border-top:0}
-#mat .mta{min-width:0;display:grid;gap:2px}
-#mat .mtt{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-#mat .mtt b{font-size:14.5px;font-weight:900;word-break:break-all}
-#mat .mtt i{font-style:normal;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:6px;background:var(--bg);color:var(--sub)}
-#mat .mtt i.out{background:color-mix(in srgb,#8b5cf6 14%,var(--card));color:#7c3aed}
-#mat .mtn{font-size:13px;color:var(--text);opacity:.85}
-#mat .mts{font-size:11.5px;color:var(--sub)}
-#mat .mtq{display:grid;grid-template-columns:repeat(4,38px);gap:3px;text-align:center}
-#mat .mtq div{display:grid;gap:1px;padding:4px 0;border-radius:8px;background:var(--bg)}
-#mat .mtq span{font-size:9.5px;font-weight:800;color:var(--sub)}
-#mat .mtq b{font-size:13.5px;font-weight:900}
-#mat .mtq div.lack{background:color-mix(in srgb,var(--warn) 12%,var(--card))}
-#mat .mtq div.lack b{color:var(--warn)}
+#mat .mto{display:flex;align-items:center;gap:6px}
+#mat .mto span{font-size:12px;font-weight:800;color:var(--sub);margin-right:2px}
+#mat .mto button{height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:800}
+#mat .mto button.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--card))}
+#mat .mtg{display:grid;gap:0;padding:0;border-radius:18px;overflow:clip;background:var(--card);box-shadow:var(--csh)}
+#mat .mtgh{position:sticky;top:var(--mthh,0px);z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 14px;background:color-mix(in srgb,var(--accent) 6%,var(--card));border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+#mat .mtgh>b{font-size:13.5px;font-weight:900}
+#mat .mti{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;padding:12px 14px;border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+#mat .mtgh+.mti{border-top:0}
+#mat .mta{min-width:0;display:grid;gap:3px}
+#mat .mtt{display:flex;align-items:center;gap:4px 6px;min-width:0;flex-wrap:wrap}
+#mat .mtt b{font-size:14.5px;font-weight:900;word-break:break-all;letter-spacing:-.1px}
+#mat .mtt i{flex:none;font-style:normal;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:6px;background:color-mix(in srgb,#8b5cf6 14%,var(--card));color:#7c3aed}
+#mat .mtn{font-size:13px;color:var(--text);opacity:.88;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mat .mtp{font-size:11.5px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mat .mts{display:flex;align-items:center;gap:6px;min-width:0;font-size:12px;color:var(--sub);white-space:nowrap}
+#mat .mts b{min-width:0;overflow:hidden;text-overflow:ellipsis;font-weight:800;color:var(--text);opacity:.8}
+#mat .mts span,#mat .mts i{flex:none}
+#mat .mts span::before{content:"·";margin-right:6px;opacity:.6}
+#mat .mts i{font-style:normal;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:6px;background:color-mix(in srgb,#8b5cf6 14%,var(--card));color:#7c3aed}
+#mat .mtq{display:grid;grid-template-columns:repeat(4,36px);gap:4px;text-align:center}
+#mat .mth span{font-size:10.5px;font-weight:800;color:var(--sub)}
+#mat .mti .mtq b{display:grid;place-items:center;height:30px;border-radius:8px;background:var(--bg);font-size:14px;font-weight:900;font-variant-numeric:tabular-nums}
+#mat .mti .mtq b.z{color:var(--sub);opacity:.55}
+#mat .mti .mtq b.lack{background:color-mix(in srgb,var(--warn) 13%,var(--card));color:var(--warn)}
 #mat .mti.wait .mtt b{color:var(--warn)}
 #mat .mtsk .mtgh{height:44px}
 #mat .mtsk .mti{height:64px;background:linear-gradient(90deg,transparent 0,color-mix(in srgb,var(--line) 45%,transparent) 50%,transparent 100%) 0 0/200% 100%;animation:mtsk 1.2s linear infinite}
@@ -4407,7 +4413,8 @@ function ocrLabel(shot, v) {
  *  장비 고르기 → 그 장비 탭을 서버가 바로 읽어 줌 (2분 기억) · 업체별로 묶어서 발주 · 입고 · 3공장 · 1공장 수량
  *  행 = [납기예정일, 상위품목, 상위품목명, 거래처, 품목, 품목명, 규격명, 발주, 입고, 3공장, 1공장, 발주번호]
  */
-var MT = { list: null, ld: false, prj: "", data: {}, q: "", f: "all", s: "", err: "" };
+var MT = { list: null, ld: false, prj: "", data: {}, q: "", f: "all", s: "", o: "due", err: "" };
+function mtDk(s) { s = String(s || ""); var e = s.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+(\d{1,2})\s+(\d{4})/i); if (e) return e[3] + ("0" + ("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(e[1].slice(0, 1).toUpperCase() + e[1].slice(1, 3).toLowerCase()) / 3 + 1)).slice(-2) + ("0" + e[2]).slice(-2); var m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? m[1] + ("0" + m[2]).slice(-2) + ("0" + m[3]).slice(-2) : "99999999"; }
 function mtNum(x) { var n = parseFloat(String(x == null ? "" : x).replace(/,/g, "")); return isNaN(n) ? 0 : n; }
 function mtDue(s) { s = String(s || ""); var e = s.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+(\d{1,2})/i); if (e) return ("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(e[1].slice(0, 1).toUpperCase() + e[1].slice(1, 3).toLowerCase()) / 3 + 1) + "/" + (+e[2]); var m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? (+m[2]) + "/" + (+m[3]) : s; }
 function mtOut(r) { return /외주\s*조립/.test(r[6] || ""); }
@@ -4440,7 +4447,7 @@ function loadMatTab(prj, force, hard) {
   }).catch(function (e) { if (d && d.rows) { d.ld = false; d.t = Date.now(); } else MT.data[prj] = { err: errText(e) }; if (cur === 9 && MT.prj === prj) renderMat(); return errText(e); });
 }
 function openMat(prj) {
-  MT.prj = prj; MT.f = "all"; MT.s = "";
+  MT.prj = prj; MT.f = "all"; MT.s = ""; try { MT.o = sget("matSort") || "due"; } catch (e) {}
   try { var rc = JSON.parse(sget("matRecent") || "[]").filter(function (x) { return x !== prj; }); rc.unshift(prj); sset("matRecent", JSON.stringify(rc.slice(0, 6))); } catch (e) {}
   loadMatTab(prj, false); renderMat(); window.scrollTo(0, 0);
 }
@@ -4495,6 +4502,13 @@ function renderMat() {
   q2.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
   var si = el("input"); si.type = "search"; si.placeholder = "품목 · 품목명 · 업체 찾기"; si.value = MT.s; si.setAttribute("autocomplete", "off");
   q2.appendChild(si); box.appendChild(q2);
+  var ob = el("div", "mto"); ob.appendChild(el("span", null, "정렬"));
+  [["due", "납기순"], ["ven", "업체순"], ["pn", "품목순"]].forEach(function (o) {
+    var b = el("button", MT.o === o[0] ? "on" : "", o[1]); b.type = "button";
+    b.onclick = function () { MT.o = o[0]; [].forEach.call(ob.querySelectorAll("button"), function (c) { c.className = ""; }); b.className = "on"; try { sset("matSort", o[0]); } catch (e) {} draw(); };
+    ob.appendChild(b);
+  });
+  box.appendChild(ob);
   var wrap = el("div", "mtw"); box.appendChild(wrap);
   var draw = function () {
     wrap.innerHTML = "";
@@ -4508,32 +4522,37 @@ function renderMat() {
       return ws.every(function (w) { return t.indexOf(w) >= 0; });
     });
     if (!L.length) { wrap.appendChild(el("div", "msg", "해당하는 품목이 없어요")); return; }
-    // 업체별로 묶기 (시트 순서대로)
-    var G = [], gi = {};
-    L.forEach(function (r) { var k = mtVen(r[3]) || "(업체 없음)"; if (gi[k] == null) { gi[k] = G.length; G.push({ v: k, rows: [] }); } G[gi[k]].rows.push(r); });
+    // 📋 한 장에 줄 맞춰서 (업체는 줄 안에) · 정렬: 납기 / 업체 / 품목
+    var cmpS = function (a, b) { return a < b ? -1 : a > b ? 1 : 0; };
+    var keyF = { due: function (r) { return [mtDk(r[0]), mtVen(r[3]), r[4]]; }, ven: function (r) { return [mtVen(r[3]) || "힣", mtDk(r[0]), r[4]]; }, pn: function (r) { return [r[4].toUpperCase(), 0, ""]; } }[MT.o] || null;
+    if (keyF) L = L.map(function (r, i) { return [keyF(r), i, r]; }).sort(function (a, b) { return cmpS(a[0][0], b[0][0]) || cmpS(a[0][1], b[0][1]) || cmpS(a[0][2], b[0][2]) || a[1] - b[1]; }).map(function (x) { return x[2]; });
+    try { document.documentElement.style.setProperty("--mthh", document.querySelector("header").offsetHeight + "px"); } catch (e) {}
+    var wt = L.filter(function (r) { return mtNum(r[8]) < mtNum(r[7]); }).length;
+    var c = el("div", "card mtg"), h = el("div", "mtgh");
+    h.appendChild(el("b", null, L.length + "건" + (wt ? " · 미입고 " + wt : "")));
+    var hq = el("div", "mtq mth"); ["발주", "입고", "3공장", "1공장"].forEach(function (x) { hq.appendChild(el("span", null, x)); }); h.appendChild(hq);
+    c.appendChild(h);
     var shown = 0;
-    G.forEach(function (g) {
-      if (shown > 400) return;
-      var c = el("div", "card mtg"), h = el("div", "mtgh"), wt = g.rows.filter(function (r) { return mtNum(r[8]) < mtNum(r[7]); }).length;
-      h.appendChild(el("b", null, g.v)); h.appendChild(el("span", null, g.rows.length + "건" + (wt ? " · 미입고 " + wt : "")));
-      c.appendChild(h);
-      g.rows.forEach(function (r) {
-        if (shown++ > 400) return;
-        var it = el("div", "mti" + (mtNum(r[8]) < mtNum(r[7]) ? " wait" : ""));
-        var a = el("div", "mta");
-        var t1 = el("div", "mtt"); t1.appendChild(el("b", null, r[4])); if (r[6]) t1.appendChild(el("i", mtOut(r) ? "out" : "", r[6])); a.appendChild(t1);
-        if (r[5]) a.appendChild(el("div", "mtn", r[5]));
-        a.appendChild(el("div", "mts", ["납기 " + mtDue(r[0]), r[2] || r[1]].filter(Boolean).join(" · ")));
-        it.appendChild(a);
-        var q = el("div", "mtq");
-        [["발주", r[7]], ["입고", r[8]], ["3공장", r[9]], ["1공장", r[10]]].forEach(function (x, i) {
-          var cl = el("div", i === 1 && mtNum(r[8]) < mtNum(r[7]) ? "lack" : ""); cl.appendChild(el("span", null, x[0])); cl.appendChild(el("b", null, String(x[1] === "" ? "-" : x[1]))); q.appendChild(cl);
-        });
-        it.appendChild(q);
-        c.appendChild(it);
-      });
-      wrap.appendChild(c);
+    L.forEach(function (r) {
+      if (shown++ >= 400) return;
+      var lack = mtNum(r[8]) < mtNum(r[7]);
+      var it = el("div", "mti" + (lack ? " wait" : ""));
+      var a = el("div", "mta");
+      var t1 = el("div", "mtt"); t1.appendChild(el("b", null, r[4])); if (mtOut(r)) t1.appendChild(el("i", null, "외주조립")); a.appendChild(t1);
+      if (r[5]) a.appendChild(el("div", "mtn", r[5]));
+      var sp = mtOut(r) ? "" : String(r[6] || "").trim(); if (!/[0-9A-Za-z가-힣]/.test(sp)) sp = "";
+      if (sp) a.appendChild(el("div", "mtp", sp));
+      var m = el("div", "mts");
+      m.appendChild(el("b", null, mtVen(r[3]) || "업체 없음"));
+      var due = mtDue(r[0]); if (due) m.appendChild(el("span", null, "납기 " + due));
+      a.appendChild(m);
+      it.appendChild(a);
+      var q = el("div", "mtq");
+      [r[7], r[8], r[9], r[10]].forEach(function (x, i) { q.appendChild(el("b", i === 1 && lack ? "lack" : (mtNum(x) ? "" : "z"), String(x === "" || x == null ? "-" : x))); });
+      it.appendChild(q);
+      c.appendChild(it);
     });
+    wrap.appendChild(c);
     if (shown > 400) wrap.appendChild(el("div", "hint", "너무 많아서 400개까지만 보여요 · 찾기로 좁혀 주세요"));
   };
   var tm;
@@ -7310,10 +7329,13 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-02-19";
+var APP_VER = "2026-11-02-20";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-02-20", [
+    "📦 입고 불출: 업체별 칸 없이 한 장에 줄 맞춰 보기 · 업체는 각 줄에 표시 · 정렬 (납기순 · 업체순 · 품목순)"
+  ]],
   ["2026-11-02-19", [
     "⚡ 입고 불출: 한 번 본 장비는 바로 떠요 (최신 내용은 뒤에서 새로 확인)"
   ]],
