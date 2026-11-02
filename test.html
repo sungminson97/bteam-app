@@ -2061,6 +2061,10 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #nc .nfdock.ok .nfdx b{color:#15803d}
 
 
+#nc .nfps button.mine,#nc .nfps button:not(.ex){flex-direction:column;align-items:flex-start;gap:2px}
+#nc .nfps button span{white-space:normal}
+#nc .nfps .nfpsh{font-size:11.5px;font-weight:900;color:var(--sub);padding:6px 2px 0}
+#nc .nfps button.mine{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
 #nc .nfps{display:flex;flex-direction:column;gap:6px}
 #nc .nfps:empty{display:none}
 #nc .nfps button{display:flex;align-items:baseline;gap:8px;text-align:left;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;cursor:pointer}
@@ -3935,20 +3939,25 @@ function nfCopy(t) {
 }
 // 품번 → 품명 (서버에서 찾음 · 폰에 기억)
 var NFP = {};
-function nfPart(v, cb, qr) {
-  var k = String(v || "").toUpperCase().replace(/\s+/g, "") + (qr ? "|qr" : "");
+function nfPart(v, cb, qr, prj) {
+  var pc = prj ? (nfCode(prj) || nfPrjKey(prj)) : "";
+  var k = String(v || "").toUpperCase().replace(/\s+/g, "") + (qr ? "|qr" : "") + (pc ? "|" + pc : "");
   if (k.length < 2 || nfQuick(v)) { cb(null); return; }
   if (NFP[k] && NFP[k] !== "ld") { cb(NFP[k]); return; }
   if (NFP[k] === "ld") return;
   NFP[k] = "ld";
-  call("getNcPart", qr ? [v, true] : [v]).then(function (r) {
+  call("getNcPart", pc ? [v, !!qr, prj] : qr ? [v, true] : [v]).then(function (r) {
     NFP[k] = r && !r.error ? r : null;
     if (NFP[k] && r.vs) NFV[nfPnKey(v)] = r.vs;
+    if (NFP[k] && r.mat) NFM[nfPnKey(v)] = r.mat;
     if (NFP[k]) { if (r.eq && (r.eq.length || !NFE[nfPnKey(v)])) { NFE[nfPnKey(v)] = r.eq; NFO[nfPnKey(v)] = r.other ? 1 : 0; } } else delete NFP[k];
     cb(NFP[k] || null);
   }).catch(function () { delete NFP[k]; cb(null); });
 }
-var NFE = {}, NFO = {}, NFV = {};   // NFV: 품번 → 업체 근거 { i: 수입검사, n: 부적합 대장, l: B팀 이전 요청 } 각 [장비, 업체, 날짜, 횟수]   // NFO: 1이면 B팀 장비가 아니라 수입검사 전체에서 찾은 것   // 품번 → 그 품번이 들어온 B팀 장비 [[장비, 업체, 날짜, 품명]] (서버 수입검사에서)
+var NFE = {}, NFO = {}, NFV = {}, NFM = {};   // NFM: 품번 → 자재팀 입고 불출 시트 [[장비, 거래처, 발주번호, 품목명, 상위품목]]
+// 장비 같은지: 'CC04-159' 같은 장비번호가 있으면 그걸로, 없으면 이름 그대로 비교
+function nfCode(s) { var m = String(s || "").toUpperCase().match(/[A-Z]{2}[0-9]{2}[\s_-]?[0-9]{3}/); return m ? m[0].replace(/[\s_-]/g, "") : ""; }
+function nfSamePrj(a, b) { var x = nfCode(a), y = nfCode(b); return x && y ? x === y : nfPrjKey(a) === nfPrjKey(b) && !!nfPrjKey(a); }   // NFV: 품번 → 업체 근거 { i: 수입검사, n: 부적합 대장, l: B팀 이전 요청 } 각 [장비, 업체, 날짜, 횟수]   // NFO: 1이면 B팀 장비가 아니라 수입검사 전체에서 찾은 것   // 품번 → 그 품번이 들어온 B팀 장비 [[장비, 업체, 날짜, 품명]] (서버 수입검사에서)
 function nfEqOf(pn) { return NFE[nfPnKey(pn)] || null; }
 // 그 장비의 수입검사 품목 (품번 · 이름 · 업체)
 function nfParts(prj) {
@@ -3986,8 +3995,11 @@ function nfVenOf0(prj, pn) {
 // 수입검사 업체 이름 → 귀책 목록 이름 (똑같거나 한쪽이 다른 쪽을 포함하면서 하나만 맞을 때)
 function nfVenMap(v) {
   if (nfVenOk(v)) return v;
-  var R = NC.ref, k = nfKey(v); if (!R || !R.ven || !k) return "";
-  var m = R.ven.map(function (x) { return x[1]; }).filter(function (n) { var nk = nfKey(n); return nk && (nk.indexOf(k) >= 0 || k.indexOf(nk) >= 0); });
+  var R = NC.ref; if (!R || !R.ven || !nfKey(v)) return "";
+  var cut = function (x) { return String(x || "").toUpperCase().replace(/\(주\)|㈜|주식회사|\(유\)|유한회사|[\s.,·]/g, ""); }, k = cut(v);   // "주식회사 블루퓨전" = "블루퓨전"
+  var all = R.ven.map(function (x) { return x[1]; });
+  var eq = all.filter(function (n) { return cut(n) === k; }); if (eq.length) return eq[0];
+  var m = all.filter(function (n) { var nk = cut(n); return nk.length >= 2 && (nk.indexOf(k) >= 0 || k.indexOf(nk) >= 0); });
   return m.length === 1 ? m[0] : "";
 }
 /* ---------- 📷 QR 읽기 (라벨 QR = 품번) ----------
@@ -4088,14 +4100,15 @@ function qrScan(done, onClose, opts) {
         var r = opts.label(txt) || {};
         if (r.prj && !acc.prj) acc.prj = r.prj;
         if (r.ven && !acc.ven) { acc.ven = r.ven; acc.venAlt = r.venAlt; }
-        if (!(acc.prj && acc.ven) && i + 1 < V2.length) { msg.textContent = "✅ QR 확인 · " + L.t + "\n🔤 라벨 글자 한 번 더 확인 중…"; pass(i + 1); return; }
+        if (r.pur && !acc.pur) acc.pur = r.pur;
+        if (!(acc.prj && acc.ven) && !acc.pur && i + 1 < V2.length) { msg.textContent = "✅ QR 확인 · " + L.t + "\n🔤 라벨 글자 한 번 더 확인 중…"; pass(i + 1); return; }
         after();
       }).catch(function () { OCR_PROG = null; if (lab === L) labDone(acc); });
     })(0);
     function after() {
       var r = acc;
       L.tries++;
-      if ((r.prj && r.ven) || ((r.prj || r.ven) && L.tries >= 2) || L.tries >= 3) { labDone(r); return; }
+      if ((r.prj && r.ven) || r.pur || ((r.prj || r.ven) && L.tries >= 2) || L.tries >= 3) { labDone(r); return; }   // 발주번호만 읽혀도 자재팀 시트로 다 찾음
       // 못 읽었으면 다시 몇 장 모아서 한 번 더
       L.busy = false; L.best = null; L.n = 0; pause = 0; box.classList.remove("ok");
       msg.textContent = "✅ QR 확인 · " + L.t + (acc.prj || acc.ven ? "\n찾음: " + [acc.prj, acc.ven].filter(Boolean).join(" · ") + " · 나머지 한 번 더 볼게요" : "\n라벨 글자가 잘 안 읽혀요 · 흔들리지 않게 라벨 전체를 비춰 주세요") + " (" + (L.tries + 1) + "/3)";
@@ -4289,7 +4302,9 @@ function ocrSubDist(T, k) {
 }
 // 읽은 글자 → { prj, ven, venAlt } (목록에 있는 것만 · 업체가 둘 중 헷갈리면 venAlt로 둘 다)
 function ocrParse(text, prjList, venList) {
-  var T = String(text || "").toUpperCase(), out = { prj: "", ven: "", venAlt: null, raw: T };
+  var T = String(text || "").toUpperCase(), out = { prj: "", ven: "", venAlt: null, raw: T, pur: "" };
+  var pm = T.replace(/\s+/g, "").match(/P[UV]R([0-9OQDILZSBGT|]{10})/);   // PUR + 10자리   // 발주번호 PUR2026095477 (숫자 자리 보정)
+  if (pm) out.pur = "PUR" + pm[1].split("").map(ocrDigit).join("");
   // 업체: 라벨 맨 윗줄(발주번호 PUR… 있는 줄)을 먼저 보고, 없으면 전체 · 자음·모음 단위로 비교
   var lines = T.split(/\n+/), top = lines.filter(function (l) { return /PUR\s*[0-9]/.test(l); })[0] || "";
   var scoreIn = function (src) {
@@ -4373,13 +4388,14 @@ function nfForm(box) {
     scanBox.appendChild(h);
     var line = function (k, v, src, warn) { var d = el("div", "nfsl" + (warn ? " w" : "")); d.appendChild(el("i", null, k)); d.appendChild(el("b", null, v || "-")); if (src) d.appendChild(el("span", null, src)); scanBox.appendChild(d); };
     line("품번", S.pn + (S.nm ? " · " + S.nm : ""), "QR");
+    if (S.pur) line("발주", S.pur, "라벨");
     line("장비", S.prj || (S.st ? "" : "못 찾음 · 직접 입력"), S.prjSrc || "", !S.prj && !S.st);
     if (S.venAlt && !S.ven) {
       var d2 = el("div", "nfsl w"); d2.appendChild(el("i", null, "업체")); d2.appendChild(el("b", null, "라벨 글자가 흐려요 · 맞는 업체를 눌러 주세요")); scanBox.appendChild(d2);
       var ch = el("div", "nfsalt");
       S.venAlt.forEach(function (v) { var b = el("button", null, v); b.type = "button"; b.onclick = function () { S.ven = v; S.venAlt = null; nfSave(); drawScan(); upd(); }; ch.appendChild(b); });
       scanBox.appendChild(ch);
-    } else line("업체", S.ven || (S.st ? "" : "못 읽음 · 아래 귀책에서 고르기"), S.ven ? "라벨" : "", !S.ven && !S.st);
+    } else line("업체", S.ven || (S.st ? "" : "못 읽음 · 아래 귀책에서 고르기"), S.ven ? (S.venSrc || "라벨") : "", !S.ven && !S.st);
     if (S.st) scanBox.appendChild(el("div", "nfsst", S.st));
   }
   var HS = nfHist();
@@ -4405,7 +4421,13 @@ function nfForm(box) {
   // 🏷️ 귀책 자동: ① 라벨에서 읽은 업체 ② 같은 장비 수입검사 ③ 같은 장비 부적합 기록 · B팀 이전 요청 → 없으면 다른 장비 기록은 '참고' 버튼으로만
   var SRC_NM = { i: "수입검사", n: "부적합 기록", l: "B팀 이전 요청" };
   function venFor(e) {
-    if (f.scan && f.scan.ven && nfPnKey(f.scan.pn) === nfPnKey(e.pn)) return { v: f.scan.ven, src: "라벨에서 읽음" };
+    var M = NFM[nfPnKey(e.pn)];
+    if (M && e.proj) {
+      var mr = M.filter(function (x) { return nfSamePrj(x[0], e.proj); });
+      if (f.scan && f.scan.pur && nfPnKey(f.scan.pn) === nfPnKey(e.pn)) { var pr = mr.filter(function (x) { return x[2] === f.scan.pur; }); if (pr.length) mr = pr; }
+      if (mr.length) { var mv0 = nfVenMap(mr[0][1]); return mv0 ? { v: mv0, src: "자재팀 발주 (" + mr[0][0] + ")" } : { raw: mr[0][1], src: "자재팀 발주" }; }
+    }
+    if (f.scan && f.scan.ven && nfPnKey(f.scan.pn) === nfPnKey(e.pn)) return { v: f.scan.ven, src: f.scan.venSrc || "라벨에서 읽음" };
     var r = nfVenOf(e.proj, e.pn);
     if (r.st === "ok") { var mv = nfVenMap(r.v); return mv ? { v: mv, src: "같은 장비 수입검사" } : { raw: r.v, src: "같은 장비 수입검사" }; }
     var V = NFV[nfPnKey(e.pn)], pk = inspKey(e.proj);
@@ -4443,11 +4465,12 @@ function nfForm(box) {
   function drawRef(has) {
     if (!refBox) return;
     refBox.innerHTML = "";
-    var pn = nfClean(f.pn), V = pn && !nfQuick(pn) ? NFV[nfPnKey(pn)] : null;
+    var pn = nfClean(f.pn), V = pn && !nfQuick(pn) ? NFV[nfPnKey(pn)] : null, MM = pn && !nfQuick(pn) ? NFM[nfPnKey(pn)] : null;
+    if (MM && MM.length) { V = { i: (V && V.i) || [], n: (V && V.n) || [], l: (V && V.l) || [], m: MM.map(function (x) { return [x[0], x[1], "", 1]; }) }; }
     if (!V || has) return;
     // 업체별로 묶기: 출처별 건수 + 장비 이름 (많이 쓴 업체 → 최근 순)
     var seen = {}, list = [];
-    ["l", "n", "i"].forEach(function (s3) {
+    ["m", "l", "n", "i"].forEach(function (s3) {
       (V[s3] || []).forEach(function (x) {
         var v = nfVenMap(x[1]); if (!v || v === nfClean(f.vend)) return;   // 이미 귀책에 들어간 업체는 또 안 보여줌
         var o = seen[v]; if (!o) { o = seen[v] = { v: v, n: 0, src: {}, eq: [], at: "" }; list.push(o); }
@@ -4457,7 +4480,7 @@ function nfForm(box) {
         if (String(x[2]) > o.at) o.at = String(x[2]);
       });
     });
-    if (!list.length) { if (!nfClean(f.vend) && !(V.i.length || V.n.length || V.l.length)) refBox.appendChild(el("div", "nfhint", "이 품번은 수입검사·부적합·이전 요청 기록이 없어요 · 귀책을 직접 골라 주세요")); return; }
+    if (!list.length) { if (!nfClean(f.vend) && !(V.i.length || V.n.length || V.l.length || (V.m || []).length)) refBox.appendChild(el("div", "nfhint", "이 품번은 수입검사·부적합·이전 요청 기록이 없어요 · 귀책을 직접 골라 주세요")); return; }
     list.sort(function (a, b) { return b.n - a.n || (a.at < b.at ? 1 : -1); });
     refBox.appendChild(el("div", "nfhint", nfClean(f.proj)
       ? "📚 참고: 이 품번을 다른 장비에서 쓴 업체 (장비마다 다를 수 있어요 · 누르면 들어가요)"
@@ -4465,6 +4488,7 @@ function nfForm(box) {
     var c = el("div", "nfc nfref");
     list.slice(0, 5).forEach(function (o) {
       var why = [];
+      if (o.src.m) why.push("발주 " + o.src.m + "건");
       if (o.src.l) why.push("B팀 요청 " + o.src.l + "회");
       if (o.src.n) why.push("부적합 " + o.src.n + "건");
       if (o.src.i) why.push("수입검사 " + o.src.i + "건");
@@ -4552,16 +4576,21 @@ function nfForm(box) {
       lst.innerHTML = "";
       var v = get(), q = nfPrjKey(v);
       if (!foc || !q || nfQuick(v)) return;
-      var L = local(q), seen = {}, all = [];
+      var L = local(q), seen = {}, here = [], all = [], ok = srv && srv.q === v;
       if (L.some(function (x) { return nfPrjKey(x[0]) === q; })) return;   // 품번 그대로 맞음
-      L.concat(srv && srv.q === v ? srv.nm : []).forEach(function (x) { var k = nfPrjKey(x[0]); if (seen[k]) return; seen[k] = 1; all.push(x); });
-      all.slice(0, 10).forEach(function (x) {
-        var bt = el("button"); bt.type = "button";
-        bt.appendChild(el("b", null, x[0])); bt.appendChild(el("span", null, [x[1], x[3] ? (x[2] ? x[2] + " · 이 장비" : "이 장비") : ""].filter(Boolean).join(" · ")));
+      // ① 그 장비에 발주된 품목 (자재팀 시트) ② 그 장비 수입검사 ③ 전체 품번 목록
+      (ok ? srv.here || [] : []).forEach(function (x) { var k = nfPrjKey(x[0]); if (seen[k]) return; seen[k] = 1; here.push([x[0], x[1], nfVenMap(x[2]) || x[2]]); });
+      L.forEach(function (x) { var k = nfPrjKey(x[0]); if (seen[k]) return; seen[k] = 1; here.push([x[0], x[1], x[2]]); });
+      (ok ? srv.nm : []).forEach(function (x) { var k = nfPrjKey(x[0]); if (seen[k]) return; seen[k] = 1; all.push(x); });
+      var btn = function (x, mine) {
+        var bt = el("button", mine ? "mine" : ""); bt.type = "button";
+        bt.appendChild(el("b", null, x[0])); bt.appendChild(el("span", null, [x[1], x[2]].filter(Boolean).join(" · ")));
         bt.onmousedown = function (e) { e.preventDefault(); };
         bt.onclick = function () { pick(x[0], x[1]); };
         lst.appendChild(bt);
-      });
+      };
+      if (here.length) { lst.appendChild(el("div", "nfpsh", "📦 " + (nfCode(f.proj) ? nfPrjFix(f.proj) : nfClean(f.proj)) + " 에 발주된 품목")); here.slice(0, 8).forEach(function (x) { btn(x, true); }); }
+      if (all.length) { if (here.length || nfClean(f.proj)) lst.appendChild(el("div", "nfpsh", nfClean(f.proj) && !here.length ? "이 장비 발주 품목에는 없어요 · 전체 품번 목록" : "전체 품번 목록")); all.slice(0, here.length ? 4 : 10).forEach(function (x) { btn(x, false); }); }
     }
     function look(fix) {
       var v = get(); if (!nfClean(v) || nfQuick(v)) { hint(hk, ""); draw(); return; }
@@ -4571,7 +4600,7 @@ function nfForm(box) {
       hint(hk, "찾는 중…");
       nfPart(v, function (r) {
         if (get() !== v) return;
-        srv = r ? { q: v, nm: r.nm || [] } : null;
+        srv = r ? { q: v, nm: r.nm || [], here: r.here || [] } : null;
         draw();
         if (r && ((r.eq && r.eq.length) || r.vs)) upd();   // 이 품번이 들어온 장비 · 귀책 업체 · 참고 버튼 갱신
         if (!r) { hint(hk, ""); return; }
@@ -4579,13 +4608,13 @@ function nfForm(box) {
         var ex = (r.hit || []).filter(function (h) { return nfPnKey(h[0]) === nfPnKey(v); })[0];
         if (ex && ex[0] !== v && !foc) { set(ex[0]); input.value = ex[0]; upd(); }   // 칸에서 나오면 정식 품번 모양으로
         if (ex) hint(hk, "품명: " + (ex[1] || "-"));
-        else if ((r.nm && r.nm.length) || local(nfPrjKey(v)).length) hint(hk, foc ? "아래에서 골라 주세요" : "목록에서 골라 주세요 (칸을 누르면 다시 떠요)", foc ? "" : "w");
+        else if ((r.nm && r.nm.length) || (r.here && r.here.length) || local(nfPrjKey(v)).length) hint(hk, foc ? "아래에서 골라 주세요" : "목록에서 골라 주세요 (칸을 누르면 다시 떠요)", foc ? "" : "w");
         else hint(hk, foc ? "" : "품번·품명 목록에 없어요. 다시 확인해 주세요.", "w");   // 치는 중엔 경고 안 띄움
-      });
+      }, false, nfClean(f.proj));
     }
     input.addEventListener("focus", function () { foc = true; draw(); });
     input.addEventListener("input", function () { if (H[hk] && /\bw\b/.test(H[hk].className)) hint(hk, ""); draw(); clearTimeout(tm); tm = setTimeout(function () { look(false); }, 300); });
-    input.addEventListener("blur", function () { clearTimeout(tm); setTimeout(function () { if (!foc) return; foc = false; draw(); look(true); }, 150); });
+    input.addEventListener("blur", function () { clearTimeout(tm); setTimeout(function () { if (!foc || document.activeElement === input) return; foc = false; draw(); look(true); }, 150); });   // 금방 다시 누른 거면 그대로
     if (get()) setTimeout(function () { look(false); }, 0);
   }
   sec("장비");
@@ -4634,6 +4663,7 @@ function nfForm(box) {
     input.addEventListener("focus", function () { foc = true; draw(); });
     input.addEventListener("blur", function () {
       setTimeout(function () {
+        if (document.activeElement === input) return;   // 금방 다시 누른 거면 그대로
         foc = false;
         var v = get(), fx = nfPrjFix(v, prjAll().map(function (p) { return p[0]; }));   // "cc04 159" → "CC04-159"
         if (fx && fx !== v) { set(fx); input.value = fx; upd(); }
@@ -4650,18 +4680,26 @@ function nfForm(box) {
   r2.appendChild(pin); r2.appendChild(hn("proj"));
   prjWatch(pin, function () { return f.proj; }, function (v) { f.proj = v; drawParts(); }, "proj");
   var eqBox = el("div", "nfeq"); r2.appendChild(eqBox);
-  function drawEq() {   // 품번을 먼저 넣었을 때: 그 품번이 들어온 B팀 장비를 최근 입고 순으로
+  function drawEq() {   // 품번을 먼저 넣었을 때: 그 품번이 있는 장비 (자재팀 발주 → 없으면 수입검사)
     eqBox.innerHTML = "";
-    var E = nfEqOf(f.pn); if (!E || !E.length || nfQuick(f.pn)) return;
-    var pk = inspKey(f.proj); if (f.proj && E.some(function (x) { return inspKey(x[0]) === pk; })) return;
-    eqBox.appendChild(el("div", "nfhint", (f.proj ? "이 품번은 다른 장비로 들어왔어요 · " : "") + "📦 " + nfClean(f.pn) + " 이(가) 들어온 " + (NFO[nfPnKey(f.pn)] ? "장비 (수입검사 · 다른 팀 포함)" : "B팀 장비")));
+    if (nfQuick(f.pn)) return;
+    var MM = NFM[nfPnKey(f.pn)], E, fromMat = false;
+    if (MM && MM.length) {
+      var seenE = {}; E = [];
+      MM.forEach(function (x) { var k2 = nfCode(x[0]) || x[0]; if (seenE[k2]) return; seenE[k2] = 1; E.push([x[0], x[1], ""]); });
+      fromMat = true;
+    } else E = nfEqOf(f.pn);
+    if (!E || !E.length) return;
+    if (f.proj && E.some(function (x) { return nfSamePrj(x[0], f.proj); })) return;
+    eqBox.appendChild(el("div", "nfhint", (f.proj ? "이 품번은 다른 장비에 발주됐어요 · " : "") + "📦 " + nfClean(f.pn) + " 이(가) " + (fromMat ? "발주된 장비 (자재팀 시트)" : NFO[nfPnKey(f.pn)] ? "들어온 장비 (수입검사 · 다른 팀 포함)" : "들어온 B팀 장비")));
     var c = el("div", "nfc");
     E.forEach(function (x) {
       var b = el("button"); b.type = "button"; b.appendChild(el("b", null, x[0]));
       b.appendChild(el("span", null, [x[1], String(x[2] || "").slice(5).replace("-", "/")].filter(Boolean).join(" · ")));
-      b.onclick = function () { f.proj = x[0]; pin.value = x[0]; drawParts(); upd(); };
+      b.onclick = function () { f.proj = nfPrjFix(x[0], prjAll().map(function (p) { return p[0]; })); pin.value = f.proj; drawParts(); upd(); };
       c.appendChild(b);
     });
+    if (E.length > 8) { [].slice.call(c.children, 8).forEach(function (b) { b.style.display = "none"; }); var more = el("button", null, "외 " + (E.length - 8) + "대 더 보기"); more.type = "button"; more.onclick = function () { [].forEach.call(c.children, function (b) { b.style.display = ""; }); more.remove(); }; c.appendChild(more); }
     eqBox.appendChild(c);
   }
   sec("부품");
@@ -4692,15 +4730,29 @@ function nfForm(box) {
     S.ven = o.ven; S.venAlt = null;
   }
   function ocrP(txt) { return ocrParse(txt, prjAll().map(function (p) { return p[0]; }), ((NC.ref && NC.ref.ven) || []).map(function (x) { return x[1]; })); }
+  // 📦 자재팀 입고 불출 시트: 라벨 발주번호가 맞는 줄 → 장비 · 거래처 확정 / 발주번호가 없으면 이 품번이 있는 장비가 한 대일 때만
+  function matApply(S) {
+    var M = NFM[nfPnKey(S.pn)]; if (!M || !M.length) return;
+    var row = S.pur ? M.filter(function (x) { return x[2] && x[2].replace(/\s/g, "").toUpperCase() === S.pur; })[0] : null;
+    var prjs = M.map(function (x) { return x[0]; }).filter(function (v, i, a) { return a.indexOf(v) === i; });
+    if (!row && f.proj) row = M.filter(function (x) { return nfSamePrj(x[0], f.proj); })[0];
+    if (!row && prjs.length === 1) row = M[0];
+    if (!row) return;
+    setPrj(row[0], S.pur && row[2] === S.pur ? "발주번호 일치" : "자재팀 발주");
+    var mv = nfVenMap(row[1]);
+    if (mv) { S.ven = mv; S.venAlt = null; S.venSrc = "자재팀 발주"; }
+    if (!S.nm && row[3]) S.nm = row[3];
+  }
   function afterScan(t, shot, ocr) {
     var S = f.scan = { pn: t, nm: "", prj: "", prjSrc: "", ven: "", st: shot && ocr === undefined ? "🔤 라벨 글자 읽는 중…" : "", at: Date.now() };
-    if (ocr) { if (ocr.prj) setPrj(ocr.prj, "라벨"); venPick(S, ocr); }
+    if (ocr) { if (ocr.prj) setPrj(ocr.prj, "라벨"); venPick(S, ocr); S.pur = ocr.pur || ""; }
     else if (ocr === null && shot) S.st = "";
     drawScan();
     nfPart(t, function (r) {
       if (f.scan !== S) return;
       if (r && r.hit && r.hit[0]) S.nm = r.hit[0][1] || "";
       var E = (r && r.eq) || [];
+      matApply(S);
       if (!S.prj && E.length === 1) setPrj(E[0][0], r.other ? "수입검사 (다른 팀)" : "B팀 수입검사");
       else if (!S.prj && E.length > 1 && !nfClean(f.proj)) { S.prjSrc = ""; }
       nfSave(); drawScan(); upd();
@@ -4711,11 +4763,13 @@ function nfForm(box) {
     ocrLabel(shot).then(function (txt) {
       var o = ocrP(txt);
       if (o.prj && o.ven) return o;
-      return ocrLabel(shot, { psm: "11", gray: true }).then(function (t2) { var o2 = ocrP(t2); return { prj: o.prj || o2.prj, ven: o.ven || o2.ven, venAlt: o.ven ? o.venAlt : o2.venAlt }; });
+      if (o.pur) return o;
+      return ocrLabel(shot, { psm: "11", gray: true }).then(function (t2) { var o2 = ocrP(t2); return { prj: o.prj || o2.prj, ven: o.ven || o2.ven, venAlt: o.ven ? o.venAlt : o2.venAlt, pur: o.pur || o2.pur }; });
     }).then(function (o) {
       OCR_PROG = null; if (f.scan !== S) return;
       if (o.prj) setPrj(o.prj, "라벨");
-      venPick(S, o);
+      venPick(S, o); S.pur = o.pur || "";
+      matApply(S);
       S.st = ""; S.ms = Date.now() - t0;
       nfSave(); drawScan(); upd();
     }).catch(function (e) { OCR_PROG = null; if (f.scan !== S) return; S.st = "🔤 라벨 글자를 못 읽었어요 (" + ((e && e.message) || "오류") + ")"; drawScan(); });
@@ -7052,10 +7106,14 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-02-14";
+var APP_VER = "2026-11-02-15";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-02-15", [
+    "📦 자재팀 입고 불출 시트와 연결: 품번만 넣어도 발주된 장비 · 거래처가 나와요 (라벨 발주번호까지 맞춰서 정확하게)",
+    "🔎 장비를 먼저 넣고 품번 칸에 back cover처럼 치면 그 장비에 발주된 품목부터 보여줘요"
+  ]],
   ["2026-11-02-14", [
     "📝 부적합 처리 요청 화면을 새로 만들었어요 (라벨 QR로 시작 · 진행 막대 · 아래 [채우러 가기]/[복사] 바 · 수량 −/+ · 자주 쓰는 불량 문구)",
     "📷 라벨 업체 글자를 더 정확하게 읽어요 (헷갈리면 고르게 보여줘요)",
