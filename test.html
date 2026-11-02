@@ -2114,6 +2114,9 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #mat .mtq div.lack{background:color-mix(in srgb,var(--warn) 12%,var(--card))}
 #mat .mtq div.lack b{color:var(--warn)}
 #mat .mti.wait .mtt b{color:var(--warn)}
+#mat .mtsk .mtgh{height:44px}
+#mat .mtsk .mti{height:64px;background:linear-gradient(90deg,transparent 0,color-mix(in srgb,var(--line) 45%,transparent) 50%,transparent 100%) 0 0/200% 100%;animation:mtsk 1.2s linear infinite}
+@keyframes mtsk{from{background-position:200% 0}to{background-position:-200% 0}}
 #nc .nfps{display:flex;flex-direction:column;gap:6px}
 #nc .nfps:empty{display:none}
 #nc .nfps button{display:flex;align-items:baseline;gap:8px;text-align:left;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;cursor:pointer}
@@ -4419,15 +4422,22 @@ function loadMatList(force) {
     if (cur === 9 && !MT.prj) renderMat();
   }).catch(function (e) { MT.ld = false; MT.lt = Date.now(); MT.err = errText(e); if (cur === 9) renderMat(); return errText(e); });
 }
-function loadMatTab(prj, force) {
+function loadMatTab(prj, force, hard) {
   var d = MT.data[prj];
+  if (!d) { var cc = cget("mt_" + prj); if (cc && cc.rows) d = MT.data[prj] = { rows: cc.rows, tabs: cc.tabs, at: cc.at, t: 1, old: 1 }; }   // 📱 폰에 기억해 둔 것 먼저 바로 보여 줌
   if (!force && d && (d.ld || (d.t && Date.now() - d.t < 120000))) return Promise.resolve();
+  if (d && d.ld) return Promise.resolve();
   MT.data[prj] = Object.assign(d || {}, { ld: true });
-  if (cur === 9 && MT.prj === prj && !d) renderMat();
-  return call("getMatTab", [prj]).then(function (r) {
-    MT.data[prj] = r && !r.error ? { rows: r.rows || [], tabs: r.tabs || [], at: r.at, t: Date.now() } : { err: (r && r.error) || "불러오기 실패", t: Date.now() };
+  if (cur === 9 && MT.prj === prj) { if (d && d.rows) $("upd").textContent = (d.at ? d.at + " 기준 · " : "") + "새로 확인 중…"; else renderMat(); }
+  return call("getMatTab", [prj, !!hard]).then(function (r) {
+    if (r && !r.error) {
+      MT.data[prj] = { rows: r.rows || [], tabs: r.tabs || [], at: r.at, t: Date.now() };
+      try { cset("mt_" + prj, { rows: r.rows || [], tabs: r.tabs || [], at: r.at }); } catch (e) {}
+      try { var keep = JSON.parse(sget("matRecent") || "[]"); for (var i = localStorage.length - 1; i >= 0; i--) { var k = localStorage.key(i); if (k && k.indexOf("c_mt_") === 0 && keep.indexOf(k.slice(5)) < 0) localStorage.removeItem(k); } } catch (e) {}
+    } else if (d && d.rows) { d.ld = false; d.t = Date.now(); }
+    else MT.data[prj] = { err: (r && r.error) || "불러오기 실패", t: Date.now() };
     if (cur === 9 && MT.prj === prj) renderMat();
-  }).catch(function (e) { MT.data[prj] = { err: errText(e) }; if (cur === 9 && MT.prj === prj) renderMat(); return errText(e); });
+  }).catch(function (e) { if (d && d.rows) { d.ld = false; d.t = Date.now(); } else MT.data[prj] = { err: errText(e) }; if (cur === 9 && MT.prj === prj) renderMat(); return errText(e); });
 }
 function openMat(prj) {
   MT.prj = prj; MT.f = "all"; MT.s = "";
@@ -4464,8 +4474,13 @@ function renderMat() {
   // 📋 장비 하나
   var bk = el("button", "ib", "‹ 장비 목록"); bk.type = "button"; bk.onclick = function () { MT.prj = ""; renderMat(); window.scrollTo(0, 0); }; box.appendChild(bk);
   var d = MT.data[MT.prj] || {};
-  if (!d.rows) { box.appendChild(el("div", d.err ? "warn" : "msg", d.err || "'" + MT.prj + "' 불러오는 중…")); return; }
-  $("upd").textContent = d.at ? d.at + " 기준" : "";
+  if (!d.rows) {
+    if (d.err) { box.appendChild(el("div", "warn", d.err)); return; }
+    box.appendChild(el("div", "msg", "'" + MT.prj + "' 자재팀 시트 읽는 중…"));
+    for (var sk = 0; sk < 3; sk++) { var sc = el("div", "card mtg mtsk"); sc.appendChild(el("div", "mtgh")); for (var sj = 0; sj < 3; sj++) sc.appendChild(el("div", "mti")); box.appendChild(sc); }
+    return;
+  }
+  $("upd").textContent = (d.at ? d.at + " 기준" : "") + (d.ld ? " · 새로 확인 중…" : "");
   var R = d.rows, nOut = R.filter(mtOut).length, nWait = R.filter(function (r) { return mtNum(r[8]) < mtNum(r[7]); }).length;
   box.appendChild(heroX(MT.prj, R.length, "품목", [["입고 완료", R.length - nWait, "건"], ["미입고", nWait, "건", nWait > 0], ["외주조립", nOut, "건"]]));
   // 거르기 · 찾기
@@ -4524,7 +4539,7 @@ function renderMat() {
   var tm;
   si.oninput = function () { MT.s = si.value; clearTimeout(tm); tm = setTimeout(draw, 150); };
   draw();
-  if (d.t && Date.now() - d.t > 120000) loadMatTab(MT.prj, true);
+  if (!d.ld && d.t && Date.now() - d.t > 120000) loadMatTab(MT.prj, true);
 }
 function nfHist() { try { var a = JSON.parse(sget("nfHist") || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
 function nfHistAdd(f) {
@@ -6412,7 +6427,7 @@ $("ref").onclick = function () {
   else if (cur === 5) { p = loadStats(true); renderStats(ST.data); }
   else if (cur === 7) { p = loadInsp(true); }
   else if (cur === 8) { p = loadNc(true); }
-  else if (cur === 9) { p = MT.prj ? loadMatTab(MT.prj, true) : loadMatList(true); }
+  else if (cur === 9) { p = MT.prj ? loadMatTab(MT.prj, true, true) : loadMatList(true); }
   else { p = loadDash(true); if (cur === 6) renderSched(); }
 
   REF = true;
@@ -7295,10 +7310,13 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-02-18";
+var APP_VER = "2026-11-02-19";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-02-19", [
+    "⚡ 입고 불출: 한 번 본 장비는 바로 떠요 (최신 내용은 뒤에서 새로 확인)"
+  ]],
   ["2026-11-02-18", [
     "📦 더보기 → 입고 불출 (NEW): 장비별로 자재팀 입고 불출 시트를 업체별로 보기 · 발주 · 입고 · 3공장 · 1공장 수량 · 미입고만 보기 · 외주조립 거르기"
   ]],
