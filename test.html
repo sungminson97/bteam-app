@@ -1971,6 +1971,96 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #nc .nfscan .nfsst{font-size:12.5px;color:var(--sub)}
 #nc .nfref button,#nc .nfeq .nfc button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;height:auto;min-height:44px;padding:8px 14px;border-radius:14px;line-height:1.3;text-align:left;max-width:100%}
 #nc .nfref button span,#nc .nfeq .nfc button span{font-size:11.5px;color:var(--sub);font-weight:600;white-space:normal}
+#nc .nfhd{align-items:flex-start}
+#nc .nfti{display:grid;gap:2px}
+#nc .nfti b{font-size:18px;font-weight:900;letter-spacing:-.3px}
+#nc .nfti span{font-size:12.5px;color:var(--sub);font-weight:600}
+#nc .nfsteps{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;font-weight:700;color:var(--sub)}
+#nc .nfsteps span{display:inline-flex;align-items:center;gap:5px}
+#nc .nfsteps i{font-style:normal;font-size:11.5px;font-weight:900;color:var(--accent)}
+#nc .nfsteps u{text-decoration:none;color:var(--sub)}
+#nc .nfs:empty{display:none}
+#nc .nfr{padding-top:14px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+#nc .nfl i{width:30px;height:30px;border-radius:10px;box-shadow:none;background:var(--bg);font-size:15px;font-style:normal;display:flex;align-items:center;justify-content:center}
+#nc .nfl b{font-size:15px;letter-spacing:-.2px}
+#nc .nfl{gap:6px;min-height:24px}
+#nc .nfl .nfst{margin-left:auto;font-style:normal;font-size:11px;font-weight:900;padding:3px 8px;border-radius:999px;color:#b26a00;background:color-mix(in srgb,#f5a524 16%,var(--card))}
+#nc .nfr.done .nfst{color:#15803d;background:color-mix(in srgb,#16a34a 13%,var(--card))}
+#nc .nf .emp{border-color:var(--line);background:var(--bg)}
+#nc .nfseg.emp button{border-color:var(--line);background:var(--bg)}
+#nc .nfsub{font-size:11.5px;font-weight:800;color:var(--sub);margin-top:2px}
+#nc .nfqty{display:grid;grid-template-columns:48px minmax(0,110px) 48px auto;gap:8px;align-items:center}
+#nc .nfqty input{text-align:center;font-size:18px;font-weight:900;max-width:none}
+#nc .nfqb{height:48px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg);color:var(--text);font:inherit;font-size:22px;font-weight:900;cursor:pointer}
+#nc .nfdq button{height:32px;font-size:12.5px;font-weight:700;color:var(--sub)}
+#nc .nfps button.ex{border-color:color-mix(in srgb,#16a34a 50%,transparent)}
+#nc .nfps button em{margin-left:auto;font-style:normal;font-size:11.5px;font-weight:900;color:#15803d}
+#nc .nfscan .nfsalt{display:flex;gap:8px;flex-wrap:wrap;padding-left:44px}
+#nc .nfscan .nfsalt button{height:38px;padding:0 14px;border-radius:12px;border:1.5px solid #16a34a;background:var(--card);color:#15803d;font:inherit;font-weight:900;cursor:pointer}
+#nc .nfm .nfmsg{border:1px dashed var(--line)}
+/* ---- 📝 요청 작성 · 칸 모양 (깔끔하게) ---- */
+#nc .nf input,#nc .nf textarea{background:var(--card);border:1px solid var(--line);border-radius:12px;height:50px;font-size:15.5px;transition:border-color .15s,box-shadow .15s}
+#nc .nf textarea{height:auto}
+#nc .nf input:focus,#nc .nf textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 14%,transparent)}
+#nc .nf input::placeholder,#nc .nf textarea::placeholder{color:color-mix(in srgb,var(--sub) 75%,transparent);font-weight:500}
+#nc .nf .emp{border-color:var(--line);background:var(--card)}
+#nc .nfseg{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:4px;border-radius:14px;background:var(--bg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 60%,transparent)}
+#nc .nfseg button,#nc .nfseg.emp button{height:42px;border:0;border-radius:11px;background:transparent;color:var(--sub);font-size:15px;font-weight:800;transition:background .15s,color .15s,box-shadow .15s}
+#nc .nfseg button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.06)}
+#nc .nfl .nfst{margin-left:auto;display:inline-flex;align-items:center;gap:5px;padding:0;background:none;font-size:12px;font-weight:800;color:#b26a00}
+#nc .nfl .nfst::before{content:"";width:6px;height:6px;border-radius:50%;background:#f5a524}
+#nc .nfr.done .nfst{color:#15803d;background:none}
+#nc .nfr.done .nfst::before{width:16px;height:16px;background:#16a34a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.3l2.6 2.5L12 5.3' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+#nc .nfl .nfst.opt{color:var(--sub);font-weight:700}
+#nc .nfl .nfst.opt::before{display:none}
+#nc .nfc button{height:34px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:13px;font-weight:700}
+#nc .nfc button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--card));color:var(--accent)}
+#nc .nfdq button{height:30px;border-style:dashed;color:var(--sub);font-weight:600}
+#nc .nfqty{display:flex;align-items:center;gap:10px}
+#nc .nfstep{display:grid;grid-template-columns:48px 72px 48px;align-items:center;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden}
+#nc .nfstep input{height:48px;border:0;border-left:1px solid var(--line);border-right:1px solid var(--line);border-radius:0;text-align:center;font-size:17px;font-weight:900;padding:0;box-shadow:none}
+#nc .nfstep input:focus{box-shadow:none;background:color-mix(in srgb,var(--accent) 6%,var(--card))}
+#nc .nfstep .nfqb{height:48px;border:0;border-radius:0;background:transparent;color:var(--text);font-size:20px;font-weight:700}
+#nc .nfstep .nfqb:active{background:var(--bg)}
+#nc .nfqr{border-radius:12px;height:50px}
+#nc .nfadd button{height:34px;border-radius:10px;background:var(--card);font-weight:700}
+/* ---- 📝 요청 작성 · 구역 카드 · 진행 · 아래 고정 바 ---- */
+#nc .nf.nfflat{padding:0;background:none;box-shadow:none;gap:12px}
+#nc .nfsec{display:grid;gap:14px;padding:16px;border-radius:20px;background:var(--card);box-shadow:var(--csh)}
+#nc .nfsec .nfr:first-of-type{border-top:0;padding-top:0}
+#nc .nfsect{font-size:11.5px;font-weight:900;letter-spacing:.08em;color:var(--sub);margin-bottom:-4px}
+#nc .nfsec .nfsect + .nfr{border-top:0;padding-top:0}
+#nc .nfprog{display:grid;gap:8px}
+#nc .nfprogt{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+#nc .nfprogt b{font-size:14px;font-weight:900}
+#nc .nfprogt span{font-size:12.5px;color:var(--sub)}
+#nc .nfprogb{height:6px;border-radius:999px;background:var(--bg);overflow:hidden}
+#nc .nfprogb i{display:block;height:100%;border-radius:999px;background:var(--accent);transition:width .35s cubic-bezier(.2,.8,.2,1)}
+#nc .nfprog.ok .nfprogb i{background:#16a34a}
+#nc .nfprog.ok .nfprogt b{color:#15803d}
+#nc .nfhero{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:12px;width:100%;padding:14px 16px;border:0;border-radius:16px;background:var(--grd);color:#fff;font:inherit;text-align:left;cursor:pointer;box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 28%,transparent)}
+#nc .nfhero i{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:22px}
+#nc .nfhero b{display:block;font-size:16px;font-weight:900}
+#nc .nfhero span{display:block;font-size:12.5px;opacity:.85;margin-top:2px}
+#nc .nfhero u{text-decoration:none;font-size:22px;opacity:.8}
+#nc .nfhero:active{transform:scale(.985)}
+#nc .nfr.flash{animation:nfflash .9s ease}
+@keyframes nfflash{0%,100%{background:transparent}30%{background:color-mix(in srgb,#f5a524 14%,transparent)}}
+#nc .nfbub{border-radius:16px;background:var(--bg);padding:12px 14px 4px;border:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+#nc .nfbubh{display:flex;align-items:center;gap:8px;padding-bottom:8px;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+#nc .nfbubh i{width:22px;height:22px;border-radius:7px;background:var(--accent);color:#fff;font-style:normal;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center}
+#nc .nfbubh b{font-size:13px;font-weight:900}
+#nc .nfbubh span{margin-left:auto;font-size:11.5px;color:var(--sub)}
+#nc .nfbub .nfmsg{background:none;border:0;padding:10px 2px}
+#nc .nfdock{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 92px);z-index:14;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px;border-radius:18px;background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:saturate(1.8) blur(18px);backdrop-filter:saturate(1.8) blur(18px);box-shadow:0 8px 28px rgba(0,0,0,.14),0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent);max-width:560px;margin:0 auto}
+#nc .nfdx{display:grid;min-width:0;flex:1}
+#nc .nfdx b{font-size:14px;font-weight:900}
+#nc .nfdx span{font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#nc .nfdock button{flex:none;height:42px;padding:0 16px;border:0;border-radius:12px;background:var(--text);color:var(--card);font:inherit;font-size:14px;font-weight:900;cursor:pointer}
+#nc .nfdock.ok button{background:#16a34a;color:#fff}
+#nc .nfdock.ok .nfdx b{color:#15803d}
+
+
 #nc .nfps{display:flex;flex-direction:column;gap:6px}
 #nc .nfps:empty{display:none}
 #nc .nfps button{display:flex;align-items:baseline;gap:8px;text-align:left;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;cursor:pointer}
@@ -3830,7 +3920,7 @@ function nfMsg(f) {
   var text = NF_HEAD.map(function (h, i) { return (i + 1) + ". " + h + " : " + (v[i] || ""); }).join("\n");
   var miss = [];
   if (!f.site) miss.push("사업장");
-  [["프로젝트명", f.proj], ["품번", f.pn], ["수량", f.qty], ["불량내용", f.desc], ["귀책", vn], ["요청자", f.req]].forEach(function (x) { if (!nfClean(x[1])) miss.push(x[0]); });
+  [["프로젝트명", f.proj], ["품번", f.pn], ["수량", f.qty], ["불량내용", f.desc], ["귀책", nfVenOk(vn) ? vn : ""], ["요청자", f.req]].forEach(function (x) { if (!nfClean(x[1])) miss.push(x[0]); });   // 목록에 없는 귀책은 빈 칸으로
   f.rows.forEach(function (r, i) { if (!nfClean(r.v)) miss.push((f.kind === "proj" ? "프로젝트명 " : "품번 ") + (i + 2)); if (!nfClean(r.q)) miss.push("수량 " + (i + 2)); });
   return { text: text, miss: miss };
 }
@@ -3997,7 +4087,7 @@ function qrScan(done, onClose, opts) {
         OCR_PROG = null; if (lab !== L || !live) return;
         var r = opts.label(txt) || {};
         if (r.prj && !acc.prj) acc.prj = r.prj;
-        if (r.ven && !acc.ven) acc.ven = r.ven;
+        if (r.ven && !acc.ven) { acc.ven = r.ven; acc.venAlt = r.venAlt; }
         if (!(acc.prj && acc.ven) && i + 1 < V2.length) { msg.textContent = "✅ QR 확인 · " + L.t + "\n🔤 라벨 글자 한 번 더 확인 중…"; pass(i + 1); return; }
         after();
       }).catch(function () { OCR_PROG = null; if (lab === L) labDone(acc); });
@@ -4180,16 +4270,45 @@ function nfPrjFix(v, list) {
   var m = t.toUpperCase().match(/^([A-Z]{2})\s*([0-9]{2})\s*[-_.\s]?\s*([0-9]{3})\s*(.*)$/);
   return m ? m[1] + m[2] + "-" + m[3] + (m[4] ? " " + m[4].trim() : "") : t;
 }
-// 읽은 글자 → { prj, ven } (목록에 있는 것만 · 프로젝트는 목록에 없으면 'AB12-345' 모양만)
+// 한글을 자음·모음으로 풀기 (브 → ㅂㅡ, 와 → ㅇㅘ) → '한 글자 다름'보다 훨씬 정확하게 비교
+var JA = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ", JB = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ", JC = " ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ";
+function ocrJamo(s) {
+  return String(s || "").replace(/[가-힣]/g, function (c) { var i = c.charCodeAt(0) - 44032; return JA.charAt(i / 588 | 0) + JB.charAt((i % 588) / 28 | 0) + (i % 28 ? JC.charAt(i % 28) : ""); });
+}
+// 글 T 어딘가에 k가 몇 번 고치면 들어 있는지 (부분 문자열 편집 거리)
+function ocrSubDist(T, k) {
+  var n = k.length, prev = new Array(n + 1), cur = new Array(n + 1), best = n;
+  for (var j = 0; j <= n; j++) prev[j] = j;
+  for (var i = 1; i <= T.length; i++) {
+    cur[0] = 0;
+    for (var j2 = 1; j2 <= n; j2++) cur[j2] = Math.min(prev[j2] + 1, cur[j2 - 1] + 1, prev[j2 - 1] + (T.charAt(i - 1) === k.charAt(j2 - 1) ? 0 : 1));
+    if (cur[n] < best) best = cur[n];
+    var t = prev; prev = cur; cur = t;
+  }
+  return Math.min(best, prev[n]);
+}
+// 읽은 글자 → { prj, ven, venAlt } (목록에 있는 것만 · 업체가 둘 중 헷갈리면 venAlt로 둘 다)
 function ocrParse(text, prjList, venList) {
-  var T = String(text || "").toUpperCase(), out = { prj: "", ven: "", raw: T };
-  // 업체: 띄어쓰기·(주) 빼고 비교 · 4글자 이상이면 한 글자 틀려도
-  var TV = ocrVenKey(T), bestV = 0;
-  (venList || []).forEach(function (v) {
-    var k = ocrVenKey(v); if (k.length < 3 || NF_QV.indexOf(v) >= 0) return;
-    var sc = TV.indexOf(k) >= 0 ? k.length * 2 : (k.length >= 4 && ocrNear(TV, k, 1) ? k.length * 2 - 3 : 0);
-    if (sc > bestV) { bestV = sc; out.ven = v; }
-  });
+  var T = String(text || "").toUpperCase(), out = { prj: "", ven: "", venAlt: null, raw: T };
+  // 업체: 라벨 맨 윗줄(발주번호 PUR… 있는 줄)을 먼저 보고, 없으면 전체 · 자음·모음 단위로 비교
+  var lines = T.split(/\n+/), top = lines.filter(function (l) { return /PUR\s*[0-9]/.test(l); })[0] || "";
+  var scoreIn = function (src) {
+    var TJ = ocrJamo(ocrVenKey(src)), res = [];
+    (venList || []).forEach(function (v) {
+      var k = ocrVenKey(v); if (k.length < 2 || NF_QV.indexOf(v) >= 0) return;
+      var kj = ocrJamo(k); if (kj.length < 4) return;
+      var d = ocrSubDist(TJ, kj), r = d / kj.length;
+      if (r <= 0.22) res.push({ v: v, r: r, n: kj.length, at: d === 0 ? TJ.indexOf(kj) : 9999 });
+    });
+    res.sort(function (a, b) { return a.r - b.r || a.at - b.at || b.n - a.n; });   // 똑같이 맞으면 라벨 위쪽(먼저 나온) 이름
+    return res;
+  };
+  var C = top ? scoreIn(top) : [];
+  if (!C.length) C = scoreIn(T);
+  if (C.length) {
+    out.ven = C[0].v;
+    if (C[0].r > 0 && C[1] && C[1].v !== C[0].v && C[1].r - C[0].r < 0.06) out.venAlt = [C[0].v, C[1].v];   // 정확히 맞는 게 없고 두 곳이 비슷하면 사람이 고르게
+  }
   // 장비: 영문·숫자만 남기고 숫자 자리 보정 → 목록 이름과 비교 (한 글자 틀려도)
   var A = T.replace(/[^0-9A-Z|]/g, "");
   var A0 = A.replace(/([A-Z]{2})([A-Z0-9|]{2})([A-Z0-9|]{3})/g, function (s, a, b, c) { return a + b.split("").map(ocrDigit).join("") + c.split("").map(ocrDigit).join(""); });
@@ -4227,12 +4346,24 @@ function nfForm(box) {
   var bk = el("button", "ib", "‹ 부적합 목록"); bk.type = "button";
   bk.onclick = function () { NC.form = false; renderNc(); window.scrollTo(0, 0); };
   box.appendChild(bk);
-  var wrap = el("div", "nf");
-  var hd = el("div", "nfh"); hd.appendChild(el("b", null, "📝 부적합 처리 요청"));
-  var nw = el("button", "nfnew", "새로 작성"); nw.type = "button";
+  var wrap = el("div", "nf nfflat"), top = el("div", "nfsec nftop"); wrap.appendChild(top);
+  var hd = el("div", "nfh nfhd");
+  var ht = el("div", "nfti"); ht.appendChild(el("b", null, "부적합 처리 요청")); ht.appendChild(el("span", null, "QR 한 번이면 메시지가 완성돼요"));
+  hd.appendChild(ht);
+  var nw = el("button", "nfnew", "↺ 새로 작성"); nw.type = "button";
   nw.onclick = function () { NC.f = nfNew(); nfSave(); renderNc(); };   // 새로 작성 → 라벨 읽기 결과도 지움
-  hd.appendChild(nw); wrap.appendChild(hd);
-  var scanBox = el("div", "nfscan"); wrap.appendChild(scanBox);
+  hd.appendChild(nw); top.appendChild(hd);
+  // 진행: 필수 7칸 중 몇 칸
+  var prog = el("div", "nfprog"), progT = el("div", "nfprogt"), progB = el("div", "nfprogb"), progF = el("i");
+  progB.appendChild(progF); prog.appendChild(progT); prog.appendChild(progB); top.appendChild(prog);
+  // 📷 QR로 시작 (품번이 비어 있을 때만 크게)
+  var hero = el("button", "nfhero"); hero.type = "button";
+  hero.appendChild(el("i", null, "📷"));
+  var hx = el("div"); hx.appendChild(el("b", null, "라벨 QR로 시작하기")); hx.appendChild(el("span", null, "품번 · 장비 · 업체를 한 번에 채워요")); hero.appendChild(hx);
+  hero.appendChild(el("u", null, "›"));
+  hero.onclick = function () { if (qb) qb.onclick(); };
+  top.appendChild(hero);
+  var scanBox = el("div", "nfscan"); top.appendChild(scanBox);
   function drawScan() {
     scanBox.innerHTML = "";
     var S = f.scan; if (!S || !S.pn) { scanBox.style.display = "none"; return; }
@@ -4243,12 +4374,17 @@ function nfForm(box) {
     var line = function (k, v, src, warn) { var d = el("div", "nfsl" + (warn ? " w" : "")); d.appendChild(el("i", null, k)); d.appendChild(el("b", null, v || "-")); if (src) d.appendChild(el("span", null, src)); scanBox.appendChild(d); };
     line("품번", S.pn + (S.nm ? " · " + S.nm : ""), "QR");
     line("장비", S.prj || (S.st ? "" : "못 찾음 · 직접 입력"), S.prjSrc || "", !S.prj && !S.st);
-    line("업체", S.ven || (S.st ? "" : "못 읽음 · 아래 귀책에서 고르기"), S.ven ? "라벨" : "", !S.ven && !S.st);
+    if (S.venAlt && !S.ven) {
+      var d2 = el("div", "nfsl w"); d2.appendChild(el("i", null, "업체")); d2.appendChild(el("b", null, "라벨 글자가 흐려요 · 맞는 업체를 눌러 주세요")); scanBox.appendChild(d2);
+      var ch = el("div", "nfsalt");
+      S.venAlt.forEach(function (v) { var b = el("button", null, v); b.type = "button"; b.onclick = function () { S.ven = v; S.venAlt = null; nfSave(); drawScan(); upd(); }; ch.appendChild(b); });
+      scanBox.appendChild(ch);
+    } else line("업체", S.ven || (S.st ? "" : "못 읽음 · 아래 귀책에서 고르기"), S.ven ? "라벨" : "", !S.ven && !S.st);
     if (S.st) scanBox.appendChild(el("div", "nfsst", S.st));
   }
   var HS = nfHist();
   if (HS.length) {
-    var hdt = el("details", "nfhist"), hsm = el("summary", null, "🕘 최근 보낸 요청 " + HS.length + "건 · 눌러서 다시 쓰기");
+    var hdt = el("details", "nfhist"), hsm = el("summary", null, "🕘 최근 보낸 요청 " + HS.length + "건 · 눌러서 불러오기");
     hdt.appendChild(hsm);
     HS.forEach(function (h) {
       var E = nfEntries(h.f), dt = new Date(h.t), b = el("button"); b.type = "button";
@@ -4257,10 +4393,13 @@ function nfForm(box) {
       b.onclick = function () { NC.f = JSON.parse(JSON.stringify(h.f)); NC.f.req = NC.f.req || myName() || ""; nfSave(); renderNc(); window.scrollTo(0, 0); toast("최근 요청을 불러왔어요 · 바꿀 곳만 고치세요"); };
       hdt.appendChild(b);
     });
-    wrap.appendChild(hdt);
+    top.appendChild(hdt);
   }
-  var subP = el("p", "nfs", "칸을 채우면 아래에 메시지가 만들어져요 → [복사] → 나인벨 앱 '부적합 처리요청' 방에 붙여넣기" + (R && R.ven ? "" : (NC.refLd ? "\n귀책·프로젝트 목록 받는 중…" : "")));
-  wrap.appendChild(subP);
+  var steps = el("div", "nfsteps");
+  [["1", "채우기"], ["2", "복사"], ["3", "나인벨 앱에 붙여넣기"]].forEach(function (x, i) { var s0 = el("span"); s0.appendChild(el("i", null, x[0])); s0.appendChild(document.createTextNode(x[1])); steps.appendChild(s0); if (i < 2) steps.appendChild(el("u", null, "›")); });
+  top.appendChild(steps);
+  var subP = el("p", "nfs", R && R.ven ? "" : (NC.refLd ? "업체·장비 목록 받는 중…" : ""));
+  top.appendChild(subP);
   var msgBox, missBox, H = {};
   function hint(k, t, cls) { if (!H[k]) return; H[k].textContent = t || ""; H[k].className = "nfhn" + (cls ? " " + cls : ""); }
   // 🏷️ 귀책 자동: ① 라벨에서 읽은 업체 ② 같은 장비 수입검사 ③ 같은 장비 부적합 기록 · B팀 이전 요청 → 없으면 다른 장비 기록은 '참고' 버튼으로만
@@ -4361,7 +4500,17 @@ function nfForm(box) {
     nfSave();
     autoV(); dupChk(); drawEq();
     var m = nfMsg(f); msgBox.textContent = m.text;
-    missBox.textContent = m.miss.length ? "비어 있는 칸: " + m.miss.join(", ") : "✅ 다 채웠어요"; missBox.className = "nfmiss" + (m.miss.length ? "" : " ok");
+    [].forEach.call(wrap.querySelectorAll(".nfr[data-k]"), function (r) {   // 줄마다 필수 → ✓
+      var k = r.dataset.k, miss = m.miss.some(function (x) { return x === k || x.indexOf(k + " ") === 0 || (k === "수량" && /^수량/.test(x)); });
+      r.classList.toggle("done", !miss); var st = r.querySelector(".nfst"); if (st) st.textContent = miss ? "필수" : "완료";
+    });
+    missBox.textContent = m.miss.length ? "아직 비어 있어요 · " + m.miss.map(function (x) { return x.replace("프로젝트명", "장비").replace("불량내용", "불량 내용"); }).join(", ") : "✅ 준비 완료 · 복사해서 보내면 돼요"; missBox.className = "nfmiss" + (m.miss.length ? "" : " ok");
+    var nm = function (L) { return L.map(function (x) { return x.replace("프로젝트명", "장비").replace("불량내용", "불량 내용"); }); }, MS = nm(m.miss);
+    var RQ = wrap.querySelectorAll(".nfr[data-k]"), dn = wrap.querySelectorAll(".nfr[data-k].done").length, tot = RQ.length, okAll = !m.miss.length;
+    progT.innerHTML = ""; progT.appendChild(el("b", null, okAll ? "준비 완료" : "필수 " + dn + " / " + tot)); progT.appendChild(el("span", null, okAll ? "메시지를 복사해서 보내면 돼요" : "남은 칸 · " + MS.slice(0, 3).join(", ") + (MS.length > 3 ? " 외 " + (MS.length - 3) : "")));
+    progF.style.width = Math.round((okAll ? 1 : dn / Math.max(1, tot)) * 100) + "%"; prog.classList.toggle("ok", okAll);
+    hero.style.display = nfClean(f.pn) ? "none" : "";
+    if (dock) { dockT.textContent = okAll ? "준비 완료" : "필수 " + dn + "/" + tot; dockS.textContent = okAll ? "복사해서 나인벨 앱에 붙여넣기" : "남은 칸: " + MS.slice(0, 2).join(", ") + (MS.length > 2 ? " 외 " + (MS.length - 2) : ""); dockB.textContent = okAll ? "📋 복사" : "채우러 가기"; dock.classList.toggle("ok", okAll); }
     [].forEach.call(wrap.querySelectorAll("[data-req]"), function (x) { x.classList.toggle("emp", !nfClean(x.value)); });
     // 프로젝트 · 귀책 · 요청자 목록 확인
     var pr = nfClean(f.proj);
@@ -4375,9 +4524,17 @@ function nfForm(box) {
     [].forEach.call(vq.children, function (b) { b.classList.toggle("on", b.textContent === vn); });
     [].forEach.call(rq7.children, function (b) { b.classList.toggle("on", b.textContent === rq); });
     addP.disabled = f.kind === "pn"; addN.disabled = f.kind === "proj";
-    multiHint.textContent = f.kind === "proj" ? "프로젝트가 여러 개일 땐 품번은 하나만 넣을 수 있어요" : f.kind === "pn" ? "품번이 여러 개일 땐 프로젝트는 하나만 넣을 수 있어요" : "";
+    multiHint.textContent = f.kind === "proj" ? "장비가 여러 대일 땐 품번은 하나만 넣을 수 있어요" : f.kind === "pn" ? "품번이 여러 개일 땐 장비는 하나만 넣을 수 있어요" : "";
   }
-  function row(n, label, sub) { var r = el("div", "nfr"); var l = el("div", "nfl"); l.appendChild(el("i", null, String(n))); l.appendChild(el("b", null, label)); if (sub) l.appendChild(el("span", null, sub)); r.appendChild(l); wrap.appendChild(r); return r; }
+  // 줄 머리: 아이콘 · 이름 · 작은 설명 · 오른쪽 '필수 → ✓'
+  function row(ic, label, sub, key) {
+    var r = el("div", "nfr"); var l = el("div", "nfl");
+    l.appendChild(el("b", null, label)); if (sub) l.appendChild(el("span", null, sub));   // 아이콘 없이 깔끔하게
+    if (key) { r.dataset.k = key; l.appendChild(el("em", "nfst", "필수")); }
+    r.appendChild(l); (curSec || wrap).appendChild(r); return r;
+  }
+  var curSec = null;
+  function sec(title) { var c = el("div", "nfsec"); c.appendChild(el("div", "nfsect", title)); wrap.appendChild(c); curSec = c; return c; }
   function inp(val, ph, on, req, mode) { var i = el("input"); i.type = "text"; i.value = val || ""; i.placeholder = ph || ""; i.autocomplete = "off"; if (mode) i.inputMode = mode; if (req) i.setAttribute("data-req", "1"); i.oninput = function () { on(i.value); upd(); }; return i; }
   function hn(k) { var h = el("div", "nfhn"); H[k] = h; return h; }
   // 품번 칸: 입력이 멈추면 품명 찾기 (하이픈 없이 쳐도 정식 품번이 하나면 바꿔 줌)
@@ -4390,7 +4547,7 @@ function nfForm(box) {
       var P = nfParts(f.proj); if (!P || !q) return [];
       return P.list.filter(function (x) { return nfPrjKey(x.pn).indexOf(q) >= 0 || nfPrjKey(x.d).indexOf(q) >= 0; }).map(function (x) { return [x.pn, x.d, x.v, 1]; });
     }
-    function pick(pn, nm) { set(pn); input.value = pn; srv = null; foc = false; draw(); hint(hk, nm ? "품명: " + nm : ""); upd(); input.blur(); }
+    function pick(pn, nm) { set(pn); input.value = pn; srv = null; foc = false; draw(); hint(hk, nm ? "품명: " + nm : ""); upd(); input.blur(); look(false); }   // 고른 품번으로 업체 근거까지 받아옴
     function draw() {
       lst.innerHTML = "";
       var v = get(), q = nfPrjKey(v);
@@ -4431,12 +4588,13 @@ function nfForm(box) {
     input.addEventListener("blur", function () { clearTimeout(tm); setTimeout(function () { if (!foc) return; foc = false; draw(); look(true); }, 150); });
     if (get()) setTimeout(function () { look(false); }, 0);
   }
+  sec("장비");
   // 1 사업장
-  var r1 = row(1, "사업장", "한 번 고르면 기억해요"), sg = el("div", "nfseg" + (f.site ? "" : " emp"));
+  var r1 = row("📍", "사업장", "다음에도 그대로 기억해요", "사업장"), sg = el("div", "nfseg" + (f.site ? "" : " emp"));
   ["성남", "동탄"].forEach(function (s) { var b = el("button", f.site === s ? "on" : "", s); b.type = "button"; b.onclick = function () { f.site = s; sset("nfSite", s); sg.classList.remove("emp"); [].forEach.call(sg.children, function (c) { c.className = c.textContent === s ? "on" : ""; }); upd(); }; sg.appendChild(b); });
   r1.appendChild(sg);
   // 2 프로젝트명
-  var r2 = row(2, "프로젝트명", "장비명 일부만 쳐도 돼요");
+  var r2 = row("🏭", "장비", "프로젝트명", "프로젝트명");
   function prjAll() {   // 품질팀 발주명 목록 + 우리 장비 목록 (중복 빼고)
     var seen = {}, out = [];
     ((R && R.prj) || []).forEach(function (p) { var k = nfPrjKey(p[0]); if (!k || seen[k]) return; seen[k] = 1; out.push([p[0], p[1] || ""]); });
@@ -4457,11 +4615,13 @@ function nfForm(box) {
       lst.innerHTML = "";
       var q = nfPrjKey(get()), all = prjAll();
       var exact = q && all.some(function (p) { return nfPrjKey(p[0]) === q; });
-      var hit = q && !exact ? all.filter(function (p) { return nfPrjKey(p[0]).indexOf(q) >= 0; }) : [];
-      hit.sort(function (a, b) { return nfPrjKey(a[0]).indexOf(q) - nfPrjKey(b[0]).indexOf(q) || (a[0] < b[0] ? -1 : 1); });
+      var hit = q ? all.filter(function (p) { return nfPrjKey(p[0]).indexOf(q) >= 0; }) : [];
+      hit.sort(function (a, b) { return (nfPrjKey(b[0]) === q) - (nfPrjKey(a[0]) === q) || nfPrjKey(a[0]).indexOf(q) - nfPrjKey(b[0]).indexOf(q) || (a[0] < b[0] ? -1 : 1); });
+      if (exact && hit.length === 1 && hit[0][0] === get()) hit = [];   // 이미 정확히 그 이름이면 목록 닫음
       if (foc) hit.slice(0, 8).forEach(function (p) {
-        var bt = el("button"); bt.type = "button";
+        var bt = el("button", nfPrjKey(p[0]) === q ? "ex" : ""); bt.type = "button";
         bt.appendChild(el("b", null, p[0])); if (p[1]) bt.appendChild(el("span", null, p[1]));
+        if (nfPrjKey(p[0]) === q) bt.appendChild(el("em", null, "✓ 맞아요"));
         bt.onmousedown = function (e) { e.preventDefault(); };   // 누르는 순간 칸에서 안 빠지게
         bt.onclick = function () { set(p[0]); input.value = p[0]; foc = false; draw(); upd(); input.blur(); };
         lst.appendChild(bt);
@@ -4485,7 +4645,7 @@ function nfForm(box) {
     draw();
   }
   var PW = [];
-  var pin = inp(f.proj, "입력 필요 (예: CC04-140)", function (t) { f.proj = t; drawParts(); }, true);
+  var pin = inp(f.proj, "CC04-164 · 몇 글자만 쳐도 찾아요", function (t) { f.proj = t; drawParts(); }, true);
   pin.setAttribute("autocapitalize", "characters");
   r2.appendChild(pin); r2.appendChild(hn("proj"));
   prjWatch(pin, function () { return f.proj; }, function (v) { f.proj = v; drawParts(); }, "proj");
@@ -4504,9 +4664,10 @@ function nfForm(box) {
     });
     eqBox.appendChild(c);
   }
+  sec("부품");
   // 3 품번
-  var r3 = row(3, "품번", "QR 찍기 · 품명으로도 찾아요");
-  var nin3 = inp(f.pn, "입력 필요", function (t) { f.pn = t; }, true); nin3.setAttribute("autocapitalize", "characters");
+  var r3 = row("🔩", "품번", "", "품번");
+  var nin3 = inp(f.pn, "품번 또는 품명으로 검색", function (t) { f.pn = t; }, true); nin3.setAttribute("autocapitalize", "characters");
   var pnw = el("div", "nfpnw"), qb = el("button", "nfqr", "📷 QR"); qb.type = "button";
   // 📷 QR 읽은 품번 넣기: 품번 칸이 비었으면 거기, 차 있으면 [품번 추가] 줄로 (여러 개 연속 찍기)
   function addPn(t) {
@@ -4518,10 +4679,22 @@ function nfForm(box) {
   }
   // 📷 QR 다음 순서: ① 서버에서 품명 · 이 품번이 들어온 장비 · 업체 근거  ② 라벨 글자 읽기(장비명 · 업체) → 위 '라벨 읽기 결과'에 고정 표시
   function setPrj(v, src) { if (!v) return; v = nfPrjFix(v, prjAll().map(function (p) { return p[0]; })); if (!nfClean(f.proj) || f.proj === f.pAuto) { f.proj = f.pAuto = v; pin.value = v; drawParts(); } if (f.scan) { f.scan.prj = v; f.scan.prjSrc = src; } }
+  // 라벨 업체가 두 곳 중 헷갈리면: 이 품번 기록(부적합·이전 요청·수입검사)에 있는 쪽 → 그래도 모르면 사람이 고르게
+  function venPick(S, o) {
+    if (!o || !o.ven) return;
+    if (o.venAlt) {
+      var V = NFV[nfPnKey(S.pn)], known = {};
+      if (V) ["l", "n", "i"].forEach(function (k) { (V[k] || []).forEach(function (x) { var mv = nfVenMap(x[1]); if (mv) known[mv] = 1; }); });
+      var hit = o.venAlt.filter(function (v) { return known[v]; });
+      if (hit.length === 1) { S.ven = hit[0]; S.venAlt = null; return; }
+      S.ven = ""; S.venAlt = o.venAlt; return;
+    }
+    S.ven = o.ven; S.venAlt = null;
+  }
   function ocrP(txt) { return ocrParse(txt, prjAll().map(function (p) { return p[0]; }), ((NC.ref && NC.ref.ven) || []).map(function (x) { return x[1]; })); }
   function afterScan(t, shot, ocr) {
     var S = f.scan = { pn: t, nm: "", prj: "", prjSrc: "", ven: "", st: shot && ocr === undefined ? "🔤 라벨 글자 읽는 중…" : "", at: Date.now() };
-    if (ocr) { if (ocr.prj) setPrj(ocr.prj, "라벨"); if (ocr.ven) S.ven = ocr.ven; }
+    if (ocr) { if (ocr.prj) setPrj(ocr.prj, "라벨"); venPick(S, ocr); }
     else if (ocr === null && shot) S.st = "";
     drawScan();
     nfPart(t, function (r) {
@@ -4538,11 +4711,11 @@ function nfForm(box) {
     ocrLabel(shot).then(function (txt) {
       var o = ocrP(txt);
       if (o.prj && o.ven) return o;
-      return ocrLabel(shot, { psm: "11", gray: true }).then(function (t2) { var o2 = ocrP(t2); return { prj: o.prj || o2.prj, ven: o.ven || o2.ven }; });
+      return ocrLabel(shot, { psm: "11", gray: true }).then(function (t2) { var o2 = ocrP(t2); return { prj: o.prj || o2.prj, ven: o.ven || o2.ven, venAlt: o.ven ? o.venAlt : o2.venAlt }; });
     }).then(function (o) {
       OCR_PROG = null; if (f.scan !== S) return;
       if (o.prj) setPrj(o.prj, "라벨");
-      if (o.ven) S.ven = o.ven;
+      venPick(S, o);
       S.st = ""; S.ms = Date.now() - t0;
       nfSave(); drawScan(); upd();
     }).catch(function (e) { OCR_PROG = null; if (f.scan !== S) return; S.st = "🔤 라벨 글자를 못 읽었어요 (" + ((e && e.message) || "오류") + ")"; drawScan(); });
@@ -4563,10 +4736,10 @@ function nfForm(box) {
   pnw.appendChild(nin3); pnw.appendChild(qb);
   r3.appendChild(pnw); r3.appendChild(hn("pn")); r3.appendChild(hn("dup"));
   pnWatch(nin3, function () { return f.pn; }, function (v) { f.pn = v; }, "pn");
+  r3.appendChild(el("div", "nfsub", "자주 쓰는 품목"));
   var pnq = el("div", "nfc");
   NF_PN.forEach(function (q) { var b = el("button", null, q[0]); b.type = "button"; b.dataset.v = q[1]; b.onclick = function () { f.pn = nfQuick(f.pn) === q[1] ? "" : q[1]; nin3.value = f.pn; hint("pn", ""); upd(); }; pnq.appendChild(b); });
   r3.appendChild(pnq);
-  r3.appendChild(el("div", "nfhint", "품번 입력이 어려운 프레임 · 버퍼 · 컨트롤박스는 버튼으로"));
   var partsBox = el("div", "nfparts"); r3.appendChild(partsBox);
   function drawParts() {
     partsBox.innerHTML = "";
@@ -4590,8 +4763,12 @@ function nfForm(box) {
   }
   NC.nfParts = function () { drawParts(); upd(); };
   // 4 수량
-  var r4 = row(4, "수량"), qw = el("div", "nfqty"), qin = inp(f.qty, "입력 필요", function (t) { f.qty = t.replace(/\D/g, ""); }, true, "numeric");
-  qw.appendChild(qin); qw.appendChild(el("span", null, "EA")); r4.appendChild(qw);
+  var r4 = row("🔢", "수량", "", "수량"), qw = el("div", "nfqty"), qin = inp(f.qty, "0", function (t) { f.qty = t.replace(/\D/g, ""); }, true, "numeric");
+  var qm = el("button", "nfqb", "−"), qp = el("button", "nfqb", "+"); qm.type = qp.type = "button";
+  var qset = function (d) { var v = Math.max(1, (parseInt(f.qty, 10) || 0) + d); f.qty = String(v); qin.value = f.qty; upd(); };
+  qm.onclick = function () { qset(-1); }; qp.onclick = function () { qset(1); };
+  var stp = el("div", "nfstep"); stp.appendChild(qm); stp.appendChild(qin); stp.appendChild(qp);
+  qw.appendChild(stp); qw.appendChild(el("span", null, "EA")); r4.appendChild(qw);
   // ➕ 여러 건 (프로젝트 추가 / 품번 추가) — 건마다 수량
   var mbox = el("div", "nfmulti"); r4.appendChild(mbox);
   function drawRows() {
@@ -4599,7 +4776,7 @@ function nfForm(box) {
     f.rows.forEach(function (r, i) {
       var w = el("div", "nfrow");
       w.appendChild(el("i", "xno", String(i + 2)));
-      var x = inp(r.v, f.kind === "proj" ? "프로젝트명" : "품번", function (t) { r.v = t; }, true); x.setAttribute("autocapitalize", "characters");
+      var x = inp(r.v, f.kind === "proj" ? "장비 (프로젝트명)" : "품번", function (t) { r.v = t; }, true); x.setAttribute("autocapitalize", "characters");
       w.appendChild(x);
       var q = inp(r.q, "수량", function (t) { r.q = t.replace(/\D/g, ""); }, true, "numeric"); q.className = "q"; w.appendChild(q);
       var d = el("button", "nfx", "✕"); d.type = "button"; d.onclick = function () { f.rows.splice(i, 1); if (!f.rows.length) f.kind = ""; drawRows(); upd(); }; w.appendChild(d);
@@ -4610,16 +4787,24 @@ function nfForm(box) {
   }
   drawRows();
   var ad = el("div", "nfadd");
-  var addP = el("button", null, "+ 프로젝트 추가"); addP.type = "button"; addP.onclick = function () { f.kind = "proj"; f.rows.push({ v: "", q: "" }); drawRows(); upd(); };
+  var addP = el("button", null, "+ 장비 추가"); addP.type = "button"; addP.onclick = function () { f.kind = "proj"; f.rows.push({ v: "", q: "" }); drawRows(); upd(); };
   var addN = el("button", null, "+ 품번 추가"); addN.type = "button"; addN.onclick = function () { f.kind = "pn"; f.rows.push({ v: "", q: "" }); drawRows(); upd(); };
   ad.appendChild(addP); ad.appendChild(addN); r4.appendChild(ad);
   var multiHint = el("div", "nfhint"); r4.appendChild(multiHint);
-  r4.appendChild(el("div", "nfhint", "다른 장비도 같은 품번·같은 불량이면 [프로젝트 추가] · 같은 장비에 품번이 여러 개면 [품번 추가]"));
+  r4.appendChild(el("div", "nfhint", "같은 불량이 다른 장비에도 → [장비 추가] · 한 장비에 품번이 여러 개 → [품번 추가]"));
+  sec("불량");
   // 5 불량내용
-  var r5 = row(5, "불량내용"), ta = el("textarea"); ta.rows = 3; ta.value = f.desc; ta.placeholder = "입력 필요 (예: 탭 누락)"; ta.setAttribute("data-req", "1");
+  var r5 = row("⚠️", "불량 내용", "", "불량내용"), ta = el("textarea"); ta.rows = 3; ta.value = f.desc; ta.placeholder = "어떤 불량인지 짧게 · 예) 볼트 체결부 찍힘"; ta.setAttribute("data-req", "1");
   ta.oninput = function () { f.desc = ta.value; upd(); }; r5.appendChild(ta);
+  var dq = el("div", "nfc nfdq");
+  ["찍힘", "스크래치", "도장 불량", "치수 불량", "가공 누락", "탭 누락", "파손", "오염"].forEach(function (w) {
+    var b = el("button", null, "+ " + w); b.type = "button";
+    b.onclick = function () { var c = nfClean(f.desc); f.desc = c ? (c.indexOf(w) >= 0 ? c : c + ", " + w) : w; ta.value = f.desc; upd(); };
+    dq.appendChild(b);
+  });
+  r5.appendChild(dq);
   // 6 귀책 (귀책 목록 · 초성 검색)
-  var r6 = row(6, "귀책", "초성 검색 가능 (예: ㅇㅍ)"), vin = inp(f.vend, "입력 필요 · 목록에서 고르기", function (t) { f.vend = t; drawV(); }, true);
+  var r6 = row("🏷️", "귀책", "", "귀책"), vin = inp(f.vend, "업체 이름 · 초성(ㅂㅇㅍ)으로도 찾아요", function (t) { f.vend = t; drawV(); }, true);
   r6.appendChild(vin); r6.appendChild(hn("ven")); r6.appendChild(hn("vsrc"));
   refBox = el("div", "nfrefw"); r6.appendChild(refBox);
   var vs = el("div", "nfc nfv"); r6.appendChild(vs);
@@ -4634,16 +4819,17 @@ function nfForm(box) {
   NF_QV.forEach(function (t) { var b = el("button", null, t); b.type = "button"; b.onclick = function () { f.vend = t; vin.value = t; drawV(); upd(); }; vq.appendChild(b); });
   r6.appendChild(vq);
   var ask = el("div", "nfc"); var ab = el("button", null, NF_ASK); ab.type = "button"; ab.onclick = function () { f.vend = f.vend === NF_ASK ? "" : NF_ASK; vin.value = f.vend; drawV(); upd(); };
-  ask.appendChild(ab); ask.appendChild(el("span", "nfhint", "귀책 확인이 필요한 경우"));
+  ask.appendChild(ab); ask.appendChild(el("span", "nfhint", "귀책을 아직 모를 때"));
   r6.appendChild(ask);
+  sec("요청");
   // 7 요청자
-  var r7 = row(7, "요청자", "B팀원"), rin = inp(f.req, "이름", function (t) { f.req = t; }, true);
+  var r7 = row("🙋", "요청자", "", "요청자"), rin = inp(f.req, "이름", function (t) { f.req = t; }, true);
   r7.appendChild(rin); r7.appendChild(hn("req"));
   var rq7 = el("div", "nfc"); r7.appendChild(rq7);
   function drawReq() { rq7.innerHTML = ""; ((R && R.who) || []).forEach(function (n) { var b = el("button", null, n); b.type = "button"; b.onclick = function () { f.req = n; rin.value = n; upd(); }; rq7.appendChild(b); }); }
   drawReq();
   // 8 비고 + 자체처리
-  var r8 = row(8, "비고"), nin = inp(f.note, "필요할 때만 입력", function (t) { f.note = t; });
+  var r8 = row("", "비고", ""), r8o = r8.querySelector(".nfl").appendChild(el("em", "nfst opt", "선택")), nin = inp(f.note, "필요할 때만 · 예) 재납 요청", function (t) { f.note = t; });
   r8.appendChild(nin);
   var sc = el("div", "nfc"), selfBtn = el("button", null, "자체처리"); selfBtn.type = "button";
   selfBtn.onclick = function () {
@@ -4651,18 +4837,19 @@ function nfForm(box) {
     else { f.note = nfClean(f.note) ? "자체처리, " + nfClean(f.note) : "자체처리"; toast("비고에 자체처리를 넣었어요"); }
     nin.value = f.note; upd();
   };
-  sc.appendChild(selfBtn); sc.appendChild(el("span", "nfhint", "자체처리 예정 또는 완료한 경우에만"));
+  sc.appendChild(selfBtn); sc.appendChild(el("span", "nfhint", "우리가 직접 처리했거나 할 예정일 때"));
   r8.appendChild(sc);
   box.appendChild(wrap);
   // 💬 메시지 · 복사
   var mw = el("div", "nf nfm");
-  var mh = el("div", "nfh"); mh.appendChild(el("b", null, "💬 메시지")); mh.appendChild(el("span", "nfs2", "복사해서 '부적합 처리요청' 방에 붙여넣기")); mw.appendChild(mh);
-  msgBox = el("pre", "nfmsg"); mw.appendChild(msgBox);
+  var mh = el("div", "nfh nfhd"); var mt = el("div", "nfti"); mt.appendChild(el("b", null, "보낼 메시지")); mt.appendChild(el("span", null, "나인벨 앱 '부적합 처리요청' 방에 그대로 붙여넣기")); mh.appendChild(mt); mw.appendChild(mh);
+  var bub = el("div", "nfbub"); var bh = el("div", "nfbubh"); bh.appendChild(el("i", null, "N")); bh.appendChild(el("b", null, "부적합 처리요청")); bh.appendChild(el("span", null, "나인벨 앱")); bub.appendChild(bh);
+  msgBox = el("pre", "nfmsg"); bub.appendChild(msgBox); mw.appendChild(bub);
   missBox = el("div", "nfmiss"); mw.appendChild(missBox);
-  var cp = el("button", "nfcopy", "📋 복사"); cp.type = "button";
+  var cp = el("button", "nfcopy", "📋 메시지 복사"); cp.type = "button";
   cp.onclick = function () {
     var m = nfMsg(f);
-    if (m.miss.length && !cp.dataset.sure) { cp.dataset.sure = "1"; cp.textContent = "빈 칸이 있어요 · 그래도 복사"; setTimeout(function () { delete cp.dataset.sure; cp.textContent = "📋 복사"; }, 4000); return; }
+    if (m.miss.length && !cp.dataset.sure) { cp.dataset.sure = "1"; cp.textContent = "빈 칸이 있어요 · 그래도 복사하기"; setTimeout(function () { delete cp.dataset.sure; cp.textContent = "📋 메시지 복사"; }, 4000); return; }
     nfCopy(m.text); nfHistAdd(f);
     try {   // 📚 B팀 학습 기록: 사람이 확인한 품번 → 귀책 (다음에 같은 품번이면 자동)
       var vn = nfClean(f.vend);
@@ -4670,13 +4857,23 @@ function nfForm(box) {
         var L = nfEntries(f).filter(function (e) { return e.pn && !nfQuick(e.pn); }).map(function (e) { return { pn: e.pn, proj: e.proj, ven: vn, req: nfClean(f.req) }; });
         if (L.length) call("saveNcLearn", [L]).catch(function () {});
       }
-    } catch (eL) {} delete cp.dataset.sure; cp.textContent = "✅ 복사했어요"; setTimeout(function () { cp.textContent = "📋 복사"; }, 2500);
+    } catch (eL) {} delete cp.dataset.sure; cp.textContent = "✅ 복사했어요 · 나인벨 앱에 붙여넣기"; setTimeout(function () { cp.textContent = "📋 메시지 복사"; }, 2500);
   };
   mw.appendChild(cp);
   box.appendChild(mw);
+  var dock = el("div", "nfdock"), dockX = el("div", "nfdx"), dockT = el("b"), dockS = el("span"), dockB = el("button"); dockB.type = "button";
+  dockX.appendChild(dockT); dockX.appendChild(dockS); dock.appendChild(dockX); dock.appendChild(dockB); box.appendChild(dock);
+  var sp = el("div"); sp.style.height = "78px"; box.appendChild(sp);   // 아래 고정 바에 마지막 버튼이 안 가리게
+  dockB.onclick = function () {
+    if (dock.classList.contains("ok")) { cp.onclick(); return; }
+    var r = wrap.querySelector(".nfr[data-k]:not(.done)"); if (!r) { mw.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    r.scrollIntoView({ behavior: "smooth", block: "center" });
+    var i = r.querySelector("input,textarea"); if (i) setTimeout(function () { try { i.focus({ preventScroll: true }); } catch (e) {} }, 350);
+    r.classList.add("flash"); setTimeout(function () { r.classList.remove("flash"); }, 900);
+  };
   NC.nfUpd = upd;
   drawScan();
-  NC.nfRefOk = function () { R = NC.ref; drawReq(); drawV(); if (subP) subP.textContent = subP.textContent.replace(/\n귀책·프로젝트 목록 받는 중…$/, ""); upd(); };
+  NC.nfRefOk = function () { R = NC.ref; drawReq(); drawV(); if (subP) subP.textContent = ""; upd(); };
   drawParts(); upd();
 }
 
@@ -6855,10 +7052,15 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-02-13";
+var APP_VER = "2026-11-02-14";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-02-14", [
+    "📝 부적합 처리 요청 화면을 새로 만들었어요 (라벨 QR로 시작 · 진행 막대 · 아래 [채우러 가기]/[복사] 바 · 수량 −/+ · 자주 쓰는 불량 문구)",
+    "📷 라벨 업체 글자를 더 정확하게 읽어요 (헷갈리면 고르게 보여줘요)",
+    "🏭 장비 칸: 몇 글자만 쳐도 목록이 계속 떠요 · cc04 159처럼 쳐도 CC04-159로 맞춰줘요"
+  ]],
   ["2026-11-02-13", [
     "📷 QR을 찍으면 라벨 글자까지 읽어서 장비명 · 업체를 채워요 (위에 '라벨 읽기 결과'로 계속 보여요)",
     "🏷️ 품번만 알아도 업체 근거를 찾아요: 같은 장비 기록은 자동 · 다른 장비 기록은 참고 버튼으로",
