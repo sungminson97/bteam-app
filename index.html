@@ -2142,6 +2142,36 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .hrecb{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;padding:10px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));background:linear-gradient(110deg,color-mix(in srgb,var(--accent) 10%,var(--card)),color-mix(in srgb,#8b5cf6 9%,var(--card)));color:var(--text);font:inherit;text-align:left;cursor:pointer;box-shadow:0 4px 14px -8px color-mix(in srgb,var(--accent) 50%,transparent)}
 .hrecb b{font-size:14.5px;font-weight:900;color:var(--accent)}
 .hrecb span{font-size:12px;color:var(--sub);font-weight:600}
+#demobar{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;max-width:calc(100% - 32px);padding:9px 16px;border-radius:999px;background:color-mix(in srgb,#f59e0b 16%,var(--card));color:#b45309;font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 0 0 1px color-mix(in srgb,#f59e0b 35%,transparent),0 8px 24px -10px rgba(0,0,0,.35)}
+.airep{position:fixed;inset:0;z-index:140;display:grid;place-items:center;padding:24px 18px;background:rgba(8,12,24,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;transition:opacity .3s ease}
+.airep.on{opacity:1}.airep.out{opacity:0}
+.airep .arc{width:min(400px,100%);display:grid;gap:12px;padding:22px 20px 18px;border-radius:24px;background:var(--card);box-shadow:0 24px 60px -20px rgba(0,0,0,.45),0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent);transform:translateY(14px) scale(.98);transition:transform .35s cubic-bezier(.2,.9,.3,1)}
+.airep.on .arc{transform:none}
+.airep .arh{justify-self:start;padding:5px 11px;border-radius:999px;background:linear-gradient(110deg,var(--accent),#8b5cf6);color:#fff;font-size:12px;font-weight:900;letter-spacing:.02em}
+.airep h3{margin:0;font-size:19px;font-weight:900;line-height:1.35;letter-spacing:-.02em}
+.airep .arr{display:grid;gap:10px;padding:14px;border-radius:16px;background:var(--bg)}
+.airep .arr p{margin:0;font-size:13.5px;line-height:1.6;color:var(--text);white-space:pre-line}
+.airep .arb{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.airep .arb>div{display:grid;gap:2px;justify-items:center;padding:10px 6px;border-radius:12px;background:var(--card);box-shadow:0 0 0 1px var(--line)}
+.airep .arb span{font-size:11px;font-weight:800;color:var(--sub)}
+.airep .arb b{font-size:18px;font-weight:900;color:var(--warn)}
+.airep .arb .ok b{color:#16a34a}
+.airep .arb i{font-style:normal;font-weight:900;color:var(--accent)}
+.airep .arf{font-size:11.5px;color:var(--sub);text-align:center}
+.airep .go{height:50px;border:0;border-radius:14px;background:var(--accent);color:#fff;font:inherit;font-size:16px;font-weight:900}
+#mat .mtld{display:grid;gap:12px;padding:16px 16px 14px;border-radius:18px;background:linear-gradient(110deg,color-mix(in srgb,var(--accent) 9%,var(--card)),color-mix(in srgb,#8b5cf6 8%,var(--card)));box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 16%,transparent),var(--csh)}
+#mat .mtldh{display:flex;align-items:center;gap:12px}
+#mat .mtldo{flex:none;width:34px;height:34px;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 25%,var(--accent) 60%,#8b5cf6 85%,transparent);-webkit-mask:radial-gradient(closest-side,transparent calc(100% - 4px),#000 calc(100% - 3.5px));mask:radial-gradient(closest-side,transparent calc(100% - 4px),#000 calc(100% - 3.5px));animation:mtSpin .9s linear infinite}
+#mat .mtldt{display:grid;gap:2px;min-width:0}
+#mat .mtldt b{font-size:16px;font-weight:900;letter-spacing:-.1px}
+#mat .mtldt span{font-size:13px;font-weight:700;background:linear-gradient(90deg,var(--sub) 30%,var(--accent) 50%,var(--sub) 70%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:mtShim 1.6s linear infinite}
+#mat .mtldt span.fl{opacity:0;transform:translateY(4px)}
+#mat .mtldt span{transition:opacity .25s,transform .25s}
+#mat .mtldb{height:4px;border-radius:4px;background:color-mix(in srgb,var(--accent) 12%,transparent);overflow:hidden}
+#mat .mtldb i{display:block;width:38%;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),#8b5cf6);animation:mtBar 1.3s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes mtSpin{to{transform:rotate(360deg)}}
+@keyframes mtShim{to{background-position:-250% 0}}
+@keyframes mtBar{0%{transform:translateX(-110%)}100%{transform:translateX(290%)}}
 #mat .mthome{display:grid;gap:18px}
 #mat .mtsec{display:grid;gap:8px}
 #mat .mtsech{display:flex;align-items:baseline;gap:8px;padding:0 4px}
@@ -2151,6 +2181,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #mat .mtc{display:grid;gap:4px;align-content:start;min-width:0;text-align:left;padding:12px 14px;border-radius:16px;border:1px solid color-mix(in srgb,var(--line) 80%,transparent);background:var(--card);box-shadow:var(--csh);font:inherit;color:var(--text);cursor:pointer}
 #mat .mtct{display:flex;align-items:center;gap:6px;min-width:0}
 #mat .mtct b{font-size:15px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-.1px}
+#mat .mtct i.fast{background:color-mix(in srgb,#16a34a 13%,var(--card));color:#15803d}
 #mat .mtct i{flex:none;font-style:normal;font-size:10.5px;font-weight:900;padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--accent) 12%,var(--card));color:var(--accent)}
 #mat .mtc span{font-size:11.5px;font-weight:700;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #mat .mtc span.w{color:var(--warn)}
@@ -2743,11 +2774,115 @@ function rawCall(pin, fn, args, editPin) {
 
 // ⚡ 같은 조회가 아직 진행 중이면 새로 보내지 않고 그 결과를 같이 씀 (탭 왔다 갔다·새로고침 연타 때 서버에 요청이 쌓이지 않게)
 var INFLIGHT = {};
+/* ===================== 👀 보기 전용: B팀 화면은 틀만 · 값은 예시 (서버에 안 물어봄 · 서버도 막음) ===================== */
+var DEMO_FNS = { getNcData: 1, getNcRows: 1, getNcRef: 1, getNcPart: 1, saveNcLearn: 1, getMatList: 1, getMatTab: 1, getInspData: 1, getInspRows: 1 };
+var DEMO_EQ = ["DEMO-101", "DEMO-102", "DEMO-103", "DEMO-201", "DEMO-202"];
+function demoData(fn, args) {
+  var V = ["A업체", "B업체", "C업체", "D업체"], P = ["팀원A", "팀원B", "팀원C"], N = [["PN-1001", "예시 부품 A"], ["PN-1002", "예시 부품 B"], ["PN-2001", "예시 부품 C"], ["PN-3001", "예시 부품 D"], ["PN-3002", "예시 부품 E"]];
+  var now = Date.now(), dd = function (k) { return new Date(now - k * 864e5); };
+  var md = function (k) { var d = dd(k); return ("0" + (d.getMonth() + 1)).slice(-2) + "/" + ("0" + d.getDate()).slice(-2); };
+  var ymd = function (k) { var d = dd(k); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); };
+  var isDemo = function (e) { return DEMO_EQ.indexOf(String(e || "")) >= 0; };
+  var ncRows = function (e, s) { var R = []; for (var i = 0; i < 5; i++) { var n = N[(i + s) % 5], done = i % 3 === 2 ? 1 : 0; R.push([done, ["업체반출", "자체처리", "업체반출", "재작업", "업체반출"][i], md(i * 2 + s), "", e, n[1], n[0], String(1 + i % 3), V[(i + s) % 4], i % 2 ? "외관" : "기능", P[i % 3], P[(i + 1) % 3], "예시 불량 내용 " + (i + 1), "", String(9000 + s * 10 + i)]); } return R; };
+  var inRows = function (e, s) { var R = []; for (var i = 0; i < 6; i++) { var n = N[(i + s) % 5]; R.push([i % 2 ? "동탄" : "성남", ymd(i + s), 1, P[i % 3], e, "예시 모델", n[0], n[1], String(1 + i % 4), V[(i + s) % 4], i % 2 ? "판금" : "가공품", "", "", "", i % 3 === 0 ? 1 : 0, "", ""]); } return R; };
+  if (fn === "getNcData") {
+    var wait = {}, list = DEMO_EQ.slice(0, 4).map(function (e, i) { var r = ncRows(e, i), p = r.filter(function (x) { return !x[0]; }); wait[e] = p; return { e: e, n: r.length, p: p.length, l: md(i), c: i < 3 ? 1 : 0, s: ymd(-7 - i * 3) }; });
+    return { demo: 1, updated: "예시", days: 30, total: 20, pend: 12, out: 9, late: 1, pendAll: 12, list: list, warn: [], vend: V, wait: wait };
+  }
+  if (fn === "getNcRows") return { e: args[0], rows: isDemo(args[0]) ? ncRows(args[0], DEMO_EQ.indexOf(args[0])) : [] };
+  if (fn === "getInspData") {
+    var w2 = {}, l2 = DEMO_EQ.map(function (e, i) { var r = inRows(e, i), p = r.filter(function (x) { return !x[14]; }); w2[e] = p; return { e: e, n: r.length, p: p.length, u: i % 2 ? p.length : 0, g: 0, l: ymd(i) }; });
+    return { demo: 1, updated: "예시", year: String(new Date().getFullYear()), total: 30, pend: 20, urg: 8, ng: 0, list: l2, wait: w2 };
+  }
+  if (fn === "getInspRows") return { e: args[0], rows: isDemo(args[0]) ? inRows(args[0], DEMO_EQ.indexOf(args[0])) : [] };
+  if (fn === "getMatList") return { demo: 1, list: DEMO_EQ.slice(), at: "예시" };
+  if (fn === "getMatTab") {
+    var R2 = [], s2 = Math.max(0, DEMO_EQ.indexOf(args[0]));
+    for (var i = 0; i < 12; i++) { var n = N[(i + s2) % 5], o = 1 + i % 3, rc = i % 4 === 1 ? 0 : o; R2.push([ymd(-i), "", "예시 모듈", V[i % 4], n[0] + "-" + (i + 1), n[1], i % 5 === 0 ? "(외주조립)" : "예시 규격", o, rc, i % 2 ? rc : 0, i % 3 ? 0 : rc, ""]); }
+    return { prj: args[0], tabs: [args[0] + " (예시)"], at: "예시", rows: isDemo(args[0]) ? R2 : [] };
+  }
+  if (fn === "getNcRef") return { at: 1, ven: V.map(function (v) { return ["외주", v]; }).concat([["사내", "제조1팀"], ["사내", "제조2팀"]]), prj: DEMO_EQ.map(function (e) { return [e, "예시"]; }), who: P, mprj: DEMO_EQ.slice(), lrn: { q: {}, d: [], p: [] }, demo: 1 };
+  if (fn === "getNcPart") return { q: args[0], hit: [], nm: [], eq: [], here: [], matOk: true };
+  return { ok: true, n: 0 };
+}
+function demoBar() {
+  var b = $("demobar"), on = TEAM_TABS.indexOf(cur) >= 0 && viewOnly();
+  if (!on) { if (b) b.style.display = "none"; return; }
+  if (!b) { b = el("div", null, "👀 보기 전용 · 값은 모두 예시예요"); b.id = "demobar"; document.body.appendChild(b); }
+  b.style.display = "";
+}
+
+/* ===================== 🤖 AI 속도 학습: 느렸던 화면을 스스로 찾아서 → 앱 켤 때 미리 불러옴 → 다음 시작 때 알려 줌 ===================== */
+var AISPD_TAB = { getHoursMeta: [3, "근무시간"], getInspData: [7, "수입검사"], getNcData: [8, "부적합"], getMatList: [9, "입고 불출"], getMatTab: [9, "입고 불출"], getStatsData: [5, "장비통계"], getLeaveData: [4, "연차 현황"] };
+var AISPD = { pf: 0 };
+function aiSpdGet() { try { return JSON.parse(sget("aiSpd") || "{}") || {}; } catch (e) { return {}; } }
+function aiSpdSet(o) { try { sset("aiSpd", JSON.stringify(o)); } catch (e) {} }
+function aiSpdRec(fn, ms) {
+  var t = AISPD_TAB[fn]; if (!t || AISPD.pf || cur !== t[0] || document.hidden || viewOnly()) return;
+  var k = fn === "getMatList" ? "getMatTab" : fn, o = aiSpdGet(), x = o[k] || (o[k] = { d: [] });
+  x.d.push([ymdLocal(), ms]); x.d = x.d.slice(-6);
+  if (!x.on) {
+    var L = x.d.slice(-2);
+    if (L.length === 2 && L[0][1] >= 2500 && L[1][1] >= 2500) { x.on = Date.now(); x.day = L[1][0]; x.before = Math.round((L[0][1] + L[1][1]) / 2); x.tab = t[1]; x.shown = 0; }   // 두 번 연속 2.5초 넘음 → 학습
+  }
+  aiSpdSet(o);
+}
+// 앱 켜고 첫 화면이 뜬 뒤: 학습된 화면을 뒤에서 미리 불러 둠 (그 화면을 열면 기다리지 않음)
+function aiPrefetch() {
+  if (viewOnly()) return;
+  var o = aiSpdGet(), jobs = [];
+  Object.keys(o).forEach(function (k) {
+    if (!o[k].on) return;
+    if (k === "getHoursMeta" && !H.loaded) jobs.push(function () { return loadHoursMeta(true); });
+    if (k === "getInspData" && !IN.loaded) jobs.push(function () { return loadInsp(false); });
+    if (k === "getNcData" && !NC.loaded) jobs.push(function () { return loadNc(false); });
+    if (k === "getStatsData" && !ST.loaded) jobs.push(function () { return loadStats(); });
+    if (k === "getLeaveData" && !LV.loaded) jobs.push(function () { return loadLeave(); });
+    if (k === "getMatTab") jobs.push(function () {
+      var MC = {}, rc = []; try { MC = JSON.parse(sget("matCnt") || "{}"); rc = JSON.parse(sget("matRecent") || "[]"); } catch (e) {}
+      var top = Object.keys(MC).sort(function (a, b) { return MC[b] - MC[a]; }).slice(0, 2).concat(rc.slice(0, 2)).filter(function (p, i, a) { return a.indexOf(p) === i; }).slice(0, 3);
+      return (MT.lt ? Promise.resolve() : loadMatList(false)).then(function () { return top.reduce(function (pr, p) { return pr.then(function () { return loadMatTab(p, false); }); }, Promise.resolve()); });
+    });
+  });
+  if (!jobs.length) return;
+  AISPD.pf++;
+  jobs.reduce(function (pr, j) { return pr.then(function () { try { return j(); } catch (e) {} }).catch(function () {}); }, Promise.resolve()).then(function () { AISPD.pf--; }, function () { AISPD.pf--; });
+}
+// 🤖 시작 화면이 닫힌 뒤: 새로 학습한 게 있으면 리포트 한 번 (확인 → 메인)
+function aiReport() {
+  if (viewOnly() || !nameDone()) return;
+  if (document.querySelector(".ov.on")) return;   // 업데이트 안내 · 이름 고르기 중이면 다음에
+  var o = aiSpdGet(), now = Date.now(), list = Object.keys(o).filter(function (k) { var x = o[k]; return x.on && !x.shown && now - x.on > 60000; }).map(function (k) { return o[k]; });
+  if (!list.length) return;
+  var AI_LEADERS = ["고현우"];   // 👔 팀장님으로 부를 사람 (서버 알림 HOURS_LEADERS와 같게)
+  var me = myName() || "", gv = me.length === 3 ? me.slice(1) : me, call0 = !me ? "" : gv + (AI_LEADERS.indexOf(me) >= 0 ? " 팀장님" : "님");
+  var dt = function (s) { var p = String(s || "").split("-"); return p.length === 3 ? (+p[1]) + "월 " + (+p[2]) + "일" : s; };
+  var ov = el("div", "airep"); ov.id = "airep";
+  var c = el("div", "arc");
+  c.appendChild(el("div", "arh", "🤖 AI 속도 리포트"));
+  c.appendChild(el("h3", null, call0 + (call0 ? ", " : "") + "느렸던 화면을 AI가 스스로 고쳤어요"));
+  list.forEach(function (x) {
+    var r = el("div", "arr");
+    r.appendChild(el("p", null, dt(x.day) + " '" + x.tab + "' 화면이 열릴 때 평균 " + (x.before / 1000).toFixed(1) + "초 걸렸어요.\n쓰는 패턴을 학습해서, 이제 앱을 켤 때 이 화면을 미리 불러 둬요."));
+    var b = el("div", "arb");
+    var b1 = el("div"); b1.appendChild(el("span", null, "개선 전")); b1.appendChild(el("b", null, (x.before / 1000).toFixed(1) + "초"));
+    var b2 = el("div", "ok"); b2.appendChild(el("span", null, "이제")); b2.appendChild(el("b", null, "바로 열림"));
+    b.appendChild(b1); b.appendChild(el("i", null, "→")); b.appendChild(b2); r.appendChild(b); c.appendChild(r);
+  });
+  c.appendChild(el("div", "arf", "쓰면 쓸수록 AI가 계속 배워요 · 기록은 이 폰에만 있어요"));
+  var go = el("button", "go", "확인"); go.type = "button";
+  go.onclick = function () { list.forEach(function (x) { x.shown = Date.now(); }); aiSpdSet(o); ov.className = "airep out"; setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 350); try { setTab(0); window.scrollTo(0, 0); } catch (e) {} };
+  c.appendChild(go); ov.appendChild(c); document.body.appendChild(ov);
+  requestAnimationFrame(function () { ov.className = "airep on"; });
+}
 function call(fn, args, editPin) {
+  if (DEMO_FNS[fn] && viewOnly()) return Promise.resolve(demoData(fn, args || []));   // 👀 보기 전용 → 예시 값
+  var t0s = Date.now();
   if (READ_FNS[fn] && !editPin) {
     var key = fn + "|" + JSON.stringify(args || []);
     if (INFLIGHT[key]) return INFLIGHT[key];
     var pr = callRun(fn, args, editPin);
+    if (AISPD_TAB[fn]) pr.then(function () { aiSpdRec(fn, Date.now() - t0s); }, function () {});   // 🤖 화면별 기다린 시간
     INFLIGHT[key] = pr;
     var done = function () { if (INFLIGHT[key] === pr) delete INFLIGHT[key]; };
     pr.then(done, done);
@@ -4541,7 +4676,7 @@ function loadMatTab(prj, force, hard) {
   return call("getMatTab", [prj, !!hard]).then(function (r) {
     if (r && !r.error) {
       MT.data[prj] = { rows: r.rows || [], tabs: r.tabs || [], at: r.at, t: Date.now() };
-      try { cset("mt_" + prj, { rows: r.rows || [], tabs: r.tabs || [], at: r.at }); } catch (e) {}
+      try { cset("mt_" + prj, { rows: r.rows || [], tabs: r.tabs || [], at: r.at, t: Date.now() }); } catch (e) {}
       try { var keep = JSON.parse(sget("matRecent") || "[]"); for (var i = localStorage.length - 1; i >= 0; i--) { var k = localStorage.key(i); if (k && k.indexOf("c_mt_") === 0 && keep.indexOf(k.slice(5)) < 0) localStorage.removeItem(k); } } catch (e) {}
     } else if (d && d.rows) { d.ld = false; d.t = Date.now(); }
     else MT.data[prj] = { err: (r && r.error) || "불러오기 실패", t: Date.now() };
@@ -4553,6 +4688,21 @@ function openMat(prj) {
   try { var rc = JSON.parse(sget("matRecent") || "[]").filter(function (x) { return x !== prj; }); rc.unshift(prj); sset("matRecent", JSON.stringify(rc.slice(0, 6))); } catch (e) {}
   try { var mc = JSON.parse(sget("matCnt") || "{}"); mc[prj] = (mc[prj] || 0) + 1; sset("matCnt", JSON.stringify(mc)); } catch (e) {}   // 🧠 자주 여는 장비
   loadMatTab(prj, false); renderMat(); window.scrollTo(0, 0);
+}
+// ⚡ 불러오는 동안: 장비 이름 + 단계별로 바뀌는 멘트 (화면이 바뀌면 저절로 멈춤)
+function mtLoading(prj) {
+  var w = el("div", "mtld"), h = el("div", "mtldh");
+  h.appendChild(el("i", "mtldo"));
+  var tx = el("div", "mtldt");
+  tx.appendChild(el("b", null, prj ? prj : "자재 현황"));
+  var m = el("span", null, ""); tx.appendChild(m); h.appendChild(tx); w.appendChild(h);
+  var bar = el("div", "mtldb"); bar.appendChild(el("i")); w.appendChild(bar);
+  var L = prj
+    ? ["AI가 자재 현황 분석 중", "발주 · 입고 수량 맞춰 보는 중", "3공장 · 1공장 불출 확인 중", "미입고 품목 골라내는 중", "거의 다 됐어요"]
+    : ["장비 데이터 연결 중", "자재 현황 정리 중"];
+  var i = 0; m.textContent = L[0];
+  var tm = setInterval(function () { if (!w.isConnected) { clearInterval(tm); return; } i = Math.min(i + 1, L.length - 1); m.textContent = L[i]; m.className = "fl"; void m.offsetWidth; m.className = ""; }, 900);
+  return w;
 }
 function renderMat() {
   var box = $("mat"); box.innerHTML = "";
@@ -4583,7 +4733,9 @@ function renderMat() {
     };
     var card = function (p, tag, sub) {
       var b = el("button", "mtc"); b.type = "button";
-      var t = el("div", "mtct"); t.appendChild(el("b", null, p)); if (tag) t.appendChild(el("i", null, tag)); b.appendChild(t);
+      var t = el("div", "mtct"); t.appendChild(el("b", null, p)); if (tag) t.appendChild(el("i", null, tag));
+      var dd = MT.data[p]; if (dd && dd.rows && dd.t && Date.now() - dd.t < 15 * 60000) t.appendChild(el("i", "fast", "⚡ 바로"));   // 🧠 미리 받아 둠
+      b.appendChild(t);
       var s = sum(p);
       if (sub) b.appendChild(el("span", null, sub));
       b.appendChild(el("span", s ? (s.w ? "w" : "ok") : "dim", s ? s.t : "눌러서 확인"));
@@ -4598,7 +4750,7 @@ function renderMat() {
     };
     var drawHome = function () {
       home.innerHTML = "";
-      if (!MT.list) { home.appendChild(el("div", "msg", MT.err || "장비 목록 불러오는 중…")); return; }
+      if (!MT.list) { home.appendChild(MT.err ? el("div", "msg", MT.err) : mtLoading("")); return; }
       var seen = {}, sch = [];
       [[typeof store !== "undefined" && store[0], "오늘"], [typeof store !== "undefined" && store[1], "내일"]].forEach(function (x) {
         var d = x[0]; if (!d || !d.stages) return;
@@ -4610,6 +4762,15 @@ function renderMat() {
       sec2("🕘 최근 본 장비", "", rl.slice(0, 6));
       var fq = Object.keys(MC).filter(function (p) { return MC[p] >= 3 && !seen[p] && MT.list.indexOf(p) >= 0; }).sort(function (a, b) { return MC[b] - MC[a]; }).slice(0, 4).map(function (p) { return [p, "", ""]; });
       sec2("⭐ 자주 여는 장비", "", fq);
+      // 🧠 AI 미리 읽기: 오늘·내일 일정 · 최근 · 자주 여는 장비 중 3대를 뒤에서 미리 받아 둠 → 누르면 바로 뜸
+      if (!MT.pfing) {
+        var cand = sch.concat(rl, fq).map(function (x) { return x[0]; }).filter(function (p) { var dd = MT.data[p]; if (dd && dd.ld) return false; var tt = dd && dd.t > 1 ? dd.t : ((cget("mt_" + p) || {}).t || 0); return Date.now() - tt > 15 * 60000; }).slice(0, 3);
+        if (cand.length) {
+          MT.pfing = true;
+          var nx = function () { var p = cand.shift(); if (!p) { MT.pfing = false; return; } loadMatTab(p, false).then(function () { if (cur === 9 && !MT.prj && !nfPrjKey(MT.q) && document.activeElement !== inp) drawHome(); setTimeout(nx, 300); }, function () { setTimeout(nx, 300); }); };
+          setTimeout(nx, 700);
+        }
+      }
       var tip = el("div", "mtempty");
       tip.appendChild(el("b", null, home.children.length ? "다른 장비는 위에서 찾아 주세요" : "장비명을 찾아 보세요"));
       tip.appendChild(el("span", null, "전체 " + MT.list.length + "대 · 몇 글자만 쳐도 돼요 (예: 159, GY03, MISC)"));
@@ -4621,7 +4782,7 @@ function renderMat() {
       home.style.display = k ? "none" : "";
       lst.style.display = k ? "" : "none";
       if (!k) { drawHome(); return; }
-      if (!MT.list) { lst.appendChild(el("div", "msg", MT.err || "장비 목록 불러오는 중…")); return; }
+      if (!MT.list) { lst.appendChild(MT.err ? el("div", "msg", MT.err) : mtLoading("")); return; }
       var L = MT.list.filter(function (p) { return nfPrjKey(p).indexOf(k) >= 0; });
       if (!L.length) { lst.appendChild(el("div", "msg", "'" + MT.q + "' 장비가 없어요")); return; }
       L = L.map(function (p, i) { return [p, i, nfPrjKey(p).indexOf(k)]; }).sort(function (a, b) { return a[2] - b[2] || (MC[b[0]] || 0) - (MC[a[0]] || 0) || a[1] - b[1]; }).map(function (x) { return x[0]; });
@@ -4639,7 +4800,7 @@ function renderMat() {
   var d = MT.data[MT.prj] || {};
   if (!d.rows) {
     if (d.err) { box.appendChild(el("div", "warn", d.err)); return; }
-    box.appendChild(el("div", "msg", "'" + MT.prj + "' 자재팀 시트 읽는 중…"));
+    box.appendChild(mtLoading(MT.prj));
     for (var sk = 0; sk < 3; sk++) { var sc = el("div", "card mtg mtsk"); sc.appendChild(el("div", "mtgh")); for (var sj = 0; sj < 3; sj++) sc.appendChild(el("div", "mti")); box.appendChild(sc); }
     return;
   }
@@ -6129,6 +6290,7 @@ function loadStats(force) {
 }
 
 /* ---------- 탭 ---------- */
+var TEAM_TABS = [7, 8, 9];   // 👀 보기 전용은 못 여는 탭: 수입검사 · 부적합 · 입고 불출 (서버도 막음)
 function setTab(n) {
   ANI.t = Date.now(); ANI.done = {};
   try { pushBar(); } catch (ePb) {}
@@ -6154,6 +6316,7 @@ function setTab(n) {
   else if (n === 4) { renderLeave(LV.data); if (!LV.loaded) loadLeave(); }
   else { renderStats(ST.data); if (!ST.loaded) loadStats(); }
   moreSync();
+  demoBar();
 }
 // ⋯ 더보기: 입출하 일정 · 장비통계 · 연차 현황 (지금 보고 있으면 더보기 버튼이 그 이름으로 바뀜)
 var MORE = [[6, "입출하 일정"], [5, "장비통계"], [4, "연차 현황"], [7, "수입검사"], [8, "부적합"], [9, "입고 불출"]];
@@ -7534,11 +7697,13 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-03-9";
+var APP_VER = "2026-11-03-14";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
-  ["2026-11-03-9", [
+  ["2026-11-03-14", [
+    "🤖 AI 속도 학습: 느렸던 화면을 AI가 스스로 찾아서 앱을 켤 때 미리 불러 둬요 · 고친 내용은 다음에 켤 때 리포트로 알려 줘요",
+    "🧠 입고 불출이 쓸수록 빨라져요: 팀이 자주 여는 장비 · 오늘 · 내일 일정 장비를 AI가 미리 읽어 둬서 누르면 바로 떠요 (⚡ 바로)",
     "부적합 요청: 요청자는 본인 이름으로 고정돼요",
     "📦 입고 불출: 전체 목록 대신 장비명으로 바로 찾기 · 오늘 · 내일 일정 장비 · 최근 본 장비를 미입고 건수와 같이 보여줘요"
   ]],
@@ -9382,6 +9547,7 @@ function splashHide(now) {
     if (document.hidden || !SPL.vt || splEl(n, SPL.vt) < SPL_MIN) { setTimeout(wait, 100); return; }
     SPL.shut = true;
     n.className = "out";
+    setTimeout(aiReport, 700); setTimeout(aiPrefetch, 2500);   // 🤖 AI 속도 리포트 · 학습한 화면 미리 불러오기
     try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7][cur]] || "main")); tabInd(); }, 120); } catch (eA) {}
     setTimeout(function () { n.style.display = "none"; }, 450);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
   })();
@@ -9415,7 +9581,9 @@ function splashReplay(first) {
   })();
 }
 
+function demoClean() { if (viewOnly()) return; ["nc", "insp", "matlist", "ncref"].forEach(function (k) { try { var c = cget(k); if (c && c.demo) sdel("c_" + k); } catch (e) {} }); }
 function boot() {
+  try { demoClean(); } catch (eD) {}
   if (IS_TEST) $("splsub").appendChild(document.createTextNode(" · TEST"));
   buildChips();
   $("ver").textContent = "v" + APP_VER.slice(5).replace("-", ".");
