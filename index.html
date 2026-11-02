@@ -5291,13 +5291,14 @@ function hoursHero() {
 
 // 근무시간 탭: 지난번 화면을 먼저 바로 보여주고, 서버 한 번 호출로 셀·달력까지 갱신
 function loadHoursMeta(silent) {
+  var drew = !!H.meta && $("hmon").style.display !== "none";   // 이미 달력이 그려져 있으면 "불러오는 중"으로 가리지 않음
   if (!H.meta) {
     var cm = cget("hours");
     if (cm && cm.names) {
       applyMeta(cm, true);
       // ⚡ 지난번에 받아둔 전원 입력값(grid)으로 현재값·달력을 바로 그림 → 서버 응답 오면 최신으로 덮어씀
       var q0 = gridCell($("hname").value, $("hdate").value);
-      if (q0) { applyCell(q0); $("hcur").appendChild(el("span", "stale", "🔄 최신 확인 중…")); }
+      if (q0) { applyCell(q0); drew = true; $("hcur").appendChild(el("span", "stale", "🔄 최신 확인 중…")); }
       else $("hcur").textContent = "현재 값 확인 중…";
     }
     else $("hmonth").textContent = "시트 기준 월 확인 중…";
@@ -5305,7 +5306,7 @@ function loadHoursMeta(silent) {
   var name0 = $("hname").value || sget("hoursName") || "";
   var date0 = $("hdate").value || "";
   var t = ++H.token;
-  if (name0 && !silent) monLoading(name0);
+  if (name0 && !silent && !drew) monLoading(name0);   // ⚡ 폰에 저장된 달력을 먼저 보여줬으면 그대로 두고 뒤에서 최신으로 바꿈
   return call("getHoursMeta", [name0, date0])
     .then(function (m) {
       H.loaded = true;
@@ -5802,10 +5803,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-01-5";
+var APP_VER = "2026-11-02-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-02-1", ["근무시간: 탭을 열 때 저장된 달력이 바로 보이고 최신 값은 뒤에서 바꿔요 ('불러오는 중' 기다림 줄임)"]],
   ["2026-11-01-5", ["근무시간: 공휴일·대체휴일(추석, 10/5 등)은 빨간 날로 보이고 '빈 평일'에서 빠져요"]],
   ["2026-11-01-4", ["더보기 → 🏭 업체 현황: 업체별로 진행 중·이번 달 출하·올해 출하 대수와 장비 목록을 볼 수 있어요 (금일·명일의 업체 이름을 눌러도 돼요)"]],
   ["2026-11-01-3", ["금일·명일: 동탄 장비는 업체 이름이 같이 보여요 (제조완료는 손성민 · 동오정밀처럼 담당자와 함께)", "장비 상세: 담당자 앞에 업체 이름도 보여요 (예: 시노드 · 고현우)"]],
