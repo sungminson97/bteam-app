@@ -2096,7 +2096,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
     <p class="sub" id="opnow" style="display:none"></p>
     <div class="chips" id="opchips"></div>
     <input type="text" id="opin" inputmode="text" autocomplete="off" maxlength="20" placeholder="직접 입력 (목록에 없는 이름)">
-    <p class="sub" id="opsub">저장하면 26_장비_LOG 작업자(F열)에 들어가요.<br>잘못 넣었으면 '최근 입력한 작업자'에서 고칠 수 있어요.</p>
+    <p class="sub" id="opsub">저장하면 장비_Log 작업자(F열)에 들어가요.<br>잘못 넣었으면 '최근 입력한 작업자'에서 고칠 수 있어요.</p>
     <button id="opclr" type="button">🗑 작업자 비우기 (이 장비 작업 안 함)</button>
     <div class="ob">
       <button id="opno" type="button">취소</button>
@@ -3782,7 +3782,7 @@ function ncDetail(box) {
   if (!sum.n) box.appendChild(el("div", "msg", "부적합 기록이 없어요."));
 }
 
-/* ---------- 📍 SITE 고르기 (26_장비_LOG E열: 동탄 / 본사) ---------- */
+/* ---------- 📍 SITE 고르기 (장비_Log E열: 동탄 / 본사) ---------- */
 var SITE = { it: null };
 function openSite(it) {
   SITE.it = it;
@@ -3813,7 +3813,7 @@ function openSite(it) {
     c.onclick = function () { saveSite(it, "", c); };
     pick.appendChild(c);
   }
-  $("sitehint").textContent = it.site ? "잘못 넣었으면 다른 쪽을 누르거나 비우면 돼요. 26_장비_LOG SITE(E열)에 바로 저장돼요." : "고르면 26_장비_LOG SITE(E열)에 바로 저장돼요.";
+  $("sitehint").textContent = it.site ? "잘못 넣었으면 다른 쪽을 누르거나 비우면 돼요. 장비_Log SITE(E열)에 바로 저장돼요." : "고르면 장비_Log SITE(E열)에 바로 저장돼요.";
   ov.className = "ov on";
 }
 function saveSite(it, s, b) {
@@ -3834,7 +3834,7 @@ function saveSite(it, s, b) {
   }).catch(function (e) { $("siteov").className = "ov"; toast("⚠️ 저장 실패: " + errText(e), true); });
 }
 
-/* ---------- 👷 작업자 입력 (26_장비_LOG F열) ---------- */
+/* ---------- 👷 작업자 입력 (장비_Log F열) ---------- */
 var OP = { it: null, pick: "" };
 
 function opPick(n) {
@@ -5803,10 +5803,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-02-1";
+var APP_VER = "2026-11-02-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-02-2", ["화면 안정화 · 작은 개선"]],
   ["2026-11-02-1", ["근무시간: 탭을 열 때 저장된 달력이 바로 보이고 최신 값은 뒤에서 바꿔요 ('불러오는 중' 기다림 줄임)"]],
   ["2026-11-01-5", ["근무시간: 공휴일·대체휴일(추석, 10/5 등)은 빨간 날로 보이고 '빈 평일'에서 빠져요"]],
   ["2026-11-01-4", ["더보기 → 🏭 업체 현황: 업체별로 진행 중·이번 달 출하·올해 출하 대수와 장비 목록을 볼 수 있어요 (금일·명일의 업체 이름을 눌러도 돼요)"]],
