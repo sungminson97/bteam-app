@@ -1958,6 +1958,18 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .qrov .qrbar button{height:54px;border-radius:16px;border:0;font:inherit;font-weight:800;font-size:16px;background:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 #nc .nfpnw{display:grid;grid-template-columns:1fr auto;gap:8px}
 #nc .nfqr{min-width:84px;padding:0 14px;border-radius:14px;border:0;background:var(--accent);color:#fff;font:inherit;font-weight:800;font-size:15px;cursor:pointer}
+#nc .nfscan{border:1.5px solid color-mix(in srgb,#16a34a 55%,transparent);background:color-mix(in srgb,#16a34a 8%,var(--card));border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+#nc .nfscan .nfsh{display:flex;align-items:center;justify-content:space-between}
+#nc .nfscan .nfsh b{color:#15803d;font-size:15px}
+#nc .nfscan .nfsx{border:0;background:transparent;color:var(--sub);font-size:16px;padding:2px 6px;cursor:pointer}
+#nc .nfscan .nfsl{display:grid;grid-template-columns:36px 1fr auto;gap:8px;align-items:baseline;font-size:14px}
+#nc .nfscan .nfsl i{font-style:normal;color:var(--sub);font-size:12.5px}
+#nc .nfscan .nfsl b{font-weight:800;word-break:break-all}
+#nc .nfscan .nfsl span{font-size:11.5px;color:#15803d;font-weight:700;white-space:nowrap}
+#nc .nfscan .nfsl.w b{color:#b26a00;font-weight:700}
+#nc .nfscan .nfsst{font-size:12.5px;color:var(--sub)}
+#nc .nfref button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 12px}
+#nc .nfref button span{font-size:11.5px;color:var(--sub);font-weight:600}
 #nc .nfps{display:flex;flex-direction:column;gap:6px}
 #nc .nfps:empty{display:none}
 #nc .nfps button{display:flex;align-items:baseline;gap:8px;text-align:left;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;cursor:pointer}
@@ -3751,6 +3763,7 @@ var NC = { loaded: false, data: null, q: "", eq: "", rows: {}, all: false, showD
  *  - 품번 → 품명: '품명/품번' 탭에서 하나씩 찾음 (서버 getNcPart · 하이픈·띄어쓰기 무관)
  *  - 저장 없음 · 메시지만 만들어서 복사 (품질팀 시트·앱 영향 없음)
  */
+var NF_SHOW_INSP = false;   // true로 바꾸면 '장비 수입검사 품목' 목록이 다시 보임
 var NF_HEAD = ["사업장", "프로젝트명", "품번", "수량", "불량내용", "귀책", "요청자", "비고"];
 var NF_PN = [["EFEM FRAME", "EFEM FRAME"], ["PROCESS FRAME", "PROCESS FRAME"], ["BUFFER", "BUFFER"], ["EFEM CB", "EFEM CONTROL BOX"], ["PRO 1 CB", "PROCESS 1 CONTROL BOX"], ["PRO 2 CB", "PROCESS 2 CONTROL BOX"]];
 var NF_QV = ["제조1팀", "제조2팀", "전장"], NF_ASK = "확인요청";
@@ -3839,11 +3852,12 @@ function nfPart(v, cb, qr) {
   NFP[k] = "ld";
   call("getNcPart", qr ? [v, true] : [v]).then(function (r) {
     NFP[k] = r && !r.error ? r : null;
+    if (NFP[k] && r.vs) NFV[nfPnKey(v)] = r.vs;
     if (NFP[k]) { if (r.eq && (r.eq.length || !NFE[nfPnKey(v)])) { NFE[nfPnKey(v)] = r.eq; NFO[nfPnKey(v)] = r.other ? 1 : 0; } } else delete NFP[k];
     cb(NFP[k] || null);
   }).catch(function () { delete NFP[k]; cb(null); });
 }
-var NFE = {}, NFO = {};   // NFO: 1이면 B팀 장비가 아니라 수입검사 전체에서 찾은 것   // 품번 → 그 품번이 들어온 B팀 장비 [[장비, 업체, 날짜, 품명]] (서버 수입검사에서)
+var NFE = {}, NFO = {}, NFV = {};   // NFV: 품번 → 업체 근거 { i: 수입검사, n: 부적합 대장, l: B팀 이전 요청 } 각 [장비, 업체, 날짜, 횟수]   // NFO: 1이면 B팀 장비가 아니라 수입검사 전체에서 찾은 것   // 품번 → 그 품번이 들어온 B팀 장비 [[장비, 업체, 날짜, 품명]] (서버 수입검사에서)
 function nfEqOf(pn) { return NFE[nfPnKey(pn)] || null; }
 // 그 장비의 수입검사 품목 (품번 · 이름 · 업체)
 function nfParts(prj) {
@@ -3910,8 +3924,8 @@ function qrRead(imgData, hard) {
   return qrLib().then(function (Z) {
     return Z.readBarcodes(imgData, { formats: ["QRCode", "DataMatrix", "Code128"], tryHarder: !!hard, maxNumberOfSymbols: 4 });
   }).then(function (r) {
-    for (var i = 0; i < r.length; i++) { var t = qrText(r[i].text); if (t) return t; }
-    return "";
+    for (var i = 0; i < r.length; i++) { var t = qrText(r[i].text); if (t) return { t: t, p: r[i].position }; }
+    return null;
   });
 }
 // QR 내용 → 품번 (보통 품번만 들어 있음 · 여러 줄이면 품번처럼 생긴 첫 줄)
@@ -3949,11 +3963,11 @@ function qrScan(done, onClose) {
     if (ov.parentNode) ov.parentNode.removeChild(ov);
     if (onClose) onClose(n);
   }
-  function got(t) {
+  function got(t, shot) {
     if (!live) return;
     if (multi && seen[t]) return;   // 같은 라벨 다시 비춘 것
     try { navigator.vibrate && navigator.vibrate(60); } catch (e) {}
-    var r = done(t, multi) || {};
+    var r = done(t, multi, shot) || {};
     if (!multi) { if (r.ok) n++; stop(); return; }
     seen[t] = 1;
     if (r.ok) n++;
@@ -3976,7 +3990,11 @@ function qrScan(done, onClose) {
         if (i >= tries.length || !live) { if (live) msg.textContent = "사진에서 QR을 못 찾았어요 · QR이 크게 나오게 다시 찍어 주세요"; return; }
         var k = Math.min(1, tries[i] / Math.max(W, H)); cv.width = Math.round(W * k); cv.height = Math.round(H * k);
         cx.drawImage(im, 0, 0, cv.width, cv.height);
-        qrRead(cx.getImageData(0, 0, cv.width, cv.height), true).then(function (t) { if (t) got(t); else next(i + 1); }).catch(function (e) { msg.textContent = (e && e.message) || "QR을 못 읽었어요"; });
+        qrRead(cx.getImageData(0, 0, cv.width, cv.height), true).then(function (o) {
+          if (!o) { next(i + 1); return; }
+          var sc2 = el("canvas"); sc2.width = cv.width; sc2.height = cv.height; sc2.getContext("2d").drawImage(cv, 0, 0);
+          got(o.t, { img: sc2, p: o.p });
+        }).catch(function (e) { msg.textContent = (e && e.message) || "QR을 못 읽었어요"; });
       })(0);
     };
     im.onerror = function () { msg.textContent = "사진을 못 열었어요"; };
@@ -3994,7 +4012,15 @@ function qrScan(done, onClose) {
     cv.width = cv.height = Math.round(s * k);
     cx.drawImage(vid, sx, sy, s, s, 0, 0, cv.width, cv.height);
     busy = true;
-    qrRead(cx.getImageData(0, 0, cv.width, cv.height), false).then(function (t) { busy = false; if (t) got(t); tm = setTimeout(tick, 100); })
+    qrRead(cx.getImageData(0, 0, cv.width, cv.height), false).then(function (o) {
+      busy = false;
+      if (o) {   // 🔤 라벨 글자 읽기용: 그 순간 영상 전체를 원래 크기로 + QR 위치를 원래 좌표로
+        var fc = el("canvas"); fc.width = vw; fc.height = vh; fc.getContext("2d").drawImage(vid, 0, 0, vw, vh);
+        var P = {}; ["topLeft", "topRight", "bottomLeft", "bottomRight"].forEach(function (kk) { P[kk] = { x: sx + o.p[kk].x / k, y: sy + o.p[kk].y / k }; });
+        got(o.t, { img: fc, p: P });
+      }
+      tm = setTimeout(tick, 100);
+    })
       .catch(function () { busy = false; tm = setTimeout(tick, 400); });
   }
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { msg.textContent = "이 화면에선 카메라를 못 켜요 · [사진으로]를 눌러 주세요"; return; }
@@ -4006,6 +4032,71 @@ function qrScan(done, onClose) {
       mode(); tick();
     })
     .catch(function () { msg.textContent = "카메라를 못 켰어요 (권한 확인) · [사진으로]를 눌러 주세요"; });
+}
+/* ---------- 🔤 라벨 글자 읽기 (QR 찍을 때 QR 위쪽 라벨만 잘라서 → 장비명 · 업체) ----------
+ *  - tesseract.js (무료 · 폰 안에서 처리 · 처음 한 번 약 8MB 받고 그다음부턴 폰에 저장된 걸 씀)
+ *  - 읽은 글자를 프로젝트 목록 · 귀책 목록이랑 맞춰서 '맞는 것만' 씀 (엉뚱한 글자는 안 넣음)
+ */
+var OCR_LIB = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/", OCRW = null, OCR_PROG = null;
+function ocrWorker() {
+  if (OCRW) return OCRW;
+  OCRW = new Promise(function (ok, no) {
+    var go = function () {
+      Tesseract.createWorker(["eng", "kor"], 1, {
+        workerPath: OCR_LIB + "worker.min.js", corePath: "https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1",
+        logger: function (m) { if (OCR_PROG) OCR_PROG(m); }
+      }).then(function (w) { return w.setParameters({ tessedit_pageseg_mode: "6", preserve_interword_spaces: "1" }).then(function () { ok(w); }); }).catch(no);
+    };
+    if (window.Tesseract) return go();
+    var s = el("script"); s.src = OCR_LIB + "tesseract.min.js"; s.onload = go;
+    s.onerror = function () { no(new Error("글자 읽기 도구를 못 받았어요")); };
+    document.head.appendChild(s);
+  }).catch(function (e) { OCRW = null; throw e; });
+  return OCRW;
+}
+// QR 네 모서리 기준으로 라벨(QR 위쪽 글자 부분)만 잘라 똑바로 펴고 흑백으로
+function ocrCrop(shot) {
+  var p = shot.p, tl = p.topLeft, tr = p.topRight, bl = p.bottomLeft, br = p.bottomRight;
+  var cx = (tl.x + tr.x + bl.x + br.x) / 4, cy = (tl.y + tr.y + bl.y + br.y) / 4;
+  var q = (Math.hypot(tr.x - tl.x, tr.y - tl.y) + Math.hypot(bl.x - tl.x, bl.y - tl.y)) / 2, ang = Math.atan2(tr.y - tl.y, tr.x - tl.x);
+  var x0 = -1.8 * q, y0 = -3.6 * q, bw = 6.6 * q, bh = 2.95 * q, sc = Math.min(3, 1400 / bw);
+  var c = el("canvas"); c.width = Math.round(bw * sc); c.height = Math.round(bh * sc);
+  var g = c.getContext("2d", { willReadFrequently: true });
+  g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+  g.scale(sc, sc); g.translate(-x0, -y0); g.rotate(-ang); g.translate(-cx, -cy);
+  g.drawImage(shot.img, 0, 0);
+  var d = g.getImageData(0, 0, c.width, c.height), a = d.data, n = a.length / 4, lum = new Uint8Array(n), hist = new Uint32Array(256);
+  for (var i = 0; i < n; i++) { var L = (a[i * 4] * 0.3 + a[i * 4 + 1] * 0.59 + a[i * 4 + 2] * 0.11) | 0; lum[i] = L; hist[L]++; }
+  var lo = 0, hi = 255, acc = 0;
+  for (var j = 0; j < 256; j++) { acc += hist[j]; if (acc > n * 0.03) { lo = j; break; } }
+  acc = 0; for (var k = 255; k >= 0; k--) { acc += hist[k]; if (acc > n * 0.2) { hi = k; break; } }
+  var th = lo + (hi - lo) * 0.6;
+  for (var m = 0; m < n; m++) { var v = lum[m] < th ? 0 : 255; a[m * 4] = a[m * 4 + 1] = a[m * 4 + 2] = v; a[m * 4 + 3] = 255; }
+  g.setTransform(1, 0, 0, 1, 0, 0); g.putImageData(d, 0, 0);
+  return c;
+}
+function ocrVenKey(s) { return String(s || "").toUpperCase().replace(/\(주\)|㈜|주식회사|\(유\)|[\s.,·]/g, ""); }
+// 읽은 글자 → { prj, ven } (목록에 있는 것만 · 프로젝트는 목록에 없으면 'AB12-345' 모양만)
+function ocrParse(text, prjList, venList) {
+  var T = String(text || "").toUpperCase(), out = { prj: "", ven: "", raw: T };
+  var TV = ocrVenKey(T);
+  (venList || []).forEach(function (v) {
+    var k = ocrVenKey(v); if (k.length < 3 || NF_QV.indexOf(v) >= 0) return;
+    if (TV.indexOf(k) >= 0 && k.length > ocrVenKey(out.ven).length) out.ven = v;
+  });
+  var A = T.replace(/[^0-9A-Z]/g, ""), A0 = A.replace(/O/g, "0");
+  (prjList || []).forEach(function (p) {
+    var k = String(p).toUpperCase().replace(/[^0-9A-Z]/g, ""); if (k.length < 5) return;
+    if ((A.indexOf(k) >= 0 || A0.indexOf(k.replace(/O/g, "0")) >= 0) && k.length > String(out.prj).replace(/[^0-9A-Z]/g, "").length) out.prj = p;
+  });
+  if (!out.prj) {
+    var m = T.replace(/([0-9])O|O([0-9])/g, function (s, a, b) { return a ? a + "0" : "0" + b; }).match(/([A-Z]{2}[0-9]{2})\s*-\s*([0-9]{3})/);
+    if (m) out.prj = m[1] + "-" + m[2];
+  }
+  return out;
+}
+function ocrLabel(shot) {
+  return ocrWorker().then(function (w) { return w.recognize(ocrCrop(shot)); }).then(function (r) { return (r && r.data && r.data.text) || ""; });
 }
 function nfHist() { try { var a = JSON.parse(sget("nfHist") || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
 function nfHistAdd(f) {
@@ -4024,8 +4115,22 @@ function nfForm(box) {
   var wrap = el("div", "nf");
   var hd = el("div", "nfh"); hd.appendChild(el("b", null, "📝 부적합 처리 요청"));
   var nw = el("button", "nfnew", "새로 작성"); nw.type = "button";
-  nw.onclick = function () { NC.f = nfNew(); nfSave(); renderNc(); };
+  nw.onclick = function () { NC.f = nfNew(); nfSave(); renderNc(); };   // 새로 작성 → 라벨 읽기 결과도 지움
   hd.appendChild(nw); wrap.appendChild(hd);
+  var scanBox = el("div", "nfscan"); wrap.appendChild(scanBox);
+  function drawScan() {
+    scanBox.innerHTML = "";
+    var S = f.scan; if (!S || !S.pn) { scanBox.style.display = "none"; return; }
+    scanBox.style.display = "";
+    var h = el("div", "nfsh"); h.appendChild(el("b", null, "📷 라벨 읽기 결과"));
+    var x = el("button", "nfsx", "✕"); x.type = "button"; x.onclick = function () { f.scan = null; nfSave(); drawScan(); upd(); }; h.appendChild(x);
+    scanBox.appendChild(h);
+    var line = function (k, v, src, warn) { var d = el("div", "nfsl" + (warn ? " w" : "")); d.appendChild(el("i", null, k)); d.appendChild(el("b", null, v || "-")); if (src) d.appendChild(el("span", null, src)); scanBox.appendChild(d); };
+    line("품번", S.pn + (S.nm ? " · " + S.nm : ""), "QR");
+    line("장비", S.prj || (S.st ? "" : "못 찾음 · 직접 입력"), S.prjSrc || "", !S.prj && !S.st);
+    line("업체", S.ven || (S.st ? "" : "못 읽음 · 아래 귀책에서 고르기"), S.ven ? "라벨" : "", !S.ven && !S.st);
+    if (S.st) scanBox.appendChild(el("div", "nfsst", S.st));
+  }
   var HS = nfHist();
   if (HS.length) {
     var hdt = el("details", "nfhist"), hsm = el("summary", null, "🕘 최근 보낸 요청 " + HS.length + "건 · 눌러서 다시 쓰기");
@@ -4043,34 +4148,69 @@ function nfForm(box) {
   wrap.appendChild(subP);
   var msgBox, missBox, H = {};
   function hint(k, t, cls) { if (!H[k]) return; H[k].textContent = t || ""; H[k].className = "nfhn" + (cls ? " " + cls : ""); }
+  // 🏷️ 귀책 자동: ① 라벨에서 읽은 업체 ② 같은 장비 수입검사 ③ 같은 장비 부적합 기록 · B팀 이전 요청 → 없으면 다른 장비 기록은 '참고' 버튼으로만
+  var SRC_NM = { i: "수입검사", n: "부적합 기록", l: "B팀 이전 요청" };
+  function venFor(e) {
+    if (f.scan && f.scan.ven && nfPnKey(f.scan.pn) === nfPnKey(e.pn)) return { v: f.scan.ven, src: "라벨에서 읽음" };
+    var r = nfVenOf(e.proj, e.pn);
+    if (r.st === "ok") { var mv = nfVenMap(r.v); return mv ? { v: mv, src: "같은 장비 수입검사" } : { raw: r.v, src: "같은 장비 수입검사" }; }
+    var V = NFV[nfPnKey(e.pn)], pk = inspKey(e.proj);
+    if (V) for (var s2 = 0, S = ["i", "l", "n"]; s2 < 3; s2++) {
+      var h = (V[S[s2]] || []).filter(function (x) { return inspKey(x[0]) === pk && nfVenMap(x[1]); })[0];
+      if (h) return { v: nfVenMap(h[1]), src: "같은 장비 " + SRC_NM[S[s2]] };
+    }
+    return r.st === "ld" ? { wait: true } : null;
+  }
   function autoV() {
-    var E = nfEntries(f), found = [], wait = false, noRec = [];
+    var E = nfEntries(f), found = [], wait = false;
     E.forEach(function (e) {
-      if (!e.proj || !e.pn) return;
-      var r = nfVenOf(e.proj, e.pn);
-      if (r.st === "ld") wait = true;
-      else if (r.st === "ok") found.push({ pn: f.kind === "proj" ? e.proj : e.pn, raw: r.v, v: nfVenMap(r.v) });
-      else if (r.st === "nopn" || r.st === "noeq") noRec.push(e.pn);
+      if (!e.pn || nfQuick(e.pn)) return;
+      var r = venFor(e); if (!r) return;
+      if (r.wait) wait = true; else found.push({ k: f.kind === "proj" ? e.proj : e.pn, v: r.v, raw: r.raw, src: r.src });
     });
     var auto = !nfClean(f.vend) || f.vend === f.vAuto, names = [];
     found.forEach(function (x) { var n = x.v || x.raw; if (names.indexOf(n) < 0) names.push(n); });
     var t = "", cls = "";
-    if (wait && !found.length) t = "수입검사 업체 찾는 중…";
+    if (wait && !found.length) t = "업체 찾는 중…";
     else if (names.length === 1 && found[0].v) {
       if (auto && f.vend !== found[0].v) { f.vend = f.vAuto = found[0].v; vin.value = f.vend; drawV(); }
-      t = "🏷️ 수입검사 기준 납품 업체: " + found[0].v + (f.vend === found[0].v ? " (귀책이 다르면 바꿔도 돼요)" : "");
+      t = "🏷️ " + found[0].v + " · " + found[0].src + (f.vend === found[0].v ? " (귀책이 다르면 바꿔도 돼요)" : "");
     } else if (names.length === 1) {
       if (auto && f.vAuto) { f.vend = f.vAuto = ""; vin.value = ""; drawV(); }
-      t = "🏷️ 수입검사 업체: " + found[0].raw + " (귀책 목록엔 이 이름이 없어요 · 목록에서 골라 주세요)"; cls = "w";
+      t = "🏷️ " + found[0].src + ": " + found[0].raw + " (귀책 목록엔 이 이름이 없어요 · 목록에서 골라 주세요)"; cls = "w";
     } else if (names.length > 1) {
       if (auto && f.vAuto) { f.vend = f.vAuto = ""; vin.value = ""; drawV(); }
-      t = (f.kind === "proj" ? "장비마다" : "품번마다") + " 납품 업체가 달라요: " + found.map(function (x) { return x.pn + " → " + (x.v || x.raw); }).join(" / ") + " · 확인 후 골라 주세요"; cls = "w";
-    } else {
-      if (auto && f.vAuto) { f.vend = f.vAuto = ""; vin.value = ""; drawV(); }
-      if (noRec.length && !nfQuick(f.pn)) t = "이 장비 수입검사에 이 품번 기록이 없어요 · 귀책 직접 골라 주세요";
-    }
+      t = (f.kind === "proj" ? "장비마다" : "품번마다") + " 업체가 달라요: " + found.map(function (x) { return x.k + " → " + (x.v || x.raw); }).join(" / ") + " · 확인 후 골라 주세요"; cls = "w";
+    } else if (auto && f.vAuto) { f.vend = f.vAuto = ""; vin.value = ""; drawV(); }
     hint("vsrc", t, cls);
+    drawRef(found.length);
   }
+  // 📚 참고 버튼: 이 품번을 다른 장비에서 쓴 업체 (자동으로는 안 넣음 · 누르면 귀책에)
+  function drawRef(has) {
+    if (!refBox) return;
+    refBox.innerHTML = "";
+    var pn = nfClean(f.pn), V = pn && !nfQuick(pn) ? NFV[nfPnKey(pn)] : null;
+    if (!V || has) return;
+    var seen = {}, list = [];
+    ["l", "i", "n"].forEach(function (s3) {
+      (V[s3] || []).forEach(function (x) {
+        var v = nfVenMap(x[1]); if (!v) return;
+        var o = seen[v] || (seen[v] = { v: v, why: [] });
+        if (o.why.length < 2) o.why.push(SRC_NM[s3] + (s3 === "l" ? " " + x[3] + "회" : " · " + x[0]));
+        if (list.indexOf(o) < 0) list.push(o);
+      });
+    });
+    if (!list.length) { refBox.appendChild(el("div", "nfhint", "이 품번은 수입검사·부적합·이전 요청 기록이 없어요 · 귀책을 직접 골라 주세요")); return; }
+    refBox.appendChild(el("div", "nfhint", "📚 참고: 이 품번을 다른 장비에서 쓴 업체 (장비마다 다를 수 있어요 · 누르면 들어가요)"));
+    var c = el("div", "nfc nfref");
+    list.slice(0, 6).forEach(function (o) {
+      var b = el("button"); b.type = "button"; b.appendChild(el("b", null, o.v)); b.appendChild(el("span", null, o.why.join(" / ")));
+      b.onclick = function () { f.vend = o.v; vin.value = o.v; drawV(); upd(); };
+      c.appendChild(b);
+    });
+    refBox.appendChild(c);
+  }
+  var refBox = null;
   function dupChk() {
     var t = "";
     try {
@@ -4149,7 +4289,7 @@ function nfForm(box) {
         if (get() !== v) return;
         srv = r ? { q: v, nm: r.nm || [] } : null;
         draw();
-        if (r && r.eq && r.eq.length) upd();   // 이 품번이 들어온 장비 · 귀책 업체 갱신
+        if (r && ((r.eq && r.eq.length) || r.vs)) upd();   // 이 품번이 들어온 장비 · 귀책 업체 · 참고 버튼 갱신
         if (!r) { hint(hk, ""); return; }
         // 품번이 정확히 같은지는 하이픈·띄어쓰기·대소문자 빼고 비교 (12pf00p52 = 12P-F00P5-2)
         var ex = (r.hit || []).filter(function (h) { return nfPnKey(h[0]) === nfPnKey(v); })[0];
@@ -4242,26 +4382,42 @@ function nfForm(box) {
     if (f.kind === "proj") return { msg: "프로젝트가 여러 개일 땐 품번은 하나만 넣을 수 있어요" };
     f.kind = "pn"; f.rows.push({ v: t, q: "" }); return { ok: true, row: true };
   }
-  // QR 품번으로 서버에서 '이 품번이 들어온 B팀 장비'를 받아 프로젝트 · 귀책까지 채움
-  function afterScan(t) {
+  // 📷 QR 다음 순서: ① 서버에서 품명 · 이 품번이 들어온 장비 · 업체 근거  ② 라벨 글자 읽기(장비명 · 업체) → 위 '라벨 읽기 결과'에 고정 표시
+  function setPrj(v, src) { if (!v) return; if (!nfClean(f.proj) || f.proj === f.pAuto) { f.proj = f.pAuto = v; pin.value = v; drawParts(); } if (f.scan) { f.scan.prj = v; f.scan.prjSrc = src; } }
+  function afterScan(t, shot) {
+    var S = f.scan = { pn: t, nm: "", prj: "", prjSrc: "", ven: "", st: shot ? "🔤 라벨 글자 읽는 중…" : "", at: Date.now() };
+    drawScan();
     nfPart(t, function (r) {
-      var E = (r && r.eq) || [], ot = r && r.other ? " (B팀 장비 아님)" : "";
-      if (!nfClean(f.proj) && E.length === 1) { f.proj = E[0][0]; pin.value = f.proj; drawParts(); toast("📷 " + t + "\n→ " + E[0][0] + (E[0][1] ? " · " + E[0][1] : "") + ot); }
-      else if (!nfClean(f.proj) && E.length > 1) toast("📷 " + t + "\n이 품번이 들어온 B팀 장비가 " + E.length + "대예요 · 프로젝트에서 골라 주세요");
-      else if (r && !E.length) toast("📷 " + t + "\n수입검사에 이 품번 기록이 없어요 · 프로젝트·귀책은 직접 골라 주세요");
-      upd();
+      if (f.scan !== S) return;
+      if (r && r.hit && r.hit[0]) S.nm = r.hit[0][1] || "";
+      var E = (r && r.eq) || [];
+      if (!S.prj && E.length === 1) setPrj(E[0][0], r.other ? "수입검사 (다른 팀)" : "B팀 수입검사");
+      else if (!S.prj && E.length > 1 && !nfClean(f.proj)) { S.prjSrc = ""; }
+      nfSave(); drawScan(); upd();
     }, true);
+    if (!shot) return;
+    var t0 = Date.now();
+    OCR_PROG = function (m) { if (f.scan !== S || !/loading|initializ/i.test(m.status || "")) return; S.st = "🔤 글자 읽기 도구 받는 중… (처음 한 번만 · " + Math.round((m.progress || 0) * 100) + "%)"; drawScan(); };
+    ocrLabel(shot).then(function (txt) {
+      OCR_PROG = null; if (f.scan !== S) return;
+      var o = ocrParse(txt, prjAll().map(function (p) { return p[0]; }), ((NC.ref && NC.ref.ven) || []).map(function (x) { return x[1]; }));
+      if (o.prj) setPrj(o.prj, "라벨");
+      if (o.ven) S.ven = o.ven;
+      S.st = ""; S.ms = Date.now() - t0;
+      nfSave(); drawScan(); upd();
+    }).catch(function (e) { OCR_PROG = null; if (f.scan !== S) return; S.st = "🔤 라벨 글자를 못 읽었어요 (" + ((e && e.message) || "오류") + ")"; drawScan(); });
   }
   qb.onclick = function () {
-    var n0 = 0;
-    qrScan(function (t, multi) {
+    var n0 = 0, first = true;
+    ocrWorker().catch(function () {});   // ⚡ 카메라 켜는 동안 글자 읽기 도구도 같이 준비
+    qrScan(function (t, multi, shot) {
       var r = addPn(t);
-      if (r.ok) { n0++; afterScan(t); }
-      if (!multi) { if (r.ok || r.dup) toast("📷 QR 확인 · " + t); else toast(r.msg); }
+      if (r.ok) { n0++; if (first) { first = false; afterScan(t, shot); } else nfPart(t, function () { upd(); }); }
+      if (!multi && !r.ok && !r.dup) toast(r.msg);
       return r;
     }, function () {   // 창 닫힐 때 한 번에 다시 그림
       drawRows(); nin3.dispatchEvent(new Event("input")); upd();
-      if (n0 > 1) toast("📷 " + n0 + "개 넣었어요 · 품번마다 수량을 넣어 주세요");
+      if (n0 > 1 && f.scan) { f.scan.st = "📷 " + n0 + "개 넣었어요 · 품번마다 수량을 넣어 주세요"; drawScan(); }
     });
   };
   pnw.appendChild(nin3); pnw.appendChild(qb);
@@ -4274,8 +4430,8 @@ function nfForm(box) {
   var partsBox = el("div", "nfparts"); r3.appendChild(partsBox);
   function drawParts() {
     partsBox.innerHTML = "";
-    var P = nfParts(f.proj);
-    if (!P) return;
+    var P = nfParts(f.proj);   // 수입검사 품목은 화면에 안 보여줌 (품명 찾기 · 업체 참고용으로 뒤에서만 씀)
+    if (!P || !NF_SHOW_INSP) return;
     var h = el("div", "nfph"); h.appendChild(el("b", null, "🔍 " + P.e + " 수입검사 품목")); h.appendChild(el("span", null, P.ld ? "불러오는 중…" : "누르면 품번 · 귀책이 채워져요"));
     partsBox.appendChild(h);
     var lc = el("div", "nfpl");
@@ -4325,6 +4481,7 @@ function nfForm(box) {
   // 6 귀책 (귀책 목록 · 초성 검색)
   var r6 = row(6, "귀책", "초성 검색 가능 (예: ㅇㅍ)"), vin = inp(f.vend, "입력 필요 · 목록에서 고르기", function (t) { f.vend = t; drawV(); }, true);
   r6.appendChild(vin); r6.appendChild(hn("ven")); r6.appendChild(hn("vsrc"));
+  refBox = el("div", "nfrefw"); r6.appendChild(refBox);
   var vs = el("div", "nfc nfv"); r6.appendChild(vs);
   function drawV() {
     vs.innerHTML = "";
@@ -4366,11 +4523,19 @@ function nfForm(box) {
   cp.onclick = function () {
     var m = nfMsg(f);
     if (m.miss.length && !cp.dataset.sure) { cp.dataset.sure = "1"; cp.textContent = "빈 칸이 있어요 · 그래도 복사"; setTimeout(function () { delete cp.dataset.sure; cp.textContent = "📋 복사"; }, 4000); return; }
-    nfCopy(m.text); nfHistAdd(f); delete cp.dataset.sure; cp.textContent = "✅ 복사했어요"; setTimeout(function () { cp.textContent = "📋 복사"; }, 2500);
+    nfCopy(m.text); nfHistAdd(f);
+    try {   // 📚 B팀 학습 기록: 사람이 확인한 품번 → 귀책 (다음에 같은 품번이면 자동)
+      var vn = nfClean(f.vend);
+      if (vn && nfVenOk(vn) && vn !== NF_ASK) {
+        var L = nfEntries(f).filter(function (e) { return e.pn && !nfQuick(e.pn); }).map(function (e) { return { pn: e.pn, proj: e.proj, ven: vn, req: nfClean(f.req) }; });
+        if (L.length) call("saveNcLearn", [L]).catch(function () {});
+      }
+    } catch (eL) {} delete cp.dataset.sure; cp.textContent = "✅ 복사했어요"; setTimeout(function () { cp.textContent = "📋 복사"; }, 2500);
   };
   mw.appendChild(cp);
   box.appendChild(mw);
   NC.nfUpd = upd;
+  drawScan();
   NC.nfRefOk = function () { R = NC.ref; drawReq(); drawV(); if (subP) subP.textContent = subP.textContent.replace(/\n귀책·프로젝트 목록 받는 중…$/, ""); upd(); };
   drawParts(); upd();
 }
@@ -6550,10 +6715,15 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-02-12";
+var APP_VER = "2026-11-02-13";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-02-13", [
+    "📷 QR을 찍으면 라벨 글자까지 읽어서 장비명 · 업체를 채워요 (위에 '라벨 읽기 결과'로 계속 보여요)",
+    "🏷️ 품번만 알아도 업체 근거를 찾아요: 같은 장비 기록은 자동 · 다른 장비 기록은 참고 버튼으로",
+    "📚 요청을 복사하면 품번 → 귀책이 B팀 기록으로 쌓여서 다음엔 자동으로 들어가요"
+  ]],
   ["2026-11-02-12", [
     "📷 QR: B팀 장비에 없는 품번이면 수입검사 전체에서 장비·업체를 찾아요"
   ]],
