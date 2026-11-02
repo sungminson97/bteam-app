@@ -2024,6 +2024,19 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #nc .nfstep .nfqb:active{background:var(--bg)}
 #nc .nfqr{border-radius:12px;height:50px}
 #nc .nfadd button{height:34px;border-radius:10px;background:var(--card);font-weight:700}
+/* ---- 버튼 칸 줄 맞추기 (같은 너비 격자) ---- */
+#nc .nfc.nfg2,#nc .nfc.nfg3,#nc .nfc.nfg4{display:grid;gap:8px}
+#nc .nfc.nfg2{grid-template-columns:repeat(2,minmax(0,1fr))}
+#nc .nfc.nfg3{grid-template-columns:repeat(3,minmax(0,1fr))}
+#nc .nfc.nfg4{grid-template-columns:repeat(4,minmax(0,1fr))}
+#nc .nfc.nfg2 button,#nc .nfc.nfg3 button,#nc .nfc.nfg4 button{width:100%;min-width:0;padding:0 6px;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#nc .nfc.nfg2 button{white-space:normal}
+#nc .nfdq.nfg4 button{font-size:12px}
+#nc .nfref{display:grid;grid-template-columns:1fr;gap:8px}
+#nc .nfref button{width:100%;max-width:none;flex-direction:row !important;align-items:center !important;justify-content:space-between;gap:10px;min-height:52px;padding:8px 14px;border-radius:12px}
+#nc .nfref button b{font-size:14.5px;flex:none}
+#nc .nfref button span{text-align:right;font-size:11.5px}
+
 /* ---- 📝 요청 작성 · 구역 카드 · 진행 · 아래 고정 바 ---- */
 #nc .nf.nfflat{padding:0;background:none;box-shadow:none;gap:12px}
 #nc .nfsec{display:grid;gap:14px;padding:16px;border-radius:20px;background:var(--card);box-shadow:var(--csh)}
@@ -2066,6 +2079,11 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #nc .nfhn.pick{color:var(--accent);font-weight:800}
 #nc .nfps .nfpsh{font-size:11.5px;font-weight:900;color:var(--sub);padding:6px 2px 0}
 #nc .nfps button.mine{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+#nc .nfrech{font-size:12.5px;font-weight:800;color:var(--accent);margin-top:2px}
+#nc .nfrec button{border:1.5px solid color-mix(in srgb,var(--accent) 45%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--card))}
+#nc .nfrec button b{color:var(--accent);font-size:15.5px}
+#nc .nfrec button.on{border-color:#16a34a;background:color-mix(in srgb,#16a34a 9%,var(--card))}
+#nc .nfrec button.on b{color:#15803d}
 #nc .nfps{display:flex;flex-direction:column;gap:6px}
 #nc .nfps:empty{display:none}
 #nc .nfps button{display:flex;align-items:baseline;gap:8px;text-align:left;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;cursor:pointer}
@@ -3892,7 +3910,6 @@ function nfOpen(prj) {
   if (prj) { NC.f = nfNew(); NC.f.proj = prj; nfSave(); }
   window.scrollTo(0, 0);
   try { loadEquipIndex(false); } catch (e) {}
-  try { if (!IN.loaded) loadInsp(false); } catch (e2) {}
   nfRef(function () { if (cur === 8 && NC.form && NC.nfRefOk) NC.nfRefOk(); });
   setTimeout(function () { if (NC.form) qrLib().catch(function () {}); }, 1200);   // ⚡ QR 도구 미리 준비 → 버튼 누르면 바로 켜짐   // 목록 오면 화면 통째로 다시 안 그리고 그 자리만 채움
   if (cur !== 8) setTab(8); else renderNc();
@@ -4432,10 +4449,8 @@ function nfForm(box) {
       if (mr.length) { var mv0 = nfVenMap(mr[0][1]); return mv0 ? { v: mv0, src: "자재팀 발주 (" + mr[0][0] + ")" } : { raw: mr[0][1], src: "자재팀 발주" }; }
     }
     if (f.scan && f.scan.ven && nfPnKey(f.scan.pn) === nfPnKey(e.pn)) return { v: f.scan.ven, src: f.scan.venSrc || "라벨에서 읽음" };
-    var r = nfVenOf(e.proj, e.pn);
-    if (r.st === "ok") { var mv = nfVenMap(r.v); return mv ? { v: mv, src: "같은 장비 수입검사" } : { raw: r.v, src: "같은 장비 수입검사" }; }
-    var V = NFV[nfPnKey(e.pn)], pk = inspKey(e.proj);
-    if (V) for (var s2 = 0, S = ["i", "l", "n"]; s2 < 3; s2++) {
+    var V = NFV[nfPnKey(e.pn)], pk = inspKey(e.proj), r = { st: "none" };
+    if (V) for (var s2 = 0, S = ["l", "n"]; s2 < 2; s2++) {
       var h = (V[S[s2]] || []).filter(function (x) { return inspKey(x[0]) === pk && nfVenMap(x[1]); })[0];
       if (h) return { v: nfVenMap(h[1]), src: "같은 장비 " + SRC_NM[S[s2]] };
     }
@@ -4448,33 +4463,37 @@ function nfForm(box) {
       var r = venFor(e); if (!r) return;
       if (r.wait) wait = true; else found.push({ k: f.kind === "proj" ? e.proj : e.pn, v: r.v, raw: r.raw, src: r.src });
     });
-    var auto = !nfClean(f.vend) || f.vend === f.vAuto, names = [];
-    found.forEach(function (x) { var n = x.v || x.raw; if (names.indexOf(n) < 0) names.push(n); });
-    var t = "", cls = "";
-    if (wait && !found.length) t = "업체 찾는 중…";
-    else if (names.length === 1 && found[0].v) {
-      if (auto && f.vend !== found[0].v) { f.vend = f.vAuto = found[0].v; vin.value = f.vend; drawV(); }
-      t = "🏷️ " + found[0].v + " · " + found[0].src + (f.vend === found[0].v ? " (귀책이 다르면 바꿔도 돼요)" : "");
-    } else if (names.length === 1) {
-      if (auto && f.vAuto) { f.vend = f.vAuto = ""; vin.value = ""; drawV(); }
-      t = "🏷️ " + found[0].src + ": " + found[0].raw + " (귀책 목록엔 이 이름이 없어요 · 목록에서 골라 주세요)"; cls = "w";
-    } else if (names.length > 1) {
-      if (auto && f.vAuto) { f.vend = f.vAuto = ""; vin.value = ""; drawV(); }
-      t = (f.kind === "proj" ? "장비마다" : "품번마다") + " 업체가 달라요: " + found.map(function (x) { return x.k + " → " + (x.v || x.raw); }).join(" / ") + " · 확인 후 골라 주세요"; cls = "w";
-    } else if (auto && f.vAuto) { f.vend = f.vAuto = ""; vin.value = ""; drawV(); }
-    hint("vsrc", t, cls);
-    drawRef(found.length);
+    // ✋ 자동으로 넣지 않음: 우리 쪽(제조1팀·제조2팀) 귀책일 수도 있으니 찾은 업체는 귀책 아래 버튼으로 → 사람이 고름
+    hint("vsrc", wait && !found.length ? "업체 찾는 중…" : "", "");
+    drawRef(found);
   }
   // 📚 참고 버튼: 이 품번을 다른 장비에서 쓴 업체 (자동으로는 안 넣음 · 누르면 귀책에)
-  function drawRef(has) {
+  function drawRef(found) {
     if (!refBox) return;
     refBox.innerHTML = "";
+    // ① 이 장비 발주 업체 (자재팀 시트 · 라벨) → 추천 버튼
+    var rec = [], bad = [];
+    (found || []).forEach(function (x) { if (x.v) { if (!rec.some(function (y) { return y.v === x.v; })) rec.push(x); } else if (x.raw && bad.indexOf(x.raw) < 0) bad.push(x.raw); });
+    if (rec.length) {
+      refBox.appendChild(el("div", "nfrech", "📦 찾은 업체 · 맞으면 눌러 주세요 (우리 쪽 귀책이면 아래 제조1팀 · 제조2팀)"));
+      var rc = el("div", "nfc nfref nfrec");
+      rec.forEach(function (x) {
+        var b = el("button", f.vend === x.v ? "on" : ""); b.type = "button";
+        b.appendChild(el("b", null, (f.vend === x.v ? "✓ " : "") + x.v)); b.appendChild(el("span", null, x.src + (rec.length > 1 ? " · " + x.k : "")));
+        b.onclick = function () { f.vend = x.v; vin.value = x.v; drawV(); upd(); };
+        rc.appendChild(b);
+      });
+      refBox.appendChild(rc);
+      return;   // 찾은 업체가 있으면 다른 장비 참고는 안 보여줌 (헷갈림 방지)
+    }
+    if (bad.length) refBox.appendChild(el("div", "nfhint", "📦 발주 업체 '" + bad.join(", ") + "' 는 귀책 목록에 없는 이름이에요 · 목록에서 골라 주세요"));
+    var has = 0;
     var pn = nfClean(f.pn), V = pn && !nfQuick(pn) ? NFV[nfPnKey(pn)] : null, MM = pn && !nfQuick(pn) ? NFM[nfPnKey(pn)] : null;
     if (MM && MM.length) { V = { i: (V && V.i) || [], n: (V && V.n) || [], l: (V && V.l) || [], m: MM.map(function (x) { return [x[0], x[1], "", 1]; }) }; }
     if (!V || has) return;
     // 업체별로 묶기: 출처별 건수 + 장비 이름 (많이 쓴 업체 → 최근 순)
     var seen = {}, list = [];
-    ["m", "l", "n", "i"].forEach(function (s3) {
+    ["m", "l", "n"].forEach(function (s3) {
       (V[s3] || []).forEach(function (x) {
         var v = nfVenMap(x[1]); if (!v || v === nfClean(f.vend)) return;   // 이미 귀책에 들어간 업체는 또 안 보여줌
         var o = seen[v]; if (!o) { o = seen[v] = { v: v, n: 0, src: {}, eq: [], at: "" }; list.push(o); }
@@ -4571,7 +4590,8 @@ function nfForm(box) {
   function pnWatch(input, get, set, hk) {
     var tm, foc = false, srv = null, lst = el("div", "nfps"), anc = H[hk];
     anc.parentNode.insertBefore(lst, anc.nextSibling);
-    function local(q) {
+    function local(q) {   // (수입검사 품목은 이제 안 씀 · 자재팀 입고 불출 시트만)
+      return [];
       var P = nfParts(f.proj); if (!P || !q) return [];
       return P.list.filter(function (x) { return nfPrjKey(x.pn).indexOf(q) >= 0 || nfPrjKey(x.d).indexOf(q) >= 0; }).map(function (x) { return [x.pn, x.d, x.v, 1]; });
     }
@@ -4587,8 +4607,7 @@ function nfForm(box) {
       // ① 그 장비에 발주된 품목 (자재팀 시트) ② 그 장비 수입검사 ③ 전체 품번 목록
       var matOn = ok && srv.matOk, hasP = !!nfClean(f.proj);
       (ok ? srv.here || [] : []).forEach(function (x) { var k = nfPrjKey(x[0]); if (seen[k]) return; seen[k] = 1; here.push([x[0], x[1], nfVenMap(x[2]) || x[2]]); });
-      if (!matOn) L.forEach(function (x) { var k = nfPrjKey(x[0]); if (seen[k]) return; seen[k] = 1; here.push([x[0], x[1], x[2]]); });   // 자재팀 목록이 없을 때만 수입검사로 대신
-      if (!(hasP && matOn)) (ok ? srv.nm : []).forEach(function (x) { var k = nfPrjKey(x[0]); if (seen[k]) return; seen[k] = 1; all.push(x); });   // 장비를 넣었으면 전체 목록은 안 보여줌
+      // (수입검사 · 품질팀 품명/품번 목록은 안 씀 → 자재팀 입고 불출 시트의 그 장비 품목만)
       var btn = function (x, mine) {
         var bt = el("button", mine ? "mine" : ""); bt.type = "button";
         bt.appendChild(el("b", null, x[0])); bt.appendChild(el("span", null, [x[1], x[2]].filter(Boolean).join(" · ")));
@@ -4597,7 +4616,7 @@ function nfForm(box) {
         lst.appendChild(bt);
       };
       if (here.length) { lst.appendChild(el("div", "nfpsh", "📦 " + (nfCode(f.proj) ? nfPrjFix(f.proj) : nfClean(f.proj)) + " 에 발주된 품목")); here.slice(0, 12).forEach(function (x) { btn(x, true); }); }
-      else if (hasP && matOn) lst.appendChild(el("div", "nfpsh", (nfCode(f.proj) ? nfPrjFix(f.proj) : nfClean(f.proj)) + " 발주 품목에 없어요 · 다른 말로 찾거나 품번을 직접 쳐 주세요"));
+      else if (ok && hasP && matOn && !srv.hit) lst.appendChild(el("div", "nfpsh", (nfCode(f.proj) ? nfPrjFix(f.proj) : nfClean(f.proj)) + " 발주 품목에 없어요 · 다른 말로 찾거나 품번을 직접 쳐 주세요"));
       if (all.length) { if (here.length || nfClean(f.proj)) lst.appendChild(el("div", "nfpsh", "전체 품번 목록 (모든 장비)")); all.slice(0, here.length ? 4 : 10).forEach(function (x) { btn(x, false); }); }
     }
     function look(fix) {
@@ -4608,18 +4627,19 @@ function nfForm(box) {
       hint(hk, "찾는 중…");
       nfPart(v, function (r) {
         if (get() !== v) return;
-        srv = r ? { q: v, nm: r.nm || [], here: r.here || [], matOk: !!r.matOk } : null;
+        srv = r ? { q: v, nm: [], here: r.here || [], matOk: !!r.matOk, hit: !!(r.hit && r.hit.length) } : null;
         draw();
         if (r && ((r.eq && r.eq.length) || r.vs)) upd();   // 이 품번이 들어온 장비 · 귀책 업체 · 참고 버튼 갱신
         if (!r) { setPend(false); upd(); hint(hk, "응답이 늦어요 · 칸을 다시 눌러 주세요", "w"); return; }
         // 품번이 정확히 같은지는 하이픈·띄어쓰기·대소문자 빼고 비교 (12pf00p52 = 12P-F00P5-2)
         var ex = (r.hit || []).filter(function (h) { return nfPnKey(h[0]) === nfPnKey(v); })[0];
         if (ex && ex[0] !== v && !foc) { set(ex[0]); input.value = ex[0]; upd(); }   // 칸에서 나오면 정식 품번 모양으로
-        var cand = (r.here && r.here.length) || (!(r.matOk && nfClean(f.proj)) && ((r.nm && r.nm.length) || local(nfPrjKey(v)).length));
+        var cand = r.here && r.here.length;
         setPend(!ex && !!cand); draw(); upd();   // 정확한 품번이거나 목록에 없는 품번(직접 입력)이면 완료 · 후보만 있으면 고를 때까지 필수
         if (ex) hint(hk, "품명: " + (ex[1] || "-"));
         else if (cand) hint(hk, "👇 아래 목록에서 품번을 눌러 주세요", "pick");
-        else hint(hk, foc ? "" : "품번·품명 목록에 없어요. 다시 확인해 주세요.", "w");   // 치는 중엔 경고 안 띄움
+        else if (!nfClean(f.proj) && !/[0-9]/.test(v)) hint(hk, "🏭 장비를 먼저 넣으면 품명으로 찾을 수 있어요", "pick");
+        else hint(hk, foc ? "" : "자재팀 발주 목록에 없는 품번이에요 · 맞는지 확인해 주세요", "w");   // 치는 중엔 경고 안 띄움
       }, false, nfClean(f.proj));
     }
     input.addEventListener("focus", function () { foc = true; draw(); });
@@ -4640,7 +4660,7 @@ function nfForm(box) {
     ((SR.idx && SR.idx.rows) || []).forEach(function (r) { var k = nfPrjKey(r[0]); if (!k || seen[k]) return; seen[k] = 1; out.push([r[0], r[1] || ""]); });
     // B팀 수입검사 · 부적합 장비 + QR 품번으로 찾은 장비도 '있는 이름'
     var more = [];
-    try { (IN.data && IN.data.list || []).forEach(function (x) { more.push(x.e); }); } catch (e) {}
+    try { ((NC.ref && NC.ref.mprj) || []).forEach(function (x) { more.push(x); }); } catch (e) {}   // 자재팀 시트 장비
     try { (NC.data && NC.data.list || []).forEach(function (x) { more.push(x.e); }); } catch (e) {}
     Object.keys(NFE).forEach(function (k) { (NFE[k] || []).forEach(function (x) { more.push(x[0]); }); });
     more.forEach(function (n) { var k = nfPrjKey(n); if (!k || seen[k]) return; seen[k] = 1; out.push([n, "B팀"]); });
@@ -4698,11 +4718,11 @@ function nfForm(box) {
       var seenE = {}; E = [];
       MM.forEach(function (x) { var k2 = nfCode(x[0]) || x[0]; if (seenE[k2]) return; seenE[k2] = 1; E.push([x[0], x[1], ""]); });
       fromMat = true;
-    } else E = nfEqOf(f.pn);
+    } else E = [];
     if (!E || !E.length) return;
     if (f.proj && E.some(function (x) { return nfSamePrj(x[0], f.proj); })) return;
     eqBox.appendChild(el("div", "nfhint", (f.proj ? "이 품번은 다른 장비에 발주됐어요 · " : "") + "📦 " + nfClean(f.pn) + " 이(가) " + (fromMat ? "발주된 장비 (자재팀 시트)" : NFO[nfPnKey(f.pn)] ? "들어온 장비 (수입검사 · 다른 팀 포함)" : "들어온 B팀 장비")));
-    var c = el("div", "nfc");
+    var c = el("div", "nfc nfg2");
     E.forEach(function (x) {
       var b = el("button"); b.type = "button"; b.appendChild(el("b", null, x[0]));
       b.appendChild(el("span", null, [x[1], String(x[2] || "").slice(5).replace("-", "/")].filter(Boolean).join(" · ")));
@@ -4763,8 +4783,6 @@ function nfForm(box) {
       if (r && r.hit && r.hit[0]) S.nm = r.hit[0][1] || "";
       var E = (r && r.eq) || [];
       matApply(S);
-      if (!S.prj && E.length === 1) setPrj(E[0][0], r.other ? "수입검사 (다른 팀)" : "B팀 수입검사");
-      else if (!S.prj && E.length > 1 && !nfClean(f.proj)) { S.prjSrc = ""; }
       nfSave(); drawScan(); upd();
     }, true);
     if (!shot || ocr !== undefined) { nfSave(); drawScan(); upd(); return; }   // 카메라 화면에서 이미 읽었으면 끝
@@ -4801,7 +4819,7 @@ function nfForm(box) {
   r3.appendChild(pnw); r3.appendChild(hn("pn")); r3.appendChild(hn("dup"));
   pnWatch(nin3, function () { return f.pn; }, function (v) { f.pn = v; }, "pn");
   r3.appendChild(el("div", "nfsub", "자주 쓰는 품목"));
-  var pnq = el("div", "nfc");
+  var pnq = el("div", "nfc nfg3");
   NF_PN.forEach(function (q) { var b = el("button", null, q[0]); b.type = "button"; b.dataset.v = q[1]; b.onclick = function () { f.pn = nfQuick(f.pn) === q[1] ? "" : q[1]; f.pnPend = false; nin3.value = f.pn; hint("pn", ""); upd(); }; pnq.appendChild(b); });
   r3.appendChild(pnq);
   var partsBox = el("div", "nfparts"); r3.appendChild(partsBox);
@@ -4860,9 +4878,9 @@ function nfForm(box) {
   // 5 불량내용
   var r5 = row("⚠️", "불량 내용", "", "불량내용"), ta = el("textarea"); ta.rows = 3; ta.value = f.desc; ta.placeholder = "어떤 불량인지 짧게 · 예) 볼트 체결부 찍힘"; ta.setAttribute("data-req", "1");
   ta.oninput = function () { f.desc = ta.value; upd(); }; r5.appendChild(ta);
-  var dq = el("div", "nfc nfdq");
+  var dq = el("div", "nfc nfdq nfg4");
   ["찍힘", "스크래치", "도장 불량", "치수 불량", "가공 누락", "탭 누락", "파손", "오염"].forEach(function (w) {
-    var b = el("button", null, "+ " + w); b.type = "button";
+    var b = el("button", null, w); b.type = "button";
     b.onclick = function () { var c = nfClean(f.desc); f.desc = c ? (c.indexOf(w) >= 0 ? c : c + ", " + w) : w; ta.value = f.desc; upd(); };
     dq.appendChild(b);
   });
@@ -4879,7 +4897,7 @@ function nfForm(box) {
     hit.forEach(function (v) { var b = el("button", null, v); b.type = "button"; b.onclick = function () { f.vend = v; vin.value = v; drawV(); upd(); }; vs.appendChild(b); });
   }
   drawV();
-  var vq = el("div", "nfc");
+  var vq = el("div", "nfc nfg3");
   NF_QV.forEach(function (t) { var b = el("button", null, t); b.type = "button"; b.onclick = function () { f.vend = t; vin.value = t; drawV(); upd(); }; vq.appendChild(b); });
   r6.appendChild(vq);
   var ask = el("div", "nfc"); var ab = el("button", null, NF_ASK); ab.type = "button"; ab.onclick = function () { f.vend = f.vend === NF_ASK ? "" : NF_ASK; vin.value = f.vend; drawV(); upd(); };
@@ -4889,7 +4907,7 @@ function nfForm(box) {
   // 7 요청자
   var r7 = row("🙋", "요청자", "", "요청자"), rin = inp(f.req, "이름", function (t) { f.req = t; }, true);
   r7.appendChild(rin); r7.appendChild(hn("req"));
-  var rq7 = el("div", "nfc"); r7.appendChild(rq7);
+  var rq7 = el("div", "nfc nfg4"); r7.appendChild(rq7);
   function drawReq() { rq7.innerHTML = ""; ((R && R.who) || []).forEach(function (n) { var b = el("button", null, n); b.type = "button"; b.onclick = function () { f.req = n; rin.value = n; upd(); }; rq7.appendChild(b); }); }
   drawReq();
   // 8 비고 + 자체처리
@@ -7116,10 +7134,14 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-02-16";
+var APP_VER = "2026-11-02-17";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-02-17", [
+    "📦 품번 · 품명 · 업체는 자재팀 입고 불출 시트 하나로만 찾아요 (더 정확하고 빨라요)",
+    "🏷️ 찾은 업체는 귀책 아래 버튼으로 보여줘요 · 맞으면 누르기 (제조1팀 · 제조2팀 귀책일 수도 있어서 자동으로는 안 넣어요)"
+  ]],
   ["2026-11-02-16", [
     "🔎 장비를 넣고 품명을 치면 그 장비에 발주된 품목만 보여줘요 (new back cover처럼 순서가 달라도 찾아요)",
     "⌨️ 키보드를 내려도 목록이 그대로 · 목록에서 품번을 골라야 '완료'"
