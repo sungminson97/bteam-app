@@ -6622,10 +6622,21 @@ function openVendor(v) {
   renderSearch();
   window.scrollTo(0, 0);
 }
+// 지금 · 다음 공정 → { nowI, nxI, wire }
+// 🧱 FRAME 입고는 하루짜리 → 입고 다음 날부터 배선 날짜까지는 '지금 FRAME 배선' (배선 = 입고 ~ 배선 완료일 기간)
+function eqNowNext(r, stages, today) {
+  var nowI = -1, nxI = -1, wire = false;
+  stages.forEach(function (st, i) { var d = r[5][i]; if (!d) return; if (d <= today) nowI = i; else if (nxI < 0) nxI = i; });
+  if (nowI >= 0 && nxI >= 0 && stages[nowI][0] === "frameIn" && stages[nxI][0] === "wire" && r[5][nowI] < today) {
+    nowI = nxI; nxI = -1; wire = true;
+    for (var i = nowI + 1; i < stages.length; i++) { var d2 = r[5][i]; if (d2 && d2 > today) { nxI = i; break; } }
+  }
+  return { nowI: nowI, nxI: nxI, wire: wire };
+}
 function venInfo(r, stages, today) {
   var si = -1; stages.forEach(function (s, i) { if (s[0] === "ship") si = i; });
-  var sd = si >= 0 ? r[5][si] : "", nowI = -1, nxI = -1;
-  stages.forEach(function (st, i) { var d = r[5][i]; if (!d) return; if (d <= today) nowI = i; else if (nxI < 0) nxI = i; });
+  var nn = eqNowNext(r, stages, today);
+  var sd = si >= 0 ? r[5][si] : "", nowI = nn.nowI, nxI = nn.nxI;
   var st = sd && sd <= today ? "out" : nowI >= 0 ? "ing" : "pre";
   return { st: st, sd: sd, nowI: nowI, nxI: nxI };
 }
@@ -6721,8 +6732,7 @@ function renderEquipDetail(box, r, stages, today, canBack) {
     box.appendChild(bk);
   }
   // 🌟 위: 장비 요약 (그라데이션)
-  var nowI = -1, nxI = -1;
-  stages.forEach(function (st, i) { var d = r[5][i]; if (!d) return; if (d <= today) nowI = i; else if (nxI < 0) nxI = i; });
+  var nn = eqNowNext(r, stages, today), nowI = nn.nowI, nxI = nn.nxI;
   var hx = el("div", "hx eqh");
   var nr = el("div", "nmr"); nr.appendChild(el("span", "en", r[0])); if (r[7]) nr.appendChild(el("span", "ug", "긴급"));
   hx.appendChild(nr);
@@ -6736,7 +6746,9 @@ function renderEquipDetail(box, r, stages, today, canBack) {
   hx.appendChild(cps);
   var tl2 = el("div", "tl");
   var t1 = el("div"); t1.appendChild(el("span", null, "지금"));
-  var b1 = el("b", null, nowI >= 0 ? stages[nowI][1] : "시작 전"); if (nowI >= 0) b1.appendChild(el("small", null, r[5][nowI] === today ? "오늘" : mdw(r[5][nowI]) + "~")); t1.appendChild(b1); tl2.appendChild(t1);
+  var b1 = el("b", null, nowI >= 0 ? stages[nowI][1] : "시작 전");
+  if (nowI >= 0) b1.appendChild(el("small", null, nn.wire ? "~" + mdw(r[5][nowI]) + " · D-" + ymdDiff(today, r[5][nowI]) : r[5][nowI] === today ? "오늘" : mdw(r[5][nowI]) + "~"));   // 🧱 배선 중: 끝나는 날까지
+  t1.appendChild(b1); tl2.appendChild(t1);
   var t2 = el("div"); t2.appendChild(el("span", null, "다음"));
   var b2 = el("b", null, nxI >= 0 ? stages[nxI][1] : "남은 공정 없음");
   if (nxI >= 0) b2.appendChild(el("small", null, mdw(r[5][nxI]) + " · D-" + ymdDiff(today, r[5][nxI])));
@@ -6755,12 +6767,12 @@ function renderEquipDetail(box, r, stages, today, canBack) {
   stages.forEach(function (st, i) {
     var d = r[5][i];
     if (!d) return;   // 날짜 없는 공정은 숨김 (카드 짧게)
-    var s = eqStatus(d, today);
-    var row = el("div", "r " + s + (i === nxI ? " nx1" : ""));
+    var s = eqStatus(d, today), ing = nn.wire && i === nowI;   // 🧱 FRAME 배선 진행 중
+    var row = el("div", "r " + (ing ? "now" : s) + (i === nxI ? " nx1" : ""));
     row.appendChild(el("i", "dt"));
     row.appendChild(el("span", "k", st[1]));
-    row.appendChild(el("span", "d", mdw(d)));
-    row.appendChild(el("span", "s", s === "done" ? "완료" : s === "now" ? "오늘" : i === nxI ? "D-" + ymdDiff(today, d) : "예정"));
+    row.appendChild(el("span", "d", ing ? "~" + mdw(d) : mdw(d)));
+    row.appendChild(el("span", "s", ing ? "진행 중" : s === "done" ? "완료" : s === "now" ? "오늘" : i === nxI ? "D-" + ymdDiff(today, d) : "예정"));
     tl.appendChild(row);
   });
   box.appendChild(tl);
@@ -7697,10 +7709,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-03-14";
+var APP_VER = "2026-11-03-15";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-03-15", ["🔍 장비 검색: FRAME 입고 다음 날부터는 '지금 FRAME 배선 중'으로 보여요 (배선 끝나는 날 · D-day 표시)"]],
   ["2026-11-03-14", [
     "🤖 AI 속도 학습: 느렸던 화면을 AI가 스스로 찾아서 앱을 켤 때 미리 불러 둬요 · 고친 내용은 다음에 켤 때 리포트로 알려 줘요",
     "🧠 입고 불출이 쓸수록 빨라져요: 팀이 자주 여는 장비 · 오늘 · 내일 일정 장비를 AI가 미리 읽어 둬서 누르면 바로 떠요 (⚡ 바로)",
