@@ -208,6 +208,17 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .dlsec input{font-size:16px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit}
 .dlsec .bnl{display:grid;gap:6px}
 .dlsec .bn{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
+.dlsec.dlblk{border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}
+.dlsec .bn small{color:var(--sub);font-size:12px;font-weight:500}
+.why{display:grid;gap:8px;margin-top:10px}
+.why input{width:100%;box-sizing:border-box;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit}
+.why .chips{gap:6px}
+.why .chip{padding:6px 11px;font-size:13px}
+.why .lb{font-size:12.5px;color:var(--sub);font-weight:600}
+.dlsec .bn .wy{display:block;font-size:12.5px;color:var(--text);margin-top:3px;word-break:keep-all}
+.dlsec .bn .wy.no{color:var(--sub)}
+.dlsec .bn .bb{display:flex;gap:6px;flex-shrink:0}
+.dlsec .bne{display:grid;gap:8px;padding:8px 0 4px}
 .dlsec .bn .st{font-size:12px;font-weight:700}
 .dlsec .bn .st.on{color:var(--warn)}.dlsec .bn .st.res{color:#c27400}
 #upov{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(120% 90% at 50% 0%,#1e3a8a 0%,#0b1220 60%,#05080f 100%);color:#fff;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility 0s .35s}
@@ -1005,6 +1016,46 @@ html:not(.xmas) #splash .aipill{display:inline-flex;position:absolute;left:50%;b
 #pushov.first #pushgo{height:56px;padding:0;border:0;border-radius:16px;font-size:17px;font-weight:800;letter-spacing:-.02em;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 14px 28px -14px var(--accent)}
 #pushov.first #pushno{height:44px;border:0;background:none;color:var(--oink);font-size:13px;font-weight:600;opacity:.75}
 @media (prefers-reduced-motion:reduce){.obic .sp,#nmcf .av{animation:none}}
+/* 🚫 접근 해제 화면 (2026-11-03 v2) — 아이콘·'사용 중지'·'문의' 없이 글자 중심 · 항상 어두운 화면 */
+#secov .secx{display:none}
+#secov.blk{display:block;padding:0;background:#07080c;color:#eef1f6;overflow:hidden}
+#secov.blk::before{content:"";position:absolute;inset:0;height:auto;pointer-events:none;
+  background:radial-gradient(80% 45% at 100% 0%,rgba(229,72,77,.20),transparent 70%),radial-gradient(70% 40% at 0% 100%,rgba(70,110,255,.12),transparent 70%)}
+#secov.blk::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.2px);background-size:22px 22px;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 55%);mask-image:linear-gradient(180deg,#000 0%,transparent 55%)}
+#secov.blk .secin{display:none}
+#secov.blk .secx{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100%;box-sizing:border-box;max-width:460px;margin:0 auto;
+  padding:calc(30px + env(safe-area-inset-top)) 28px calc(30px + env(safe-area-inset-bottom))}
+.secx .sx-logo{line-height:0}
+.secx .sx-logo img{height:17px;width:auto;opacity:.9}
+.secx .sx-main{margin:auto 0;padding:48px 0 32px}
+.secx .sx-tag{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:800;letter-spacing:.22em;color:#ff8f93}
+.secx .sx-tag i{width:7px;height:7px;border-radius:50%;background:#ff5a60;box-shadow:0 0 0 4px rgba(255,90,96,.18);animation:sxdot 2.4s ease-in-out infinite}
+@keyframes sxdot{0%,100%{box-shadow:0 0 0 4px rgba(255,90,96,.18)}50%{box-shadow:0 0 0 8px rgba(255,90,96,0)}}
+.secx .sx-h{margin:18px 0 0;font-size:38px;line-height:1.18;font-weight:900;letter-spacing:-.04em;word-break:keep-all;
+  background:linear-gradient(180deg,#ffffff 30%,#aab3c2);-webkit-background-clip:text;background-clip:text;color:transparent}
+.secx .sx-p{margin:16px 0 0;font-size:15.5px;line-height:1.6;color:#9aa4b2;word-break:keep-all}
+.secx .sx-line{height:1px;margin:34px 0 6px;background:linear-gradient(90deg,rgba(255,90,96,.7),rgba(255,255,255,.10) 38%,transparent)}
+.secx .sx-dl{margin:0;display:grid}
+.secx .sx-dl>div{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:baseline;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.secx .sx-dl dt{font-size:12.5px;font-weight:700;color:#6f7a8a;letter-spacing:.02em}
+.secx .sx-dl dd{margin:0;font-size:16px;font-weight:700;line-height:1.5;color:#eef1f6;word-break:keep-all}
+.secx .sx-dl dd.sm{font-size:14px;font-weight:600;color:#aeb7c4}
+.secx .sx-dl dd .ok{display:inline-block;margin-right:7px;width:16px;height:16px;border-radius:50%;vertical-align:-3px;
+  background:#2fbf71 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.3l2.3 2.2 4.7-4.9' fill='none' stroke='%23fff' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+.secx .sx-thx{margin:0;font-size:13.5px;line-height:1.6;color:#7d8796;word-break:keep-all}
+.secx .sx-thx b{color:#c9d0db;font-weight:700}
+.secx .sx-ft{margin-top:10px;font-size:11px;letter-spacing:.14em;color:#4c5562;font-weight:700}
+#secov.blk .secx>*{animation:sxup .7s cubic-bezier(.2,.7,.2,1) both}
+#secov.blk .sx-main>*{animation:sxup .7s cubic-bezier(.2,.7,.2,1) both}
+#secov.blk .sx-main>:nth-child(2){animation-delay:.08s}
+#secov.blk .sx-main>:nth-child(3){animation-delay:.16s}
+#secov.blk .sx-main>:nth-child(4),#secov.blk .sx-main>:nth-child(5){animation-delay:.26s}
+@keyframes sxup{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (max-height:700px){.secx .sx-h{font-size:32px}.secx .sx-main{padding:28px 0 20px}.secx .sx-line{margin-top:24px}}
+@media (prefers-reduced-motion:reduce){#secov.blk .secx>*,#secov.blk .sx-main>*,.secx .sx-tag i{animation:none}}
+
 /* 📱 키 작은 폰(SE·미니 등): 처음 화면이 잘리지 않게 간격·아이콘 줄임 */
 @media (max-height:760px){
   .obst{top:calc(12px + env(safe-area-inset-top));gap:6px}
@@ -2253,6 +2304,21 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
     <button id="secrq" type="button">승인 요청 다시 보내기</button>
     <button id="secdev" type="button">🛠 개발자 PIN으로 바로 승인</button>
     <div id="secdevbox" style="display:none"><input id="secdevpin" type="password" inputmode="numeric" autocomplete="off" placeholder="개발자 PIN"><button id="secdevgo" type="button">승인</button></div>
+  </div>
+  <div class="secx" id="secx">
+    <picture class="sx-logo"><source srcset="logo_dark.png"><img src="logo_dark.png" alt="NINEBELL" onerror="this.src='logo.png'"></picture>
+    <div class="sx-main">
+      <span class="sx-tag"><i></i>ACCESS CLOSED</span>
+      <h1 class="sx-h" id="sxh">접근 권한이<br>없습니다</h1>
+      <p class="sx-p" id="sxp">제조1-B 앱을 더 이상 사용할 수 없습니다.</p>
+      <div class="sx-line"></div>
+      <dl class="sx-dl">
+        <div id="sxwr"><dt>사유</dt><dd id="sxw"></dd></div>
+        <div><dt>기기</dt><dd class="sm" id="sxd"></dd></div>
+        <div><dt>보안</dt><dd class="sm"><span class="ok"></span>저장된 PIN · 로그인 정보 삭제 완료</dd></div>
+      </dl>
+    </div>
+    <div class="sx-ft">제조1-B · NINEBELL</div>
   </div>
 </div>
 <!-- 🚀 업데이트 화면 (#app 밖: PIN 화면 위에도 뜨게) -->
@@ -7709,7 +7775,7 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-03-15";
+var APP_VER = "2026-11-03-18";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
@@ -8921,6 +8987,11 @@ function showSec(j) {
   $("sect").textContent = (lines[0] || "").replace(/^(🚫|🔐)\s*/, "").replace(/\.$/, "") || (blk ? "사용이 중지됐어요" : "승인이 필요해요");
   $("secd").textContent = lines.slice(1).join("\n");
   $("secid").textContent = (myName() ? myName() + " · " : "") + "기기-" + (j.dev || devId());
+  if (blk) {   // 🚫 접근 해제 화면: 서버 둘째 줄의 '사유: …'만 씀 ('문의'는 안 보여 줌)
+    var wl = String(lines[1] || "").match(/^\s*사유\s*[:：]\s*(.+)$/), why = wl ? wl[1].trim() : "";
+    $("sxw").textContent = why; $("sxwr").style.display = why ? "" : "none";
+    $("sxd").textContent = (myName() ? myName() + " · " : "") + "기기-" + (j.dev || devId());
+  }
   o.className = blk ? "on blk" : "on";
   if (SEC.shown === j.code) return;
   SEC.shown = j.code;
@@ -9014,7 +9085,20 @@ function devPingLater(pg) {
 }
 
 /* ---------- 📱 팀 기기 목록 (Developer → 개발자 PIN) ---------- */
-var DL = { rows: [], names: [], open: "", pick: "", forget: "", gate: false, all: [], bn: [], bnOpen: false, from: "", bnPick: "", block: "", exp: {} };
+var DL = { rows: [], names: [], open: "", pick: "", forget: "", gate: false, all: [], bn: [], bd: [], bnOpen: false, from: "", bnPick: "", block: "", exp: {}, why: "", whyEd: "" };
+// 📝 차단 사유 입력칸 + 자주 쓰는 사유 버튼 (차단 화면에 '사유: …'로 보여요)
+var WHY_PRESET = ["A팀으로 팀 이동", "퇴사", "폰 분실", "새 폰으로 교체"];
+function whyBox(val, onInput, label) {
+  var w = el("div", "why");
+  w.appendChild(el("span", "lb", label || "차단 사유 (선택) · 차단된 폰 화면에 보여요"));
+  var inp = document.createElement("input"); inp.type = "text"; inp.maxLength = 40; inp.placeholder = "예: A팀으로 팀 이동 (비우면 '문의: 손성민')"; inp.value = val || "";
+  inp.oninput = function () { onInput(inp.value); };
+  w.appendChild(inp);
+  var ch = el("div", "chips");
+  WHY_PRESET.forEach(function (t) { var b = el("button", "chip" + (inp.value === t ? " on" : ""), t); b.type = "button"; b.onclick = function () { inp.value = t; onInput(t); [].forEach.call(ch.children, function (x) { x.className = "chip" + (x.textContent === t ? " on" : ""); }); }; ch.appendChild(b); });
+  w.appendChild(ch);
+  return w;
+}
 function openDevList() {
   $("dlov").className = "ov on";
   $("dllist").innerHTML = ""; $("dllist").appendChild(el("span", "hint", "불러오는 중…"));
@@ -9022,6 +9106,7 @@ function openDevList() {
     if (r && r.error) { dlErr(r.error); return; }
     DL.rows = r.rows || []; DL.names = r.names || []; DL.open = ""; DL.pick = ""; DL.forget = "";
     DL.gate = !!r.gate; DL.all = r.allNames || DL.names; DL.bn = r.bn || []; DL.bnOpen = false;
+    DL.bd = r.bd || DL.rows.filter(function (x) { return x.blk; }).map(function (x) { return { dev: x.dev, n: x.n, at: "", inList: true }; });   // 예전 서버면 목록 안 차단 폰만
     if (!DL.keepExp) DL.exp = {}; DL.keepExp = false;
     dlRender();
   }).catch(function (e) { dlErr("불러오기 실패: " + errText(e)); });
@@ -9088,6 +9173,53 @@ function dlRender() {
     }
     L.appendChild(gc);
   });
+  // 🚫 차단 목록 — 차단된 폰 · 이름을 한눈에 (목록에서 뺀 폰도 여기 남아서 풀 수 있음)
+  var bs = el("div", "dlsec dlblk"), bh = el("div", "r"), bhl = el("div");
+  var bnOn = DL.bn.filter(function (x) { return x.on; }), bnRes = DL.bn.filter(function (x) { return !x.on; });
+  bhl.appendChild(el("b", null, "🚫 차단 목록" + (DL.bd.length || DL.bn.length ? " (" + [DL.bd.length ? "기기 " + DL.bd.length : "", DL.bn.length ? "이름 " + DL.bn.length : ""].filter(Boolean).join(" · ") + ")" : "")));
+  bhl.appendChild(el("small", null, "목록에서 뺀 폰도 차단은 그대로 남아요 · 여기서 풀 수 있어요"));
+  bh.appendChild(bhl); bs.appendChild(bh);
+  var bmsg = el("div", "em"), bll = el("div", "bnl");
+  if (!DL.bd.length && !DL.bn.length) bll.appendChild(el("span", "hint", "차단된 기기 · 이름이 없어요."));
+  // 한 줄: 이름 · 정보 · 사유 + [사유] [차단 풀기] → [사유] 누르면 아래에 사유 고치기
+  function blkRow(key, lt, why, onSave, unText, onUn) {
+    lt.appendChild(el("span", "wy" + (why ? "" : " no"), why ? "📝 사유: " + why : "사유 없음 · 차단 화면엔 '문의: 손성민'"));
+    var row = el("div", "bn"), bb = el("div", "bb");
+    row.appendChild(lt);
+    var eb = el("button", null, DL.whyEd === key ? "닫기" : "사유"); eb.type = "button";
+    eb.onclick = function () { DL.whyEd = DL.whyEd === key ? "" : key; DL.whyVal = why; dlRender(); };
+    var ub = el("button", "x", unText); ub.type = "button";
+    ub.onclick = function () { ub.disabled = true; onUn(); };
+    bb.appendChild(eb); bb.appendChild(ub); row.appendChild(bb); bll.appendChild(row);
+    if (DL.whyEd === key) {
+      var ed = el("div", "bne");
+      ed.appendChild(whyBox(why, function (v) { DL.whyVal = v; }, "차단 사유 고치기 · 그 폰 화면에 바로 반영돼요"));
+      var sv = el("button", "on", "사유 저장"); sv.type = "button";
+      sv.onclick = function () { sv.disabled = true; DL.whyEd = ""; onSave(DL.whyVal || ""); };
+      ed.appendChild(sv); bll.appendChild(ed);
+    }
+  }
+  DL.bd.forEach(function (x) {
+    var lt = el("div");
+    lt.appendChild(el("b", null, (x.n || "이름 없음") + " "));
+    lt.appendChild(el("small", null, "기기-" + x.dev + (x.at ? " · " + x.at + " 차단" : "")));
+    if (!x.inList) lt.appendChild(el("span", "st res", "  목록에서 빠짐"));
+    blkRow("d:" + x.dev, lt, x.why,
+      function (v) { dlDo("secBlockDev", [DV.pin, x.dev, true, v], bmsg, "차단 사유를 저장했어요"); },
+      "차단 풀기", function () { dlDo("secBlockDev", [DV.pin, x.dev, false], bmsg, (x.n || "그") + " 폰 차단을 풀었어요"); });
+  });
+  bnOn.concat(bnRes).forEach(function (x) {
+    var lt = el("div");
+    lt.appendChild(el("b", null, x.n + " "));
+    lt.appendChild(el("small", null, "이름"));
+    lt.appendChild(el("span", "st " + (x.on ? "on" : "res"), x.on ? "  🚫 차단 중" : "  ⏰ " + mdLabel(x.from) + "부터 차단"));
+    blkRow("n:" + x.n, lt, x.why,
+      function (v) { dlDo("secBlockName", [DV.pin, x.n, true, x.from || "", v], bmsg, "차단 사유를 저장했어요"); },
+      x.on ? "차단 풀기" : "예약 취소", function () { dlDo("secBlockName", [DV.pin, x.n, false, ""], bmsg, x.n + (x.on ? " 이름 차단을 풀었어요" : " 차단 예약을 취소했어요")); });
+  });
+  bs.appendChild(bll); bs.appendChild(bmsg);
+  L.appendChild(bs);
+
   // 🚫 이름 차단 (퇴사·팀 이동) — 시작일을 정하면 그날부터
   var ns = el("div", "dlsec"), nr = el("div", "r"), nl = el("div");
   var act = DL.bn.filter(function (x) { return x.on; }).length, res = DL.bn.length - act;
@@ -9104,6 +9236,7 @@ function dlRender() {
     dr.appendChild(dl2);
     var di = document.createElement("input"); di.type = "date"; di.value = DL.from || ""; di.onchange = function () { DL.from = di.value; };
     dr.appendChild(di); ns.appendChild(dr);
+    ns.appendChild(whyBox(DL.why, function (v) { DL.why = v; }));
     var nmsg = el("div", "em");
     var bl = el("div", "bnl");
     DL.all.forEach(function (n) {
@@ -9117,7 +9250,8 @@ function dlRender() {
       b.onclick = function () {
         if (!cur2 && DL.bnPick !== n) { DL.bnPick = n; dlRender(); return; }
         b.disabled = true; DL.bnPick = "";
-        dlDo("secBlockName", [DV.pin, n, !cur2, cur2 ? "" : (DL.from || "")], nmsg,
+        var wv = cur2 ? "" : (DL.why || ""); if (!cur2) DL.why = "";
+        dlDo("secBlockName", [DV.pin, n, !cur2, cur2 ? "" : (DL.from || ""), wv], nmsg,
           cur2 ? n + " 차단을 풀었어요" : n + (DL.from ? " · " + mdLabel(DL.from) + "부터 차단 예약" : " 이름을 차단했어요"));
       };
       row.appendChild(b); bl.appendChild(row);
@@ -9165,20 +9299,22 @@ function dlCard(r, me, inGroup) {
     });
     if (r.wait) btn("✅ 승인", "go", function (b) { b.disabled = true; dlDo("secApprove", [DV.pin, r.dev, true], msg, r.n + " 폰을 승인했어요"); });
     if (!mine) btn(r.blk ? "차단 풀기" : (DL.block === r.dev ? "한 번 더 누르면 차단" : "🚫 차단"), "x", function (b) {
-      if (!r.blk && DL.block !== r.dev) { DL.block = r.dev; dlRender(); return; }
+      if (!r.blk && DL.block !== r.dev) { DL.block = r.dev; DL.why = ""; dlRender(); return; }
       b.disabled = true; DL.block = "";
-      dlDo("secBlockDev", [DV.pin, r.dev, !r.blk], msg, r.blk ? "차단을 풀었어요" : r.n + " 폰을 차단했어요");
+      var wv = r.blk ? "" : (DL.why || ""); DL.why = "";
+      dlDo("secBlockDev", [DV.pin, r.dev, !r.blk, wv], msg, r.blk ? "차단을 풀었어요" : r.n + " 폰을 차단했어요" + (wv ? " · 사유: " + wv : ""));
     });
     if (r.pend) btn("예약 취소", null, function (b) { b.disabled = true; dlDo("devRenameCancel", [DV.pin, r.dev], msg, "예약을 취소했어요"); });
     btn(DL.open === r.dev ? "닫기" : "이름 바꾸기", null, function () {
       if (mine) { closeDevList(); openNameChange(); return; }   // 이 폰은 바로 바꾸기
       DL.open = DL.open === r.dev ? "" : r.dev; DL.pick = ""; DL.forget = ""; dlRender();
     });
-    btn(DL.forget === r.dev ? "한 번 더 누르면 빼기" : "목록에서 빼기", "x", function (b) {
+    btn(DL.forget === r.dev ? (r.blk ? "한 번 더 누르면 빼기 (차단은 유지)" : "한 번 더 누르면 빼기") : "목록에서 빼기", "x", function (b) {
       if (DL.forget !== r.dev) { DL.forget = r.dev; DL.open = ""; dlRender(); return; }
-      b.disabled = true; dlDo("devForget", [DV.pin, r.dev], msg, "목록에서 뺐어요");
+      b.disabled = true; dlDo("devForget", [DV.pin, r.dev], msg, r.blk ? "목록에서 뺐어요 · 차단은 그대로라 아래 차단 목록에 남아요" : "목록에서 뺐어요");
     });
     c.appendChild(bt);
+    if (!r.blk && DL.block === r.dev) c.appendChild(whyBox(DL.why, function (v) { DL.why = v; }));   // 📝 차단 누르면 사유 칸 (선택)
     if (DL.open === r.dev) {
       var ch = el("div", "chips");
       DL.names.forEach(function (n) {
