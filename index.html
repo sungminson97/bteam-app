@@ -2293,6 +2293,26 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #nc .nfps button b{font-weight:800;font-size:15px}
 #nc .nfps button span{font-size:12.5px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #nc .nfcopy{height:54px;border:0;border-radius:16px;background:#2f7d32;color:#fff;font:inherit;font-size:16.5px;font-weight:900}
+/* ⏰ 근무시간 바로 저장 (앱 켤 때 · 알림 눌렀을 때) */
+#qhov .box{gap:10px}
+#qhov .qhk{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.02em}
+#qhov h3{font-size:19px;line-height:1.35;word-break:keep-all}
+#qhov .qhs{color:var(--sub);font-size:13px;line-height:1.5;margin:0;word-break:keep-all}
+#qhov .qhgo{width:100%;padding:17px 14px;border-radius:16px;border:0;background:var(--accent);color:#fff;font:inherit;font-size:18px;font-weight:800;letter-spacing:-.01em;box-shadow:0 10px 24px -12px color-mix(in srgb,var(--accent) 80%,transparent);transition:transform .1s}
+#qhov .qhgo small{display:block;margin-top:3px;font-size:12px;font-weight:600;opacity:.85}
+#qhov .qhgo:active,#qhov .qhrec:active{transform:scale(.97)}
+#qhov .qhgo:disabled{background:var(--line);color:var(--sub);box-shadow:none}
+#qhov .qhinw{position:relative}
+#qhov .qhin{width:100%;box-sizing:border-box;padding:16px 64px 16px 18px;border-radius:16px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);font:inherit;font-size:24px;font-weight:800;text-align:center;outline:none}
+#qhov .qhin:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 15%,transparent)}
+#qhov .qhin::placeholder{color:color-mix(in srgb,var(--sub) 55%,transparent);font-weight:700}
+#qhov .qhinw span{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:800;color:var(--sub);pointer-events:none}
+#qhov .qhrec{justify-self:start;padding:9px 13px;border-radius:999px;border:1px dashed color-mix(in srgb,var(--accent) 50%,transparent);background:color-mix(in srgb,var(--accent) 6%,var(--card));color:var(--accent);font:inherit;font-size:13px;font-weight:700}
+#qhpick{display:grid;gap:10px}
+#qhov .qhb{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#qhov .qhb button{padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--sub);font:inherit;font-size:14.5px;font-weight:700}
+#qhov .qhm{min-height:0;margin:0;font-size:13px;color:var(--warn);white-space:pre-line}
+#qhov .qhm:empty{display:none}
 </style>
 </head>
 <body>
@@ -2812,6 +2832,20 @@ SPX.start();
     <div class="mnl" id="dvlist"></div>
     <p class="sub" id="dvmsg"></p>
     <div class="ob" style="grid-template-columns:1fr 1fr"><button id="dvback" type="button">← 메뉴로</button><button id="dvno" type="button">닫기</button></div>
+  </div>
+</div>
+
+<div class="ov" id="qhov">
+  <div class="box">
+    <div class="qhk">⏰ 근무시간</div>
+    <h3 id="qhttl"></h3>
+    <p class="qhs" id="qhsub"></p>
+    <div id="qhpick"></div>
+    <p class="qhm" id="qhmsg"></p>
+    <div class="qhb">
+      <button type="button" id="qhother">다른 시간·연차</button>
+      <button type="button" id="qhlater">나중에</button>
+    </div>
   </div>
 </div>
 
@@ -7765,7 +7799,8 @@ function hRec(name, date) {
     };
     var seen = {}, P = hpgAll();
     Object.keys(P).forEach(function (ym) { var r = P[ym]; if (r && r.rows && r.rows[name]) { seen[ym] = 1; add(ym, r.rows[name].v); } });
-    var g = H.meta && H.meta.grid, ty = String((H.meta && H.meta.today) || ymdLocal()).slice(0, 4);
+    var M = H.meta || cget("hours") || null;   // ⚡ 근무시간 탭을 아직 안 열었어도 폰에 받아 둔 값으로
+    var g = M && M.grid, ty = String((M && M.today) || ymdLocal()).slice(0, 4);
     if (g && g.rows && g.rows[name] && g.m) { var gym = ty + "-" + ("0" + g.m).slice(-2); if (!seen[gym]) add(gym, g.rows[name].v); }
     var best = "", bc = 0;
     Object.keys(cnt).forEach(function (v) { if (cnt[v] > bc || (cnt[v] === bc && last[v] > last[best])) { best = v; bc = cnt[v]; } });
@@ -7984,10 +8019,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-04-1";
+var APP_VER = "2026-11-04-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-04-2", ["⏰ 근무시간을 깜빡했으면 앱 켤 때 바로 물어봐요 — 그 자리에서 바로 입력", "🔔 근무시간 알림을 누르면 바로 저장 창이 떠요"]],
   ["2026-11-04-1", ["💿 새 시작 화면 2가지: AI 웨이퍼 수율 검사 · 빛 스캔 로고 — 앱을 켤 때마다 번갈아 나와요"]],
   ["2026-11-03-15", ["🔍 장비 검색: FRAME 입고 다음 날부터는 '지금 FRAME 배선 중'으로 보여요 (배선 끝나는 날 · D-day 표시)"]],
   ["2026-11-03-14", [
@@ -8761,6 +8797,134 @@ function prevDone(name, ymd) {
   });
   renderPrev(prevMissing());
   if (cur === 0) render();
+}
+
+/* ---------- ⏰ 근무시간 바로 저장 (앱 켤 때 미입력이면 / 근무시간 알림 누르면) ----------
+ *  - 알림 주소 "?qh=YYYY-MM-DD" → 그 날짜로 바로 창 / "?go=hours" → 근무시간 탭
+ *  - 알림 없이 켜도 지난 근무일 미입력 명단(store.prevMiss)에 내가 있으면 창
+ *  - AI 추천(hRec: 지난 같은 요일에 가장 많이 넣은 시간) 한 번 탭 → 저장 · 추천 없으면 8·9·10·11
+ *  - "나중에" → 같은 날짜는 2시간 동안 안 띄움 (알림을 직접 누르면 바로 띄움)
+ *  - 서버 요청 없음 (저장 버튼 누를 때만 saveHours 1번)
+ */
+var QH = { ymd: "", go: "", tries: 0, busy: false, shown: "" };
+function qhParse() {
+  try {
+    var q = location.search, m = q.match(/[?&]qh=(\d{4}-\d{2}-\d{2})\b/), g = q.match(/[?&]go=(\w+)/);
+    if (m) QH.ymd = m[1];
+    if (g) QH.go = g[1];
+    if ((m || g) && history.replaceState) history.replaceState(null, "", location.pathname + q.replace(/[?&](qh|go)=[^&]*/g, "").replace(/^&/, "?"));
+  } catch (e) {}
+}
+function qhLabel(ymd) {
+  var p = ymd.split("-"), dt = new Date(+p[0], +p[1] - 1, +p[2]), t = ymdLocal(), y = new Date(); y.setDate(y.getDate() - 1);
+  var yd = y.getFullYear() + "-" + ("0" + (y.getMonth() + 1)).slice(-2) + "-" + ("0" + y.getDate()).slice(-2);
+  var md = (+p[1]) + "/" + (+p[2]) + " " + "일월화수목금토".charAt(dt.getDay());
+  return (ymd === t ? "오늘" : ymd === yd ? "어제" : "") + "(" + md + ")";
+}
+// 폰에 받아 둔 값으로 이미 넣었는지 (모르면 false → 서버가 덮어쓰기 확인으로 막아 줌)
+function qhFilled(me, ymd) {
+  try {
+    var M = H.meta || cget("hours"), g = M && M.grid, m = +ymd.slice(5, 7), d = +ymd.slice(8, 10), v = null;
+    if (g && g.m === m && g.rows && g.rows[me]) v = g.rows[me].v[d - 1];
+    else { var pg = hpgAll()[ymd.slice(0, 7)]; if (pg && pg.rows && pg.rows[me]) v = pg.rows[me].v[d - 1]; }
+    return v != null && String(v).trim() !== "";
+  } catch (e) { return false; }
+}
+function qhCheck() {
+  if (QH.go === "hours" && !QH.ymd) { QH.go = ""; try { setTab(3); } catch (eG) {} }
+  var me = myName(), deep = QH.ymd, pm = prevMissing();
+  if (!me || !nameDone() || viewOnly() || isChief() || QH.busy || $("qhov").className.indexOf("on") >= 0) return;
+  if ($("app").style.display === "none" || (SPL && !SPL.shut)) { if (QH.tries++ < 30) setTimeout(qhCheck, 1000); return; }
+  if (document.querySelector(".ov.on,.airep")) { if (QH.tries++ < 30) setTimeout(qhCheck, 1500); return; }   // 다른 창 먼저 닫히면
+  var ymd = deep || (pm && pm.names.indexOf(me) >= 0 ? pm.ymd : "");
+  if (!ymd) {
+    if (!pm && QH.tries++ < 8) setTimeout(qhCheck, 1500);   // 금일 데이터 아직이면 조금 기다림
+    return;
+  }
+  QH.ymd = "";
+  if (!hMonthInfo(ymd).view || hMonthInfo(ymd).leaveOnly) return;
+  var M = H.meta || cget("hours");
+  if (M && M.names && M.names.indexOf(me) < 0) return;   // 근무시간 명단에 없는 이름
+  if (pm && pm.ymd === ymd && pm.names.indexOf(me) < 0) { if (deep) toast("✔ " + qhLabel(ymd) + " 근무시간은 이미 들어가 있어요"); return; }
+  if (qhFilled(me, ymd)) { if (deep) toast("✔ " + qhLabel(ymd) + " 근무시간은 이미 들어가 있어요"); return; }
+  if (!deep) {
+    var z = String(sget("qhSnz") || "").split("|");
+    if (z[0] === ymd && Date.now() - (+z[1] || 0) < 2 * 3600000) return;   // "나중에" 누른 지 2시간 안
+    if (QH.shown === ymd) return;   // 이번에 켠 동안 한 번만
+  }
+  qhOpen(me, ymd, pm && pm.ymd === ymd ? pm.label : qhLabel(ymd));
+}
+function qhOpen(me, ymd, label) {
+  QH.shown = ymd;
+  var today = ymd === ymdLocal(), rec = hRec(me, ymd), gv = me.length === 3 ? me.slice(1) : me;
+  $("qhttl").textContent = today ? label + " 근무시간 넣을 차례예요" : label + " 근무시간이 비어 있어요";
+  $("qhsub").textContent = gv + "님, 몇 시간 일했는지 직접 넣어 주세요.";
+  $("qhmsg").textContent = "";
+  var P = $("qhpick"); P.innerHTML = "";
+  var w = el("div", "qhinw"), inp = el("input", "qhin"); inp.id = "qhin";
+  inp.type = "text"; inp.setAttribute("inputmode", "decimal"); inp.autocomplete = "off"; inp.placeholder = "예: 9";
+  w.appendChild(inp); w.appendChild(el("span", null, "시간")); P.appendChild(w);
+  if (rec) {   // 💡 추천은 참고만 — 누르면 칸에 채워지기만 하고 저장은 직접
+    var rb = el("button", "qhrec", "💡 지난 " + rec.dow + "요일엔 주로 " + rec.v + "시간 넣었어요 · 채우기"); rb.type = "button";
+    rb.onclick = function () { inp.value = rec.v; qhSync(); };
+    P.appendChild(rb);
+  }
+  var go = el("button", "qhgo", "저장"); go.type = "button";
+  go.onclick = function () { var v = qhVal(); if (v) qhSave(me, ymd, v); };
+  P.appendChild(go);
+  inp.oninput = qhSync;
+  inp.onkeydown = function (e) { if (e.key === "Enter") go.onclick(); };
+  qhSync();
+  $("qhother").onclick = function () { qhClose(); goPrevInput(me, ymd); };
+  $("qhlater").onclick = function () { sset("qhSnz", ymd + "|" + Date.now()); qhClose(); };
+  $("qhov").onclick = function (e) { if (e.target === this && !QH.busy) { sset("qhSnz", ymd + "|" + Date.now()); qhClose(); } };
+  $("qhov").className = "ov on";
+}
+function qhClose() { $("qhov").className = "ov"; try { $("qhin").blur(); } catch (e) {} }
+// 입력값 확인: 숫자 0.5~24 (연차·반차는 "다른 시간·연차"에서)
+function qhVal() { var v = String(($("qhin") || {}).value || "").trim().replace(",", "."); return /^\d{1,2}(\.\d+)?$/.test(v) && +v > 0 && +v <= 24 ? String(+v) : ""; }
+function qhSync() {
+  var go = $("qhpick").querySelector(".qhgo"), v = qhVal(), raw = String(($("qhin") || {}).value || "").trim();
+  if (!go || QH.busy) return;
+  go.disabled = !v;
+  go.textContent = v ? v + "시간 저장" : "저장";
+  $("qhmsg").textContent = raw && !v ? "숫자로 넣어 주세요 (예: 9, 8.5) · 연차·반차는 '다른 시간·연차'에서" : "";
+}
+function qhBtns(on) { [].forEach.call($("qhov").querySelectorAll("button"), function (b) { b.disabled = !on; }); }
+function qhSave(me, ymd, v) {
+  if (QH.busy) return;
+  QH.busy = true; qhBtns(false); $("qhmsg").textContent = "";
+  var go = $("qhpick").querySelector(".qhgo");
+  if (go) go.textContent = "저장 중…";
+  try { $("qhin").disabled = true; } catch (e) {}
+  var done = function () { QH.busy = false; qhBtns(true); try { $("qhin").disabled = false; } catch (e) {} qhSync(); };
+  callEdit("saveHours", [me, ymd, v, false, "", "", false])
+    .then(function (r) {
+      done();
+      if (r.error) { $("qhmsg").textContent = r.error; return; }
+      if (r.needConfirm) { qhClose(); toast("이미 '" + (r.cur === "" ? "(수식)" : r.cur) + "' 값이 있어요 · 근무시간 탭에서 확인해 주세요"); goPrevInput(me, ymd); return; }
+      if (!r.ok) return;
+      qhClose();
+      toast("✔ 저장 완료 · " + (+ymd.slice(5, 7)) + "/" + (+ymd.slice(8, 10)) + " → " + (r.cur === "" ? v : r.cur) + "시간");
+      sset("hoursName", me);
+      prevDone(me, ymd);
+      try {
+        if (r.past && r.cell && r.cell.grid) hpgPut(r.cell.grid);
+        if (!r.past && H.meta) {
+          try { if (+ymd.slice(5, 7) === H.meta.grid.m) H.meta.grid.rows[me].v[+ymd.slice(8, 10) - 1] = r.cur; } catch (eg) {}
+          cset("hours", H.meta);
+          if (r.missing) renderMissing(r.missing);
+          if (r.week) { H.meta.week = r.week; renderWeek(r.week); }
+          if (r.top !== undefined) renderTop(r.top);
+        } else if (!r.past) {   // 근무시간 탭을 아직 안 열었으면 폰에 받아 둔 값만 고침
+          var cm = cget("hours");
+          try { if (cm && +ymd.slice(5, 7) === cm.grid.m) { cm.grid.rows[me].v[+ymd.slice(8, 10) - 1] = r.cur; cset("hours", cm); } } catch (ec) {}
+        }
+      } catch (eU) {}
+      H.loaded = false;   // 근무시간 탭 열면 합계·TOP 최신으로
+      if (cur === 3) { H.token++; refreshCell(); setTimeout(function () { loadHoursMeta(true); }, 300); }
+    })
+    .catch(function (e) { done(); $("qhmsg").textContent = "저장 실패: " + errText(e); });
 }
 
 // 🔕 알림 안 켠 사람: 탭 아래 고정 배너 (어느 탭이든 · 스크롤해도 보임) / 켜면 바로 사라짐
@@ -9907,6 +10071,7 @@ function splashHide(now) {
     SPL.shut = true;
     n.className = "out";
     setTimeout(aiReport, 700); setTimeout(aiPrefetch, 2500);   // 🤖 AI 속도 리포트 · 학습한 화면 미리 불러오기
+    setTimeout(qhCheck, 1300);   // ⏰ 근무시간 미입력이면 바로 저장 창
     try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7][cur]] || "main")); tabInd(); }, 120); } catch (eA) {}
     setTimeout(function () { n.style.display = "none"; }, 450);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
   })();
@@ -9948,6 +10113,7 @@ function boot() {
   buildChips();
   $("ver").textContent = "v" + APP_VER.slice(5).replace("-", ".");
   if (instGate()) { splashHide(true); return; }   // 📲 링크·PC면 안내 화면만
+  qhParse();   // ⏰ 근무시간 알림에서 열렸는지 (?qh=날짜)
   persistAsk();   // 💾 홈 화면 앱이면 영구 저장 요청 (한 번 허용되면 계속 유지)
   $("ver").textContent = "v" + APP_VER.slice(5).replace("-", ".");   // 예: v10.14-4
   if (IS_TEST) {
