@@ -420,8 +420,8 @@ li:first-child{border-top:0}
 #insp .isort{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
 /* 🏭 수입검사 사업장 나눠 보기 (전체 · 성남 · 동탄) */
 #insp .iseg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:16px;background:color-mix(in srgb,var(--text) 6%,var(--bg))}
-#insp .iseg button{height:42px;border:0;border-radius:12px;background:transparent;color:var(--sub);font:inherit;font-size:15px;font-weight:800}
-#insp .iseg button small{margin-left:5px;font-size:12px;font-weight:800;opacity:.75}
+#insp .iseg button{height:54px;border:0;border-radius:12px;background:transparent;color:var(--sub);font:inherit;font-size:15px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.2}
+#insp .iseg button small{font-size:11.5px;font-weight:700;opacity:.8;white-space:nowrap}
 #insp .iseg button.on{background:var(--card);color:var(--accent);font-weight:900;box-shadow:0 2px 8px -3px rgba(16,32,64,.25)}
 #insp .bd.st{background:color-mix(in srgb,var(--text) 8%,transparent);color:var(--text)}
 #insp .bd.st.dt{background:color-mix(in srgb,#8B5CF6 15%,transparent);color:#7C3AED}
@@ -3507,7 +3507,7 @@ function guestAsk(gt, pre) {
   $("gin").style.display = "none"; $("gbtns").style.display = "none";
   document.querySelector("#gate .gtitle").textContent = "개발자님 환영합니다 👋";
   $("gicon").innerHTML = OB_IC.shield; $("gicon").className = "gicon obic";
-  var m = $("gmsg"); m.className = ""; m.textContent = "이 폰에서 쓸 이름을 넣어 주세요.\n예: 동생 → 개발자(동생)";
+  var m = $("gmsg"); m.className = ""; m.textContent = "이 폰에서 쓸 이름을 넣어 주세요.";
   $("gguest").style.display = "grid";
   var inp = $("ggname"), go = $("gggo");
   inp.value = ""; go.disabled = true;
@@ -4337,7 +4337,9 @@ function loadInsp(force) {
       R.insp = false;
       var old = IN.data, same = !force && old && !old.error && d && !d.error && sameData(old, d);   // ⚡ 받아 둔 것과 같으면 다시 안 그림
       if (d && !d.error) { IN.data = d; cset("insp", d); if (force) IN.rows = {}; }
+      else if (d && d.busy && (IN.busyN = (IN.busyN || 0) + 1) <= 6) { setTimeout(function () { loadInsp(false); }, 5000); if (IN.data && !IN.data.error) return ""; }   // 🚦 서버가 만드는 중 → 5초 뒤 다시
       else if (!IN.data) IN.data = d;
+      if (d && !d.busy) IN.busyN = 0;
       if (cur === 7) { if (same) $("upd").textContent = updTxt(d, "insp"); else reRender(renderInsp, "insp"); if (IN.eq && force) inspOpen(IN.eq); }
       return (d && d.error) || "";
     })
@@ -4364,9 +4366,10 @@ function renderInsp() {
   if (hasSite) {
     var sg = el("div", "iseg");
     [["all", "전체"], ["성남", "성남"], ["동탄", "동탄"]].forEach(function (o) {
-      var np = d.list.reduce(function (a, x) { return a + (o[0] === "all" ? x.p : ((x.ss && x.ss[o[0]]) || { p: 0 }).p); }, 0);
+      var np = 0, nn = 0;
+      d.list.forEach(function (x) { var v = o[0] === "all" ? x : ((x.ss && x.ss[o[0]]) || { p: 0, n: 0 }); np += v.p; nn += v.n; });
       var b = el("button", IN.site === o[0] ? "on" : "", o[1]); b.type = "button";
-      b.appendChild(el("small", null, String(np)));
+      b.appendChild(el("small", null, "대기 " + np + " · 전체 " + nn));   // 🏭 대기 0이어도 전체 검사 수가 보여서 헷갈리지 않음
       b.onclick = function () { if (IN.site === o[0]) return; IN.site = o[0]; sset("inspSite", o[0]); IN.all = false; renderInsp(); };
       sg.appendChild(b);
     });
@@ -4465,6 +4468,7 @@ function inspLoadAll(eq) {   // 완료 포함 전체 (한 번 받으면 기억)
     if (c.u === cu && Date.now() - c.t < 6 * 3600000) return;   // 같은 기준 시각이면 끝 (서버 안 부름)
   } else IN.rows[eq] = "ld";
   call("getInspRows", [eq]).then(function (r) {
+    if (r && r.busy && (IN.rbN = (IN.rbN || 0) + 1) <= 6) { if (!Array.isArray(IN.rows[eq])) IN.rows[eq] = null; setTimeout(function () { inspLoadAll(eq); }, 5000); return; }   // 🚦 만드는 중 → 5초 뒤 다시
     if (r && !r.error) inrPut(eq, r.rows);
     IN.rows[eq] = r && !r.error ? r.rows : (Array.isArray(IN.rows[eq]) ? IN.rows[eq] : { err: (r && r.error) || "오류" });
     if (cur === 7 && IN.eq === eq) renderInsp();
@@ -8129,10 +8133,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-04-5";
+var APP_VER = "2026-11-04-6";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-04-6", ["🏭 수입검사: 성남 · 동탄 버튼에 대기 · 전체 건수 표시 · 동탄 검사도 모두 보여요", "⚡ 수입검사: 서버가 새로 정리 중일 때 기다리지 않고 잠시 뒤 자동으로 다시 불러와요"]],
   ["2026-11-04-5", ["⚡ 안정성 개선"]],
   ["2026-11-04-4", ["🏭 수입검사: 성남 · 동탄 나눠 보기 (위에서 고르면 기억해요) · 검사마다 사업장 표시", "🔎 수입검사: 장비명을 띄어쓰기로 쳐도 찾아요 (hj92 237 → HJ92-237)", "⚡ 수입검사: 장비를 열면 검사 완료 목록까지 미리 받아 두고, 한 번 본 장비는 바로 떠요"]],
   ["2026-11-04-3", ["⚡ 앱이 조금 더 빨라졌어요"]],
