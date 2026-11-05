@@ -5504,6 +5504,7 @@ function nfForm(box) {
       return;   // 찾은 업체가 있으면 다른 장비 참고는 안 보여줌 (헷갈림 방지)
     }
     if (bad.length) refBox.appendChild(el("div", "nfhint", "📦 발주 업체 '" + bad.join(", ") + "' 는 귀책 목록에 없는 이름이에요 · 목록에서 골라 주세요"));
+    return;   // 다른 장비에서 쓴 업체(참고)는 안 띄움 · 장비를 넣으면 그 장비 자재팀 발주거래처가 귀책에 바로 들어감
     var has = 0;
     var pn = nfClean(f.pn), V = pn && !nfQuick(pn) ? NFV[nfPnKey(pn)] : null, MM = pn && !nfQuick(pn) ? NFM[nfPnKey(pn)] : null;
     if (MM && MM.length) { V = { i: (V && V.i) || [], n: (V && V.n) || [], l: (V && V.l) || [], m: MM.map(function (x) { return [x[0], x[1], "", 1]; }) }; }
@@ -5562,6 +5563,7 @@ function nfForm(box) {
   }
   function upd() {
     nfSave();
+    if (needP && nfClean(f.proj)) needP.style.display = "none";
     autoV(); dupChk(); drawEq();
     var m = nfMsg(f); msgBox.textContent = m.text;
     [].forEach.call(wrap.querySelectorAll(".nfr[data-k]"), function (r) {   // 줄마다 필수 → ✓
@@ -5841,10 +5843,21 @@ function nfForm(box) {
   };
   pnw.appendChild(nin3); pnw.appendChild(qb);
   r3.appendChild(pnw); r3.appendChild(hn("pn")); r3.appendChild(hn("dup"));
+  // 장비명 먼저: 장비가 비어 있으면 품번은 못 넣고 안내 → 장비 칸으로 (QR은 라벨에서 장비까지 읽어서 그대로 됨)
+  var needP = el("div", "nfhn w"); needP.style.display = "none"; r3.insertBefore(needP, pnw.nextSibling);
+  function needPrj() {
+    if (nfClean(f.proj)) { needP.style.display = "none"; return false; }
+    needP.textContent = "장비명을 먼저 입력해 주세요"; needP.style.display = "";
+    var rr = pin.closest(".nfr"); if (rr) { rr.classList.remove("flash"); void rr.offsetWidth; rr.classList.add("flash"); rr.scrollIntoView({ behavior: "smooth", block: "center" }); }
+    setTimeout(function () { try { pin.focus({ preventScroll: true }); } catch (e) {} }, 350);
+    return true;
+  }
+  nin3.addEventListener("focus", function () { if (needPrj()) { try { nin3.blur(); } catch (e) {} } });
+  nin3.addEventListener("beforeinput", function (ev) { if (!nfClean(f.proj)) { ev.preventDefault(); needPrj(); } });
   pnWatch(nin3, function () { return f.pn; }, function (v) { f.pn = v; }, "pn");
   r3.appendChild(el("div", "nfsub", "자주 쓰는 품목"));
   var pnq = el("div", "nfc nfg3");
-  lrnSort(NF_PN, "p", function (q) { return q[1]; }).forEach(function (q) { var b = el("button", null, q[0]); b.type = "button"; b.dataset.v = q[1]; b.onclick = function () { f.pn = nfQuick(f.pn) === q[1] ? "" : q[1]; f.pnPend = false; nin3.value = f.pn; hint("pn", ""); upd(); }; pnq.appendChild(b); });
+  lrnSort(NF_PN, "p", function (q) { return q[1]; }).forEach(function (q) { var b = el("button", null, q[0]); b.type = "button"; b.dataset.v = q[1]; b.onclick = function () { if (needPrj()) return; f.pn = nfQuick(f.pn) === q[1] ? "" : q[1]; f.pnPend = false; nin3.value = f.pn; hint("pn", ""); upd(); }; pnq.appendChild(b); });
   r3.appendChild(pnq);
   var partsBox = el("div", "nfparts"); r3.appendChild(partsBox);
   function drawParts() {
@@ -8407,12 +8420,14 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-05-1";
+var APP_VER = "2026-11-05-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-05-3", ["📝 부적합 요청: 장비명을 먼저 넣어야 품번을 넣을 수 있어요 (품번부터 누르면 '장비명을 먼저 입력해 주세요')"]],
+  ["2026-11-05-2", ["📝 부적합 요청: 귀책 아래 '다른 장비에서 쓴 업체' 참고 목록은 빼서 덜 헷갈려요"]],
   ["2026-11-05-1", ["📝 부적합 요청: 장비 + 품번(도번)을 넣으면 그 장비 자재팀 발주거래처가 귀책에 자동으로 들어가요 · 업체가 맞는지 꼭 확인해 주세요", "🏭 같은 번호의 EFEM · PROCESS도 장비별 업체로 구분해요"]],
-  ["2026-11-04-7", ["📊 더보기 → 대시보드: 오늘 공정 · 입고/출하 · 이번 달 출하 · 업로드 · 부적합 · 수입검사 · 근무시간 · 연차를 한 화면에", "💻 PC 넓은 화면에선 3칸으로 크게 보여요 · 카드를 누르면 그 화면으로 바로 가요"]],
+  ["2026-11-04-7", ["📊 더보기 → 대시보드: 오늘 공정 · 입고/출하 · 이번 달 출하 · 업로드 · 부적합 · 수입검사 · 근무시간 · 연차를 한 화면에", "👆 카드를 누르면 그 화면으로 바로 가요"]],
   ["2026-11-04-6", ["🏭 수입검사: 성남 · 동탄 버튼에 대기 · 전체 건수 표시 · 동탄 검사도 모두 보여요", "⚡ 수입검사: 서버가 새로 정리 중일 때 기다리지 않고 잠시 뒤 자동으로 다시 불러와요"]],
   ["2026-11-04-5", ["⚡ 안정성 개선"]],
   ["2026-11-04-4", ["🏭 수입검사: 성남 · 동탄 나눠 보기 (위에서 고르면 기억해요) · 검사마다 사업장 표시", "🔎 수입검사: 장비명을 띄어쓰기로 쳐도 찾아요 (hj92 237 → HJ92-237)", "⚡ 수입검사: 장비를 열면 검사 완료 목록까지 미리 받아 두고, 한 번 본 장비는 바로 떠요"]],
