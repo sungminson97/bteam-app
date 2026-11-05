@@ -1423,7 +1423,56 @@ body.kb #tabbar{transform:translateY(110%)}
 /* 📱 아래 탭: 떠 있는 둥근 바 (금일 · 명일 · 업로드 · 근무시간 · 더보기) */
 #tabbar.tabs{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr);gap:4px;padding:7px;border:0;border-radius:30px;background:color-mix(in srgb,var(--card) 94%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent),0 16px 36px -12px rgba(16,32,64,.32);-webkit-backdrop-filter:saturate(1.8) blur(22px);backdrop-filter:saturate(1.8) blur(22px)}
 @media (prefers-color-scheme:dark){#tabbar.tabs{box-shadow:0 0 0 1px rgba(255,255,255,.07),0 16px 36px -12px rgba(0,0,0,.9)}}
-#tabbar #t6,#tabbar #t5,#tabbar #t4,#tabbar #t7,#tabbar #t8,#tabbar #t9{display:none}
+#tabbar #t6,#tabbar #t5,#tabbar #t4,#tabbar #t7,#tabbar #t8,#tabbar #t9,#tabbar #t10{display:none}
+/* 📊 대시보드 (폰 2칸 · PC 3칸) */
+#dash{display:none;gap:12px;padding:12px 16px calc(120px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
+#dash .dg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#dash .dk{position:relative;display:flex;flex-direction:column;gap:7px;min-width:0;padding:13px 14px 12px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);color:var(--text);font:inherit;text-align:left;width:100%}
+button.dk{cursor:pointer;transition:transform .12s}
+button.dk:active{transform:scale(.985)}
+button.dk::after{content:"";position:absolute;right:14px;top:18px;width:6px;height:6px;border-right:2px solid var(--sub);border-top:2px solid var(--sub);transform:rotate(45deg);opacity:.4}
+#dash .dk.w,#dash .dk.wm{grid-column:1/-1}
+#dash .dh{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:var(--sub);padding-right:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#dash .db{display:flex;align-items:baseline;gap:3px;flex-wrap:wrap}
+#dash .db b{font-size:28px;font-weight:900;letter-spacing:-.02em;line-height:1.05}
+#dash .db small{font-size:13px;font-weight:800;color:var(--sub)}
+#dash .db em{font-style:normal;font-size:12px;font-weight:700;color:var(--sub);margin-left:4px}
+#dash .dk.r .db b{color:var(--warn)}
+#dash .dk.ok .db b{color:var(--ok)}
+#dash .dr{display:grid;gap:3px}
+#dash .dr div{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--sub);font-weight:700}
+#dash .dr div b{color:var(--text);font-weight:900;white-space:nowrap}
+#dash .dr div.r b{color:var(--warn)}
+#dash .dn{font-size:12.5px;font-weight:700;line-height:1.45;color:var(--text);word-break:keep-all}
+#dash .dn.s{color:var(--sub)}
+#dash .dz{font-size:12.5px;font-weight:700;color:var(--sub)}
+#dash .dz.e{color:var(--warn)}
+#dash .bl{display:grid;gap:5px}
+#dash .bl>div{display:grid;grid-template-columns:minmax(52px,auto) minmax(0,1fr) auto;align-items:center;gap:8px;font-size:12px;font-weight:700}
+#dash .bl>div>span{color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+#dash .bl i{display:block;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+#dash .bl i>u{display:block;height:100%;border-radius:99px;background:var(--accent);min-width:2px}
+#dash .bl>div.r i>u{background:var(--warn)}
+#dash .bl>div>b{font-weight:900;min-width:30px;text-align:right}
+#dash .bl>div.r>b{color:var(--warn)}
+#dash .mb{display:flex;align-items:flex-end;gap:4px;height:58px;padding-top:4px}
+#dash .mb>div{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;height:100%;justify-content:flex-end}
+#dash .mb u{display:block;width:100%;max-width:22px;border-radius:5px 5px 2px 2px;background:var(--accent);opacity:.35;min-height:2px}
+#dash .mb>div.on u{opacity:1}
+#dash .mb small{font-size:10px;font-weight:800;color:var(--sub)}
+#dash .mb em{font-style:normal;font-size:10px;font-weight:900;color:var(--text)}
+#dash .lk{font-size:12.5px;font-weight:700;color:var(--sub)}
+#dash .dt{font-size:11.5px;color:var(--sub);text-align:center;padding:4px 0}
+@media (max-width:340px){#dash .dg{grid-template-columns:minmax(0,1fr)}}
+@media (min-width:900px){
+  #dash{max-width:1180px;padding-left:24px;padding-right:24px}
+  #dash .dg{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  #dash .dk{padding:16px 18px 15px}
+  #dash .dk.w{grid-column:span 2}
+  #dash .dk.w3{grid-column:1/-1}
+  #dash .dk.wm{grid-column:auto}
+  #dash .db b{font-size:32px}
+}
 #tabbar .tab{height:58px;border-radius:23px;gap:5px;color:var(--sub);font-size:12px;font-weight:800}
 #tabbar .tab svg{width:25px;height:25px}
 #tabbar .tab.on{color:#fff;background:var(--grd);box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 10px 20px -10px rgba(80,90,255,.95)}
@@ -2688,6 +2737,7 @@ SPX.start();
   <div class="tab" id="t7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 12.5l2.2 2.2 4.8-4.8"/></svg><em>수입검사</em><span></span></div>
   <div class="tab" id="t8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5"/><path d="M12 17.6v.1"/></svg><em>부적합</em><span></span></div>
   <div class="tab" id="t9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5L12 12l8.5-4.5"/><path d="M12 12v9"/></svg><em>입고 불출</em><span></span></div>
+  <div class="tab" id="t10"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M21 20H3"/></svg><em>대시보드</em><span></span></div>
 </nav>
 <main id="main"><div class="msg">불러오는 중…</div></main>
 
@@ -2750,6 +2800,7 @@ SPX.start();
 <section id="insp"></section>
 <section id="nc"></section>
 <section id="mat"></section>
+<section id="dash"></section>
 
 <!-- 업로드 완료 확인창 -->
 <div class="ov" id="cfov">
@@ -3378,7 +3429,7 @@ function wipeScreens() {
   LV = { loaded: false, data: null, open: {} };
   ST = { loaded: false, data: null, open: {} };
   H = { meta: null, loaded: false, confirm: false, token: 0, busy: false };
-  ["main", "upload", "leave", "stats", "sched"].forEach(function (id) { $(id).innerHTML = ""; });
+  ["main", "upload", "leave", "stats", "sched", "dash"].forEach(function (id) { $(id).innerHTML = ""; });
   $("d6").textContent = "";
   if (typeof SR !== "undefined") { SR.open = false; SR.idx = null; SR.sel = -1; $("sbar").style.display = "none"; $("srch").style.display = "none"; $("sq").value = ""; }
   $("hname").innerHTML = ""; $("hval").value = "";
@@ -4599,11 +4650,35 @@ function nfRef(cb) {
   call("getNcRef", []).then(function (r) { NC.refLd = false; if (r && r.ven) { r._t = Date.now(); NC.ref = r; cset("ncref", r); if (cb) cb(); } })
     .catch(function () { NC.refLd = false; });
 }
-function nfVenOk(v) {
-  v = nfClean(v); if (!v) return false;
-  if (v === NF_ASK || NF_QV.indexOf(v) >= 0) return true;
-  var R = NC.ref; if (!R || !R.ven || !R.ven.length) return true;   // 목록을 못 받았으면 막지 않음
-  return R.ven.some(function (x) { return x[1] === v; });
+function nfVenOk(v) { return !!nfClean(v); }   // 귀책 = 자재팀 발주거래처 · 직접 쓴 이름도 그대로 (품질팀 귀책 목록으로 거르지 않음)
+// 거래처 이름 다듬기: "주식회사 우신테크" · "(주)아진물산" · "두루무역주식회사" → 회사 이름만
+function ncVenClean(v) { return String(v == null ? "" : v).replace(/주식회사|유한회사|\(주\)|㈜|\(유\)|\(株\)/g, " ").replace(/\s+/g, " ").trim(); }
+// 귀책 찾기 목록: 자재팀 발주 거래처 전체 (서버 getNcRef vl)
+function ncVenList() { var seen = {}, out = []; ((NC.ref && NC.ref.vl) || []).forEach(function (v) { v = ncVenClean(v); if (v && !seen[v]) { seen[v] = 1; out.push(v); } }); return out; }
+// 자재팀 탭 이름 → 장비 이름 (예: "CK71-171 PROCESS_12CH HYBRID-S-L3" → "CK71-171 PROCESS")
+//   같은 번호 장비가 여러 대면(EFEM · PROCESS · #2 …) 탭 이름에 들어 있는 낱말이 가장 많이 맞는 장비
+function ncTabEq(tab) {
+  var T = String(tab || "").toUpperCase(), c = nfCode(T); if (!T) return "";
+  var names = [], seen = {};
+  (((typeof eqIdx === "function" ? eqIdx() : null) || {}).rows || []).concat(((NC.ref && NC.ref.prj) || [])).forEach(function (r) { var n = String(r[0] || "").trim(), k = nfPrjKey(n); if (n && !seen[k]) { seen[k] = 1; names.push(n); } });
+  var C = names.filter(function (n) { var u = n.toUpperCase(); return c ? nfCode(u) === c : T.replace(/\s+/g, "").indexOf(u.split(/\s+/)[0]) === 0; });
+  if (!C.length) return "";
+  if (C.length === 1) return C[0];
+  var best = "", bs = -1, tie = false;
+  C.forEach(function (n) {
+    var w = n.toUpperCase().split(/\s+/).slice(1).filter(Boolean), hit = w.filter(function (x) { return T.indexOf(x) >= 0; }).length, sc = hit - (w.length - hit) * 0.1;
+    if (sc > bs) { bs = sc; best = n; tie = false; } else if (sc === bs) tie = true;
+  });
+  return tie || bs <= 0 ? "" : best;
+}
+// 서버 결과 다듬기: 발주 줄 장비 = 탭에 맞는 장비 이름 · 거래처 = 회사 이름만 · 품명 찾기는 그 장비 탭 품목만
+function ncFix(r, prj) {
+  if (!r || r.error) return;
+  (r.mat || []).forEach(function (x) { x[0] = ncTabEq(x[6]) || x[0]; x[1] = ncVenClean(x[1]); });
+  var H = r.here || [];
+  H.forEach(function (x) { x[2] = ncVenClean(x[2]); });
+  if (prj && H.length) { var mine = H.filter(function (x) { var q = ncTabEq(x[3]); return q && nfPrjKey(q) === nfPrjKey(prj); }); if (mine.length) H = mine; }
+  var seen = {}; r.here = H.filter(function (x) { var k = nfPnKey(x[0]); if (seen[k]) return false; seen[k] = 1; return true; }).slice(0, 15);
 }
 function nfOpen(prj) {
   NC.form = true; NC.eq = "";
@@ -4669,6 +4744,7 @@ function nfPart(v, cb, qr, prj) {
   var tmo = setTimeout(function () { if (NFP[k] === "ld") { delete NFP[k]; fin(null); } }, 10000);   // 10초 넘으면 '찾는 중' 끝냄
   cb = function (r) { clearTimeout(tmo); fin(r); };
   call("getNcPart", pc ? [v, !!qr, prj] : qr ? [v, true] : [v]).then(function (r) {
+    ncFix(r, prj);
     NFP[k] = r && !r.error ? r : null;
     if (NFP[k] && r.vs) NFV[nfPnKey(v)] = r.vs;
     if (NFP[k] && r.mat) NFM[nfPnKey(v)] = r.mat;
@@ -4716,6 +4792,7 @@ function nfVenOf0(prj, pn) {
 }
 // 수입검사 업체 이름 → 귀책 목록 이름 (똑같거나 한쪽이 다른 쪽을 포함하면서 하나만 맞을 때)
 function nfVenMap(v) {
+  v = ncVenClean(v);
   if (nfVenOk(v)) return v;
   var R = NC.ref; if (!R || !R.ven || !nfKey(v)) return "";
   var cut = function (x) { return String(x || "").toUpperCase().replace(/\(주\)|㈜|주식회사|\(유\)|유한회사|[\s.,·]/g, ""); }, k = cut(v);   // "주식회사 블루퓨전" = "블루퓨전"
@@ -5376,13 +5453,14 @@ function nfForm(box) {
   function venFor(e) {
     var M = NFM[nfPnKey(e.pn)];
     if (M && e.proj) {
-      var mr = M.filter(function (x) { return nfSamePrj(x[0], e.proj); });
+      var mr = M.filter(function (x) { return nfSamePrj(x[0], e.proj); }), mx = mr.filter(function (x) { return nfPrjKey(x[0]) === nfPrjKey(e.proj); });
+      if (mx.length) mr = mx;   // 같은 번호 EFEM · PROCESS면 그 장비 탭만 (장비마다 업체가 다름)
       if (f.scan && f.scan.pur && nfPnKey(f.scan.pn) === nfPnKey(e.pn)) { var pr = mr.filter(function (x) { return x[2] === f.scan.pur; }); if (pr.length) mr = pr; }
-      if (mr.length) { var mv0 = nfVenMap(mr[0][1]); return mv0 ? { v: mv0, src: "자재팀 발주 (" + mr[0][0] + ")" } : { raw: mr[0][1], src: "자재팀 발주" }; }
+      if (mr.length) { var mv0 = nfVenMap(mr[0][1]); return mv0 ? { mat: 1, v: mv0, src: "자재팀 발주 (" + mr[0][0] + ")" } : { raw: mr[0][1], src: "자재팀 발주" }; }
     }
     if (f.scan && f.scan.ven && nfPnKey(f.scan.pn) === nfPnKey(e.pn)) return { v: f.scan.ven, src: f.scan.venSrc || "라벨에서 읽음" };
     var V = NFV[nfPnKey(e.pn)], pk = inspKey(e.proj), r = { st: "none" };
-    if (V) for (var s2 = 0, S = ["l", "n"]; s2 < 2; s2++) {
+    if (V) for (var s2 = 0, S = ["l"]; s2 < 1; s2++) {   // 품질팀 부적합 대장 귀책은 안 씀
       var h = (V[S[s2]] || []).filter(function (x) { return inspKey(x[0]) === pk && nfVenMap(x[1]); })[0];
       if (h) return { v: nfVenMap(h[1]), src: "같은 장비 " + SRC_NM[S[s2]] };
     }
@@ -5393,11 +5471,18 @@ function nfForm(box) {
     E.forEach(function (e) {
       if (!e.pn || nfQuick(e.pn)) return;
       var r = venFor(e); if (!r) return;
-      if (r.wait) wait = true; else found.push({ k: f.kind === "proj" ? e.proj : e.pn, v: r.v, raw: r.raw, src: r.src });
+      if (r.wait) wait = true; else found.push({ k: f.kind === "proj" ? e.proj : e.pn, v: r.v, raw: r.raw, src: r.src, mat: r.mat });
     });
-    // ✋ 자동으로 넣지 않음: 우리 쪽(제조1팀·제조2팀) 귀책일 수도 있으니 찾은 업체는 귀책 아래 버튼으로 → 사람이 고름
-    hint("vsrc", wait && !found.length ? "업체 찾는 중…" : "", "");
-    drawRef(found);
+    // ✅ 장비 + 품번(도번)이 자재팀 시트에 있으면 그 발주거래처를 귀책에 자동으로 넣음 (직접 고른 귀책은 안 덮음) · 확인하라는 안내는 남김
+    var mv = found.filter(function (x) { return x.mat && x.v; }).map(function (x) { return x.v; }).filter(function (v, i, a) { return a.indexOf(v) === i; });
+    var mine = nfClean(f.vend) && f.vend !== f.vAuto;
+    if (vin && !mine) {
+      if (mv.length === 1 && f.vend !== mv[0]) { f.vend = f.vAuto = mv[0]; vin.value = mv[0]; drawV(); }
+      else if (!mv.length && f.vAuto && f.vend === f.vAuto && !wait) { f.vend = f.vAuto = ""; vin.value = ""; drawV(); }
+    }
+    var auto = mv.length === 1 && f.vend === mv[0] && f.vAuto === mv[0], asrc = auto ? (found.filter(function (x) { return x.mat && x.v === mv[0]; })[0] || {}).src || "" : "";
+    hint("vsrc", auto ? "📦 " + asrc.replace("자재팀 발주", "자재팀 발주거래처") + "로 자동으로 넣었어요\n⚠️ 업체가 정확하지 않을 수 있어요 · 맞는지 꼭 확인해 주세요 (우리 쪽 귀책이면 아래 제조1팀 · 제조2팀 · 전장)" : wait && !found.length ? "업체 찾는 중…" : "", auto ? "w" : "");
+    drawRef(auto ? [] : found);
   }
   // 📚 참고 버튼: 이 품번을 다른 장비에서 쓴 업체 (자동으로는 안 넣음 · 누르면 귀책에)
   function drawRef(found) {
@@ -5407,7 +5492,7 @@ function nfForm(box) {
     var rec = [], bad = [];
     (found || []).forEach(function (x) { if (x.v) { if (!rec.some(function (y) { return y.v === x.v; })) rec.push(x); } else if (x.raw && bad.indexOf(x.raw) < 0) bad.push(x.raw); });
     if (rec.length) {
-      refBox.appendChild(el("div", "nfrech", "📦 찾은 업체 · 맞으면 눌러 주세요 (우리 쪽 귀책이면 아래 제조1팀 · 제조2팀)"));
+      refBox.appendChild(el("div", "nfrech", "📦 자재팀 발주거래처 · 맞는 업체를 눌러 주세요 (우리 쪽 귀책이면 아래 제조1팀 · 제조2팀)"));
       var rc = el("div", "nfc nfref nfrec");
       rec.forEach(function (x) {
         var b = el("button", f.vend === x.v ? "on" : ""); b.type = "button";
@@ -5425,7 +5510,7 @@ function nfForm(box) {
     if (!V || has) return;
     // 업체별로 묶기: 출처별 건수 + 장비 이름 (많이 쓴 업체 → 최근 순)
     var seen = {}, list = [];
-    ["m", "l", "n"].forEach(function (s3) {
+    ["m", "l"].forEach(function (s3) {
       (V[s3] || []).forEach(function (x) {
         var v = nfVenMap(x[1]); if (!v || v === nfClean(f.vend)) return;   // 이미 귀책에 들어간 업체는 또 안 보여줌
         var o = seen[v]; if (!o) { o = seen[v] = { v: v, n: 0, src: {}, eq: [], at: "" }; list.push(o); }
@@ -5655,7 +5740,7 @@ function nfForm(box) {
     var MM = NFM[nfPnKey(f.pn)], E, fromMat = false;
     if (MM && MM.length) {
       var seenE = {}; E = [];
-      MM.forEach(function (x) { var k2 = nfCode(x[0]) || x[0]; if (seenE[k2]) return; seenE[k2] = 1; E.push([x[0], x[1], ""]); });
+      MM.forEach(function (x) { var k2 = nfPrjKey(x[0]); if (seenE[k2]) return; seenE[k2] = 1; E.push([x[0], x[1], ""]); });
       fromMat = true;
     } else E = [];
     if (!E || !E.length) return;
@@ -5673,8 +5758,8 @@ function nfForm(box) {
   }
   sec("부품");
   // 3 품번
-  var r3 = row("🔩", "품번", "", "품번");
-  var nin3 = inp(f.pn, "품번 또는 품명으로 검색", function (t) { f.pn = t; }, true); nin3.setAttribute("autocapitalize", "characters");
+  var r3 = row("🔩", "품번", "도번", "품번");
+  var nin3 = inp(f.pn, "품번(도번) 또는 품명으로 검색", function (t) { f.pn = t; }, true); nin3.setAttribute("autocapitalize", "characters");
   var pnw = el("div", "nfpnw"), qb = el("button", "nfqr", "📷 QR"); qb.type = "button";
   // 📷 QR 읽은 품번 넣기: 품번 칸이 비었으면 거기, 차 있으면 [품번 추가] 줄로 (여러 개 연속 찍기)
   function addPn(t) {
@@ -5698,7 +5783,7 @@ function nfForm(box) {
     }
     S.ven = o.ven; S.venAlt = null;
   }
-  function ocrP(txt) { return ocrParse(txt, prjAll().map(function (p) { return p[0]; }), ((NC.ref && NC.ref.ven) || []).map(function (x) { return x[1]; })); }
+  function ocrP(txt) { return ocrParse(txt, prjAll().map(function (p) { return p[0]; }), ncVenList()); }
   // 📦 자재팀 입고 불출 시트: 라벨 발주번호가 맞는 줄 → 장비 · 거래처 확정 / 발주번호가 없으면 이 품번이 있는 장비가 한 대일 때만
   function matApply(S) {
     var M = NFM[nfPnKey(S.pn)]; if (!M || !M.length) return;
@@ -5834,7 +5919,7 @@ function nfForm(box) {
   var vs = el("div", "nfc nfv"); r6.appendChild(vs);
   function drawV() {
     vs.innerHTML = "";
-    var all = (R && R.ven && R.ven.length) ? R.ven.map(function (x) { return x[1]; }) : ((NC.data && NC.data.vend) || []);
+    var all = ncVenList();
     var q = nfClean(f.vend), hit = q ? all.filter(function (v) { return v !== q && nfMatch(v, q); }).slice(0, 10) : [];
     hit.forEach(function (v) { var b = el("button", null, v); b.type = "button"; b.onclick = function () { f.vend = v; vin.value = v; drawV(); upd(); }; vs.appendChild(b); });
   }
@@ -6712,6 +6797,192 @@ function loadStats(force) {
     });
 }
 
+/* ---------- 📊 대시보드 (탭 10 · 더보기) ----------
+ * 각 화면에서 이미 받아 둔 데이터(폰 저장 포함)를 모아서 한 화면에 그림
+ * 안 받아 둔 것만 서버에 동시에 요청 → 새 서버 함수 없음 · 다른 화면 속도 영향 없음
+ * 👀 보기 전용: 수입검사 · 부적합은 "팀원 전용"으로만 표시 (서버 요청 안 함)
+ */
+var DB = { tm: 0, ld: 0 };
+function dashLoad(force) {
+  var jobs = [], vo = viewOnly();
+  if (force || !store[0]) jobs.push(loadDash(!!force));
+  if (force || !U.loaded) jobs.push(loadUpload());
+  if (force || !ST.loaded) jobs.push(loadStats(!!force));
+  if (force || !LV.loaded) jobs.push(loadLeave(!!force));
+  if (force || !H.loaded) jobs.push(loadHoursMeta(true));
+  if (!vo && (force || !IN.loaded)) jobs.push(loadInsp(!!force));
+  if (!vo && (force || !NC.loaded)) jobs.push(loadNc(!!force));
+  if (!jobs.length) return Promise.resolve("");
+  DB.ld += jobs.length; dashSoon();
+  jobs = jobs.map(function (p) {
+    var fin = function (e) { DB.ld = Math.max(0, DB.ld - 1); dashSoon(); return e || ""; };
+    return Promise.resolve(p).then(function (e) { return fin(typeof e === "string" ? e : ""); }, function (e) { return fin(errText(e)); });
+  });
+  return Promise.all(jobs).then(function (a) { return a.filter(Boolean)[0] || ""; });
+}
+function dashSoon() {   // 여러 개가 거의 동시에 도착하면 한 번만 다시 그림
+  clearTimeout(DB.tm);
+  DB.tm = setTimeout(function () { if (cur === 10 && !SR.open) renderDash(); }, 120);
+}
+function dashGo(n, fn) { if (fn) fn(); setTab(n); window.scrollTo(0, 0); }
+function dkCard(o) {
+  var c = el(o.tab != null && !o.lock ? "button" : "div", "dk" + (o.w ? " w" : "") + (o.w3 ? " w3" : "") + (o.wm ? " wm" : "") + (o.r ? " r" : "") + (o.ok ? " ok" : ""));
+  if (c.tagName === "BUTTON") { c.type = "button"; c.onclick = function () { dashGo(o.tab, o.pre); }; }
+  c.appendChild(el("div", "dh", o.t));
+  if (o.lock) { c.appendChild(el("div", "lk", "🔒 팀원 전용이에요")); return c; }
+  if (o.msg) { c.appendChild(el("div", "dz" + (o.err ? " e" : ""), o.msg)); return c; }
+  if (o.big != null) {
+    var b = el("div", "db"); b.appendChild(el("b", null, String(o.big)));
+    if (o.unit) b.appendChild(el("small", null, o.unit));
+    if (o.sub) b.appendChild(el("em", null, o.sub));
+    c.appendChild(b);
+  }
+  if (o.rows && o.rows.length) {
+    var r = el("div", "dr");
+    o.rows.forEach(function (x) { var d = el("div", x[2] ? "r" : ""); d.appendChild(el("span", null, x[0])); d.appendChild(el("b", null, String(x[1]))); r.appendChild(d); });
+    c.appendChild(r);
+  }
+  (o.body || []).forEach(function (x) { if (x) c.appendChild(x); });
+  return c;
+}
+// 가로 막대 [[이름, 값, 빨강?, 표시글자]]
+function dkBars(list, max) {
+  var w = el("div", "bl");
+  list.forEach(function (x) {
+    var d = el("div", x[2] ? "r" : ""); d.appendChild(el("span", null, x[0]));
+    var i = el("i"), u = el("u"); u.style.width = Math.min(100, max ? x[1] / max * 100 : 0) + "%"; i.appendChild(u); d.appendChild(i);
+    d.appendChild(el("b", null, x[3] != null ? String(x[3]) : String(x[1])));
+    w.appendChild(d);
+  });
+  return w;
+}
+function dkState(data, loading) {   // 아직 없음 → 문구
+  if (data && !data.error) return null;
+  if (data && data.error && !loading) return { msg: "⚠️ " + String(data.error).split("\n")[0], err: 1 };
+  return { msg: "불러오는 중…" };
+}
+function renderDash() {
+  var box = $("dash"); if (!box) return;
+  box.innerHTML = "";
+  var vo = viewOnly(), d0 = store[0] && !store[0].error ? store[0] : null, d1 = store[1] && !store[1].error ? store[1] : null;
+  var eq0 = d0 ? eqsList(d0, 0) : null, eq1 = d1 ? eqsList(d1, 1) : null, L = store.leave;
+  var now = new Date(), hm = ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2);
+  $("upd").textContent = "모든 화면 모아보기 · " + hm + (DB.ld ? " · 갱신 중…" : " 기준");
+
+  // 🌟 맨 위
+  var tiles = [["내일 진행", eq1 ? eq1.length : "-", "대"], ["오늘 연차", L && L.d0 ? L.d0.length : "-", "명"]];
+  var ut = U.data && !U.data.error ? U.data.total : null;
+  tiles.push(["업로드 필요", ut == null ? "-" : ut, "대", ut > 0]);
+  box.appendChild(heroX("📊 팀 대시보드", eq0 ? eq0.length : "-", "대 진행 중", tiles, d0 && d0.label ? "오늘 " + d0.label : ""));
+  var g = el("div", "dg"); box.appendChild(g);
+
+  // 🏭 오늘 공정별
+  (function () {
+    if (!d0) { g.appendChild(dkCard(Object.assign({ t: "🏭 오늘 공정", tab: 0, w: 1 }, dkState(store[0], R.dash) || { msg: "불러오는 중…" }))); return; }
+    var st = d0.stages.map(function (s) { return [s.label, s.items.length]; }).filter(function (x) { return x[1] > 0; });
+    var mx = Math.max.apply(null, st.map(function (x) { return x[1]; }).concat([1]));
+    var urg = eq0.filter(function (e) { return e.u; }).length, soon = eq0.filter(function (e) { return e.due && e.due.dd <= 2; }).length;
+    g.appendChild(dkCard({ t: "🏭 오늘 공정별 진행", tab: 0, w: 1, big: eq0.length, unit: "대", sub: "내일 " + (eq1 ? eq1.length : "-") + "대",
+      rows: [["긴급", urg + "대", urg > 0], ["다음 공정 2일 안", soon + "대", false]],
+      body: [st.length ? dkBars(st, mx) : el("div", "dz", "오늘 잡힌 공정이 없어요")] }));
+  })();
+
+  // 🚚 입고 · 출하 (2주)
+  [["in", "🚚 2주 입고", store.sched], ["out", "📦 2주 출하", store.ship]].forEach(function (k) {
+    var s = k[2];
+    if (!s || s.error || !s.days) { g.appendChild(dkCard(Object.assign({ t: k[1], tab: 6 }, dkState(s, R.dash) || { msg: "불러오는 중…" }))); return; }
+    var r = schedListRange(s), c = schedCount(schedDaysIn(s, r[0], r[1])), t = schedCount(schedDaysIn(s, schedToday(s), schedToday(s)));
+    var rows = [["오늘", t.total + "대"], ["A팀 · B팀", c.A + " · " + c.B]];
+    if (c.U) rows.push(["팀/담당 미지정", c.U + "대", true]);
+    if (c.noLoc) rows.push(["자리 미배정", c.noLoc + "대", true]);
+    g.appendChild(dkCard({ t: k[1], tab: 6, pre: function () { if (SC.kind !== k[0]) { SC.kind = k[0]; SC.sel = null; sset("schedKind", k[0]); } }, big: c.total, unit: "대", rows: rows }));
+  });
+
+  // 📈 이번 달 출하 (장비통계)
+  (function () {
+    var d = ST.data, sx = dkState(d, R.stats);
+    if (sx) { g.appendChild(dkCard(Object.assign({ t: "📈 이번 달 출하", tab: 5 }, sx))); return; }
+    var ms = (d.months || []).filter(function (m) { return m.m <= d.current; }), cm = ms.filter(function (m) { return m.m === d.current; })[0] || {};
+    var dn = (cm.aCnt || 0) + (cm.bCnt || 0), pl = d.info && d.info.planned != null ? d.info.planned : null;
+    var last = ms.slice(-6), mx = Math.max.apply(null, last.map(function (m) { return (m.aCnt || 0) + (m.bCnt || 0); }).concat([1]));
+    var mb = el("div", "mb");
+    last.forEach(function (m) {
+      var n = (m.aCnt || 0) + (m.bCnt || 0), x = el("div", m.m === d.current ? "on" : "");
+      x.appendChild(el("em", null, String(n))); var u = el("u"); u.style.height = Math.max(3, n / mx * 34) + "px"; x.appendChild(u);
+      x.appendChild(el("small", null, parseInt(m.m.slice(5), 10) + "월")); mb.appendChild(x);
+    });
+    g.appendChild(dkCard({ t: "📈 " + parseInt(d.current.slice(5), 10) + "월 출하", tab: 5, big: dn, unit: pl != null ? "/ " + pl + "대" : "대",
+      rows: [["A팀", (cm.aPts == null ? "-" : (+cm.aPts).toFixed(1)) + "점"], ["B팀", (cm.bPts == null ? "-" : (+cm.bPts).toFixed(1)) + "점"]], body: [mb] }));
+  })();
+
+  // 📤 업로드
+  (function () {
+    var d = U.data, sx = dkState(d, R.up);
+    if (sx) { g.appendChild(dkCard(Object.assign({ t: "📤 업로드", tab: 2 }, sx))); return; }
+    var who = 0, noOp = 0, noSite = 0;
+    (d.people || []).forEach(function (p) { if (p.name !== "(작업자 미입력)") who++; p.items.forEach(function (it) { if (it.noOp || p.name === "(작업자 미입력)") noOp++; if (!it.site) noSite++; }); });
+    g.appendChild(dkCard({ t: "📤 업로드 필요", tab: 2, big: d.total, unit: "대", r: d.total > 0, ok: !d.total,
+      rows: [["담당자", who + "명"], ["작업자 미입력", noOp + "대", noOp > 0], ["SITE 빈칸", noSite + "대", noSite > 0]] }));
+  })();
+
+  // ⚠️ 부적합
+  (function () {
+    if (vo) { g.appendChild(dkCard({ t: "⚠️ 부적합", lock: 1 })); return; }
+    var d = NC.data, sx = dkState(d, R.nc);
+    if (sx) { g.appendChild(dkCard(Object.assign({ t: "⚠️ 부적합", tab: 8 }, sx))); return; }
+    var pe = d.list.filter(function (x) { return x.c != null ? x.c : x.p > 0; }).length;
+    g.appendChild(dkCard({ t: "⚠️ 부적합 미처리", tab: 8, big: d.pend, unit: "건", r: d.late > 0, ok: !d.pend,
+      rows: [["재납일 지남", d.late + "건", d.late > 0], ["업체반출", d.out + "건"], ["대기 장비", pe + "대"]] }));
+  })();
+
+  // 🔍 수입검사 (성남 · 동탄)
+  (function () {
+    if (vo) { g.appendChild(dkCard({ t: "🔍 수입검사", lock: 1 })); return; }
+    var d = IN.data, sx = dkState(d, R.insp);
+    if (sx) { g.appendChild(dkCard(Object.assign({ t: "🔍 수입검사", tab: 7 }, sx))); return; }
+    var t = { p: 0, u: 0, g: 0 }, ss = { 성남: 0, 동탄: 0 }, has = false;
+    d.list.forEach(function (x) { t.p += x.p || 0; t.u += x.u || 0; t.g += x.g || 0; if (x.ss) { has = true; for (var k in ss) if (x.ss[k]) ss[k] += x.ss[k].p || 0; } });
+    var rows = has ? [["성남 · 동탄 대기", ss.성남 + " · " + ss.동탄]] : [];
+    rows.push(["긴급 대기", t.u + "건", t.u > 0]); rows.push(["NG", t.g + "건", t.g > 0]);
+    g.appendChild(dkCard({ t: "🔍 수입검사 대기", tab: 7, big: t.p, unit: "건", ok: !t.p, rows: rows, pre: function () { IN.eq = ""; } }));
+  })();
+
+  // 🏖️ 연차
+  (function () {
+    var d = LV.data, rows = [];
+    if (d && !d.error && d.people) {
+      var tr = 0, tl = 0; d.people.forEach(function (p) { tr += +p.remain || 0; if (p.remain != null && p.remain <= 2) tl++; });
+      rows = [["팀 남은 연차", fnum(tr) + "일"], ["2일 이하", tl + "명", tl > 0]];
+    }
+    var nm = function (a) { return a.map(function (x) { return x.n + (x.k && x.k !== "연차" ? "(" + x.k + ")" : ""); }).join(", "); };
+    if (!L && !rows.length) { g.appendChild(dkCard(Object.assign({ t: "🏖️ 연차", tab: 4 }, dkState(d, R.leave) || { msg: "불러오는 중…" }))); return; }
+    var body = [];
+    if (L) { body.push(el("div", "dn" + (L.d0.length ? "" : " s"), "오늘: " + (L.d0.length ? nm(L.d0) : "없음"))); body.push(el("div", "dn s", "내일: " + (L.d1.length ? nm(L.d1) : "없음"))); }
+    g.appendChild(dkCard({ t: "🏖️ 오늘 연차", tab: 4, wm: 1, big: L ? L.d0.length : "-", unit: "명", rows: rows, body: body }));
+  })();
+
+  // ⏰ 근무시간 (이번 주 · 지난 근무일 미입력)
+  (function () {
+    var m = H.meta, pm = prevMissing();
+    if (!m) { g.appendChild(dkCard({ t: "⏰ 근무시간", tab: 3, w: 1, w3: 1, msg: "불러오는 중…" })); return; }
+    var w = m.week, body = [], lim = (w && w.limit) || 52;
+    if (pm && pm.names.length) body.push(el("div", "dn", "미입력: " + pm.names.join(", ")));
+    else if (pm) body.push(el("div", "dn s", "✔ " + pm.label + " 모두 입력했어요"));
+    var near = 0;
+    if (w && w.rows && w.cur != null) {
+      var rs = w.rows.map(function (x) { return [x.n, +(x.h && x.h[w.cur]) || 0]; }).filter(function (x) { return x[1] > 0; }).sort(function (a, b) { return b[1] - a[1]; });
+      rs.forEach(function (x) { if (x[1] >= lim - 4) near++; });
+      if (rs.length) body.push(dkBars(rs.map(function (x) { return [x[0], x[1], x[1] >= lim - 4, fnum(x[1]) + "h"]; }), lim));
+      else body.push(el("div", "dz", "이번 주 입력된 시간이 아직 없어요"));
+    }
+    g.appendChild(dkCard({ t: "⏰ 근무시간 · 이번 주 (" + lim + "시간 기준)", tab: 3, w: 1, w3: 1, r: !!(pm && pm.names.length),
+      big: pm ? pm.names.length : "-", unit: "명", sub: pm ? pm.label + " 미입력" : "", rows: [[(lim - 4) + "시간 넘은 사람", near + "명", near > 0]], body: body }));
+  })();
+
+  box.appendChild(el("div", "dt", "카드를 누르면 그 화면으로 가요 · 새로고침은 전체 최신으로"));
+}
+
+
 /* ---------- 탭 ---------- */
 var TEAM_TABS = [7, 8, 9];   // 👀 보기 전용은 못 여는 탭: 수입검사 · 부적합 · 입고 불출 (서버도 막음)
 function setTab(n) {
@@ -6719,7 +6990,7 @@ function setTab(n) {
   try { pushBar(); } catch (ePb) {}
   if (SR.open) closeSearch(true);
   cur = n;
-  for (var i = 0; i < 10; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
+  for (var i = 0; i < 11; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
   $("main").style.display = n < 2 ? "grid" : "none";
   $("upload").style.display = n === 2 ? "grid" : "none";
   $("hours").style.display = n === 3 ? "grid" : "none";
@@ -6729,10 +7000,12 @@ function setTab(n) {
   $("insp").style.display = n === 7 ? "grid" : "none";
   $("nc").style.display = n === 8 ? "grid" : "none";
   $("mat").style.display = n === 9 ? "grid" : "none";
+  $("dash").style.display = n === 10 ? "grid" : "none";
   if (n < 2) render();
   else if (n === 7) { renderInsp(); if (!IN.loaded) loadInsp(false); }
   else if (n === 8) { renderNc(); if (!NC.loaded) loadNc(false); }
   else if (n === 9) { $("upd").textContent = ""; renderMat(); }
+  else if (n === 10) { renderDash(); dashLoad(false); }
   else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
   else if (n === 3) { $("upd").textContent = ""; updLock(); if (!H.loaded) loadHoursMeta(); }
@@ -6742,7 +7015,7 @@ function setTab(n) {
   demoBar();
 }
 // ⋯ 더보기: 입출하 일정 · 장비통계 · 연차 현황 (지금 보고 있으면 더보기 버튼이 그 이름으로 바뀜)
-var MORE = [[6, "입출하 일정"], [5, "장비통계"], [4, "연차 현황"], [7, "수입검사"], [8, "부적합"], [9, "입고 불출"]];
+var MORE = [[10, "대시보드"], [6, "입출하 일정"], [5, "장비통계"], [4, "연차 현황"], [7, "수입검사"], [8, "부적합"], [9, "입고 불출"]];
 function moreSync() {
   var b = $("tmore"); if (!b) return;
   var hit = MORE.filter(function (m) { return m[0] === cur; })[0];
@@ -6810,7 +7083,7 @@ function openMore() {
 }
 $("tmore").onclick = openMore;
 (function () {
-  var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3], ["renderInsp", "insp", 7], ["renderNc", "nc", 8], ["renderMat", "mat", 9]];
+  var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3], ["renderInsp", "insp", 7], ["renderNc", "nc", 8], ["renderMat", "mat", 9], ["renderDash", "dash", 10]];
   W.forEach(function (w) {
     var f = window[w[0]]; if (typeof f !== "function") return;
     window[w[0]] = function () { var r = f.apply(this, arguments); try { if (!maybeAnim(w[1], w[2])) $(w[1]).classList.remove("ani"); } catch (e) {} return r; };   // 새 데이터로 다시 그린 거면 안 움직임 (두 번 움직이는 것 방지)
@@ -6846,7 +7119,7 @@ document.addEventListener("focusout", function () { setTimeout(function () { var
  * → 글자를 칠 때마다 폰 안에서 바로 찾음 (서버 요청 없음, 평소 화면 속도 영향 없음)
  */
 var SR = { open: false, idx: null, loading: false, at: 0, sel: -1, err: "", ven: null, venBack: null };   // ven: 🏭 업체 현황 ("" = 업체 목록)
-var SECTIONS = ["main", "upload", "hours", "leave", "stats", "sched", "insp", "nc"];
+var SECTIONS = ["main", "upload", "hours", "leave", "stats", "sched", "insp", "nc", "mat", "dash"];
 
 function normQ(s) { return String(s || "").toUpperCase().replace(/[\s\-_#.]/g, ""); }
 
@@ -7216,6 +7489,7 @@ $("ref").onclick = function () {
   else if (cur === 7) { p = loadInsp(true); }
   else if (cur === 8) { p = loadNc(true); }
   else if (cur === 9) { p = MT.prj ? loadMatTab(MT.prj, true, true) : loadMatList(true); }
+  else if (cur === 10) { p = dashLoad(true); renderDash(); }
   else { p = loadDash(true); if (cur === 6) renderSched(); }
 
   REF = true;
@@ -8133,10 +8407,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-04-6";
+var APP_VER = "2026-11-05-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-05-1", ["📝 부적합 요청: 장비 + 품번(도번)을 넣으면 그 장비 자재팀 발주거래처가 귀책에 자동으로 들어가요 · 업체가 맞는지 꼭 확인해 주세요", "🏭 같은 번호의 EFEM · PROCESS도 장비별 업체로 구분해요"]],
+  ["2026-11-04-7", ["📊 더보기 → 대시보드: 오늘 공정 · 입고/출하 · 이번 달 출하 · 업로드 · 부적합 · 수입검사 · 근무시간 · 연차를 한 화면에", "💻 PC 넓은 화면에선 3칸으로 크게 보여요 · 카드를 누르면 그 화면으로 바로 가요"]],
   ["2026-11-04-6", ["🏭 수입검사: 성남 · 동탄 버튼에 대기 · 전체 건수 표시 · 동탄 검사도 모두 보여요", "⚡ 수입검사: 서버가 새로 정리 중일 때 기다리지 않고 잠시 뒤 자동으로 다시 불러와요"]],
   ["2026-11-04-5", ["⚡ 안정성 개선"]],
   ["2026-11-04-4", ["🏭 수입검사: 성남 · 동탄 나눠 보기 (위에서 고르면 기억해요) · 검사마다 사업장 표시", "🔎 수입검사: 장비명을 띄어쓰기로 쳐도 찾아요 (hj92 237 → HJ92-237)", "⚡ 수입검사: 장비를 열면 검사 완료 목록까지 미리 받아 두고, 한 번 본 장비는 바로 떠요"]],
@@ -10208,7 +10484,7 @@ function splashHide(now) {
     n.className = "out";
     setTimeout(aiReport, 700); setTimeout(aiPrefetch, 2500);   // 🤖 AI 속도 리포트 · 학습한 화면 미리 불러오기
     setTimeout(qhCheck, 1300);   // ⏰ 근무시간 미입력이면 바로 저장 창
-    try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7][cur]] || "main")); tabInd(); }, 120); } catch (eA) {}
+    try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9][cur]] || "main")); tabInd(); }, 120); } catch (eA) {}
     setTimeout(function () { n.style.display = "none"; }, 450);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
   })();
 }
@@ -10234,7 +10510,7 @@ function splashReplay(first) {
     if (fresh) splStat("AI 분석 완료", true);
     if ((splEl(n, t0) >= SPL_MIN && fresh) || el2 > 20000) {
       n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450);
-      try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7][cur]] || "main")); tabInd(); } catch (eA) {}
+      try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9][cur]] || "main")); tabInd(); } catch (eA) {}
       if (!fresh) toast("⚠️ 최신 정보를 아직 못 받았어요\n잠시 후 새로고침해 주세요", true);
       return;
     }
