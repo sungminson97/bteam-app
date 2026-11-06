@@ -1462,6 +1462,14 @@ button.dk::after{content:"";position:absolute;right:14px;top:18px;width:6px;heig
 #dash .mb small{font-size:10px;font-weight:800;color:var(--sub)}
 #dash .mb em{font-style:normal;font-size:10px;font-weight:900;color:var(--text)}
 #dash .lk{font-size:12.5px;font-weight:700;color:var(--sub)}
+#dash .dk.vblur .vbz{filter:blur(6px);opacity:.55;pointer-events:none;user-select:none;display:flex;flex-direction:column;gap:7px}
+#dash .dk.vblur .vbm{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);padding:8px 14px;border-radius:999px;background:var(--card);box-shadow:0 0 0 1px var(--line),0 6px 18px -8px rgba(0,0,0,.3);font-size:12.5px;font-weight:800;color:var(--sub);white-space:nowrap}
+#hours.vlock>*:not(#hvlk){display:none!important}
+#hvlk{display:none}
+#hours.vlock>#hvlk{display:flex;flex-direction:column;align-items:center;gap:8px;margin:24px 0;padding:34px 20px;border-radius:20px;background:var(--card);border:1px solid var(--line);text-align:center}
+#hvlk b{font-size:17px;color:var(--text)}
+#hvlk b,#hvlk span{word-break:keep-all}
+#hvlk span{font-size:13.5px;line-height:1.55;color:var(--sub)}
 #dash .dt{font-size:11.5px;color:var(--sub);text-align:center;padding:4px 0}
 @media (max-width:340px){#dash .dg{grid-template-columns:minmax(0,1fr)}}
 @media (min-width:900px){
@@ -2838,6 +2846,7 @@ SPX.start();
 <section id="upload"></section>
 
 <section id="hours">
+  <div id="hvlk"><b>보기 전용에서는 근무시간을 볼 수 없어요</b><span>근무시간은 B팀 팀원만 볼 수 있어요.<br>팀원이면 위의 보기 전용 표시를 눌러<br>이름을 골라 주세요.</span></div>
   <div id="hmiss" style="display:none"></div>
   <div id="hprev" class="prevmiss" style="display:none"></div>
   <details id="hweek" class="wk" style="display:none"></details>
@@ -6947,7 +6956,7 @@ function dashLoad(force) {
   if (force || !U.loaded) jobs.push(loadUpload());
   if (force || !ST.loaded) jobs.push(loadStats(!!force));
   if (force || !LV.loaded) jobs.push(loadLeave(!!force));
-  if (force || !H.loaded) jobs.push(loadHoursMeta(true));
+  if (!vo && (force || !H.loaded)) jobs.push(loadHoursMeta(true));
   if (!vo && (force || !IN.loaded)) jobs.push(loadInsp(!!force));
   if (!vo && (force || !NC.loaded)) jobs.push(loadNc(!!force));
   if (!jobs.length) return Promise.resolve("");
@@ -7101,6 +7110,13 @@ function renderDash() {
 
   // ⏰ 근무시간 (이번 주 · 지난 근무일 미입력)
   (function () {
+    if (viewOnly()) {   // 👀 보기 전용: 예시 막대를 흐리게 (실제 이름 · 시간은 화면에 안 들어감)
+      var c = dkCard({ t: "⏰ 근무시간 · 이번 주", tab: 3, w: 1, w3: 1 }), z = el("div", "vbz");
+      var db = el("div", "db"); db.appendChild(el("b", null, "0")); db.appendChild(el("small", null, "명")); z.appendChild(db);
+      z.appendChild(dkBars([["팀원A", 44, false, "44h"], ["팀원B", 40, false, "40h"], ["팀원C", 36, false, "36h"], ["팀원D", 30, false, "30h"]], 52));
+      c.classList.add("vblur"); c.appendChild(z); c.appendChild(el("div", "vbm", "보기 전용에서는 볼 수 없어요"));
+      g.appendChild(c); return;
+    }
     var m = H.meta, pm = prevMissing();
     if (!m) { g.appendChild(dkCard({ t: "⏰ 근무시간", tab: 3, w: 1, w3: 1, msg: "불러오는 중…" })); return; }
     var w = m.week, body = [], lim = (w && w.limit) || 52;
@@ -7148,7 +7164,7 @@ function setTab(n) {
   else if (n === 11) { renderLay(); loadEquipIndex(false).then(function () { if (cur === 11 && !SR.open) renderLay(); }); }
   else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
-  else if (n === 3) { $("upd").textContent = ""; updLock(); if (!H.loaded) loadHoursMeta(); }
+  else if (n === 3) { $("upd").textContent = ""; if (!hoursLock()) { updLock(); if (!H.loaded) loadHoursMeta(); } }
   else if (n === 4) { renderLeave(LV.data); if (!LV.loaded) loadLeave(); }
   else { renderStats(ST.data); if (!ST.loaded) loadStats(); }
   moreSync();
@@ -7795,7 +7811,7 @@ $("ref").onclick = function () {
   if (REF) return;
   var p;
   if (SR.open) p = loadEquipIndex(true);
-  else if (cur === 3) p = loadHoursMeta();
+  else if (cur === 3) p = hoursLock() ? Promise.resolve() : loadHoursMeta();
   else if (cur === 2) { p = loadUpload(); renderUpload(U.data); }
   else if (cur === 4) { p = loadLeave(true); renderLeave(LV.data); }
   else if (cur === 5) { p = loadStats(true); renderStats(ST.data); }
@@ -8722,10 +8738,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-06-4";
+var APP_VER = "2026-11-06-5";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-06-5", ["👀 보기 전용: 근무시간 탭은 보이지만 내용은 팀원만 볼 수 있어요 · 대시보드 근무시간 카드는 흐리게 보여요"]],
   ["2026-11-06-4", ["🗺 배치도: 한 자리에 2대면 두 장비 이름이 다 보여요 · 같은 자리에 같은 날 · 다음 날 연달아 FRAME 입고가 잡히면 ◆로 따로 표시해요 · 장비가 2대인 자리를 누르면 골라서 볼 수 있어요", "📷 부적합 QR: 모양이 다른 업체 라벨도 발주번호 · 장비명을 읽어요"]],
   ["2026-11-06-3", ["🟢 앱을 켜 둔 동안 일정이 바뀌면 위에 '일정이 변경되었습니다'가 떠요 · 새로고침을 누르면 최신 일정으로 바뀌어요"]],
   ["2026-11-06-2", ["🗺 더보기 → 배치도: 동탄 CR4 자리마다 지금 있는 장비 · 공정 · 입고 예정 · 🔍 확대하면 옆으로 밀어서 크게 (누르면 장비 일정)", "장비 일정 맨 위에 'Backlog 몇 시 기준'인지 보여요 · 날짜를 더 자주 새로 받아요"]],
@@ -9139,7 +9156,7 @@ function refreshIfStale() {
   if (cur === 7) loadInsp(false); else if (cur === 8) loadNc(false); else setTimeout(qPrefetch, 4000);   // 수입검사·부적합도 최신으로
   if (cur === 4) loadLeave(false);
   else if (cur === 5) loadStats(false);
-  else if (cur === 3 && !H.busy) loadHoursMeta(true);
+  else if (cur === 3 && !H.busy && !hoursLock()) loadHoursMeta(true);
   if (dayChanged) toast("📅 날짜가 바뀌어서 오늘 기준으로 새로 불러왔어요");
 }
 
@@ -9249,6 +9266,8 @@ function vIntro(pre, done) {
 }
 // 👀 보기 전용: 보기 PIN으로 들어오고 이름을 안 고른 폰 (이름 고르기·알림 권유 안 함)
 function viewOnly() { return sget("viewOnly") === "1" && !nameDone(); }
+// 👀 보기 전용: 근무시간은 탭만 보이고 내용은 안 보여 줌 (서버에도 요청 안 함 · 서버도 막음)
+function hoursLock() { var on = viewOnly(), h = $("hours"); if (h) h.classList.toggle("vlock", on); if (on) { H.meta = null; H.loaded = false; } return on; }
 function vBadge() {
   var t = $("testtag"); if (!t) return;
   var b = $("vbadge");
@@ -9346,7 +9365,7 @@ $("nmgo").onclick = function () {
   NM.admOK = false;
   var wasChange = NM.change;
   var old = sget("pushName");
-  sset("myName", NM.pick); sset("nameOK", "1"); sdel("viewOnly"); vBadge();
+  sset("myName", NM.pick); sset("nameOK", "1"); sdel("viewOnly"); vBadge(); if (cur === 3 && !hoursLock() && !H.loaded) { updLock(); loadHoursMeta(); }
   if (NM.pick !== CHIEF) sdel("chiefPin");
   NM.chiefOK = false;
   if (wasChange || !sget("hoursName") || sget("hoursName") === old) sset("hoursName", NM.pick);
