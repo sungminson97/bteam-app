@@ -2402,7 +2402,18 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .ltn{flex:1;writing-mode:vertical-rl;font-size:10px;font-weight:800;line-height:1.1;max-height:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
 .lt.pre .ltn{color:var(--sub);font-weight:700}
 .ltn.u{color:var(--warn)}
-.ltt,.lts{display:none}
+.ltt,.lts,.ltz{display:none}
+.ltn em{display:block;font-style:normal;font-size:8.5px;font-weight:700;color:var(--sub);overflow:hidden;text-overflow:ellipsis}
+.lt>.ltn{display:flex;flex-direction:column;align-items:flex-start}
+.lti{order:-2}.lt .ltm{order:-1;position:static;font-size:8.5px;line-height:13px;padding:0 3px;white-space:nowrap}
+.lt{min-height:132px}
+.ltn{max-height:110px}
+.ltns{flex:1;display:flex;flex-direction:row-reverse;justify-content:center;gap:1px;min-height:0;max-height:110px}
+.ltns .ltn{flex:none;font-size:9.5px;max-height:110px}
+.ltns .ltn+.ltn{color:var(--sub)}
+.lt.hasnx::after{content:"";position:absolute;right:3px;bottom:6px;width:5px;height:5px;border-radius:50%;background:var(--card);border:2px solid var(--text)}
+.ltx{display:none}
+.lgx i{box-sizing:border-box;border-radius:50%;background:transparent!important;border:2px solid var(--text)}
 .ltd{writing-mode:vertical-rl;font-size:9.5px;font-weight:700;color:var(--sub);white-space:nowrap}
 .lt.off .ltd{color:color-mix(in srgb,var(--sub) 60%,transparent)}
 .ltp{position:absolute;left:0;bottom:0;height:3px;width:var(--p);background:var(--c);border-radius:0 3px 3px 0}
@@ -2413,7 +2424,16 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .lwrap.zm .ltt{display:block;font-size:11px;font-weight:600;color:var(--sub);line-height:1.25;max-height:28px;overflow:hidden}
 .lwrap.zm .lts{display:inline-block;margin-top:auto;font-size:11px;font-weight:800;padding:3px 7px;border-radius:6px;color:var(--c);background:color-mix(in srgb,var(--c) 18%,transparent)}
 .lwrap.zm .ltd{writing-mode:horizontal-tb;font-size:12px;margin-top:auto}
-.lwrap.zm .ltm{font-size:10.5px;line-height:16px;padding:0 5px;top:7px;right:7px}
+.lwrap.zm .ltns,.lwrap.zm .lt>.ltn{display:none}
+.lwrap.zm .ltz{display:grid;gap:1px;width:100%}
+.lwrap.zm .ltz b{font-size:13px;font-weight:800;line-height:1.25;word-break:keep-all;overflow-wrap:anywhere;color:var(--text)}
+.lwrap.zm .ltz b.u{color:var(--warn)}
+.lwrap.zm .ltz small{font-size:10.5px;font-weight:800;color:var(--c)}
+.lwrap.zm .lt.two .ltz+.ltz{border-top:1px dashed color-mix(in srgb,var(--c) 40%,transparent);padding-top:4px}
+.lwrap.zm .ltx{display:block;margin-top:auto;font-size:10.5px;font-weight:800;color:var(--text)}.lwrap.zm .ltx::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;border:2px solid var(--text);margin-right:4px;vertical-align:1px}
+.lwrap.zm .lt.hasnx .lts{margin-top:0}
+.lwrap.zm .lt.hasnx::after{display:none}
+.lwrap.zm .lt .ltm{position:absolute;font-size:10.5px;line-height:16px;padding:0 5px;top:7px;right:7px}
 .lai{grid-column:1/11;grid-row:2;display:flex;align-items:center;justify-content:center;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line)}
 .lai span{font-size:9px;font-weight:800;letter-spacing:.3em;color:color-mix(in srgb,var(--sub) 70%,transparent)}
 .lcr{grid-column:1;grid-row:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--sub)}
@@ -2430,7 +2450,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .layr:active{background:var(--line)}
 .layr.off{opacity:.75}
 .lid{flex:none;width:34px;height:28px;display:grid;place-items:center;border-radius:8px;background:var(--bg);font-size:12.5px;font-weight:900}
-.lm{flex:1;min-width:0;display:grid;gap:1px}.lm b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lm b.dim{color:var(--sub);font-weight:700}.lm small{font-size:11.5px;color:var(--sub);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lm{flex:1;min-width:0;display:grid;gap:1px}.lm b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lm b.dim{color:var(--sub);font-weight:700}.lm small{font-size:11.5px;color:var(--sub);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lm b.two{margin-top:5px}.lm small.nx{margin-top:3px;color:var(--text);white-space:normal}.lm small.nx::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;border:2px solid var(--text);margin-right:5px;vertical-align:1px}
 .lst{flex:none;font-size:11px;font-weight:800;padding:4px 8px;border-radius:6px;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent)}
 /* 🟢 일정 변경 안내 (앱을 오래 켜 두었을 때 · 새로고침 누를 때까지) */
 .chgbar{display:flex;align-items:center;gap:10px;margin-top:8px;padding:9px 10px 9px 12px;border-radius:12px;background:#e7f8ef;border:1.5px solid #34c27a;animation:chgIn .45s cubic-bezier(.2,.8,.2,1)}
@@ -4950,7 +4970,7 @@ function qrScan(done, onClose, opts) {
   function mode() {
     s1.className = multi ? "" : "on"; s2.className = multi ? "on" : "";
     cl.textContent = multi && n ? "완료 (" + n + "개)" : "닫기";
-    if (stream && !lab) msg.textContent = multi ? base + "\n한 장씩 비추면 계속 넣어요" : opts && opts.label ? base + "\n위쪽 라벨 글자(장비명·업체)도 화면에 보이게" : base;
+    if (stream && !lab) msg.textContent = multi ? base + "\n한 장씩 비추면 계속 넣어요" : opts && opts.label ? base + "\n라벨 전체가 화면에 들어오게" : base;
   }
   s1.onclick = function () { multi = false; sset("qrMulti", "0"); mode(); };
   s2.onclick = function () { multi = true; sset("qrMulti", "1"); mode(); };
@@ -4985,7 +5005,7 @@ function qrScan(done, onClose, opts) {
     msg.textContent = "✅ QR 확인 · " + L.t + "\n🔤 라벨 글자 읽는 중…";
     OCR_PROG = function (m) { if (lab !== L || !/loading|initializ/i.test(m.status || "")) return; msg.textContent = "✅ QR 확인 · " + L.t + "\n🔤 글자 읽기 도구 받는 중… " + Math.round((m.progress || 0) * 100) + "% (처음 한 번만)"; };
     var acc = L.acc || (L.acc = { prj: "", ven: "" });
-    var V2 = [{ psm: "6" }, { psm: "11", gray: true }];
+    var V2 = [{ psm: "6" }, { psm: "11", gray: true }, { psm: "11", gray: true, wide: true }];   // 3번째 = 라벨 전체 (모양이 다른 라벨)
     (function pass(i) {
       ocrLabel(L.best.shot, V2[i]).then(function (txt) {
         OCR_PROG = null; if (lab !== L || !live) return;
@@ -5109,11 +5129,14 @@ function ocrWorker() {
   return OCRW;
 }
 // QR 네 모서리 기준으로 라벨(QR 위쪽 글자 부분)만 잘라 똑바로 펴고 흑백으로
-function ocrCrop(shot, outW, gray) {
+function ocrCrop(shot, outW, gray, wide) {
   var p = shot.p, tl = p.topLeft, tr = p.topRight, bl = p.bottomLeft, br = p.bottomRight;
   var cx = (tl.x + tr.x + bl.x + br.x) / 4, cy = (tl.y + tr.y + bl.y + br.y) / 4;
   var q = (Math.hypot(tr.x - tl.x, tr.y - tl.y) + Math.hypot(bl.x - tl.x, bl.y - tl.y)) / 2, ang = Math.atan2(tr.y - tl.y, tr.x - tl.x);
-  var x0 = -1.8 * q, y0 = -3.6 * q, bw = 6.6 * q, bh = 2.95 * q, sc = Math.min(3, (outW || 1400) / bw);
+  // 기본 = QR 위쪽 라벨 · wide = QR 둘레 라벨 전체 (QR이 가운데·오른쪽에 있는 다른 업체 라벨용)
+  var x0 = -1.8 * q, y0 = -3.6 * q, bw = 6.6 * q, bh = 2.95 * q;
+  if (wide) { x0 = -5 * q; y0 = -4.2 * q; bw = 13 * q; bh = 7.4 * q; }
+  var sc = Math.min(3, (outW || 1400) / bw);
   var c = el("canvas"); c.width = Math.round(bw * sc); c.height = Math.round(bh * sc);
   var g = c.getContext("2d", { willReadFrequently: true });
   g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
@@ -5236,7 +5259,7 @@ function ocrLabel(shot, v) {
   return ocrWorker().then(function (w) {
     var psm = v.psm || "6";
     return (w._psm === psm ? Promise.resolve() : w.setParameters({ tessedit_pageseg_mode: psm }).then(function () { w._psm = psm; }))
-      .then(function () { return w.recognize(ocrCrop(shot, 1400, v.gray)); });
+      .then(function () { return w.recognize(ocrCrop(shot, v.wide ? 1700 : 1400, v.gray, v.wide)); });
   }).then(function (r) { return (r && r.data && r.data.text) || ""; });
 }
 /* ---------- 📦 입고 · 불출 (자재팀 '양산장비 입고 불출 시트' 보기 · 읽기만) ----------
@@ -5912,6 +5935,9 @@ function nfForm(box) {
       if (o.prj && o.ven) return o;
       if (o.pur) return o;
       return ocrLabel(shot, { psm: "11", gray: true }).then(function (t2) { var o2 = ocrP(t2); return { prj: o.prj || o2.prj, ven: o.ven || o2.ven, venAlt: o.ven ? o.venAlt : o2.venAlt, pur: o.pur || o2.pur }; });
+    }).then(function (o) {
+      if ((o.prj && o.ven) || o.pur) return o;
+      return ocrLabel(shot, { psm: "11", gray: true, wide: true }).then(function (t3) { var o3 = ocrP(t3); return { prj: o.prj || o3.prj, ven: o.ven || o3.ven, venAlt: o.ven ? o.venAlt : o3.venAlt, pur: o.pur || o3.pur }; });
     }).then(function (o) {
       OCR_PROG = null; if (f.scan !== S) return;
       if (o.prj) setPrj(o.prj, "라벨");
@@ -7313,6 +7339,14 @@ var LAYP = (function () {
 })();
 var LAYS = ["자재불출", "FRAME 입고", "배선", "MODULE", "I/O CHECK", "1차 LEVEL", "1차 검수", "제조완료", "QC", "PACKING", "출하"];
 var LAYC = ["#94a3b8", "#22d3ee", "#f59e0b", "#a78bfa", "#3b82f6", "#f472b6", "#e879f9", "#a3e635", "#fb7185", "#2dd4bf", "#22c55e"];
+// 칸이 좁아서 이름을 둘로: "CC04-156 EFEM" → ["CC04-156", "EFEM"] · "MISC-12CH BS PROCESS #10" → ["MISC-12CH", "BS PROCESS #10"]
+function laySplit(n) { var s = String(n || "").trim(), m = s.match(/^(\S+)\s+(.+)$/); return m ? [m[1], m[2]] : [s, ""]; }
+// 2대 이상일 때 한 줄용 짧은 이름: "CJ07-132 EFEM" → "CJ07-132 EFEM" · "MISC-12CH BS PROCESS #10" → "MISC-12CH #10" · "NR63-014 PROCESS" → "NR63-014 PRO"
+function layShort(n) {
+  var p = laySplit(n), r = p[1], h = r.match(/#\s*\d+/);
+  if (h) return p[0] + " " + h[0].replace(/\s/g, "");
+  return p[0] + (r ? " " + r.replace(/PROCESS/i, "PRO").split(/\s+/).slice(-1)[0] : "");
+}
 function layMd(d) { var m = String(d || "").match(/^\d{4}-(\d{2})-(\d{2})/); return m ? (+m[1]) + "/" + (+m[2]) : ""; }
 function layEqs() {
   var I = SR.idx; if (!I || !I.rows) return null;
@@ -7364,14 +7398,26 @@ function renderLay() {
     var stI = e ? Math.max(0, e.st) : 0; if (e) t.style.setProperty("--c", LAYC[stI]);
     t.appendChild(el("span", "lti", id));
     if (e) {
-      var nm = el("span", "ltn" + (e.u ? " u" : ""), e.n); t.appendChild(nm);
-      t.appendChild(el("span", "ltt", e.t || ""));
-      t.appendChild(el("span", "lts", LAYS[stI]));
+      var all = [e].concat(si.others || []);
+      if (all.length > 1) {   // 한 자리에 2대 이상 (같은 날 · 다른 날 들어온 것 모두): 이름을 줄마다 하나씩
+        t.classList.add("two");
+        var nb = el("span", "ltns"); all.slice(0, 3).forEach(function (o) { nb.appendChild(el("span", "ltn" + (o.u ? " u" : ""), layShort(o.n))); }); t.appendChild(nb);
+        all.forEach(function (o) { var z = el("span", "ltz"); z.appendChild(el("b", o.u ? "u" : null, o.n)); z.appendChild(el("small", null, LAYS[Math.max(0, o.st)])); t.appendChild(z); });
+        t.appendChild(el("span", "ltm", all.length + "대"));
+      } else {
+        var sp2 = laySplit(e.n), nm = el("span", "ltn" + (e.u ? " u" : "")); nm.appendChild(document.createTextNode(sp2[0]));
+        if (sp2[1]) nm.appendChild(el("em", null, sp2[1]));
+        t.appendChild(nm);
+        var zf = el("span", "ltz one"); zf.appendChild(el("b", e.u ? "u" : null, e.n)); t.appendChild(zf);
+        t.appendChild(el("span", "ltt", e.t || ""));
+        t.appendChild(el("span", "lts", LAYS[stI]));
+      }
       var pb = el("i", "ltp"); pb.style.setProperty("--p", ((stI + 1) / 11 * 100).toFixed(0) + "%"); t.appendChild(pb);
-      if (si.more) t.appendChild(el("span", "ltm", "+" + si.more));
+      if (nx) { t.classList.add("hasnx"); t.appendChild(el("span", "ltx", layMd(nx.inD) ? "다음 " + layMd(nx.inD) + " 입고" : "다음 입고 예정")); }
       t.onclick = function () { openEquip(e.n); };
     } else if (nx) {
-      t.appendChild(el("span", "ltn", nx.n));
+      var sp3 = laySplit(nx.n), nn = el("span", "ltn"); nn.appendChild(document.createTextNode(sp3[0])); if (sp3[1]) nn.appendChild(el("em", null, sp3[1])); t.appendChild(nn);
+      var zn = el("span", "ltz one"); zn.appendChild(el("b", null, nx.n)); t.appendChild(zn);
       t.appendChild(el("span", "ltd", nx.inD ? layMd(nx.inD) + " 입고" : "입고 예정"));
       t.onclick = function () { openEquip(nx.n); };
     } else t.appendChild(el("span", "ltd", "비어 있음"));
@@ -7385,6 +7431,7 @@ function renderLay() {
   wrap.appendChild(fl); cd.appendChild(wrap);
   if (LAYZ) cd.appendChild(el("div", "hint", "👉 옆으로 밀어서 보세요 · 칸을 누르면 장비 일정"));
   var lg = el("div", "layg"); LAYS.forEach(function (s, i2) { var sp = el("span"); var ii = el("i"); ii.style.background = LAYC[i2]; sp.appendChild(ii); sp.appendChild(document.createTextNode(s)); lg.appendChild(sp); });
+  var lx = el("span", "lgx"); lx.appendChild(el("i")); lx.appendChild(document.createTextNode("다음 입고 예정 있음")); lg.appendChild(lx);
   cd.appendChild(lg);
   box.appendChild(cd);
   if (sx) wrap.scrollLeft = sx;
@@ -7396,15 +7443,18 @@ function renderLay() {
     row.appendChild(el("span", "lid", pp.id));
     var m = el("span", "lm");
     if (e) {
-      var b = el("b"); urgName(b, e.n, e.u); m.appendChild(b);
-      m.appendChild(el("small", null, [e.t, LAYS[Math.max(0, e.st)]].filter(Boolean).join(" · ") + (si.more ? " · 함께: " + si.others.map(function (o) { return o.n; }).join(", ") : "")));
+      [e].concat(si.others || []).forEach(function (o, k) {
+        var b = el("b", k ? "two" : null); urgName(b, o.n, o.u); m.appendChild(b);
+        m.appendChild(el("small", null, [o.t, LAYS[Math.max(0, o.st)], o.inD ? layMd(o.inD) + " 입고" : ""].filter(Boolean).join(" · ")));
+      });
+      if (nx) m.appendChild(el("small", "nx", "다음 입고 " + nx.n + (nx.inD ? " · " + layMd(nx.inD) : "") + (si.wait > 1 ? " 외 " + (si.wait - 1) + "대" : "")));
       row.onclick = function () { openEquip(e.n); };
     } else {
       m.appendChild(el("b", "dim", "비어 있음"));
       if (nx) { m.appendChild(el("small", null, "다음 입고 " + nx.n + (nx.inD ? " · " + layMd(nx.inD) : "") + (si.wait > 1 ? " 외 " + (si.wait - 1) + "대" : ""))); row.onclick = function () { openEquip(nx.n); }; }
     }
     row.appendChild(m);
-    if (e) { var tg = el("span", "lst", LAYS[Math.max(0, e.st)]); tg.style.setProperty("--c", LAYC[Math.max(0, e.st)]); row.appendChild(tg); }
+    if (e) { var tg = el("span", "lst", si.more ? (si.more + 1) + "대" : LAYS[Math.max(0, e.st)]); tg.style.setProperty("--c", LAYC[Math.max(0, e.st)]); row.appendChild(tg); }
     ls.appendChild(row);
   });
   box.appendChild(ls);
@@ -8629,10 +8679,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-06-3";
+var APP_VER = "2026-11-06-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-06-4", ["🗺 배치도: 한 자리에 2대면 두 장비 이름이 다 보여요 · 장비가 있는 자리에 다음 입고가 잡혀 있으면 속이 빈 동그라미(○)로 알려 줘요", "📷 부적합 QR: 모양이 다른 업체 라벨도 발주번호 · 장비명을 읽어요"]],
   ["2026-11-06-3", ["🟢 앱을 켜 둔 동안 일정이 바뀌면 위에 '일정이 변경되었습니다'가 떠요 · 새로고침을 누르면 최신 일정으로 바뀌어요"]],
   ["2026-11-06-2", ["🗺 더보기 → 배치도: 동탄 CR4 자리마다 지금 있는 장비 · 공정 · 입고 예정 · 🔍 확대하면 옆으로 밀어서 크게 (누르면 장비 일정)", "장비 일정 맨 위에 'Backlog 몇 시 기준'인지 보여요 · 날짜를 더 자주 새로 받아요"]],
   ["2026-11-06-1", ["⚡ 시트 업로드: '완료로 기록'을 누르면 바로 목록에서 빠져요 (저장은 뒤에서 · 실패하면 다시 나타나고 알려 드려요)"]],
