@@ -2202,6 +2202,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #nc .nfstep .nfqb{height:48px;border:0;border-radius:0;background:transparent;color:var(--text);font-size:20px;font-weight:700}
 #nc .nfstep .nfqb:active{background:var(--bg)}
 #nc .nfqr{border-radius:12px;height:50px}
+#nc .nfqr.vlk,#nc input.vlk{opacity:.45}
 #nc .nfadd button{height:34px;border-radius:10px;background:var(--card);font-weight:700}
 /* ---- 버튼 칸 줄 맞추기 (같은 너비 격자) ---- */
 #nc .nfc.nfg2,#nc .nfc.nfg3,#nc .nfc.nfg4{display:grid;gap:8px}
@@ -5993,6 +5994,19 @@ function nfForm(box) {
   var pnq = el("div", "nfc nfg3");
   lrnSort(NF_PN, "p", function (q) { return q[1]; }).forEach(function (q) { var b = el("button", null, q[0]); b.type = "button"; b.dataset.v = q[1]; b.onclick = function () { if (needPrj()) return; f.pn = nfQuick(f.pn) === q[1] ? "" : q[1]; f.pnPend = false; nin3.value = f.pn; hint("pn", ""); upd(); }; pnq.appendChild(b); });
   r3.appendChild(pnq);
+  // 👀 보기 전용: 품번 입력 · QR · 자주 쓰는 품목 · 품번 추가 막음 (팀원만)
+  var VO3 = viewOnly();
+  if (VO3) {
+    var voMsg = function () { toast("보기 전용에서는 품번 입력 · QR을 쓸 수 없어요"); };
+    f.pn = ""; f.pnPend = false; if (f.kind === "pn") { f.rows = []; f.kind = ""; }
+    nin3.value = ""; nin3.readOnly = true; nin3.placeholder = "팀원만 입력할 수 있어요"; nin3.classList.add("vlk");
+    nin3.addEventListener("focus", function (ev) { ev.stopImmediatePropagation(); try { nin3.blur(); } catch (e) {} }, true);
+    nin3.addEventListener("beforeinput", function (ev) { ev.preventDefault(); ev.stopImmediatePropagation(); }, true);
+    nin3.addEventListener("click", voMsg);
+    qb.classList.add("vlk"); qb.onclick = voMsg;
+    pnq.style.display = "none"; if (pnq.previousSibling) pnq.previousSibling.style.display = "none";
+    r3.insertBefore(el("div", "nfhn w", "보기 전용에서는 품번 입력 · QR 읽기를 쓸 수 없어요"), pnw.nextSibling);
+  }
   var partsBox = el("div", "nfparts"); r3.appendChild(partsBox);
   function drawParts() {
     partsBox.innerHTML = "";
@@ -6043,6 +6057,7 @@ function nfForm(box) {
   var addP = el("button", null, "+ 장비 추가"); addP.type = "button"; addP.onclick = function () { f.kind = "proj"; f.rows.push({ v: "", q: "" }); drawRows(); upd(); };
   var addN = el("button", null, "+ 품번 추가"); addN.type = "button"; addN.onclick = function () { f.kind = "pn"; f.rows.push({ v: "", q: "" }); drawRows(); upd(); };
   ad.appendChild(addP); ad.appendChild(addN); r4.appendChild(ad);
+  if (VO3) addN.style.display = "none";   // 👀 보기 전용: 품번 추가도 막음
   var multiHint = el("div", "nfhint"); r4.appendChild(multiHint);
   r4.appendChild(el("div", "nfhint", "같은 불량이 다른 장비에도 → [장비 추가] · 한 장비에 품번이 여러 개 → [품번 추가]"));
   sec("불량");
@@ -8738,10 +8753,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-06-5";
+var APP_VER = "2026-11-07-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-07-1", ["👀 보기 전용: 부적합 요청 작성에서 품번 입력 · QR 읽기는 팀원만 쓸 수 있어요"]],
   ["2026-11-06-5", ["👀 보기 전용: 근무시간 탭은 보이지만 내용은 팀원만 볼 수 있어요 · 대시보드 근무시간 카드는 흐리게 보여요"]],
   ["2026-11-06-4", ["🗺 배치도: 한 자리에 2대면 두 장비 이름이 다 보여요 · 같은 자리에 같은 날 · 다음 날 연달아 FRAME 입고가 잡히면 ◆로 따로 표시해요 · 장비가 2대인 자리를 누르면 골라서 볼 수 있어요", "📷 부적합 QR: 모양이 다른 업체 라벨도 발주번호 · 장비명을 읽어요"]],
   ["2026-11-06-3", ["🟢 앱을 켜 둔 동안 일정이 바뀌면 위에 '일정이 변경되었습니다'가 떠요 · 새로고침을 누르면 최신 일정으로 바뀌어요"]],
