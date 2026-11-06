@@ -2411,9 +2411,15 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .ltns{flex:1;display:flex;flex-direction:row-reverse;justify-content:center;gap:1px;min-height:0;max-height:110px}
 .ltns .ltn{flex:none;font-size:9.5px;max-height:110px}
 .ltns .ltn+.ltn{color:var(--sub)}
-.lt.hasnx::after{content:"";position:absolute;right:3px;bottom:6px;width:5px;height:5px;border-radius:50%;background:var(--card);border:2px solid var(--text)}
+.lt.dup{box-shadow:inset 0 0 0 2px var(--text)}
+.lt.dup::after{content:"";position:absolute;right:4px;bottom:6px;width:7px;height:7px;background:var(--text);transform:rotate(45deg)}
+#lay{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+#layov .laypp{margin:2px 0 12px;color:var(--sub);font-size:13.5px}
+#layov .mnl{display:grid}#layov .mnl button{display:grid;gap:4px;text-align:left}#layov .mnl b.u{color:var(--warn)}
+#layov .laypi{font-size:12.5px;font-weight:700;color:var(--sub)}
 .ltx{display:none}
-.lgx i{box-sizing:border-box;border-radius:50%;background:transparent!important;border:2px solid var(--text)}
+.lt.pre>.ltd{display:none}.lwrap.zm .lt.pre>.ltd{display:block}
+.lgx i{width:7px!important;height:7px!important;border-radius:0!important;background:var(--text)!important;transform:rotate(45deg);margin:0 3px}
 .ltd{writing-mode:vertical-rl;font-size:9.5px;font-weight:700;color:var(--sub);white-space:nowrap}
 .lt.off .ltd{color:color-mix(in srgb,var(--sub) 60%,transparent)}
 .ltp{position:absolute;left:0;bottom:0;height:3px;width:var(--p);background:var(--c);border-radius:0 3px 3px 0}
@@ -2430,9 +2436,9 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .lwrap.zm .ltz b.u{color:var(--warn)}
 .lwrap.zm .ltz small{font-size:10.5px;font-weight:800;color:var(--c)}
 .lwrap.zm .lt.two .ltz+.ltz{border-top:1px dashed color-mix(in srgb,var(--c) 40%,transparent);padding-top:4px}
-.lwrap.zm .ltx{display:block;margin-top:auto;font-size:10.5px;font-weight:800;color:var(--text)}.lwrap.zm .ltx::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;border:2px solid var(--text);margin-right:4px;vertical-align:1px}
-.lwrap.zm .lt.hasnx .lts{margin-top:0}
-.lwrap.zm .lt.hasnx::after{display:none}
+.lwrap.zm .ltx{display:block;margin-top:auto;font-size:10.5px;font-weight:800;color:var(--text)}
+.lwrap.zm .lt.dup .lts,.lwrap.zm .lt.dup>.ltd{margin-top:0}
+.lwrap.zm .lt.dup::after{display:none}
 .lwrap.zm .lt .ltm{position:absolute;font-size:10.5px;line-height:16px;padding:0 5px;top:7px;right:7px}
 .lai{grid-column:1/11;grid-row:2;display:flex;align-items:center;justify-content:center;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line)}
 .lai span{font-size:9px;font-weight:800;letter-spacing:.3em;color:color-mix(in srgb,var(--sub) 70%,transparent)}
@@ -2450,7 +2456,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .layr:active{background:var(--line)}
 .layr.off{opacity:.75}
 .lid{flex:none;width:34px;height:28px;display:grid;place-items:center;border-radius:8px;background:var(--bg);font-size:12.5px;font-weight:900}
-.lm{flex:1;min-width:0;display:grid;gap:1px}.lm b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lm b.dim{color:var(--sub);font-weight:700}.lm small{font-size:11.5px;color:var(--sub);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lm b.two{margin-top:5px}.lm small.nx{margin-top:3px;color:var(--text);white-space:normal}.lm small.nx::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;border:2px solid var(--text);margin-right:5px;vertical-align:1px}
+.lm{flex:1;min-width:0;display:grid;gap:1px}.lm b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lm b.dim{color:var(--sub);font-weight:700}.lm small{font-size:11.5px;color:var(--sub);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lm b.two{margin-top:5px}.lm small.nx{margin-top:3px;color:var(--text);white-space:normal}
 .lst{flex:none;font-size:11px;font-weight:800;padding:4px 8px;border-radius:6px;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent)}
 /* 🟢 일정 변경 안내 (앱을 오래 켜 두었을 때 · 새로고침 누를 때까지) */
 .chgbar{display:flex;align-items:center;gap:10px;margin-top:8px;padding:9px 10px 9px 12px;border-radius:12px;background:#e7f8ef;border:1.5px solid #34c27a;animation:chgIn .45s cubic-bezier(.2,.8,.2,1)}
@@ -7347,6 +7353,40 @@ function layShort(n) {
   if (h) return p[0] + " " + h[0].replace(/\s/g, "");
   return p[0] + (r ? " " + r.replace(/PROCESS/i, "PRO").split(/\s+/).slice(-1)[0] : "");
 }
+// ◆ 연달아 입고: 같은 자리에 FRAME 입고가 같은 날 · 다음 날로 붙어 있고, 그 입고가 오늘이거나 앞으로일 때
+function layDay(d) { var m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) / 864e5 : NaN; }
+function layDup(C, live, T) {
+  var hit = [], add = function (x) { if (hit.indexOf(x) < 0) hit.push(x); };
+  C.forEach(function (c) {
+    if (!c || !c.inD) return;
+    live.forEach(function (o) {
+      if (o === c || !o.inD) return;
+      var g = Math.abs(layDay(o.inD) - layDay(c.inD));
+      if (g <= 1 && (o.inD >= T || c.inD >= T)) { add(c); add(o); }
+    });
+  });
+  return hit.sort(function (a, b) { return a.inD < b.inD ? -1 : a.inD > b.inD ? 1 : 0; });
+}
+// 칸을 눌렀을 때: 장비가 2대 이상이면 고르는 창
+function layPick(id, list) {
+  if (list.length < 2) { if (list[0]) openEquip(list[0].n); return; }
+  var ov = $("layov");
+  if (!ov) { ov = el("div", "ov"); ov.id = "layov"; ov.onclick = function (e) { if (e.target === ov) ov.className = "ov"; }; document.body.appendChild(ov); }
+  ov.innerHTML = "";
+  var bx = el("div", "box"); bx.appendChild(el("h3", null, "🗺 " + id + " 자리 장비 " + list.length + "대"));
+  bx.appendChild(el("p", "laypp", "볼 장비를 골라 주세요"));
+  var ml = el("div", "mnl");
+  list.forEach(function (o) {
+    var b = el("button"); b.type = "button";
+    var nm = el("b", o.u ? "u" : null, o.n); b.appendChild(nm);
+    b.appendChild(el("span", "laypi", [o.t, o.inD ? layMd(o.inD) + " 입고" : "", o.inD && o.inD <= SR.idx.today ? LAYS[Math.max(0, o.st)] : "입고 예정"].filter(Boolean).join(" · ")));
+    b.onclick = function () { ov.className = "ov"; openEquip(o.n); };
+    ml.appendChild(b);
+  });
+  bx.appendChild(ml);
+  var ob = el("div", "ob"), cb = el("button", null, "닫기"); cb.type = "button"; cb.onclick = function () { ov.className = "ov"; }; ob.appendChild(cb); bx.appendChild(ob);
+  ov.appendChild(bx); ov.className = "ov on";
+}
 function layMd(d) { var m = String(d || "").match(/^\d{4}-(\d{2})-(\d{2})/); return m ? (+m[1]) + "/" + (+m[2]) : ""; }
 function layEqs() {
   var I = SR.idx; if (!I || !I.rows) return null;
@@ -7366,7 +7406,9 @@ function laySlots(L, T) {
     var A = g[k], live = function (e) { return !(e.out && e.out <= T); };   // 출하일이 지났으면 나간 장비
     var cur = A.filter(function (e) { return live(e) && e.inD && e.inD <= T; }).sort(function (a, b) { return a.inD < b.inD ? 1 : a.inD > b.inD ? -1 : 0; });
     var nx = A.filter(function (e) { return live(e) && (!e.inD || e.inD > T); }).sort(function (a, b) { var x = a.inD || "9999", y = b.inD || "9999"; return x < y ? -1 : x > y ? 1 : 0; });
-    out[k] = { cur: cur[0] || null, more: Math.max(0, cur.length - 1), others: cur.slice(1), next: nx[0] || null, wait: nx.length };
+    var lv = A.filter(live), dup = layDup(cur.concat(nx.slice(0, 1)), lv, T);
+    var pick = cur.concat(cur.length ? [] : nx.slice(0, 1)); dup.forEach(function (x) { if (pick.indexOf(x) < 0) pick.push(x); });
+    out[k] = { cur: cur[0] || null, more: Math.max(0, cur.length - 1), others: cur.slice(1), next: nx[0] || null, wait: nx.length, dup: dup, pick: pick };
   });
   return out;
 }
@@ -7413,13 +7455,14 @@ function renderLay() {
         t.appendChild(el("span", "lts", LAYS[stI]));
       }
       var pb = el("i", "ltp"); pb.style.setProperty("--p", ((stI + 1) / 11 * 100).toFixed(0) + "%"); t.appendChild(pb);
-      if (nx) { t.classList.add("hasnx"); t.appendChild(el("span", "ltx", layMd(nx.inD) ? "다음 " + layMd(nx.inD) + " 입고" : "다음 입고 예정")); }
-      t.onclick = function () { openEquip(e.n); };
+      if (si.dup && si.dup.length) { t.classList.add("dup"); t.appendChild(el("span", "ltx", "◆ 연달아 입고 " + si.dup.map(function (o) { return layMd(o.inD); }).join(" · "))); }
+      t.onclick = function () { layPick(id, si.pick); };
     } else if (nx) {
-      var sp3 = laySplit(nx.n), nn = el("span", "ltn"); nn.appendChild(document.createTextNode(sp3[0])); if (sp3[1]) nn.appendChild(el("em", null, sp3[1])); t.appendChild(nn);
+      var sp3 = laySplit(nx.n), nn = el("span", "ltn"); nn.appendChild(document.createTextNode(sp3[0])); nn.appendChild(el("em", null, nx.inD ? layMd(nx.inD) + " 입고" : "입고 예정")); t.appendChild(nn);   // 빈 칸: 이름 + 입고일 두 줄 (칸 끝까지 씀)
       var zn = el("span", "ltz one"); zn.appendChild(el("b", null, nx.n)); t.appendChild(zn);
       t.appendChild(el("span", "ltd", nx.inD ? layMd(nx.inD) + " 입고" : "입고 예정"));
-      t.onclick = function () { openEquip(nx.n); };
+      if (si.dup && si.dup.length) { t.classList.add("dup"); t.appendChild(el("span", "ltx", "◆ 연달아 입고 " + si.dup.map(function (o) { return layMd(o.inD); }).join(" · "))); }
+      t.onclick = function () { layPick(id, si.pick); };
     } else t.appendChild(el("span", "ltd", "비어 있음"));
     return t;
   };
@@ -7431,7 +7474,7 @@ function renderLay() {
   wrap.appendChild(fl); cd.appendChild(wrap);
   if (LAYZ) cd.appendChild(el("div", "hint", "👉 옆으로 밀어서 보세요 · 칸을 누르면 장비 일정"));
   var lg = el("div", "layg"); LAYS.forEach(function (s, i2) { var sp = el("span"); var ii = el("i"); ii.style.background = LAYC[i2]; sp.appendChild(ii); sp.appendChild(document.createTextNode(s)); lg.appendChild(sp); });
-  var lx = el("span", "lgx"); lx.appendChild(el("i")); lx.appendChild(document.createTextNode("다음 입고 예정 있음")); lg.appendChild(lx);
+  var lx = el("span", "lgx"); lx.appendChild(el("i")); lx.appendChild(document.createTextNode("같은 자리 연달아 입고 (같은 날 · 다음 날)")); lg.appendChild(lx);
   cd.appendChild(lg);
   box.appendChild(cd);
   if (sx) wrap.scrollLeft = sx;
@@ -7447,12 +7490,12 @@ function renderLay() {
         var b = el("b", k ? "two" : null); urgName(b, o.n, o.u); m.appendChild(b);
         m.appendChild(el("small", null, [o.t, LAYS[Math.max(0, o.st)], o.inD ? layMd(o.inD) + " 입고" : ""].filter(Boolean).join(" · ")));
       });
-      if (nx) m.appendChild(el("small", "nx", "다음 입고 " + nx.n + (nx.inD ? " · " + layMd(nx.inD) : "") + (si.wait > 1 ? " 외 " + (si.wait - 1) + "대" : "")));
-      row.onclick = function () { openEquip(e.n); };
+      row.onclick = function () { layPick(pp.id, si.pick); };
     } else {
       m.appendChild(el("b", "dim", "비어 있음"));
-      if (nx) { m.appendChild(el("small", null, "다음 입고 " + nx.n + (nx.inD ? " · " + layMd(nx.inD) : "") + (si.wait > 1 ? " 외 " + (si.wait - 1) + "대" : ""))); row.onclick = function () { openEquip(nx.n); }; }
+      if (nx) { m.appendChild(el("small", null, "다음 입고 " + nx.n + (nx.inD ? " · " + layMd(nx.inD) : "") + (si.wait > 1 ? " 외 " + (si.wait - 1) + "대" : ""))); row.onclick = function () { layPick(pp.id, si.pick); }; }
     }
+    if (si.dup && si.dup.length) { m.appendChild(el("small", "nx", "◆ 연달아 입고 · " + si.dup.map(function (o) { return o.n + " " + layMd(o.inD); }).join(" → "))); row.classList.add("dupr"); }
     row.appendChild(m);
     if (e) { var tg = el("span", "lst", si.more ? (si.more + 1) + "대" : LAYS[Math.max(0, e.st)]); tg.style.setProperty("--c", LAYC[Math.max(0, e.st)]); row.appendChild(tg); }
     ls.appendChild(row);
@@ -8683,7 +8726,7 @@ var APP_VER = "2026-11-06-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
-  ["2026-11-06-4", ["🗺 배치도: 한 자리에 2대면 두 장비 이름이 다 보여요 · 장비가 있는 자리에 다음 입고가 잡혀 있으면 속이 빈 동그라미(○)로 알려 줘요", "📷 부적합 QR: 모양이 다른 업체 라벨도 발주번호 · 장비명을 읽어요"]],
+  ["2026-11-06-4", ["🗺 배치도: 한 자리에 2대면 두 장비 이름이 다 보여요 · 같은 자리에 같은 날 · 다음 날 연달아 FRAME 입고가 잡히면 ◆로 따로 표시해요 · 장비가 2대인 자리를 누르면 골라서 볼 수 있어요", "📷 부적합 QR: 모양이 다른 업체 라벨도 발주번호 · 장비명을 읽어요"]],
   ["2026-11-06-3", ["🟢 앱을 켜 둔 동안 일정이 바뀌면 위에 '일정이 변경되었습니다'가 떠요 · 새로고침을 누르면 최신 일정으로 바뀌어요"]],
   ["2026-11-06-2", ["🗺 더보기 → 배치도: 동탄 CR4 자리마다 지금 있는 장비 · 공정 · 입고 예정 · 🔍 확대하면 옆으로 밀어서 크게 (누르면 장비 일정)", "장비 일정 맨 위에 'Backlog 몇 시 기준'인지 보여요 · 날짜를 더 자주 새로 받아요"]],
   ["2026-11-06-1", ["⚡ 시트 업로드: '완료로 기록'을 누르면 바로 목록에서 빠져요 (저장은 뒤에서 · 실패하면 다시 나타나고 알려 드려요)"]],
