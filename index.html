@@ -2116,7 +2116,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .qrov{position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center}
 .qrov video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .qrov .qrbox{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(72vw,72vh);aspect-ratio:1;border-radius:22px;box-shadow:0 0 0 9999px rgba(0,0,0,.45);border:3px solid #fff}
-.qrov .qrmsg{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 24px);text-align:center;color:#fff;font-weight:800;font-size:16px;text-shadow:0 1px 4px rgba(0,0,0,.6);white-space:pre-line}
+.qrov .qrmsg{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 24px);min-height:3.9em;text-align:center;color:#fff;font-weight:800;font-size:16px;text-shadow:0 1px 4px rgba(0,0,0,.6);white-space:pre-line}
 .qrov .qrbox.hit{border-color:#3ddc84;box-shadow:0 0 0 9999px rgba(0,0,0,.45),0 0 0 6px rgba(61,220,132,.5)}
 .qrov .qrbox{transition:border-color .15s,box-shadow .15s}
 .qrov .qrseg{position:absolute;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 84px);display:flex;gap:4px;padding:4px;border-radius:14px;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
@@ -2132,7 +2132,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #nc details.nfhist button span{font-size:14px;font-weight:700}
 #nc .nfeq:empty{display:none}
 .qrov.lbl .qrbox{width:min(46vw,46vh);transform:translate(-50%,calc(-50% + 16vh))}
-.qrov .qrbox.ok{border-color:#3ddc84;box-shadow:0 0 0 9999px rgba(0,0,0,.25),0 0 0 6px rgba(61,220,132,.45)}
+.qrov .qrbox.ok{border-color:#3ddc84;box-shadow:0 0 0 9999px rgba(0,0,0,.45),0 0 0 6px rgba(61,220,132,.45)}
 .qrov .qrbar button.go{background:#16a34a}
 .qrov .qrbar{position:absolute;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom) + 24px);display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .qrov .qrbar button{height:54px;border-radius:16px;border:0;font:inherit;font-weight:800;font-size:16px;background:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
@@ -4996,9 +4996,12 @@ function qrScan(done, onClose, opts) {
   try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (eB) {}   // 입력 칸 키보드가 떠 있으면 닫고 시작
   document.body.appendChild(ov);
   // 네모 크기 · 위치를 지금 화면 크기로 직접 계산 (사진 고르기 · 키보드 뒤에 vw/vh가 어긋나 네모가 구석으로 가던 것 방지)
+  var fitWH = null;
   function fitBox() {
     if (!ov.parentNode) return;
     var W = ov.clientWidth || window.innerWidth, H = ov.clientHeight || window.innerHeight, lb = ov.classList.contains("lbl");
+    if (fitWH && Math.abs(fitWH[0] - W) < 40 && Math.abs(fitWH[1] - H) < 80) return;   // 상태 표시줄 · 주소창 정도로 조금 바뀐 건 그대로 (네모가 들썩이지 않게)
+    fitWH = [W, H];
     var bw, bh, dy = 0;
     if (lb) { bw = Math.round(Math.min(W * 0.9, H * 0.55 / 0.62)); bh = Math.round(bw * 0.62); dy = H * 0.05; }   // 라벨 모양(가로로 긴 네모) · 라벨 전체를 맞추게
     else bw = bh = Math.round(Math.min(W, H) * 0.72);
@@ -5078,9 +5081,8 @@ function qrScan(done, onClose, opts) {
       if (L.wait && !(r.prj || r.ven || r.pur)) { L.busy = false; quickGo(); return; }   // [이대로 넣기] 눌렀는데 못 읽었으면 → 닫고 다른 장면으로 뒤에서 한 번 더
       if (L.wait || (r.prj && r.ven) || r.pur || ((r.prj || r.ven) && L.tries >= 2) || L.tries >= 3) { labDone(r); return; }   // 발주번호만 읽혀도 자재팀 시트로 다 찾음
       // 못 읽었으면 다시 몇 장 모아서 한 번 더
-      L.busy = false; L.best = null; L.n = 0; pause = 0; box.classList.remove("ok");
-      msg.textContent = "✅ QR 확인 · " + L.t + (acc.prj || acc.ven ? "\n찾음: " + [acc.prj, acc.ven].filter(Boolean).join(" · ") + " · 나머지 한 번 더 볼게요" : "\n라벨 글자가 잘 안 읽혀요 · 흔들리지 않게 라벨 전체를 비춰 주세요") + " (" + (L.tries + 1) + "/3)";
-      setTimeout(function () { box.classList.add("ok"); }, 200);
+      L.busy = false; L.best = null; L.n = 0; pause = 0;
+      msg.textContent = "✅ QR 확인 · " + L.t + "\n🔤 라벨 글자 한 번 더 읽는 중… (" + (L.tries + 1) + "/3) · 그대로 들고 있어 주세요";
     }
   }
   function labDone(r) {
@@ -8978,10 +8980,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-07-18";
+var APP_VER = "2026-11-07-19";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-07-19", ["📷 QR: 라벨 글자를 한 번 더 읽을 때 네모와 화면이 깜빡이지 않게 했어요"]],
   ["2026-11-07-18", ["📷 QR: 부적합 라벨 찍는 네모를 라벨 모양으로 크게 바꿨어요 · 라벨 전체를 네모 안에 맞추면 돼요"]],
   ["2026-11-07-17", ["📷 QR: 찍는 네모가 화면 구석으로 가던 문제를 고쳤어요"]],
   ["2026-11-07-16", ["🖼️ QR: [사진으로] 사진을 고른 뒤 앱으로 돌아오는 시간이 짧아졌어요 (아이폰)"]],
