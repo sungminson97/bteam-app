@@ -4787,7 +4787,7 @@ function ncVenList() { var seen = {}, out = []; ((NC.ref && NC.ref.vl) || []).fo
 // 자재팀 탭 이름 → 장비 이름 (예: "CK71-171 PROCESS_12CH HYBRID-S-L3" → "CK71-171 PROCESS")
 //   같은 번호 장비가 여러 대면(EFEM · PROCESS · #2 …) 탭 이름에 들어 있는 낱말이 가장 많이 맞는 장비
 function ncTabEq(tab) {
-  var T = String(tab || "").toUpperCase(), c = nfCode(T); if (!T) return "";
+  var T = nfSiteCut(tab).toUpperCase(), c = nfCode(T); if (!T) return "";
   var names = [], seen = {};
   (((typeof eqIdx === "function" ? eqIdx() : null) || {}).rows || []).concat(((NC.ref && NC.ref.prj) || [])).forEach(function (r) { var n = String(r[0] || "").trim(), k = nfPrjKey(n); if (n && !seen[k]) { seen[k] = 1; names.push(n); } });
   var C = names.filter(function (n) { var u = n.toUpperCase(); return c ? nfCode(u) === c : T.replace(/\s+/g, "").indexOf(u.split(/\s+/)[0]) === 0; });
@@ -4803,7 +4803,7 @@ function ncTabEq(tab) {
 // 서버 결과 다듬기: 발주 줄 장비 = 탭에 맞는 장비 이름 · 거래처 = 회사 이름만 · 품명 찾기는 그 장비 탭 품목만
 function ncFix(r, prj) {
   if (!r || r.error) return;
-  (r.mat || []).forEach(function (x) { x[0] = ncTabEq(x[6]) || x[0]; x[1] = ncVenClean(x[1]); });
+  (r.mat || []).forEach(function (x) { x[0] = nfSiteCut(ncTabEq(x[6]) || x[0]); x[1] = ncVenClean(x[1]); });
   var H = r.here || [];
   H.forEach(function (x) { x[2] = ncVenClean(x[2]); });
   if (prj && H.length) { var mine = H.filter(function (x) { var q = ncTabEq(x[3]); return q && nfPrjKey(q) === nfPrjKey(prj); }); if (mine.length) H = mine; }
@@ -5031,7 +5031,7 @@ function qrScan(done, onClose, opts) {
     msg.textContent = "✅ QR 확인 · " + L.t + "\n🔤 라벨 글자 읽는 중…";
     OCR_PROG = function (m) { if (lab !== L || !/loading|initializ/i.test(m.status || "")) return; msg.textContent = "✅ QR 확인 · " + L.t + "\n🔤 글자 읽기 도구 받는 중… " + Math.round((m.progress || 0) * 100) + "% (처음 한 번만)"; };
     var acc = L.acc || (L.acc = { prj: "", ven: "" });
-    var V2 = [{ psm: "6" }, { psm: "11", gray: true }, { psm: "11", gray: true, wide: true }];   // 3번째 = 라벨 전체 (모양이 다른 라벨)
+    var V2 = [{ psm: "6" }, { psm: "11", gray: true }, { psm: "11", gray: true, wide: true }, { psm: "11", gray: true, wide: OCR_LEFT }];   // 4번째 = QR 왼쪽 위 글자 (QR이 오른쪽에 있는 라벨)   // 3번째 = 라벨 전체 (모양이 다른 라벨)
     (function pass(i) {
       ocrLabel(L.best.shot, V2[i]).then(function (txt) {
         OCR_PROG = null; if (lab !== L || !live) return;
@@ -5176,6 +5176,7 @@ document.addEventListener("visibilitychange", function () { if (document.hidden)
  *  - tesseract.js (무료 · 폰 안에서 처리 · 처음 한 번 약 8MB 받고 그다음부턴 폰에 저장된 걸 씀)
  *  - 읽은 글자를 프로젝트 목록 · 귀책 목록이랑 맞춰서 '맞는 것만' 씀 (엉뚱한 글자는 안 넣음)
  */
+var OCR_LEFT = [-6.5, -6, 7.8, 7];   // QR 크기 단위 [x, y, 너비, 높이] · QR이 오른쪽 아래, 장비명 · 업체가 왼쪽 위에 있는 라벨 (한국메카트로닉스 등)
 var OCR_LIB = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/", OCRW = null, OCR_PROG = null, OCR_PN = "", OCR_TXT = "";   // OCR_PN: 지금 읽는 라벨의 QR 품번 · OCR_TXT: 그 라벨에서 읽은 글
 function ocrWorker() {
   if (OCRW) return OCRW;
@@ -5201,6 +5202,8 @@ function ocrCrop(shot, outW, gray, wide) {
   // 기본 = QR 위쪽 라벨 · wide = QR 둘레 라벨 전체 (QR이 가운데·오른쪽에 있는 다른 업체 라벨용)
   var x0 = -1.8 * q, y0 = -3.6 * q, bw = 6.6 * q, bh = 2.95 * q;
   if (wide) { x0 = -5 * q; y0 = -4.2 * q; bw = 13 * q; bh = 7.4 * q; }
+  if (wide === "big") { x0 = -8.5 * q; y0 = -6.5 * q; bw = 17 * q; bh = 13 * q; }
+  if (wide && wide.length === 4) { x0 = wide[0] * q; y0 = wide[1] * q; bw = wide[2] * q; bh = wide[3] * q; }   // [x, y, 너비, 높이] (QR 크기 단위)   // QR 사방 넓게 (QR이 오른쪽 아래 · 글자가 왼쪽 위에 있는 라벨)
   var sc = Math.min(3, (outW || 1400) / bw);
   var c = el("canvas"); c.width = Math.round(bw * sc); c.height = Math.round(bh * sc);
   var g = c.getContext("2d", { willReadFrequently: true });
@@ -5260,6 +5263,10 @@ function ocrNear(T, k, miss) {
 function ocrTail(txt, list) {
   var A = String(txt || "").toUpperCase().replace(/[^0-9A-Z|]/g, ""), hit = [];
   (list || []).forEach(function (p) { var c = nfCode(p); if (!c) return; var t = c.slice(2); if (ocrDigMiss(A, t) === 0 && hit.indexOf(p) < 0) hit.push(p); });
+  if (hit.length > 1 && hit.every(function (p) { return nfCode(p) === nfCode(hit[0]); })) {   // 같은 번호 EFEM · PROCESS → 라벨에 적힌 낱말로
+    var w = hit.filter(function (p) { return p.toUpperCase().split(/\s+/).slice(1).some(function (x) { return x && A.indexOf(x.replace(/[^0-9A-Z]/g, "")) >= 0; }); });
+    return w.length === 1 ? w[0] : hit.filter(function (p) { return !/\s/.test(p.trim()); })[0] || "";
+  }
   return hit.length === 1 ? hit[0] : "";
 }
 function ocrDigMiss(A, k) {   // 숫자만으로 된 k가 A 안에 (O→0 같은 보정 후) 똑같이 있으면 0
@@ -5277,8 +5284,10 @@ function ocrPrjMiss(A, k) {
   return best;
 }
 // 프로젝트 이름 모양 다듬기: "cc04 159" · "CC04_159" · "cc04159" → "CC04-159" (목록에 있으면 목록 이름 그대로)
+// 자재팀 탭 이름 앞에 붙은 사업장 글자 빼기 ("동탄 MISC-12CH HIZ-S-N #1" · "(동탄)GY03-017" → 장비 이름만)
+function nfSiteCut(s) { return String(s == null ? "" : s).replace(/^\s*[\(\[]?\s*(동탄|성남|본사)\s*[\)\]]?\s*[-_:·]?\s*/, "").trim(); }
 function nfPrjFix(v, list) {
-  var t = String(v || "").trim(); if (!t) return t;
+  var t = nfSiteCut(String(v || "").trim()); if (!t) return t;
   var k = nfPrjKey(t), hit = (list || []).filter(function (p) { return nfPrjKey(p) === k; })[0];
   if (hit) return hit;
   var A = t.toUpperCase().replace(/[^0-9A-Z]/g, "");
@@ -5306,7 +5315,7 @@ function ocrSubDist(T, k) {
 // 읽은 글자 → { prj, ven, venAlt } (목록에 있는 것만 · 업체가 둘 중 헷갈리면 venAlt로 둘 다)
 function ocrParse(text, prjList, venList) {
   var T = String(text || "").toUpperCase(), out = { prj: "", ven: "", venAlt: null, raw: T, pur: "" };
-  var pm = T.replace(/\s+/g, "").match(/P[UV]R([0-9OQDILZSBGT|]{10})/);   // PUR + 10자리   // 발주번호 PUR2026095477 (숫자 자리 보정)
+  var pm = T.replace(/\s+/g, "").match(/[PFR][UV]R([0-9OQDILZSBGT|]{10})/);   // 첫 글자 P를 F·R로 잘못 읽어도   // PUR + 10자리   // 발주번호 PUR2026095477 (숫자 자리 보정)
   if (pm) out.pur = "PUR" + pm[1].split("").map(ocrDigit).join("");
   // 업체: 라벨 맨 윗줄(발주번호 PUR… 있는 줄)을 먼저 보고, 없으면 전체 · 자음·모음 단위로 비교
   var lines = T.split(/\n+/), top = lines.filter(function (l) { return /PUR\s*[0-9]/.test(l); })[0] || "";
@@ -5352,7 +5361,7 @@ function ocrLabel(shot, v) {
   return ocrWorker().then(function (w) {
     var psm = v.psm || "6";
     return (w._psm === psm ? Promise.resolve() : w.setParameters({ tessedit_pageseg_mode: psm }).then(function () { w._psm = psm; }))
-      .then(function () { return w.recognize(ocrCrop(shot, v.wide ? 1700 : 1400, v.gray, v.wide)); });
+      .then(function () { return w.recognize(ocrCrop(shot, v.wide && v.wide.length === 4 ? 2000 : v.wide ? 1700 : 1400, v.gray, v.wide)); });
   }).then(function (r) { return (r && r.data && r.data.text) || ""; });
 }
 /* ---------- 📦 입고 · 불출 (자재팀 '양산장비 입고 불출 시트' 보기 · 읽기만) ----------
@@ -5625,17 +5634,19 @@ function nfForm(box) {
     var h = el("div", "nfsh"); h.appendChild(el("b", null, "📷 라벨 읽기 결과"));
     var x = el("button", "nfsx", "✕"); x.type = "button"; x.onclick = function () { f.scan = null; nfSave(); drawScan(); upd(); }; h.appendChild(x);
     scanBox.appendChild(h);
-    var line = function (k, v, src, warn) { var d = el("div", "nfsl" + (warn ? " w" : "")); d.appendChild(el("i", null, k)); d.appendChild(el("b", null, v || "-")); if (src) d.appendChild(el("span", null, src)); scanBox.appendChild(d); };
+    var line = function (k, v, src, warn) { var d = el("div", "nfsl" + (warn ? " w" : "")); d.appendChild(el("i", null, k)); d.appendChild(el("b", null, v || "-")); if (src && !/자재팀/.test(src)) d.appendChild(el("span", null, src)); scanBox.appendChild(d); };   // '자재팀 발주' 같은 출처 글은 안 보여줌
     line("품번", S.pn + (S.nm ? " · " + S.nm : ""), "QR");
     if (S.pur) line("발주", S.pur, "라벨");
-    var MP = !S.prj && !S.st && !nfClean(f.proj) ? (NFM[nfPnKey(S.pn)] || []).map(function (x) { return x[0]; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; }) : [];
+    var MR = NFM[nfPnKey(S.pn)] || [], MV = S.ven ? MR.filter(function (x) { return nfVenMap(x[1]) === S.ven; }) : [];
+    if (MV.length) MR = MV;   // 라벨 업체가 읽혔으면 그 업체가 납품한 장비만
+    var MP = !S.prj && !S.st && !nfClean(f.proj) ? MR.map(function (x) { return x[0]; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; }) : [];
     if (MP.length >= 2 && MP.length <= 8) {   // 라벨에서 장비를 못 읽었는데 이 품번을 발주한 장비가 몇 대면 → 눌러서 고르기
       var dq = el("div", "nfsl w"); dq.appendChild(el("i", null, "장비")); dq.appendChild(el("b", null, "이 품번을 발주한 장비 중에서 골라 주세요")); scanBox.appendChild(dq);
       var cq = el("div", "nfsalt");
       MP.forEach(function (p) { var b = el("button", null, p); b.type = "button"; b.onclick = function () { f.proj = f.pAuto = ""; setPrj(p, "직접 고름"); matApply(S); nfSave(); drawScan(); upd(); prjRe(); }; cq.appendChild(b); });
       scanBox.appendChild(cq);
     } else if (!S.prj && S.prjGuess && !S.st) {   // 라벨에서 읽었지만 자재팀 발주 기록으로 확인이 안 된 장비 → 자동으로 안 넣음
-      var dg = el("div", "nfsl w"); dg.appendChild(el("i", null, "장비")); dg.appendChild(el("b", null, S.prjChk ? S.prjGuess + " · 확인 중…" : S.prjGuess + "? · 자재팀 발주 기록에 없어서 안 넣었어요")); scanBox.appendChild(dg);
+      var dg = el("div", "nfsl w"); dg.appendChild(el("i", null, "장비")); dg.appendChild(el("b", null, S.prjChk ? S.prjGuess + " · 확인 중…" : S.prjGuess + "? · 확인이 안 돼서 안 넣었어요")); scanBox.appendChild(dg);
       if (!S.prjChk) { var cg = el("div", "nfsalt"), bg = el("button", null, "그래도 " + S.prjGuess + " 넣기"); bg.type = "button"; bg.onclick = function () { f.proj = f.pAuto = ""; setPrj(S.prjGuess, "직접 고름"); S.prjGuess = ""; nfSave(); drawScan(); upd(); prjRe(); }; cg.appendChild(bg); scanBox.appendChild(cg); }
     } else line("장비", S.prj || (S.st ? "" : "못 찾음 · 직접 입력"), S.prjSrc || "", !S.prj && !S.st);
     if (S.venAlt && !S.ven) {
@@ -6029,10 +6040,11 @@ function nfForm(box) {
     var pd = function (v) { return String(v || "").replace(/\D/g, ""); };   // 발주번호는 숫자만 비교 (PUR2026092526 = 2026092526)
     var row = S.pur ? M.filter(function (x) { return x[2] && pd(x[2]).length >= 8 && pd(x[2]) === pd(S.pur); })[0] : null;
     var prjs = M.map(function (x) { return x[0]; }).filter(function (v, i, a) { return a.indexOf(v) === i; });
-    // 라벨에서 읽은 장비가 이 품번을 발주한 장비가 아니면 → 읽은 글을 발주 장비들하고 다시 맞춰 봄 (GY03-011 ↔ GY03-017)
-    if (!row && f.proj && f.proj === f.pAuto && OCR_PN === S.pn && OCR_TXT && !prjs.some(function (p) { return nfSamePrj(p, f.proj); })) {
-      var o1 = ocrParse(OCR_TXT, prjs, []);
-      if (o1.prj && prjs.some(function (p) { return nfSamePrj(p, o1.prj); })) setPrj(o1.prj, "라벨 · 자재팀 발주");
+    // 장비가 아직 없거나(자동으로 넣은 게) 이 품번을 발주한 장비가 아니면 → 라벨에서 읽은 글을 발주 장비들하고 맞춰 봄
+    //   (GY03-011 ↔ GY03-017 · "§17876-006" ↔ RB76-006: 앞 영문이 깨져도 숫자 부분으로)
+    if (!row && (!nfClean(f.proj) || f.proj === f.pAuto) && OCR_PN === S.pn && OCR_TXT && !(f.proj && prjs.some(function (p) { return nfSamePrj(p, f.proj); }))) {
+      var o1 = ocrParse(OCR_TXT, prjs, []), cand = o1.prj && prjs.some(function (p) { return nfSamePrj(p, o1.prj); }) ? o1.prj : ocrTail(OCR_TXT, prjs);
+      if (cand) { row = M.filter(function (x) { return nfSamePrj(x[0], cand); })[0] || null; if (row) S.prjGuess = ""; }
     }
     if (!row && f.proj) row = M.filter(function (x) { return nfSamePrj(x[0], f.proj); })[0];
     if (!row && prjs.length === 1) row = M[0];
@@ -6087,6 +6099,9 @@ function nfForm(box) {
     }).then(function (o) {
       if ((o.prj && o.ven) || o.pur) return o;
       return ocrLabel(shot, { psm: "11", gray: true, wide: true }).then(function (t3) { var o3 = ocrP(t3); return { prj: o.prj || o3.prj, ven: o.ven || o3.ven, venAlt: o.ven ? o.venAlt : o3.venAlt, pur: o.pur || o3.pur }; });
+    }).then(function (o) {
+      if ((o.prj && o.ven) || o.pur) return o;
+      return ocrLabel(shot, { psm: "11", gray: true, wide: OCR_LEFT }).then(function (t4) { var o4 = ocrP(t4); return { prj: o.prj || o4.prj, ven: o.ven || o4.ven, venAlt: o.ven ? o.venAlt : o4.venAlt, pur: o.pur || o4.pur }; });   // QR 왼쪽 위 글자
     }).then(function (o) {
       // 그래도 모자라면 같이 찍힌 다른 장면(2 · 3번째로 선명한 것)으로 한 번 더
       var more = (shots || []).filter(function (x) { return x && x !== shot; }).slice(0, 2);
@@ -8906,10 +8921,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-07-9";
+var APP_VER = "2026-11-07-11";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-07-11", ["📷 QR: 모양이 다른 업체 라벨도 장비명 · 발주번호를 더 잘 맞춰요 (QR이 오른쪽 · 글자가 왼쪽에 있는 라벨 포함) · 라벨 결과에 출처 글은 빼고 간단하게"]],
+  ["2026-11-07-10", ["📝 부적합 요청: 장비명 앞에 붙던 ‘동탄’ 글자를 빼고 장비 이름만 넣어요"]],
   ["2026-11-07-9", ["📷 QR: 라벨에서 읽은 장비는 자재팀 발주 기록으로 확인된 것만 장비 칸에 넣어요 (흐린 글자로 엉뚱한 장비가 들어가던 것 고침)"]],
   ["2026-11-07-8", ["📷 QR: 라벨은 자동으로 읽고 다 읽으면 알아서 닫혀요 (6초 넘게 걸리면 [글자 없이 넣기] · 15초면 읽힌 것만 넣고 닫힘) · 장비를 못 읽으면 이 품번을 발주한 장비 중에서 눌러서 고를 수 있어요"]],
   ["2026-11-07-7", ["📷 QR: [이대로 넣기]를 눌러도 가장 선명한 장면으로 라벨을 읽어요 · 이 품번을 발주한 장비 중에서 장비명을 찾아서 비슷한 번호를 덜 헷갈려요 · 엉뚱한 업체가 나오던 것 고침"]],
