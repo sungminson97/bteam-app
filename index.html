@@ -4989,7 +4989,7 @@ function qrScan(done, onClose, opts) {
   var got_ = el("div", "qrgot");
   var bar = el("div", "qrbar"), cl = el("button", null, "닫기"), ph = el("button", null, "🖼️ 사진으로");
   cl.type = ph.type = "button";
-  var fi = el("input"); fi.type = "file"; fi.accept = "image/*"; fi.style.display = "none";
+  var fi = el("input"); fi.type = "file"; fi.accept = "image/heic,image/heif,image/jpeg,image/png,image/*";   // 아이폰: heic를 같이 적어야 사진을 JPEG로 바꾸지 않고 원본 그대로 넘겨줌 → 사진 고른 뒤 앱으로 돌아오는 시간이 짧아짐 fi.style.display = "none";
   bar.appendChild(cl); bar.appendChild(ph);
   [vid, box, msg, seg, got_, bar, fi].forEach(function (x) { ov.appendChild(x); });
   if (opts && opts.label) ov.classList.add("lbl");
@@ -5135,7 +5135,7 @@ function qrScan(done, onClose, opts) {
         }).catch(function (e) { msg.textContent = (e && e.message) || "QR을 못 읽었어요"; });
       })(0);
     };
-    im.onerror = function () { msg.textContent = "사진을 못 열었어요"; };
+    im.onerror = function () { URL.revokeObjectURL(u); msg.textContent = "이 사진은 열 수 없는 형식이에요\n화면을 캡처한 사진이나 카메라로 다시 찍은 사진으로 올려 주세요"; };
     im.src = u;
   };
   qrLib().catch(function (e) { msg.textContent = e.message; });
@@ -8962,10 +8962,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-07-15";
+var APP_VER = "2026-11-07-16";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-07-16", ["🖼️ QR: [사진으로] 사진을 고른 뒤 앱으로 돌아오는 시간이 짧아졌어요 (아이폰)"]],
   ["2026-11-07-15", ["🖼️ QR: 라벨 읽기가 끝나면 결과 칸에 '읽기 완료'가 떠요 · 카메라로 장비명을 못 읽고 닫히면 선명한 다른 장면으로 이어서 한 번 더 읽어요"]],
   ["2026-11-07-14", ["🖼️ QR: [사진으로] 고르면 창이 닫히고 요청서에 사진이 뜬 채로 라벨을 읽어요 (사진은 원래 크기로 읽어서 더 정확해요 · 사진 누르면 크게)"]],
   ["2026-11-07-13", ["📷 QR: 라벨 전체를 화면에 넣고 비추면 QR이 네모 밖에 있어도 읽어요 (긴 라벨 왼쪽 끝 장비명 · 발주번호까지)"]],
