@@ -2140,6 +2140,9 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #nc .nfqr{min-width:84px;padding:0 14px;border-radius:14px;border:0;background:var(--accent);color:#fff;font:inherit;font-weight:800;font-size:15px;cursor:pointer}
 #nc .nfscan{border:1.5px solid color-mix(in srgb,#16a34a 55%,transparent);background:color-mix(in srgb,#16a34a 8%,var(--card));border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
 #nc .nfscan .nfsh{display:flex;align-items:center;justify-content:space-between}
+#nc .nfscan .nfsth{border-radius:12px;overflow:hidden;background:#000;max-height:150px;display:flex;align-items:center;justify-content:center;cursor:zoom-in}
+#nc .nfscan .nfsth img{width:100%;max-height:150px;object-fit:contain;display:block}
+#nc .nfscan .nfsth.big,#nc .nfscan .nfsth.big img{max-height:70vh;cursor:zoom-out}
 #nc .nfscan .nfsh b{color:#15803d;font-size:15px}
 #nc .nfscan .nfsx{border:0;background:transparent;color:var(--sub);font-size:16px;padding:2px 6px;cursor:pointer}
 #nc .nfscan .nfsl{display:grid;grid-template-columns:36px 1fr auto;gap:8px;align-items:baseline;font-size:14px}
@@ -4957,8 +4960,14 @@ function qrRead(imgData, hard) {
   return qrLib().then(function (Z) {
     return Z.readBarcodes(imgData, { formats: ["QRCode", "DataMatrix", "Code128"], tryHarder: !!hard, maxNumberOfSymbols: 4 });
   }).then(function (r) {
-    for (var i = 0; i < r.length; i++) { var t = qrText(r[i].text); if (t) return { t: t, p: r[i].position }; }
-    return null;
+    // QR이 여러 개면(부성 라벨: 관련번호 · 수주번호 QR도 있음) 품번처럼 생긴 걸 고름: 하이픈 있고 · '/' '.' 없고 · 짧은 것
+    var best = null, bs = -1;
+    for (var i = 0; i < r.length; i++) {
+      var t = qrText(r[i].text); if (!t) continue;
+      var sc = (/-/.test(t) ? 2 : 0) + (!/[\/.]/.test(t) ? 2 : 0) + (t.length <= 24 ? 1 : 0) + (/[A-Z]/.test(t) && /[0-9]/.test(t) ? 1 : 0);
+      if (sc > bs) { bs = sc; best = { t: t, p: r[i].position }; }
+    }
+    return best;
   });
 }
 // QR 내용 → 품번 (보통 품번만 들어 있음 · 여러 줄이면 품번처럼 생긴 첫 줄)
@@ -4984,11 +4993,12 @@ function qrScan(done, onClose, opts) {
   document.body.appendChild(ov);
   var stream = null, live = true, busy = false, tm = null, pause = 0, seen = {}, n = 0, cv = el("canvas"), cx = cv.getContext("2d", { willReadFrequently: true });
   var base = "QR을 네모 안에 맞춰 주세요";
+  var fullT = false;   // 네모 / 화면 전체 번갈아
   var lab = null;   // 🔤 라벨 읽기 단계 { t, best, n, tries, t0, busy }
   function mode() {
     s1.className = multi ? "" : "on"; s2.className = multi ? "on" : "";
     cl.textContent = multi && n ? "완료 (" + n + "개)" : "닫기";
-    if (stream && !lab) msg.textContent = multi ? base + "\n한 장씩 비추면 계속 넣어요" : opts && opts.label ? base + "\n라벨 전체가 화면에 들어오게" : base;
+    if (stream && !lab) msg.textContent = multi ? base + "\n한 장씩 비추면 계속 넣어요" : opts && opts.label ? "라벨 전체가 화면에 들어오게 비춰 주세요\nQR은 네모 밖이어도 읽어요" : base;
   }
   s1.onclick = function () { multi = false; sset("qrMulti", "0"); mode(); };
   s2.onclick = function () { multi = true; sset("qrMulti", "1"); mode(); };
@@ -5107,6 +5117,15 @@ function qrScan(done, onClose, opts) {
         cx.drawImage(im, 0, 0, cv.width, cv.height);
         qrRead(cx.getImageData(0, 0, cv.width, cv.height), true).then(function (o) {
           if (!o) { next(i + 1); return; }
+          if (!multi && opts && opts.label) {   // 🖼️ 부적합 라벨 사진: 창을 바로 닫고 → 요청서에 사진을 띄운 채 원본 크기로 글자 읽기 (카메라 화면보다 훨씬 선명)
+            var hk = Math.min(1, 3000 / Math.max(W, H)), hc = el("canvas"); hc.width = Math.round(W * hk); hc.height = Math.round(H * hk); hc.getContext("2d").drawImage(im, 0, 0, hc.width, hc.height);
+            var P = {}; ["topLeft", "topRight", "bottomLeft", "bottomRight"].forEach(function (kk) { P[kk] = { x: o.p[kk].x * hk / k, y: o.p[kk].y * hk / k }; });
+            var tk = Math.min(1, 720 / Math.max(W, H)), tc = el("canvas"), th = ""; tc.width = Math.round(W * tk); tc.height = Math.round(H * tk); tc.getContext("2d").drawImage(im, 0, 0, tc.width, tc.height);
+            try { th = tc.toDataURL("image/jpeg", 0.7); } catch (eT) {}
+            try { navigator.vibrate && navigator.vibrate(60); } catch (eV) {}
+            var rr = done(o.t, false, { img: hc, p: P, thumb: th, photo: true }, undefined, []) || {}; if (rr.ok) n++;
+            stop(); return;
+          }
           var sc2 = el("canvas"); sc2.width = cv.width; sc2.height = cv.height; sc2.getContext("2d").drawImage(cv, 0, 0);
           got(o.t, { img: sc2, p: o.p }, true);
         }).catch(function (e) { msg.textContent = (e && e.message) || "QR을 못 읽었어요"; });
@@ -5123,9 +5142,12 @@ function qrScan(done, onClose, opts) {
     var vw = vid.videoWidth, vh = vid.videoHeight, O = ov.getBoundingClientRect(), B = box.getBoundingClientRect();
     var sc = Math.max(O.width / vw, O.height / vh), ox = (O.width - vw * sc) / 2, oy = (O.height - vh * sc) / 2;
     var s = Math.min(vw, vh, B.width * 1.3 / sc), cxm = (B.left + B.width / 2 - O.left - ox) / sc, cym = (B.top + B.height / 2 - O.top - oy) / sc;
-    var sx = Math.max(0, Math.min(vw - s, cxm - s / 2)), sy = Math.max(0, Math.min(vh - s, cym - s / 2)), k = Math.min(1, 900 / s);
-    cv.width = cv.height = Math.round(s * k);
-    cx.drawImage(vid, sx, sy, s, s, 0, 0, cv.width, cv.height);
+    var sx = Math.max(0, Math.min(vw - s, cxm - s / 2)), sy = Math.max(0, Math.min(vh - s, cym - s / 2)), k = Math.min(1, 900 / s), sw = s, sh = s;
+    // 라벨 읽기(부적합)일 때는 한 번씩 화면 전체에서도 QR을 찾음 → 라벨이 길어서 QR이 네모 밖(오른쪽 끝)에 있어도 읽음
+    fullT = !fullT;
+    if (opts && opts.label && !multi && fullT) { sx = 0; sy = 0; sw = vw; sh = vh; k = Math.min(1, 1600 / Math.max(vw, vh)); }
+    cv.width = Math.round(sw * k); cv.height = Math.round(sh * k);
+    cx.drawImage(vid, sx, sy, sw, sh, 0, 0, cv.width, cv.height);
     busy = true;
     qrRead(cx.getImageData(0, 0, cv.width, cv.height), false).then(function (o) {
       busy = false;
@@ -5176,7 +5198,9 @@ document.addEventListener("visibilitychange", function () { if (document.hidden)
  *  - tesseract.js (무료 · 폰 안에서 처리 · 처음 한 번 약 8MB 받고 그다음부턴 폰에 저장된 걸 씀)
  *  - 읽은 글자를 프로젝트 목록 · 귀책 목록이랑 맞춰서 '맞는 것만' 씀 (엉뚱한 글자는 안 넣음)
  */
-var OCR_LEFT = [-9, -7, 10.3, 8];   // QR 크기 단위 [x, y, 너비, 높이] · QR이 오른쪽 아래, 장비명 · 업체가 왼쪽 위에 있는 라벨 (한국메카트로닉스 등)
+var OCR_LEFT = [-9, -7, 10.3, 8];
+var NF_THUMB = "";   // 앨범 사진 미리보기 (저장 안 함 · 지금 화면에서만)
+function NF_THUMB_PN() { return OCR_PN; }   // QR 크기 단위 [x, y, 너비, 높이] · QR이 오른쪽 아래, 장비명 · 업체가 왼쪽 위에 있는 라벨 (한국메카트로닉스 등)
 var OCR_LIB = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/", OCRW = null, OCR_PROG = null, OCR_PN = "", OCR_TXT = "";   // OCR_PN: 지금 읽는 라벨의 QR 품번 · OCR_TXT: 그 라벨에서 읽은 글
 function ocrWorker() {
   if (OCRW) return OCRW;
@@ -5634,6 +5658,7 @@ function nfForm(box) {
     var h = el("div", "nfsh"); h.appendChild(el("b", null, "📷 라벨 읽기 결과"));
     var x = el("button", "nfsx", "✕"); x.type = "button"; x.onclick = function () { f.scan = null; nfSave(); drawScan(); upd(); }; h.appendChild(x);
     scanBox.appendChild(h);
+    if (NF_THUMB && S.pn === NF_THUMB_PN()) { var tw = el("div", "nfsth"), ti = el("img"); ti.src = NF_THUMB; ti.alt = "라벨 사진"; tw.appendChild(ti); tw.onclick = function () { tw.classList.toggle("big"); }; scanBox.appendChild(tw); }
     var line = function (k, v, src, warn) { var d = el("div", "nfsl" + (warn ? " w" : "")); d.appendChild(el("i", null, k)); d.appendChild(el("b", null, v || "-")); if (src && !/자재팀/.test(src)) d.appendChild(el("span", null, src)); scanBox.appendChild(d); };   // '자재팀 발주' 같은 출처 글은 안 보여줌
     line("품번", S.pn + (S.nm ? " · " + S.nm : ""), "QR");
     if (S.pur) line("발주", S.pur, "라벨");
@@ -6076,6 +6101,7 @@ function nfForm(box) {
   }
   function afterScan(t, shot, ocr, shots) {
     if (OCR_PN !== t || ocr === undefined) OCR_TXT = "";
+    NF_THUMB = shot && shot.thumb || "";   // 앨범 사진으로 넣었으면 결과 칸에 사진도
     OCR_PN = t;
     var S = f.scan = { pn: t, nm: "", prj: "", prjSrc: "", ven: "", st: shot && ocr === undefined ? "🔤 라벨 글자 읽는 중…" : "", at: Date.now() };
     if (ocr) { if (ocr.prj) prjCheck(S, ocr.prj); venPick(S, ocr); S.pur = ocr.pur || ""; }
@@ -8921,10 +8947,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-07-12";
+var APP_VER = "2026-11-07-14";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-07-14", ["🖼️ QR: [사진으로] 고르면 창이 닫히고 요청서에 사진이 뜬 채로 라벨을 읽어요 (사진은 원래 크기로 읽어서 더 정확해요 · 사진 누르면 크게)"]],
+  ["2026-11-07-13", ["📷 QR: 라벨 전체를 화면에 넣고 비추면 QR이 네모 밖에 있어도 읽어요 (긴 라벨 왼쪽 끝 장비명 · 발주번호까지)"]],
   ["2026-11-07-12", ["📷 QR: QR이 오른쪽에 있는 긴 라벨도 왼쪽 끝 발주번호 · 장비명까지 읽어요"]],
   ["2026-11-07-11", ["📷 QR: 모양이 다른 업체 라벨도 장비명 · 발주번호를 더 잘 맞춰요 (QR이 오른쪽 · 글자가 왼쪽에 있는 라벨 포함) · 라벨 결과에 출처 글은 빼고 간단하게"]],
   ["2026-11-07-10", ["📝 부적합 요청: 장비명 앞에 붙던 ‘동탄’ 글자를 빼고 장비 이름만 넣어요"]],
