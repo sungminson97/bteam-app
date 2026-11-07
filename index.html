@@ -4999,9 +4999,11 @@ function qrScan(done, onClose, opts) {
   function fitBox() {
     if (!ov.parentNode) return;
     var W = ov.clientWidth || window.innerWidth, H = ov.clientHeight || window.innerHeight, lb = ov.classList.contains("lbl");
-    var sz = Math.round(Math.min(W, H) * (lb ? 0.46 : 0.72));
-    box.style.width = box.style.height = sz + "px";
-    box.style.left = Math.round((W - sz) / 2) + "px"; box.style.top = Math.round((H - sz) / 2 + (lb ? H * 0.16 : 0)) + "px";
+    var bw, bh, dy = 0;
+    if (lb) { bw = Math.round(Math.min(W * 0.9, H * 0.55 / 0.62)); bh = Math.round(bw * 0.62); dy = H * 0.05; }   // 라벨 모양(가로로 긴 네모) · 라벨 전체를 맞추게
+    else bw = bh = Math.round(Math.min(W, H) * 0.72);
+    box.style.width = bw + "px"; box.style.height = bh + "px"; box.style.aspectRatio = "auto";
+    box.style.left = Math.round((W - bw) / 2) + "px"; box.style.top = Math.round((H - bh) / 2 + dy) + "px";
     box.style.transform = "none";
   }
   fitBox();
@@ -5014,7 +5016,7 @@ function qrScan(done, onClose, opts) {
   function mode() {
     s1.className = multi ? "" : "on"; s2.className = multi ? "on" : "";
     cl.textContent = multi && n ? "완료 (" + n + "개)" : "닫기";
-    if (stream && !lab) msg.textContent = multi ? base + "\n한 장씩 비추면 계속 넣어요" : opts && opts.label ? "라벨 전체가 화면에 들어오게 비춰 주세요\nQR은 네모 밖이어도 읽어요" : base;
+    if (stream && !lab) msg.textContent = multi ? base + "\n한 장씩 비추면 계속 넣어요" : opts && opts.label ? "라벨 전체를 네모 안에 맞춰 주세요\nQR이 라벨 어디에 있어도 읽어요" : base;
   }
   s1.onclick = function () { multi = false; sset("qrMulti", "0"); mode(); };
   s2.onclick = function () { multi = true; sset("qrMulti", "1"); mode(); };
@@ -8976,10 +8978,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-07-17";
+var APP_VER = "2026-11-07-18";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-07-18", ["📷 QR: 부적합 라벨 찍는 네모를 라벨 모양으로 크게 바꿨어요 · 라벨 전체를 네모 안에 맞추면 돼요"]],
   ["2026-11-07-17", ["📷 QR: 찍는 네모가 화면 구석으로 가던 문제를 고쳤어요"]],
   ["2026-11-07-16", ["🖼️ QR: [사진으로] 사진을 고른 뒤 앱으로 돌아오는 시간이 짧아졌어요 (아이폰)"]],
   ["2026-11-07-15", ["🖼️ QR: 라벨 읽기가 끝나면 결과 칸에 '읽기 완료'가 떠요 · 카메라로 장비명을 못 읽고 닫히면 선명한 다른 장면으로 이어서 한 번 더 읽어요"]],
