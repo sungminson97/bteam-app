@@ -4874,6 +4874,8 @@ function nfPart(v, cb, qr, prj) {
   cb = function (r) { clearTimeout(tmo); fin(r); };
   call("getNcPart", pc ? [v, !!qr, prj] : qr ? [v, true] : [v]).then(function (r) {
     ncFix(r, prj);
+    // 품번별 자재팀 기록이 비었는데(서버 캐시가 밀린 경우) 그 장비 발주 품목에 이 품번이 있으면 → 그걸로 채움 (귀책 자동 입력용)
+    try { if (r && !r.error && prj && (!r.mat || !r.mat.length) && r.here) { var hx = r.here.filter(function (h) { return nfPnKey(h[0]) === nfPnKey(v); }); if (hx.length) r.mat = hx.map(function (h) { return [nfPrjFix(prj), h[2], "", h[1], "", h[0], h[3] || ""]; }); } } catch (eH) {}
     NFP[k] = r && !r.error ? r : null;
     if (NFP[k] && r.vs) NFV[nfPnKey(v)] = r.vs;
     if (NFP[k] && r.mat) NFM[nfPnKey(v)] = r.mat;
@@ -5632,6 +5634,9 @@ function nfForm(box) {
       var cq = el("div", "nfsalt");
       MP.forEach(function (p) { var b = el("button", null, p); b.type = "button"; b.onclick = function () { f.proj = f.pAuto = ""; setPrj(p, "직접 고름"); matApply(S); nfSave(); drawScan(); upd(); prjRe(); }; cq.appendChild(b); });
       scanBox.appendChild(cq);
+    } else if (!S.prj && S.prjGuess && !S.st) {   // 라벨에서 읽었지만 자재팀 발주 기록으로 확인이 안 된 장비 → 자동으로 안 넣음
+      var dg = el("div", "nfsl w"); dg.appendChild(el("i", null, "장비")); dg.appendChild(el("b", null, S.prjChk ? S.prjGuess + " · 확인 중…" : S.prjGuess + "? · 자재팀 발주 기록에 없어서 안 넣었어요")); scanBox.appendChild(dg);
+      if (!S.prjChk) { var cg = el("div", "nfsalt"), bg = el("button", null, "그래도 " + S.prjGuess + " 넣기"); bg.type = "button"; bg.onclick = function () { f.proj = f.pAuto = ""; setPrj(S.prjGuess, "직접 고름"); S.prjGuess = ""; nfSave(); drawScan(); upd(); prjRe(); }; cg.appendChild(bg); scanBox.appendChild(cg); }
     } else line("장비", S.prj || (S.st ? "" : "못 찾음 · 직접 입력"), S.prjSrc || "", !S.prj && !S.st);
     if (S.venAlt && !S.ven) {
       var d2 = el("div", "nfsl w"); d2.appendChild(el("i", null, "업체")); d2.appendChild(el("b", null, "라벨 글자가 흐려요 · 맞는 업체를 눌러 주세요")); scanBox.appendChild(d2);
@@ -6005,7 +6010,8 @@ function nfForm(box) {
   }
   function ocrP(txt) {
     OCR_TXT += "\n" + String(txt || "");   // 읽은 글 모아 둠 → 자재팀 발주 기록이 늦게 와도 다시 맞춰 봄
-    var o = ocrParse(txt, prjAll().map(function (p) { return p[0]; }), ncVenList());
+    var all = prjAll().map(function (p) { return p[0]; }), o = ocrParse(txt, all, ncVenList());
+    if (!o.prj) o.prj = ocrTail(txt, all);   // 앞 영문이 깨져도 숫자 부분이 장비 하나랑만 맞으면 후보로 (장비 칸엔 자재팀 기록으로 확인된 뒤에만 들어감)
     // 이 품번을 발주한 장비(자재팀)가 있으면 그 장비들 중에서 먼저 찾음 (GY03-017을 GY03-011로 잘못 읽는 것 막기)
     var M = OCR_PN ? NFM[nfPnKey(OCR_PN)] : null;
     if (M && M.length) {
@@ -6037,11 +6043,30 @@ function nfForm(box) {
     if (mv) { S.ven = mv; S.venAlt = null; S.venSrc = "자재팀 발주"; }
     if (!S.nm && row[3]) S.nm = row[3];
   }
+  // ✅ 라벨에서 읽은 장비는 '자재팀 발주 기록으로 확인될 때만' 장비 칸에 넣음 (글자가 흐리면 엉뚱한 장비로 읽혀서 · 2026-11-07)
+  //    ① 이 품번을 발주한 장비 목록이 있으면 그 안에 있어야 함  ② 목록이 없으면 그 장비에 이 품번이 발주됐는지 서버에 물어봄
+  //    확인 안 되면 장비 칸은 비워 두고 라벨 결과에만 "확인 안 됨"으로 보여줌
+  function prjCheck(S, g) {
+    if (!g || f.scan !== S) return;
+    var M = NFM[nfPnKey(S.pn)];
+    if (M && M.length) {
+      if (M.some(function (x) { return nfSamePrj(x[0], g); })) { S.prjGuess = ""; setPrj(g, "라벨 · 자재팀 확인"); }
+      else { S.prjGuess = g; matApply(S); }
+      nfSave(); drawScan(); upd(); return;
+    }
+    S.prjGuess = g; S.prjChk = true; drawScan();
+    nfPart(S.pn, function (r) {
+      if (f.scan !== S) return; S.prjChk = false;
+      var hit = r && ((r.here || []).some(function (h) { return nfPnKey(h[0]) === nfPnKey(S.pn); }) || (r.mat || []).some(function (x) { return nfSamePrj(x[0], g); }));
+      if (hit && !S.prj) { S.prjGuess = ""; setPrj(g, "라벨 · 자재팀 확인"); }
+      nfSave(); drawScan(); upd();
+    }, false, g);
+  }
   function afterScan(t, shot, ocr, shots) {
     if (OCR_PN !== t || ocr === undefined) OCR_TXT = "";
     OCR_PN = t;
     var S = f.scan = { pn: t, nm: "", prj: "", prjSrc: "", ven: "", st: shot && ocr === undefined ? "🔤 라벨 글자 읽는 중…" : "", at: Date.now() };
-    if (ocr) { if (ocr.prj) setPrj(ocr.prj, "라벨"); venPick(S, ocr); S.pur = ocr.pur || ""; }
+    if (ocr) { if (ocr.prj) prjCheck(S, ocr.prj); venPick(S, ocr); S.pur = ocr.pur || ""; }
     else if (ocr === null && shot) S.st = "";
     drawScan();
     nfPart(t, function (r) {
@@ -6075,7 +6100,7 @@ function nfForm(box) {
       }, Promise.resolve(o));
     }).then(function (o) {
       OCR_PROG = null; if (f.scan !== S) return;
-      if (o.prj) setPrj(o.prj, "라벨");
+      if (o.prj) prjCheck(S, o.prj);
       venPick(S, o); S.pur = o.pur || "";
       matApply(S);
       S.st = ""; S.ms = Date.now() - t0;
@@ -8881,10 +8906,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-07-8";
+var APP_VER = "2026-11-07-9";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-07-9", ["📷 QR: 라벨에서 읽은 장비는 자재팀 발주 기록으로 확인된 것만 장비 칸에 넣어요 (흐린 글자로 엉뚱한 장비가 들어가던 것 고침)"]],
   ["2026-11-07-8", ["📷 QR: 라벨은 자동으로 읽고 다 읽으면 알아서 닫혀요 (6초 넘게 걸리면 [글자 없이 넣기] · 15초면 읽힌 것만 넣고 닫힘) · 장비를 못 읽으면 이 품번을 발주한 장비 중에서 눌러서 고를 수 있어요"]],
   ["2026-11-07-7", ["📷 QR: [이대로 넣기]를 눌러도 가장 선명한 장면으로 라벨을 읽어요 · 이 품번을 발주한 장비 중에서 장비명을 찾아서 비슷한 번호를 덜 헷갈려요 · 엉뚱한 업체가 나오던 것 고침"]],
   ["2026-11-07-6", ["⚠️ 부적합 요청: 장비 발주 품목에서 품번을 고르면 바로 확정 · 귀책 업체(자재팀 발주거래처)도 자동으로 들어가요 · 업체가 다르면 지우거나 바꿔 쓸 수 있어요 · QR을 먼저 찍고 장비를 넣어도 품번 확인이 새로 돼요", "📱 키보드를 내리면 아래 탭 바가 바로 다시 보여요"]],
