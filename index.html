@@ -2390,6 +2390,12 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #qhov .qhrec{justify-self:start;padding:9px 13px;border-radius:999px;border:1px dashed color-mix(in srgb,var(--accent) 50%,transparent);background:color-mix(in srgb,var(--accent) 6%,var(--card));color:var(--accent);font:inherit;font-size:13px;font-weight:700}
 #qhpick{display:grid;gap:10px}
 #qhov .qhb{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#qhov .qhq{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--accent) 7%,var(--card));border:1px solid color-mix(in srgb,var(--accent) 22%,transparent)}
+#qhov .qhq b{font-size:13.5px;font-weight:800;color:var(--accent)}
+#qhov .qhq span{font-size:12.5px;color:var(--sub)}
+#qhov .qhch{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+#qhov .qhch button{padding:11px 0;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:16px;font-weight:800}
+#qhov .qhch button:active{transform:scale(.96)}
 #qhov .qhb button{padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--sub);font:inherit;font-size:14.5px;font-weight:700}
 #qhov .qhm{min-height:0;margin:0;font-size:13px;color:var(--warn);white-space:pre-line}
 #qhov .qhm:empty{display:none}
@@ -8980,10 +8986,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-07-19";
+var APP_VER = "2026-11-07-20";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-07-20", ["⏰ 근무시간: 빈 날이 여러 날이면 앱을 열 때 하나씩 차례로 바로 넣을 수 있어요 · 8 · 9 · 9.5 · 10 버튼으로 빠르게 채우기", "🔔 근무시간 알림을 누르면 그날부터 남은 빈 날까지 이어서 넣을 수 있어요"]],
   ["2026-11-07-19", ["📷 QR: 라벨 글자를 한 번 더 읽을 때 네모와 화면이 깜빡이지 않게 했어요"]],
   ["2026-11-07-18", ["📷 QR: 부적합 라벨 찍는 네모를 라벨 모양으로 크게 바꿨어요 · 라벨 전체를 네모 안에 맞추면 돼요"]],
   ["2026-11-07-17", ["📷 QR: 찍는 네모가 화면 구석으로 가던 문제를 고쳤어요"]],
@@ -9830,7 +9837,29 @@ function prevDone(name, ymd) {
  *  - "나중에" → 같은 날짜는 2시간 동안 안 띄움 (알림을 직접 누르면 바로 띄움)
  *  - 서버 요청 없음 (저장 버튼 누를 때만 saveHours 1번)
  */
-var QH = { ymd: "", go: "", tries: 0, busy: false, shown: "" };
+var QH = { ymd: "", go: "", tries: 0, busy: false, shown: "", queue: [], fetched: false };
+// 📅 이번 달 내 빈 평일 (오늘 전까지) — 근무시간 달력의 '빈 평일'과 같은 기준
+//   주말 · 공휴일 · schedule 종일 휴가 · 그날 아무도 안 적은 날(회사 쉬는 날)은 뺌
+function qhGaps(me) {
+  try {
+    var M = H.meta || cget("hours"), g = M && M.grid, today = (M && M.today) || ymdLocal();
+    if (!g || !g.rows || !g.rows[me] || g.m !== +today.slice(5, 7)) return [];
+    var ym = today.slice(0, 7), y = +today.slice(0, 4), td = +today.slice(8, 10), out = [];
+    var sch = (M.week && M.week.m === g.m && M.week.sch) || {};
+    var has = function (v) { v = String(v == null ? "" : v).trim(); return v !== "" && !WEEKEND_MARK.test(v); };
+    var mine = g.rows[me].v || [];
+    for (var d = 1; d < td && d <= mine.length; d++) {
+      var key = ym + "-" + ("0" + d).slice(-2), dow = new Date(y, g.m - 1, d).getDay();
+      if (dow === 0 || dow === 6 || KR_HOLI[key] || has(mine[d - 1])) continue;
+      var sc = sch[me + "|" + d];
+      if (sc && sc[0] >= 8) continue;
+      var any = false;
+      Object.keys(g.rows).forEach(function (n) { if (!any && has((g.rows[n].v || [])[d - 1])) any = true; });
+      if (any) out.push(key);
+    }
+    return out;
+  } catch (e) { return []; }
+}
 function qhParse() {
   try {
     var q = location.search, m = q.match(/[?&]qh=(\d{4}-\d{2}-\d{2})\b/), g = q.match(/[?&]go=(\w+)/);
@@ -9843,7 +9872,8 @@ function qhLabel(ymd) {
   var p = ymd.split("-"), dt = new Date(+p[0], +p[1] - 1, +p[2]), t = ymdLocal(), y = new Date(); y.setDate(y.getDate() - 1);
   var yd = y.getFullYear() + "-" + ("0" + (y.getMonth() + 1)).slice(-2) + "-" + ("0" + y.getDate()).slice(-2);
   var md = (+p[1]) + "/" + (+p[2]) + " " + "일월화수목금토".charAt(dt.getDay());
-  return (ymd === t ? "오늘" : ymd === yd ? "어제" : "") + "(" + md + ")";
+  if (ymd !== t && ymd !== yd) return (+p[1]) + "/" + (+p[2]) + " " + "일월화수목금토".charAt(dt.getDay()) + "요일";
+  return (ymd === t ? "오늘" : "어제") + "(" + md + ")";
 }
 // 폰에 받아 둔 값으로 이미 넣었는지 (모르면 false → 서버가 덮어쓰기 확인으로 막아 줌)
 function qhFilled(me, ymd) {
@@ -9860,34 +9890,57 @@ function qhCheck() {
   if (!me || !nameDone() || viewOnly() || isChief() || QH.busy || $("qhov").className.indexOf("on") >= 0) return;
   if ($("app").style.display === "none" || (SPL && !SPL.shut)) { if (QH.tries++ < 30) setTimeout(qhCheck, 1000); return; }
   if (document.querySelector(".ov.on,.airep")) { if (QH.tries++ < 30) setTimeout(qhCheck, 1500); return; }   // 다른 창 먼저 닫히면
-  var ymd = deep || (pm && pm.names.indexOf(me) >= 0 ? pm.ymd : "");
+  // 📅 빈 날이 며칠이면 하나씩 차례로 (달력 기준이라 이번 켤 때 근무시간 정보를 한 번 새로 받아 옴)
+  if (!H.loaded && !QH.fetched) { QH.fetched = true; loadHoursMeta(true).then(function () { setTimeout(qhCheck, 200); }, function () { setTimeout(qhCheck, 200); }); if (!deep) return; }
+  var gaps = qhGaps(me);
+  var ymd = deep || (pm && pm.names.indexOf(me) >= 0 ? pm.ymd : "") || gaps[0] || "";
   if (!ymd) {
     if (!pm && QH.tries++ < 8) setTimeout(qhCheck, 1500);   // 금일 데이터 아직이면 조금 기다림
     return;
   }
   QH.ymd = "";
+  var queue = gaps.filter(function (x) { return x !== ymd; });
   if (!hMonthInfo(ymd).view || hMonthInfo(ymd).leaveOnly) return;
   var M = H.meta || cget("hours");
   if (M && M.names && M.names.indexOf(me) < 0) return;   // 근무시간 명단에 없는 이름
-  if (pm && pm.ymd === ymd && pm.names.indexOf(me) < 0) { if (deep) toast("✔ " + qhLabel(ymd) + " 근무시간은 이미 들어가 있어요"); return; }
-  if (qhFilled(me, ymd)) { if (deep) toast("✔ " + qhLabel(ymd) + " 근무시간은 이미 들어가 있어요"); return; }
+  var already = (pm && pm.ymd === ymd && pm.names.indexOf(me) < 0) || qhFilled(me, ymd);
+  if (already) {
+    if (deep) toast("✔ " + qhLabel(ymd) + " 근무시간은 이미 들어가 있어요");
+    if (!queue.length) return;
+    ymd = queue.shift();   // 알림 날짜는 넣었는데 다른 빈 날이 남았으면 그 날부터
+  }
   if (!deep) {
     var z = String(sget("qhSnz") || "").split("|");
-    if (z[0] === ymd && Date.now() - (+z[1] || 0) < 2 * 3600000) return;   // "나중에" 누른 지 2시간 안
+    if ((z[0] === ymd || z[0] === "all") && Date.now() - (+z[1] || 0) < 2 * 3600000) return;   // "나중에" 누른 지 2시간 안 (빈 날 전부)
     if (QH.shown === ymd) return;   // 이번에 켠 동안 한 번만
   }
-  qhOpen(me, ymd, pm && pm.ymd === ymd ? pm.label : qhLabel(ymd));
+  QH.done = 0;
+  qhOpen(me, ymd, pm && pm.ymd === ymd ? pm.label : qhLabel(ymd), queue);
 }
-function qhOpen(me, ymd, label) {
-  QH.shown = ymd;
+function qhOpen(me, ymd, label, queue) {
+  QH.shown = ymd; QH.queue = (queue || []).slice();
+  var total = QH.queue.length + 1 + (QH.done || 0);
   var today = ymd === ymdLocal(), rec = hRec(me, ymd), gv = me.length === 3 ? me.slice(1) : me;
   $("qhttl").textContent = today ? label + " 근무시간 넣을 차례예요" : label + " 근무시간이 비어 있어요";
   $("qhsub").textContent = gv + "님, 몇 시간 일했는지 직접 넣어 주세요.";
   $("qhmsg").textContent = "";
   var P = $("qhpick"); P.innerHTML = "";
+  if (total > 1) {   // 📅 빈 날이 여러 날: 몇 번째인지 + 남은 날
+    var qs = el("div", "qhq");
+    qs.appendChild(el("b", null, "빈 날 " + total + "일 중 " + ((QH.done || 0) + 1) + "번째"));
+    if (QH.queue.length) qs.appendChild(el("span", null, "다음: " + QH.queue.slice(0, 4).map(function (x) { return (+x.slice(5, 7)) + "/" + (+x.slice(8, 10)); }).join(" · ") + (QH.queue.length > 4 ? " 외 " + (QH.queue.length - 4) + "일" : "")));
+    P.appendChild(qs);
+  }
   var w = el("div", "qhinw"), inp = el("input", "qhin"); inp.id = "qhin";
   inp.type = "text"; inp.setAttribute("inputmode", "decimal"); inp.autocomplete = "off"; inp.placeholder = "예: 9";
   w.appendChild(inp); w.appendChild(el("span", null, "시간")); P.appendChild(w);
+  var ch = el("div", "qhch");   // 자주 넣는 시간 · 누르면 칸에 채워지기만 (저장은 직접)
+  ["8", "9", "9.5", "10"].forEach(function (h) {
+    var b = el("button", null, h); b.type = "button";
+    b.onclick = function () { inp.value = h; qhSync(); };
+    ch.appendChild(b);
+  });
+  P.appendChild(ch);
   if (rec) {   // 💡 추천은 참고만 — 누르면 칸에 채워지기만 하고 저장은 직접
     var rb = el("button", "qhrec", "💡 지난 " + rec.dow + "요일엔 주로 " + rec.v + "시간 넣었어요 · 채우기"); rb.type = "button";
     rb.onclick = function () { inp.value = rec.v; qhSync(); };
@@ -9899,9 +9952,9 @@ function qhOpen(me, ymd, label) {
   inp.oninput = qhSync;
   inp.onkeydown = function (e) { if (e.key === "Enter") go.onclick(); };
   qhSync();
-  $("qhother").onclick = function () { qhClose(); goPrevInput(me, ymd); };
-  $("qhlater").onclick = function () { sset("qhSnz", ymd + "|" + Date.now()); qhClose(); };
-  $("qhov").onclick = function (e) { if (e.target === this && !QH.busy) { sset("qhSnz", ymd + "|" + Date.now()); qhClose(); } };
+  $("qhother").onclick = function () { QH.queue = []; QH.done = 0; qhClose(); goPrevInput(me, ymd); };
+  $("qhlater").onclick = function () { sset("qhSnz", "all|" + Date.now()); QH.queue = []; QH.done = 0; qhClose(); };
+  $("qhov").onclick = function (e) { if (e.target === this && !QH.busy) { sset("qhSnz", "all|" + Date.now()); QH.queue = []; QH.done = 0; qhClose(); } };
   $("qhov").className = "ov on";
 }
 function qhClose() { $("qhov").className = "ov"; try { $("qhin").blur(); } catch (e) {} }
@@ -9929,7 +9982,12 @@ function qhSave(me, ymd, v) {
       if (r.needConfirm) { qhClose(); toast("이미 '" + (r.cur === "" ? "(수식)" : r.cur) + "' 값이 있어요 · 근무시간 탭에서 확인해 주세요"); goPrevInput(me, ymd); return; }
       if (!r.ok) return;
       qhClose();
-      toast("✔ 저장 완료 · " + (+ymd.slice(5, 7)) + "/" + (+ymd.slice(8, 10)) + " → " + (r.cur === "" ? v : r.cur) + "시간");
+      toast("✔ 저장 완료 · " + (+ymd.slice(5, 7)) + "/" + (+ymd.slice(8, 10)) + " → " + (r.cur === "" ? v : r.cur) + "시간" + (QH.queue.length ? " · 다음 날로 넘어가요" : ""));
+      if (QH.queue.length) {   // 📅 남은 빈 날 차례로
+        var nx = QH.queue.shift(), rest = QH.queue.slice();
+        QH.done = (QH.done || 0) + 1;
+        setTimeout(function () { qhOpen(me, nx, qhLabel(nx), rest); }, 450);
+      } else QH.done = 0;
       sset("hoursName", me);
       prevDone(me, ymd);
       try {
