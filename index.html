@@ -2390,6 +2390,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #qhov .qhrec{justify-self:start;padding:9px 13px;border-radius:999px;border:1px dashed color-mix(in srgb,var(--accent) 50%,transparent);background:color-mix(in srgb,var(--accent) 6%,var(--card));color:var(--accent);font:inherit;font-size:13px;font-weight:700}
 #qhpick{display:grid;gap:10px}
 #qhov .qhb{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#dlov .dlbh{margin:14px 2px 2px;font-size:12.5px;font-weight:800;color:var(--sub);border-top:1px dashed var(--line);padding-top:12px}
 #qhov .qhq{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--accent) 7%,var(--card));border:1px solid color-mix(in srgb,var(--accent) 22%,transparent)}
 #qhov .qhq b{font-size:13.5px;font-weight:800;color:var(--accent)}
 #qhov .qhq span{font-size:12.5px;color:var(--sub)}
@@ -8986,10 +8987,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-07-20";
+var APP_VER = "2026-11-07-21";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-07-21", []],
   ["2026-11-07-20", ["⏰ 근무시간: 빈 날이 여러 날이면 앱을 열 때 하나씩 차례로 바로 넣을 수 있어요 · 8 · 9 · 9.5 · 10 버튼으로 빠르게 채우기", "🔔 근무시간 알림을 누르면 그날부터 남은 빈 날까지 이어서 넣을 수 있어요"]],
   ["2026-11-07-19", ["📷 QR: 라벨 글자를 한 번 더 읽을 때 네모와 화면이 깜빡이지 않게 했어요"]],
   ["2026-11-07-18", ["📷 QR: 부적합 라벨 찍는 네모를 라벨 모양으로 크게 바꿨어요 · 라벨 전체를 네모 안에 맞추면 돼요"]],
@@ -10616,7 +10618,15 @@ function dlRender() {
     if (!gmap[r.n]) { gmap[r.n] = { n: r.n, list: [] }; groups.push(gmap[r.n]); }
     gmap[r.n].list.push(r);
   });
+  // 순서: 승인 대기 → 개발자 → 나(이 폰 이름) → 입사 순(근무시간 시트 줄 순서) → 명단 밖 이름(가나다) → 차단된 사람은 맨 아래
+  var bnNowN = DL.bn.filter(function (x) { return x.on; }).map(function (x) { return x.n; });
+  var gRank = function (n) { if (n === DEV_NAME) return -2; if (n === myName()) return -1; var i = (DL.all || []).indexOf(n); return i < 0 ? 999 : i; };
+  var gBlk = function (g) { return bnNowN.indexOf(g.n) >= 0 || g.list.every(function (r) { return r.blk; }) ? 1 : 0; };
+  var gWait = function (g) { return g.list.some(function (r) { return r.wait; }) ? 0 : 1; };
+  groups.sort(function (a, b) { return (gBlk(a) - gBlk(b)) || (gWait(a) - gWait(b)) || (gRank(a.n) - gRank(b.n)) || a.n.localeCompare(b.n); });
+  var blkHead = false;
   groups.forEach(function (g) {
+    if (!blkHead && gBlk(g)) { blkHead = true; L.appendChild(el("div", "dlbh", "차단된 사람")); }
     g.list.sort(function (a, b) { return (a.dev === me ? -1 : 0) - (b.dev === me ? -1 : 0) || String(b.at || "").localeCompare(String(a.at || "")); });
     if (g.list.length === 1) { L.appendChild(dlCard(g.list[0], me, false)); return; }
     var hasMe = g.list.some(function (r) { return r.dev === me; });
