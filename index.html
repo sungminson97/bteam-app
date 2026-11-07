@@ -3261,7 +3261,7 @@ function rawCall(pin, fn, args, editPin) {
 // ⚡ 같은 조회가 아직 진행 중이면 새로 보내지 않고 그 결과를 같이 씀 (탭 왔다 갔다·새로고침 연타 때 서버에 요청이 쌓이지 않게)
 var INFLIGHT = {};
 /* ===================== 👀 보기 전용: B팀 화면은 틀만 · 값은 예시 (서버에 안 물어봄 · 서버도 막음) ===================== */
-var DEMO_FNS = { getNcData: 1, getNcRows: 1, getNcRef: 1, getNcPart: 1, saveNcLearn: 1, getMatList: 1, getMatTab: 1, getInspData: 1, getInspRows: 1 };
+var DEMO_FNS = { getNcPart: 1, saveNcLearn: 1 };   // 👀 보기 전용: 품번 조회 · AI 학습 저장만 막음 (수입검사 · 부적합 · 입고 불출은 실제 값 · 2026-11-07)
 var DEMO_EQ = ["DEMO-101", "DEMO-102", "DEMO-103", "DEMO-201", "DEMO-202"];
 function demoData(fn, args) {
   var V = ["A업체", "B업체", "C업체", "D업체"], P = ["팀원A", "팀원B", "팀원C"], N = [["PN-1001", "예시 부품 A"], ["PN-1002", "예시 부품 B"], ["PN-2001", "예시 부품 C"], ["PN-3001", "예시 부품 D"], ["PN-3002", "예시 부품 E"]];
@@ -6962,7 +6962,7 @@ function loadStats(force) {
 /* ---------- 📊 대시보드 (탭 10 · 더보기) ----------
  * 각 화면에서 이미 받아 둔 데이터(폰 저장 포함)를 모아서 한 화면에 그림
  * 안 받아 둔 것만 서버에 동시에 요청 → 새 서버 함수 없음 · 다른 화면 속도 영향 없음
- * 👀 보기 전용: 수입검사 · 부적합은 "팀원 전용"으로만 표시 (서버 요청 안 함)
+ * 👀 보기 전용: 근무시간만 흐리게 (수입검사 · 부적합은 실제 값)
  */
 var DB = { tm: 0, ld: 0 };
 function dashLoad(force) {
@@ -6972,8 +6972,8 @@ function dashLoad(force) {
   if (force || !ST.loaded) jobs.push(loadStats(!!force));
   if (force || !LV.loaded) jobs.push(loadLeave(!!force));
   if (!vo && (force || !H.loaded)) jobs.push(loadHoursMeta(true));
-  if (!vo && (force || !IN.loaded)) jobs.push(loadInsp(!!force));
-  if (!vo && (force || !NC.loaded)) jobs.push(loadNc(!!force));
+  if (force || !IN.loaded) jobs.push(loadInsp(!!force));
+  if (force || !NC.loaded) jobs.push(loadNc(!!force));
   if (!jobs.length) return Promise.resolve("");
   DB.ld += jobs.length; dashSoon();
   jobs = jobs.map(function (p) {
@@ -7089,7 +7089,6 @@ function renderDash() {
 
   // ⚠️ 부적합
   (function () {
-    if (vo) { g.appendChild(dkCard({ t: "⚠️ 부적합", lock: 1 })); return; }
     var d = NC.data, sx = dkState(d, R.nc);
     if (sx) { g.appendChild(dkCard(Object.assign({ t: "⚠️ 부적합", tab: 8 }, sx))); return; }
     var pe = d.list.filter(function (x) { return x.c != null ? x.c : x.p > 0; }).length;
@@ -7099,7 +7098,6 @@ function renderDash() {
 
   // 🔍 수입검사 (성남 · 동탄)
   (function () {
-    if (vo) { g.appendChild(dkCard({ t: "🔍 수입검사", lock: 1 })); return; }
     var d = IN.data, sx = dkState(d, R.insp);
     if (sx) { g.appendChild(dkCard(Object.assign({ t: "🔍 수입검사", tab: 7 }, sx))); return; }
     var t = { p: 0, u: 0, g: 0 }, ss = { 성남: 0, 동탄: 0 }, has = false;
@@ -7153,7 +7151,7 @@ function renderDash() {
 
 
 /* ---------- 탭 ---------- */
-var TEAM_TABS = [7, 8, 9];   // 👀 보기 전용은 못 여는 탭: 수입검사 · 부적합 · 입고 불출 (서버도 막음)
+var TEAM_TABS = [];   // 👀 보기 전용도 수입검사 · 부적합 · 입고 불출 모두 실제 값 (예시 띠 안 뜸 · 2026-11-07)
 function setTab(n) {
   ANI.t = Date.now(); ANI.done = {};
   try { pushBar(); } catch (ePb) {}
@@ -8753,10 +8751,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-07-1";
+var APP_VER = "2026-11-07-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-07-2", ["👀 보기 전용: 수입검사 · 부적합 · 입고 불출도 실제 내용으로 볼 수 있어요"]],
   ["2026-11-07-1", ["👀 보기 전용: 부적합 요청 작성에서 품번 입력 · QR 읽기는 팀원만 쓸 수 있어요"]],
   ["2026-11-06-5", ["👀 보기 전용: 근무시간 탭은 보이지만 내용은 팀원만 볼 수 있어요 · 대시보드 근무시간 카드는 흐리게 보여요"]],
   ["2026-11-06-4", ["🗺 배치도: 한 자리에 2대면 두 장비 이름이 다 보여요 · 같은 자리에 같은 날 · 다음 날 연달아 FRAME 입고가 잡히면 ◆로 따로 표시해요 · 장비가 2대인 자리를 누르면 골라서 볼 수 있어요", "📷 부적합 QR: 모양이 다른 업체 라벨도 발주번호 · 장비명을 읽어요"]],
@@ -10905,7 +10904,11 @@ function splashReplay(first) {
   })();
 }
 
-function demoClean() { if (viewOnly()) return; ["nc", "insp", "matlist", "ncref"].forEach(function (k) { try { var c = cget(k); if (c && c.demo) sdel("c_" + k); } catch (e) {} }); }
+function demoClean() {   // 예전에 받아 둔 예시 값(DEMO-) 지우기 · 한 번만
+  if (sget("demoGone") === "1") return;
+  ["nc", "insp", "inspr", "matlist", "ncref"].forEach(function (k) { try { var c = cget(k); if (c && (c.demo || JSON.stringify(c).indexOf("DEMO-") >= 0)) sdel("c_" + k); } catch (e) {} });
+  sset("demoGone", "1");
+}
 function boot() {
   try { demoClean(); } catch (eD) {}
   if (IS_TEST) $("splsub").appendChild(document.createTextNode(" · TEST"));
