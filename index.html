@@ -6,10 +6,10 @@
 <link rel="dns-prefetch" href="https://script.googleusercontent.com">
 <meta charset="utf-8">
 <script>
-/* 🎄 크리스마스 테마: 11/30 0시 ~ 12/31 (1/1 0시부터 원래대로) · 미리보기는 Developer 메뉴
+/* 🎄 크리스마스 테마: 11/23 0시 ~ 12/31 (1/1 0시부터 원래대로) · 미리보기는 Developer 메뉴
  *    앱을 켜 둔 채로 자정이 지나도 그 순간 바로 바뀜 (다시 켰을 때도 확인) */
 (function () {
-  function on(d) { var m = d.getMonth(), n = d.getDate(); return (m === 10 && n === 30) || m === 11; }
+  function on(d) { var m = d.getMonth(), n = d.getDate(); return (m === 10 && n >= 23) || m === 11; }
   function sync() {
     try {
       var x = on(new Date());
@@ -461,6 +461,14 @@ li:first-child{border-top:0}
 #mnlist .dev{background:none;border-style:dashed}
 #dvmsg{white-space:pre-line;word-break:keep-all}
 #dllist{max-height:58vh;overflow:auto;display:grid;gap:8px}
+#uslist{max-height:60vh;overflow:auto;display:grid;gap:8px;margin-top:4px}
+#uslist .uscard{border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--card)}
+#uslist .uscard>b{display:block;font-size:13.5px;font-weight:800;margin-bottom:6px}
+#uslist .usg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 8px}
+#uslist .usg div{display:flex;flex-direction:column;gap:1px}
+#uslist .usg span{font-size:11px;color:var(--sub)}
+#uslist .usg em{font-style:normal;font-size:14.5px;font-weight:800;color:var(--text)}
+#uslist .ushint{font-size:11.5px;color:var(--sub);margin:4px 2px 0;line-height:1.5}
 .dlc{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg)}
 .dlc.mine{border-color:var(--accent)}
 .dlc .h{font-weight:700;font-size:16px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
@@ -506,6 +514,24 @@ li:first-child{border-top:0}
 .unl .row{display:grid;grid-template-columns:1fr auto;gap:6px}
 .unl .row button{padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font-weight:700;font-family:inherit}
 .psl{display:grid;gap:10px;font-size:14px}
+/* 팀원 관리 (관리자) */
+.rsl{display:grid;gap:8px}
+.rsl button{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit;text-align:left}
+.rsl b{font-size:15.5px;font-weight:800;display:block}
+.rsl small{display:block;color:var(--sub);font-size:12px;font-weight:500;margin-top:2px}
+.rsl .st{flex:none;font-size:12.5px;font-weight:800;padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.rsl .gone{opacity:.62}
+.rsl .gone .st{background:var(--line);color:var(--sub)}
+.rsl .sec{font-size:12px;font-weight:800;color:var(--sub);margin:6px 2px 0}
+.rsf{display:grid;gap:12px}
+.rsf label,.rsf .lb{display:grid;gap:6px;font-size:13px;font-weight:800;color:var(--sub)}
+.rsf .chips .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+#rsov .box input[type=date]{-webkit-appearance:none;appearance:none;display:block;width:100%;box-sizing:border-box;min-height:52px;padding:12px 16px;border-radius:16px;border:1.5px solid var(--line);background:var(--bg);color:var(--text);font-size:16px;font-weight:700;font-family:inherit;text-align:left}
+#rsov .box input:disabled{opacity:.6}
+#rsinfo{white-space:pre-line;word-break:keep-all;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--text)}
+#rsmsg{white-space:pre-line;word-break:keep-all;color:var(--warn);font-size:13px;margin:0}
+#rsmsg:empty{display:none}
+#rsdel{background:none;border:0;color:var(--warn);font-size:13.5px;font-weight:700;font-family:inherit;padding:6px;justify-self:center}
 .psl h5{margin:0 0 4px;font-size:13px}
 .psl .on h5{color:var(--ok)}.psl .off h5{color:var(--warn)}
 .psl .p{display:inline-block;margin:2px 4px 2px 0;padding:3px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-weight:600}
@@ -3064,6 +3090,15 @@ SPX.start();
   </div>
 </div>
 
+<div class="ov" id="usov">
+  <div class="box">
+    <h3>📊 사용 실적</h3>
+    <p class="sub" id="usst" style="margin:0"></p>
+    <div id="uslist"></div>
+    <div class="ob" style="grid-template-columns:1fr 1fr 1fr"><button id="usback" type="button">← Developer</button><button id="uscopy" type="button">보고용 복사</button><button id="usno" type="button">닫기</button></div>
+  </div>
+</div>
+
 <div class="ov" id="dvov">
   <div class="box">
     <h3>🛠 Developer</h3>
@@ -3157,6 +3192,27 @@ SPX.start();
     <p class="sub" id="nmmsg"></p>
     <div class="ob" id="nmob" style="grid-template-columns:1fr"><button id="nmno" type="button" style="display:none">취소</button><button id="nmgo" type="button" class="go" style="background:var(--accent);border-color:var(--accent)" disabled>이 이름으로 정하기</button></div>
     <button id="nmback" type="button" class="obsub">다시 고르기</button>
+  </div>
+</div>
+
+<div class="ov" id="rsov">
+  <div class="box">
+    <h3 id="rsttl">팀원 관리</h3>
+    <p class="sub" id="rssub">여기서 바꾸면 앱 이름 목록 · 근무시간 시트 · 알림 · 장비통계에 자동으로 반영돼요.</p>
+    <div id="rslist" class="rsl"></div>
+    <div id="rsform" class="rsf" style="display:none">
+      <label>이름<input type="text" id="rsname" maxlength="10" autocomplete="off" placeholder="예: 홍길동"></label>
+      <div class="lb">구분<div class="chips" id="rsrole"></div></div>
+      <label>입사일<input type="date" id="rshire"></label>
+      <div class="lb">상태<div class="chips" id="rsst"></div></div>
+      <label id="rsdatew">날짜<input type="date" id="rsdate"></label>
+      <label>장비통계 표시 (선택)<input type="text" id="rsmark" maxlength="10" autocomplete="off" placeholder="예: 트랙 · 비워도 돼요"></label>
+      <label>메모 (선택)<input type="text" id="rsmemo" maxlength="40" autocomplete="off"></label>
+      <div id="rsinfo"></div>
+      <button type="button" id="rsdel">명단에서 지우기</button>
+    </div>
+    <p id="rsmsg"></p>
+    <div class="ob"><button id="rsno" type="button">닫기</button><button id="rsgo" type="button" class="go">새 팀원 추가</button></div>
   </div>
 </div>
 
@@ -3288,12 +3344,20 @@ document.addEventListener("visibilitychange", function () { if (document.hidden)
 window.addEventListener("pagehide", function () { if (!HIDDEN_AT) HIDDEN_AT = Date.now(); });
 window.addEventListener("pageshow", function (e) { if (e.persisted) reviveCalls(); });
 
+// 📊 사용 실적: 작은 기록을 폰에 모았다가 평소 요청에 같이 실어 보냄 (요청 추가 없음 · 이름 고른 폰만)
+function useQ() { try { var q = JSON.parse(sget("useQ") || "[]"); return Array.isArray(q) ? q : []; } catch (e) { return []; } }
+function useLog(kind, sec, how) {
+  if (!myName() || IS_TEST) return;
+  try { var q = useQ(); q.push([Date.now(), kind, Math.round(sec || 0), String(how || "").slice(0, 40)]); sset("useQ", JSON.stringify(q.slice(-60))); } catch (e) {}
+}
 function rawCall(pin, fn, args, editPin) {
   var rid = Math.random().toString(36).slice(2, 10), t0 = Date.now(), prev = SPD.last;
   SPD.last = null;
+  var useN = 0, use = null;
+  if (myName() && !IS_TEST) { use = useQ(); useN = use.length; if (!useN) use = null; }
   var a0 = (fn === "getDashboardAll" || fn === "getEquipIndex") ? [args && args[0] === true] : [];
   var body = JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev,
-    me: myName(), adm: (fn === "saveHours" || fn === "setOperator") && adminOn() ? sget("admPin") : "" });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
+    me: myName(), adm: (fn === "saveHours" || fn === "setOperator" || fn === "getRoster" || fn === "saveRoster") && adminOn() ? sget("admPin") : "", use: use });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
   // 새로고침 버튼(금일/명일 새로 계산)은 시트를 통째로 읽어서 오래 걸릴 수 있음 → 30초에 끊지 않고 90초까지 기다림
   // 저장(근무시간 저장·작업자·업로드 완료 등)도 90초: 시트가 바쁘면 30초 넘게 걸리는데, 앱만 먼저 포기하면 실제로는 저장됐는데 '실패'로 보임
   var to = (fn === "getDashboardAll" && args && args[0] === true) || !READ_FNS[fn] ? 90000 : 0;
@@ -3308,6 +3372,10 @@ function rawCall(pin, fn, args, editPin) {
     .then(function (j) {
       var ms = Date.now() - t0;
       if (ms >= SLOW_MS) SPD.last = { rid: rid, ms: ms, fn: fn, args: a0, at: t0 };
+      if (j && j.ok) {
+        if (useN) { try { sset("useQ", JSON.stringify(useQ().slice(useN))); } catch (eU) {} }   // 보낸 만큼만 지움
+        if (fn === "getDashboardAll") { var dU = ymdLocal(); if (sget("useDay") !== dU) { sset("useDay", dU); useLog("open"); } }   // 그날 처음 연 사람
+      }
       if (j && j.rn && fn === "getDashboardAll") remoteRenameLater(j.rn);   // 📱 개발자가 원격으로 이름 바꿈
       if (j && j.nag && fn === "getDashboardAll") pushNagLater(j.nag);       // 📣 관리자가 "알림 켜 주세요" 요청
       if (j && j.ping && fn === "getDashboardAll") devPingLater(j.ping);     // 🔔 개발자가 보낸 기기 확인 요청
@@ -4799,7 +4867,13 @@ var NF_QV = ["제조1팀", "제조2팀", "전장"], NF_ASK = "확인요청";
 var NF_SELF = /\s*자체\s*처리(?:\s*(?:완료|예정))?\s*[,/·]?\s*/;
 function nfNew() { return { site: sget("nfSite") || "", proj: "", pn: "", qty: "", desc: "", vend: "", req: myName() || "", note: "", kind: "", rows: [] }; }
 function nfLoad() { try { var o = JSON.parse(sget("nfDraft3") || "null"); if (o && o.rows) return o; } catch (e) {} return nfNew(); }
-function nfSave() { try { sset("nfDraft3", JSON.stringify(NC.f)); } catch (e) {} }
+function nfSave() {
+  try {
+    var f = NC.f;
+    if (f && !f.t1 && (f.pn || f.proj || f.desc || f.qty || f.scan || (f.rows && f.rows.length))) f.t1 = Date.now();   // 📊 작성 시작 (처음 뭔가 넣은 때)
+    sset("nfDraft3", JSON.stringify(NC.f));
+  } catch (e) {}
+}
 function nfClean(s) { return String(s == null ? "" : s).replace(/\s+/g, " ").trim(); }
 function nfKey(s) { return nfClean(s).toUpperCase().replace(/\s+/g, ""); }
 // 🧠 학습 — 팀 기록(서버 · 부적합 요청 목록과 같이 옴 · 요청 추가 없음) + 내 기록(폰 · 내 것은 2배)
@@ -6404,6 +6478,7 @@ function nfForm(box) {
       if (vn && nfVenOk(vn) && vn !== NF_ASK) L = nfEntries(f).filter(function (e) { return e.pn && !nfQuick(e.pn); }).map(function (e) { return { pn: e.pn, proj: e.proj, ven: vn, req: nfClean(f.req) }; });
       if (NC.lrnLast !== m.text) {   // 같은 메시지를 여러 번 복사해도 한 번만 배움
         NC.lrnLast = m.text;
+        try { var sc0 = f.scan; useLog("nc", f.t1 ? (Date.now() - f.t1) / 1000 : 0, sc0 ? "QR" + (sc0.prj ? "+라벨" : "") : "직접"); } catch (eUs) {}   // 📊 부적합 요청 1건
         var X = lrnFrom(f); nfSave();
         if (L.length || X.q.length || X.d.length || X.p.length) call("saveNcLearn", [L, X]).then(function (r) { if (r && r.lrn && NC.ref) { NC.ref.lrn = r.lrn; cset("ncref", NC.ref); } }).catch(function () {});
       }
@@ -9036,10 +9111,13 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-08-1";
+var APP_VER = "2026-11-08-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-08-4", []],
+  ["2026-11-08-3", []],
+  ["2026-11-08-2", []],
   ["2026-11-08-1", []],
   ["2026-11-07-23", []],
   ["2026-11-07-22", []],
@@ -9773,6 +9851,124 @@ function openPushStatus() {
   });
 }
 $("psno").onclick = function () { $("psov").className = "ov"; };
+
+/* ---------- 팀원 관리 (관리자 모드 · 팀_명단 시트 · TeamRoster.gs) ---------- */
+var RS = { rows: null, today: "", edit: null, busy: false, delArm: 0 };
+function rsMd(ymd) { var p = String(ymd || "").split("-"); return p.length === 3 ? (+p[1]) + "/" + (+p[2]) : ""; }
+function rsNext(ymd) { var p = ymd.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2] + 1); return (d.getMonth() + 1) + "/" + d.getDate(); }
+function rsToday() { return RS.today || ymdLocal(); }
+function rsMsg(t) { $("rsmsg").textContent = t || ""; }
+function openRoster() {
+  RS.edit = null; rsMsg("");
+  rsView();
+  $("rsov").className = "ov on";
+  if (!RS.rows) { $("rslist").innerHTML = ""; $("rslist").appendChild(el("span", "hint", "불러오는 중…")); }
+  call("getRoster").then(function (r) {
+    if (r && r.error) { if (r.admBad) adminOff(); rsMsg(r.error); return; }
+    RS.rows = r.rows || []; RS.today = r.today || "";
+    if (!RS.edit) rsView();
+  }).catch(function (e) { rsMsg("불러오기 실패: " + errText(e)); });
+}
+function rsClose() { $("rsov").className = "ov"; RS.edit = null; }
+function rsView() {
+  var L = $("rslist");
+  $("rsttl").textContent = "팀원 관리";
+  $("rssub").style.display = "";
+  $("rsform").style.display = "none"; L.style.display = "";
+  $("rsno").textContent = "닫기"; $("rsgo").textContent = "새 팀원 추가"; $("rsgo").disabled = !RS.rows;
+  if (!RS.rows) return;
+  L.innerHTML = "";
+  var on = RS.rows.filter(function (p) { return p.st === "재직"; }), off = RS.rows.filter(function (p) { return p.st !== "재직"; });
+  function row(p) {
+    var gone = p.st !== "재직", b = el("button", gone ? "gone" : ""); b.type = "button";
+    var t = el("span");
+    t.appendChild(el("b", null, p.name));
+    t.appendChild(el("small", null, [p.role, p.hire ? p.hire.replace(/-/g, ".") + " 입사" : "", p.mark].filter(function (x) { return x; }).join(" · ")));
+    b.appendChild(t);
+    var fut = gone && p.date && p.date >= rsToday();
+    b.appendChild(el("span", "st", gone ? p.st + (p.date ? " " + rsMd(p.date) : "") + (fut ? " 예정" : "") : (p.hire && p.hire > rsToday() ? rsMd(p.hire) + " 입사 예정" : "재직")));
+    b.onclick = function () { rsForm(p); };
+    L.appendChild(b);
+  }
+  on.forEach(row);
+  if (off.length) { L.appendChild(el("div", "sec", "퇴사 · 이동")); off.forEach(row); }
+  if (!RS.rows.length) L.appendChild(el("span", "hint", "명단이 비어 있어요."));
+}
+function rsChips(id, list, val, fn) {
+  var c = $(id); c.innerHTML = "";
+  list.forEach(function (x) {
+    var b = el("button", "chip" + (x === val ? " on" : ""), x); b.type = "button";
+    b.onclick = function () { fn(x); };
+    c.appendChild(b);
+  });
+}
+function rsForm(p) {
+  var isNew = !p;
+  RS.edit = p ? { orig: p.name, name: p.name, role: p.role, hire: p.hire, st: p.st, date: p.date, mark: p.mark, memo: p.memo }
+              : { orig: "", name: "", role: "팀원", hire: rsToday(), st: "재직", date: "", mark: "", memo: "" };
+  RS.delArm = 0; rsMsg("");
+  $("rsttl").textContent = isNew ? "새 팀원 추가" : p.name;
+  $("rssub").style.display = "none";
+  $("rslist").style.display = "none"; $("rsform").style.display = "";
+  $("rsname").value = RS.edit.name; $("rsname").disabled = !isNew;
+  $("rsname").parentNode.style.display = isNew ? "" : "none";
+  $("rshire").value = RS.edit.hire || "";
+  $("rsdate").value = RS.edit.date || "";
+  $("rsmark").value = RS.edit.mark || ""; $("rsmemo").value = RS.edit.memo || "";
+  $("rsdel").style.display = isNew ? "none" : ""; $("rsdel").textContent = "명단에서 지우기";
+  $("rsno").textContent = "← 목록"; $("rsgo").textContent = "저장"; $("rsgo").disabled = false;
+  rsFormSync();
+  if (isNew) setTimeout(function () { try { $("rsname").focus(); } catch (e) {} }, 250);
+}
+function rsFormSync() {
+  var f = RS.edit; if (!f) return;
+  rsChips("rsrole", ["팀원", "팀장"], f.role, function (x) { f.role = x; rsFormSync(); });
+  rsChips("rsst", f.orig ? ["재직", "퇴사", "이동"] : ["재직"], f.st, function (x) { f.st = x; if (x !== "재직" && !$("rsdate").value) $("rsdate").value = rsToday(); rsFormSync(); });
+  var gone = f.st !== "재직";
+  $("rsdatew").style.display = gone ? "" : "none";
+  $("rsdatew").firstChild.textContent = f.st === "이동" ? "이동일 (이 날까지 B팀)" : "퇴사일 (마지막 근무일)";
+  var nm = f.orig || $("rsname").value.trim() || "새 팀원", d = $("rsdate").value, hire = $("rshire").value, info;
+  if (!f.orig) info = nm + "님이 바로 앱 이름 목록과 근무시간 시트에 들어가요." +
+    (hire && hire > rsToday() ? "\n입사일(" + rsMd(hire) + ") 전까지는 근무시간 미입력 체크에서 빠져요." : "") +
+    "\n\n연차 표(Main_Log)는 시트에서 직접 넣어 주세요.";
+  else if (gone) info = d ? rsNext(d) + "부터 " + nm + " 이름으로는 앱을 못 쓰고, 이름 목록 · 알림 · 근무시간 체크 · 연차 · 장비통계에서 빠져요.\n그 전 기록은 그대로 남아요." : "날짜를 넣어 주세요.";
+  else info = f.st !== (RS.rows.filter(function (p) { return p.name === f.orig; })[0] || {}).st ? nm + "님을 다시 재직으로 돌려요. 명단이 걸어 둔 앱 차단도 풀려요." : "입사일 · 표시를 고치면 장비통계 순서 · 근무시간 체크에 반영돼요.";
+  $("rsinfo").textContent = info;
+}
+$("rsname").oninput = rsFormSync; $("rshire").onchange = rsFormSync; $("rsdate").onchange = rsFormSync;
+function rsSend(op, done) {
+  if (RS.busy) return;
+  RS.busy = true; $("rsgo").disabled = true; rsMsg("");
+  var old = $("rsgo").textContent; $("rsgo").textContent = "반영 중…";
+  call("saveRoster", [op]).then(function (r) {
+    RS.busy = false; $("rsgo").disabled = false; $("rsgo").textContent = old;
+    if (r && r.error) { if (r.admBad) adminOff(); rsMsg(r.error); return; }
+    RS.rows = r.rows || RS.rows; RS.today = r.today || RS.today;
+    RS.edit = null; rsView();
+    toast(done(r.name));
+    if (r.warn) rsMsg(r.warn);
+  }).catch(function (e) {
+    RS.busy = false; $("rsgo").disabled = false; $("rsgo").textContent = old;
+    rsMsg("저장 실패: " + errText(e) + "\n목록을 다시 열어서 반영됐는지 확인해 주세요.");
+  });
+}
+$("rsgo").onclick = function () {
+  if (!RS.edit) { rsForm(null); return; }
+  var f = RS.edit, name = f.orig || $("rsname").value.replace(/\s/g, "");
+  if (!/^[가-힣A-Za-z]{2,10}$/.test(name)) { rsMsg("이름은 띄어쓰기 없이 2~10글자로 적어 주세요."); return; }
+  if (!f.orig && RS.rows && RS.rows.some(function (p) { return p.name === name; })) { rsMsg("'" + name + "'은(는) 이미 명단에 있어요."); return; }
+  var d = $("rsdate").value;
+  if (f.st !== "재직" && !d) { rsMsg((f.st === "퇴사" ? "퇴사일" : "이동일") + "을 넣어 주세요."); return; }
+  rsSend({ act: "save", orig: f.orig, name: name, role: f.role, hire: $("rshire").value, st: f.st, date: f.st === "재직" ? "" : d, mark: $("rsmark").value.trim(), memo: $("rsmemo").value.trim() },
+    function (n) { return f.orig ? n + " 저장했어요" : n + " 추가했어요 · 연차 표는 시트에서 넣어 주세요"; });
+};
+$("rsno").onclick = function () { if (RS.edit) { RS.edit = null; rsMsg(""); rsView(); } else rsClose(); };
+$("rsdel").onclick = function () {
+  var f = RS.edit; if (!f || !f.orig) return;
+  if (Date.now() - RS.delArm > 4000) { RS.delArm = Date.now(); $("rsdel").textContent = "한 번 더 누르면 지워요 (잘못 넣은 경우만 · 나간 사람은 상태를 바꿔 주세요)"; return; }
+  rsSend({ act: "del", orig: f.orig, name: f.orig }, function (n) { return n + " 명단에서 지웠어요"; });
+};
+$("rsov").onclick = function (e) { if (e.target === this && !RS.busy) rsClose(); };
 $("psov").onclick = function (e) { if (e.target === this) $("psov").className = "ov"; };
 
 /* ---------- 🔔 폰 알림 (OneSignal) ----------
@@ -10343,7 +10539,7 @@ function adminUI() {
 function isOther(name) { return !!(name && myName() && name !== myName()); }
 function leaveLocked() { return isChief() || (isOther($("hname").value) && !adminOn()); }   // 총괄팀장은 관리자 모드여도 근무시간 잠금
 function openAdminGate(next) {
-  NT.next = next === "dev" ? "dev" : next === "mode" ? "mode" : next === "chief" ? "chief" : "notice";
+  NT.next = next === "dev" ? "dev" : next === "mode" ? "mode" : next === "roster" ? "roster" : next === "chief" ? "chief" : "notice";
   if (NT.next === "notice" && isChief() && sget("chiefPin")) { NT.pin = ""; NT.chiefPin = sget("chiefPin"); openNotice(); mnBackShow("ntov"); return; }   // 👔 총괄팀장은 PIN 없이
   if (NT.next === "mode" && isChief() && sget("chiefPin")) { adminSet(sget("chiefPin")); toast("🔑 관리자 모드 켜짐 · 오늘 자정까지"); return; }   // 👔 총괄팀장은 바로 켜짐 (근무시간은 그대로 잠금)
   if (NT.next === "notice" && adminOn()) { NT.pin = sget("admPin"); openNotice(); mnBackShow("ntov"); return; }   // 관리자 모드면 PIN 생략
@@ -10351,7 +10547,7 @@ function openAdminGate(next) {
   var chief = NT.next === "chief";
   var dev = NT.next === "dev";
   $("apttl").textContent = dev ? "🛠 개발자 PIN" : chief ? "👔 총괄팀장 PIN" : "🔒 관리자 PIN";
-  $("apdesc").textContent = dev ? "개발자 전용 메뉴예요." : chief ? "총괄팀장 이름으로 공지를 보내려면\n총괄팀장 PIN이 필요해요." : NT.next === "mode" ? "관리자 모드는 오늘 자정까지 유지돼요.\n(다른 사람 연차류·칸 비우기 · 공지 보내기 PIN 생략)" : "공지 보내기는 관리자만 할 수 있어요.";
+  $("apdesc").textContent = dev ? "개발자 전용 메뉴예요." : chief ? "총괄팀장 이름으로 공지를 보내려면\n총괄팀장 PIN이 필요해요." : NT.next === "roster" ? "팀원 관리는 관리자 모드에서 열려요.\n확인하면 관리자 모드가 오늘 자정까지 켜져요." : NT.next === "mode" ? "관리자 모드는 오늘 자정까지 유지돼요.\n(다른 사람 연차류·칸 비우기 · 공지 보내기 PIN 생략)" : "공지 보내기는 관리자만 할 수 있어요.";
   $("apdesc").style.whiteSpace = "pre-line";
   $("appin").placeholder = dev ? "개발자 PIN" : chief ? "총괄팀장 PIN" : "관리자 PIN";
   if (!chief) NT.pin = "";
@@ -10376,7 +10572,8 @@ $("apgo").onclick = function () {
     var back = $("apov").querySelector(".mnback"), fromMenu = back && back.style.display !== "none";
     if (dev) { DV.pin = pin; DV.until = Date.now() + 30 * 60000; closeAdminGate(); mnBackHide(); openDevPanel(); return; }
     if (chief) { NT.chiefPin = pin; closeAdminGate(); $("ntov").className = "ov on"; $("ntgo").click(); return; }   // 👔 확인되면 바로 보내기
-    if (NT.next === "mode") { adminSet(pin); closeAdminGate(); mnBackHide(); toast("🔑 관리자 모드 켜짐 · 오늘 자정까지"); return; }   // 관리자 모드는 이 메뉴로만 켜짐 (공지 보내기로는 안 켜짐)
+    if (NT.next === "mode") { adminSet(pin); closeAdminGate(); mnBackHide(); toast("🔑 관리자 모드 켜짐 · 오늘 자정까지"); return; }
+    if (NT.next === "roster") { adminSet(pin); closeAdminGate(); mnBackHide(); openRoster(); if (fromMenu) mnBackShow("rsov"); return; }   // 관리자 모드는 이 메뉴로만 켜짐 (공지 보내기로는 안 켜짐)
     NT.pin = pin;
     closeAdminGate(); mnBackHide();
     openNotice();
@@ -10429,6 +10626,7 @@ function openMenu() {
     if (adminOn()) { adminOff(); toast("🔑 관리자 모드 꺼짐"); } else openAdminGate("mode");
   }, adminOn() ? null : "apov");
   if (noticeIsAdmin()) item("📢 공지 보내기", "관리자", function () { openAdminGate("notice"); }, "apov");
+  if (noticeIsAdmin()) item("팀원 관리", "추가 · 퇴사 · 이동", function () { if (adminOn()) openRoster(); else openAdminGate("roster"); }, adminOn() ? "rsov" : "apov");
   if (noticeIsAdmin() && ONESIGNAL_APP_ID) item("👥 알림 현황", "누가 켰는지", openPushStatus);   // 알림 현황은 아래쪽에 "← 메뉴로" 버튼
   item("🔄 앱 새로 불러오기", "v" + APP_VER.slice(5).replace("-", "."), function () { location.reload(); });
   item("🛠 Developer", "개발자", function () { openAdminGate("dev"); }, "apov");
@@ -10883,6 +11081,39 @@ $("dlno").onclick = closeDevList;
 $("dlback").onclick = function () { closeDevList(); openDevPanel(); };
 $("dlov").onclick = function (e) { if (e.target === this) closeDevList(); };
 
+/* ---------- 📊 사용 실적 (Developer · 보고용) ---------- */
+function useUpdCount() {   // 10/19부터 업데이트한 횟수 (바뀐 점 기록 기준)
+  var n = 0; APP_HISTORY.forEach(function (h) { if (h[0] >= "2026-10-19") n++; }); return n;
+}
+function openUsage() {
+  var L = $("uslist"), st = $("usst");
+  L.innerHTML = ""; st.textContent = "불러오는 중…"; $("uscopy").disabled = true;
+  $("usov").className = "ov on";
+  call("getUsageReport", [6]).then(function (r) {
+    if (!r || r.error) { st.textContent = (r && r.error) || "불러오지 못했어요"; return; }
+    st.textContent = r.at + " 기준 · 업데이트 " + useUpdCount() + "회 (10/19부터)";
+    var md = function (w) { var p = w.split("-"); return (+p[1]) + "/" + (+p[2]); };
+    var mm = function (sec) { return !sec ? "-" : sec < 60 ? sec + "초" : Math.floor(sec / 60) + "분 " + (sec % 60 ? (sec % 60) + "초" : ""); };
+    var lines = ["[제조1-B 앱 사용 실적] " + r.at + " 기준 · 업데이트 " + useUpdCount() + "회 (10/19~)"];
+    r.weeks.slice().reverse().forEach(function (w) {
+      var c = el("div", "uscard");
+      c.appendChild(el("b", null, md(w.wk) + " 주"));
+      var g = el("div", "usg");
+      [["부적합 요청", w.nc + "건"], ["작성 시간", mm(w.ncMed)], ["QR로 작성", w.nc ? w.ncQr + "%" : "-"],
+       ["근무시간 앱 입력", w.hApp + "건"], ["빈 평일", w.miss == null ? "-" : w.miss + "일"], ["하루 사용 인원", w.users ? w.users + "명" : "-"]
+      ].forEach(function (x) { var d = el("div"); d.appendChild(el("span", null, x[0])); d.appendChild(el("em", null, x[1])); g.appendChild(d); });
+      c.appendChild(g); L.appendChild(c);
+      lines.push(md(w.wk) + " 주: 부적합 요청 " + w.nc + "건 (작성 " + mm(w.ncMed) + " · QR " + (w.nc ? w.ncQr + "%" : "-") + ") · 근무시간 앱 입력 " + w.hApp + "건 · 빈 평일 " + (w.miss == null ? "-" : w.miss + "일") + " · 하루 사용 " + (w.users || "-") + "명");
+    });
+    L.appendChild(el("p", "ushint", "작성 시간은 처음 칸을 채운 때부터 메시지를 복사할 때까지의 중간값이에요 (1시간 넘게 걸린 건 빼고). 빈 평일은 이번 달 근무시간 시트 기준이에요. 기록은 오늘부터 쌓여요."));
+    $("uscopy").disabled = false;
+    $("uscopy").onclick = function () { nfCopy(lines.join("\n")); toast("보고용 문구를 복사했어요"); };
+  }).catch(function (e) { st.textContent = "불러오지 못했어요: " + errText(e); });
+}
+$("usno").onclick = function () { $("usov").className = "ov"; };
+$("usback").onclick = function () { $("usov").className = "ov"; openDevPanel(); };
+$("usov").onclick = function (e) { if (e.target === this) this.className = "ov"; };
+
 /* ---------- 🛠 Developer (개발자 PIN 확인 후, 이 폰에서만) ---------- */
 var DV = { reset: false, pin: "", until: 0 };
 function openDevPanel() {
@@ -10909,6 +11140,7 @@ function openDevPanel() {
   }
   item("👤 이 폰 이름 바꾸기", myName() || "-", function () { $("dvov").className = "ov"; openNameChange(); });
   item("📱 팀 기기 목록", "원격 이름 변경", function () { $("dvov").className = "ov"; openDevList(); });
+  if (myName() === "손성민") item("📊 사용 실적", "보고용 숫자 · 주별", function () { $("dvov").className = "ov"; openUsage(); });
   // 🎄 크리스마스 미리보기 (이 폰에서만 · 12/1~25는 누구나 자동) → 누르면 시작화면부터 다시 (최신 파일로)
   var xpv = false; try { xpv = localStorage.getItem("xmasPreview") === "1"; } catch (e) {}
   item("🎄 크리스마스 미리보기", xpv ? "켜짐 · 누르면 끄기" : "꺼짐 · 누르면 켜기", function (b) {
