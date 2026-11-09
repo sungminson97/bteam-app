@@ -657,11 +657,17 @@ li.tap:active{background:rgba(47,111,237,.08)}
 #hrangeRow{display:grid;gap:8px;margin:2px 0 6px}
 #hours .notebox .rngchk{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:700;color:var(--text);margin:0;padding:4px 0;cursor:pointer}
 #hours .notebox .rngchk input{flex:none;width:20px!important;height:20px!important;min-height:0;padding:0!important;margin:0;border-radius:5px;accent-color:var(--accent)}
-#hrngBox{display:grid;gap:4px}
+#hrngBox{display:grid;gap:6px}
+#hrngBox .rng2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#hrngBox .rng2>div{display:grid;gap:4px;min-width:0}
+#hrngBox .rng2 label{font-size:12.5px}
+#hours .notebox #hrngBox input[type=date]{padding:0 10px;font-size:15px;min-width:0;width:100%}
 #hrngBox input[type=date]{-webkit-appearance:none;appearance:none;box-sizing:border-box;min-height:44px;text-align:left}
 #hrngBox input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
 #hrngHint{white-space:pre-line;word-break:keep-all;line-height:1.55}
 #hrngHint b{color:var(--accent)}
+#hres .hbar{height:6px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:6px}
+#hres .hbar i{display:block;height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .3s}
 .cur .sch{display:block;margin-top:2px;color:var(--accent);font-weight:700}
 .cur{font-size:14px;line-height:1.5;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line)}
 .cur b{color:var(--accent)}
@@ -2981,8 +2987,10 @@ SPX.start();
       <div id="hrangeRow" style="display:none">
         <label class="rngchk"><input type="checkbox" id="hrng"> <span>여러 날 한 번에 넣기</span></label>
         <div id="hrngBox" style="display:none">
-          <label for="hrend">끝나는 날 (이 날까지)</label>
-          <input type="date" id="hrend">
+          <div class="rng2">
+            <div><label for="hrstart">시작 날짜</label><input type="date" id="hrstart"></div>
+            <div><label for="hrend">끝나는 날 (이 날까지)</label><input type="date" id="hrend"></div>
+          </div>
           <div class="hint" id="hrngHint"></div>
         </div>
       </div>
@@ -8977,6 +8985,8 @@ function updNote() {
   $("hrangeRow").style.display = canRng ? "grid" : "none";
   if (!canRng) $("hrng").checked = false;
   var rngOn = canRng && $("hrng").checked;
+  if (rngOn && $("hrstart").value !== $("hdate").value) $("hrstart").value = $("hdate").value;
+  $("hrstart").min = $("hdate").min; $("hrstart").max = $("hdate").max; $("hrend").min = $("hdate").value || $("hdate").min; $("hrend").max = $("hdate").max;
   $("hrngBox").style.display = rngOn ? "grid" : "none";
   var RD = rngOn ? hRangeDays() : null;
   if (rngOn) hRangeHint(RD);
@@ -8997,9 +9007,9 @@ function updNote() {
 
 /* 📅 여러 날 한 번에: 시작 = 위 날짜 칸 · 끝 = 끝나는 날 → 주말 · 공휴일 빼고 날짜 목록 (서버 요청 없음) */
 function hRangeDays() {
-  var a = $("hdate").value, b = $("hrend").value, mx = $("hdate").max || "";
+  var a = $("hrstart").value || $("hdate").value, b = $("hrend").value, mx = $("hdate").max || "";
   var o = { days: [], we: 0, hol: [], err: "" };
-  if (!a) { o.err = "위에서 시작 날짜를 골라 주세요."; return o; }
+  if (!a) { o.err = "시작 날짜를 골라 주세요."; return o; }
   if (!b) { o.err = "끝나는 날을 골라 주세요."; return o; }
   if (b < a) { o.err = "끝나는 날이 시작 날짜보다 앞이에요."; return o; }
   if (mx && b > mx) { o.err = "끝나는 날은 " + (+mx.slice(5, 7)) + "/" + (+mx.slice(8)) + "까지만 고를 수 있어요.\n그 뒤는 다음 달에 이어서 넣어 주세요."; return o; }
@@ -9028,51 +9038,84 @@ function hRangeHint(R) {
   if (R.hol.length) ex.push("공휴일 " + R.hol.length + "일 (" + R.hol.join(", ") + ")");
   if (ex.length) h.appendChild(document.createTextNode("\n" + ex.join(" · ") + "은 빼고 넣어요."));
 }
-$("hrng").onchange = function () { if ($("hrng").checked && !$("hrend").value) $("hrend").value = $("hdate").value; resetConfirm(); updNote(); };
+$("hrng").onchange = function () {
+  if ($("hrng").checked) { $("hrstart").value = $("hdate").value; if (!$("hrend").value || $("hrend").value < $("hdate").value) $("hrend").value = $("hdate").value; }
+  resetConfirm(); updNote();
+};
+// 시작 날짜 = 위 날짜 칸과 같이 움직임 (달력 · 현재 값도 그 날로)
+$("hrstart").onchange = function () {
+  var v = $("hrstart").value; if (!v) return;
+  if (!$("hrend").value || $("hrend").value < v) $("hrend").value = v;
+  if ($("hdate").value !== v) { $("hdate").value = v; $("hdate").onchange(); }
+  resetConfirm(); updNote();
+};
 $("hrend").onchange = function () { resetConfirm(); updNote(); };
 
-/* 여러 날 저장 → saveHoursRange 1번 */
+/* 여러 날 저장 → 5일씩 나눠서 saveHoursRange (진행 상황 표시 · 한 번이 오래 안 걸리게 · 2026-11-09) */
+var HR_CHUNK = 5;
 function doRangeSave(kind, note, force) {
   var name = $("hname").value, R = hRangeDays();
   if (R.err) { showHErr(R.err); return; }
+  var list = force && H.rangeSkip && H.rangeSkip.length ? H.rangeSkip.slice() : R.days;   // 덮어쓰기 확인 → 건너뛴 날만 다시
+  var md = function (y) { return (+y.slice(5, 7)) + "/" + (+y.slice(8)); };
+  var tot = { done: [], skip: [], fail: [] }, i = 0, t0 = Date.now();
   H.busy = true;
   $("hsave").disabled = true; $("hclr").disabled = true;
-  $("hsave").textContent = R.days.length + "일 저장 중…";
-  callEdit("saveHoursRange", [name, R.days, kind, note, !!force]).then(function (r) {
+  var res = $("hres"); res.innerHTML = "";
+  var prog = el("div", "okmsg hprog"); res.appendChild(prog);
+  var bar = el("div", "hbar"), fill = el("i"); bar.appendChild(fill); res.appendChild(bar);
+  function show() {
+    var n = Math.min(i, list.length);
+    $("hsave").textContent = "저장 중… " + n + "/" + list.length + "일";
+    prog.textContent = "저장 중이에요 · " + n + "/" + list.length + "일 완료 · 화면을 닫지 말아 주세요";
+    fill.style.width = Math.round(n * 100 / list.length) + "%";
+  }
+  function finish(errMsg) {
     H.busy = false; $("hsave").disabled = false; $("hclr").disabled = false;
-    var res = $("hres"); res.innerHTML = "";
-    if (r.error) { if (r.admBad) adminOff(); $("hsave").textContent = R.days.length + "일 저장"; showHErr(r.error); toast("⚠️ " + r.error, true); return; }
-    var md = function (y) { return (+y.slice(5, 7)) + "/" + (+y.slice(8)); };
-    var needOw = !!(r.skip && r.skip.length && !force);
-    if (!needOw) { resetConfirm(); res = $("hres"); }   // 다 끝남 → 버튼·안내 원래대로 (아래 결과 글자는 남김)
-    if (r.done && r.done.length) {
-      var what = name + " " + kind + (note ? " (" + note + ")" : "") + " " + r.done.length + "일 · " + md(r.done[0]) + " ~ " + md(r.done[r.done.length - 1]);
+    res.innerHTML = "";
+    var needOw = !!(tot.skip.length && !force && !errMsg);
+    if (!needOw) { resetConfirm(); res = $("hres"); }
+    if (tot.done.length) {
+      var dd = tot.done.slice().sort();
+      var what = name + " " + kind + (note ? " (" + note + ")" : "") + " " + dd.length + "일 · " + md(dd[0]) + " ~ " + md(dd[dd.length - 1]);
       toast("✔ 저장 완료 · " + what);
       res.appendChild(el("div", "okmsg", "저장 완료 ✔ " + what));
-      r.done.forEach(function (d) { prevDone(name, d); });
+      dd.forEach(function (d) { prevDone(name, d); });
       LV.loaded = false; sdel("c_leave");
-      try { var g = hpgAll(); r.done.forEach(function (d) { delete g[d.slice(0, 7)]; }); cset("hpg", g); } catch (eg) {}
+      try { var g = hpgAll(); dd.forEach(function (d) { delete g[d.slice(0, 7)]; }); cset("hpg", g); } catch (eg) {}
     }
-    if (r.fail && r.fail.length) res.appendChild(el("div", "warn", "못 넣은 날 " + r.fail.length + "일: " + r.fail.map(function (x) { return md(x.d) + " (" + x.e + ")"; }).join(", ")));
+    if (tot.fail.length) res.appendChild(el("div", "warn", "못 넣은 날 " + tot.fail.length + "일: " + tot.fail.map(function (x) { return md(x.d) + " (" + x.e + ")"; }).join(", ")));
+    if (errMsg) {
+      $("hsave").textContent = "다시 저장";
+      showHErr(errMsg + "\n" + (i > 0 ? "앞의 " + Math.min(i, list.length) + "일까지는 저장됐을 수 있어요. " : "") + "다시 누르면 남은 날만 채워요 (두 번 안 들어가요).");
+      toast("⚠️ " + errMsg, true);
+      setTimeout(function () { loadHoursMeta(true); }, 500);
+      return;
+    }
     if (needOw) {
-      H.confirm = true; H.rangeSkip = true;
+      H.confirm = true; H.rangeSkip = tot.skip.map(function (x) { return x.d; });
       $("hsave").textContent = "덮어쓰기 확인"; $("hsave").className = "save confirm";
-      res.appendChild(el("div", "warn", "이미 값이 있는 날 " + r.skip.length + "일은 건너뛰었어요: " + r.skip.map(function (x) { return md(x.d) + "(" + x.cur + ")"; }).join(", ") + "\n이 날들도 " + kind + "로 덮어쓰려면 한 번 더 눌러 주세요."));
+      res.appendChild(el("div", "warn", "이미 값이 있는 날 " + tot.skip.length + "일은 건너뛰었어요: " + tot.skip.map(function (x) { return md(x.d) + "(" + x.cur + ")"; }).join(", ") + "\n이 날들도 " + kind + "로 덮어쓰려면 한 번 더 눌러 주세요."));
       setTimeout(function () { loadHoursMeta(true); }, 300);
       return;
     }
-    H.otherOK = false; H.rangeSkip = false;
-    $("hval").value = ""; $("hnote").value = ""; $("hrng").checked = false; $("hrend").value = ""; H.half = ""; updNote();
+    H.otherOK = false; H.rangeSkip = null;
+    $("hval").value = ""; $("hnote").value = ""; $("hrng").checked = false; $("hrend").value = ""; $("hrstart").value = ""; H.half = ""; updNote();
     sset("hoursName", name);
     H.token++;
     setTimeout(function () { loadHoursMeta(true); }, 300);
-  }).catch(function (e) {
-    H.busy = false; $("hsave").disabled = false; $("hclr").disabled = false;
-    $("hsave").textContent = "저장";
-    showHErr("저장 실패: " + errText(e) + "\n일부 날짜는 들어갔을 수 있어요. 달력을 확인해 주세요.");
-    toast("⚠️ 저장 실패: " + errText(e), true);
-    setTimeout(function () { loadHoursMeta(true); }, 500);
-  });
+  }
+  function next() {
+    if (i >= list.length) { finish(""); return; }
+    show();
+    var part = list.slice(i, i + HR_CHUNK);
+    callEdit("saveHoursRange", [name, part, kind, note, !!force]).then(function (r) {
+      if (r.error) { if (r.admBad) adminOff(); finish(r.error); return; }
+      tot.done = tot.done.concat(r.done || []); tot.skip = tot.skip.concat(r.skip || []); tot.fail = tot.fail.concat(r.fail || []);
+      i += part.length; show(); next();
+    }).catch(function (e) { finish("저장 실패: " + errText(e)); });
+  }
+  next();
 }
 
 function doSave(value, force, delForce) {
@@ -9223,10 +9266,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-09-2";
+var APP_VER = "2026-11-09-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-09-4", ["근무시간: 여러 날 저장이 빨라지고, 몇 일째 저장 중인지 보여요"]],
+  ["2026-11-09-3", ["근무시간: 여러 날 한 번에 넣을 때 시작 날짜 · 끝나는 날을 같이 골라요"]],
   ["2026-11-09-2", ["근무시간: 탭을 열거나 앱으로 돌아오면 바뀐 값을 알아서 새로 불러와요 (새로고침 안 눌러도 돼요)"]],
   ["2026-11-09-1", ["근무시간: 연차 · 공가를 여러 날 한 번에 넣을 수 있어요 (주말 · 공휴일은 자동으로 빼요)", "근무시간: 시트에서 바로 적은 값도 앱에 바로 보여요"]],
   ["2026-11-08-5", []],
