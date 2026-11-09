@@ -2160,12 +2160,14 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #srch .sfilt{display:grid;gap:12px;padding:16px;border-radius:20px;background:var(--card);border:1px solid var(--line);box-shadow:0 4px 18px rgba(20,30,60,.05)}
 #srch .sfilt.in{padding:12px 14px;gap:9px;box-shadow:none}
 #srch .sfilt .sft{font-size:15.5px;font-weight:900;color:var(--text)}
-#srch .fg{display:grid;grid-template-columns:58px 1fr;align-items:center;gap:8px}
+#srch .fg{display:grid;grid-template-columns:58px 1fr;align-items:start;gap:8px}
+#srch .fg .fl{padding-top:9px}
 #srch .fg .fl{font-size:12.5px;font-weight:800;color:var(--sub)}
 #srch .fcs{display:flex;flex-wrap:wrap;gap:6px}
 #srch .fcs::-webkit-scrollbar{display:none}
 #srch .fc2{flex:none;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
 #srch .fc2.on{background:var(--accent);border-color:var(--accent);color:#fff}
+#srch .fc2.fmore{background:none;border-style:dashed;color:var(--sub);font-weight:800}
 #srch .fc2.p1.on{background:var(--warn);border-color:var(--warn)}
 #srch .fc2.p2.on{background:#f59e0b;border-color:#f59e0b}
 #srch .fgo{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px;padding:14px 16px;border:0;border-radius:16px;background:var(--grd);box-shadow:var(--grdsh);color:#fff;font-family:inherit;cursor:pointer;text-align:left}
@@ -8205,6 +8207,7 @@ function renderVendor(box, idx, today) {
  *  목록 칸: [7] PR.1 여부 · [8] 담당 업체 · [9] 사업장 · [10] PR 숫자 (서버 새 버전) */
 var FLT = (function () { try { var o = JSON.parse(sget("flt") || "null"); if (o && typeof o === "object") return o; } catch (e) {} return { pr: 1, site: "동탄", st: "pre" }; })();
 FLT.site = "동탄"; FLT.st = "pre";   // 사업장은 동탄 · 상태는 출하 전 고정 (출하 빠른 순) (2026-11-09)
+var FLT_OPEN = false;   // 우선순위 PR.2 ~ 펼침
 function fltSave() { try { sset("flt", JSON.stringify(FLT)); } catch (e) {} }
 function fltPR(r) { return r.length > 10 ? (+r[10] || 0) : (r[7] ? 1 : 0); }
 function fltSite(r) {   // 동탄 · 성남 (서버 사업장 칸 → 비었으면 동탄 배치도 자리 · "업체,담당자" 업체로)
@@ -8238,11 +8241,20 @@ function fltPanel(idx, today, home) {
   groups.forEach(function (g) {
     var row = el("div", "fg"); row.appendChild(el("span", "fl", g[0]));
     var cs = el("div", "fcs");
+    var isPr = g[1] === "pr", more = isPr ? g[2].filter(function (o) { return o[0] > 1; }) : [];
     g[2].forEach(function (o) {
-      var on = FLT[g[1]] === o[0], b = el("button", "fc2" + (on ? " on" : "") + (g[1] === "pr" && o[0] ? " p" + Math.min(3, o[0]) : "")); b.type = "button"; b.textContent = o[1];
+      var on = FLT[g[1]] === o[0];
+      if (isPr && o[0] > 1 && !FLT_OPEN && !on) return;   // PR.2부터는 접어 둠 (고른 것만 보임)
+      var b = el("button", "fc2" + (on ? " on" : "") + (isPr && o[0] ? " p" + Math.min(3, o[0]) : "")); b.type = "button"; b.textContent = o[1];
       b.onclick = function () { FLT[g[1]] = o[0]; fltSave(); renderSearch(); };
       cs.appendChild(b);
     });
+    if (more.length) {
+      var t = el("button", "fc2 fmore"); t.type = "button";
+      t.textContent = FLT_OPEN ? "접기" : "더보기";
+      t.onclick = function () { FLT_OPEN = !FLT_OPEN; renderSearch(); };
+      cs.appendChild(t);
+    }
     row.appendChild(cs); w.appendChild(row);
   });
   if (home) {
@@ -9463,10 +9475,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-09-11";
+var APP_VER = "2026-11-09-12";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-09-12", []],
   ["2026-11-09-11", ["장비 검색: 필터 목록에서 장비 자리가 더 잘 보여요"]],
   ["2026-11-09-10", ["장비 검색: '필터로 보기'에서 동탄 장비를 우선순위(PR)별로 출하 빠른 순 목록으로 볼 수 있어요 (누르면 공정별 날짜)"]],
   ["2026-11-09-9", []],
