@@ -654,6 +654,14 @@ li.tap:active{background:rgba(47,111,237,.08)}
 #hhrsRow{display:grid;gap:4px;margin-bottom:4px}
 .delbox{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--warn);font-weight:600;padding:8px 10px;border-radius:10px;border:1px dashed var(--warn)}
 .delbox input{width:18px;height:18px}
+#hrangeRow{display:grid;gap:8px;margin:2px 0 6px}
+#hours .notebox .rngchk{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:700;color:var(--text);margin:0;padding:4px 0;cursor:pointer}
+#hours .notebox .rngchk input{flex:none;width:20px!important;height:20px!important;min-height:0;padding:0!important;margin:0;border-radius:5px;accent-color:var(--accent)}
+#hrngBox{display:grid;gap:4px}
+#hrngBox input[type=date]{-webkit-appearance:none;appearance:none;box-sizing:border-box;min-height:44px;text-align:left}
+#hrngBox input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
+#hrngHint{white-space:pre-line;word-break:keep-all;line-height:1.55}
+#hrngHint b{color:var(--accent)}
 .cur .sch{display:block;margin-top:2px;color:var(--accent);font-weight:700}
 .cur{font-size:14px;line-height:1.5;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line)}
 .cur b{color:var(--accent)}
@@ -2970,6 +2978,14 @@ SPX.start();
         <label for="hhrs">실제 근무시간 (근무시간 칸에 들어가요)</label>
         <input type="text" id="hhrs" inputmode="decimal" autocomplete="off" placeholder="예: 4">
       </div>
+      <div id="hrangeRow" style="display:none">
+        <label class="rngchk"><input type="checkbox" id="hrng"> <span>여러 날 한 번에 넣기</span></label>
+        <div id="hrngBox" style="display:none">
+          <label for="hrend">끝나는 날 (이 날까지)</label>
+          <input type="date" id="hrend">
+          <div class="hint" id="hrngHint"></div>
+        </div>
+      </div>
       <label for="hnote">사유 (선택 · 한글 입력)</label>
       <input type="text" id="hnote" inputmode="text" autocomplete="off" maxlength="40" placeholder="예: 은행업무">
       <div class="hint" id="hnoteHint"></div>
@@ -3359,7 +3375,7 @@ function rawCall(pin, fn, args, editPin) {
   if (myName() && !IS_TEST) { use = useQ(); useN = use.length; if (!useN) use = null; }
   var a0 = (fn === "getDashboardAll" || fn === "getEquipIndex") ? [args && args[0] === true] : [];
   var body = JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev,
-    me: myName(), adm: (fn === "saveHours" || fn === "setOperator" || fn === "getRoster" || fn === "saveRoster") && adminOn() ? sget("admPin") : "", use: use });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
+    me: myName(), adm: (fn === "saveHours" || fn === "saveHoursRange" || fn === "setOperator" || fn === "getRoster" || fn === "saveRoster") && adminOn() ? sget("admPin") : "", use: use });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
   // 새로고침 버튼(금일/명일 새로 계산)은 시트를 통째로 읽어서 오래 걸릴 수 있음 → 30초에 끊지 않고 90초까지 기다림
   // 저장(근무시간 저장·작업자·업로드 완료 등)도 90초: 시트가 바쁘면 30초 넘게 걸리는데, 앱만 먼저 포기하면 실제로는 저장됐는데 '실패'로 보임
   var to = (fn === "getDashboardAll" && args && args[0] === true) || !READ_FNS[fn] ? 90000 : 0;
@@ -7528,7 +7544,7 @@ function setTab(n) {
   else if (n === 11) { renderLay(); loadEquipIndex(false).then(function () { if (cur === 11 && !SR.open) renderLay(); }); }
   else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
-  else if (n === 3) { $("upd").textContent = ""; if (!hoursLock()) { updLock(); if (!H.loaded) loadHoursMeta(); } }
+  else if (n === 3) { $("upd").textContent = ""; if (!hoursLock()) { updLock(); if (!H.loaded) loadHoursMeta(); else hAutoRefresh(); } }
   else if (n === 4) { renderLeave(LV.data); if (!LV.loaded) loadLeave(); }
   else { renderStats(ST.data); if (!ST.loaded) loadStats(); }
   moreSync();
@@ -8581,6 +8597,7 @@ function loadHoursMeta(silent) {
   var name0 = $("hname").value || sget("hoursName") || "";
   var date0 = $("hdate").value || "";
   var t = ++H.token;
+  H.metaAt = Date.now();   // 🔄 자동 새로고침 간격 (요청 시작 기준)
   if (name0 && !silent && !drew) monLoading(name0);   // ⚡ 폰에 저장된 달력을 먼저 보여줬으면 그대로 두고 뒤에서 최신으로 바꿈
   return call("getHoursMeta", [name0, date0])
     .then(function (m) {
@@ -8955,6 +8972,15 @@ function updNote() {
 
   var isHalf = !!HALF_HRS[m[1]];
   $("hhrsRow").style.display = isHalf && !lo ? "grid" : "none";   // 🌴 다음 달 반차: 근무시간은 그 달에
+  // 📅 여러 날 한 번에: 연차 · 공가만 (반차는 날마다 근무시간이 달라서 빼요)
+  var canRng = (m[1] === "연차" || m[1] === "공가");
+  $("hrangeRow").style.display = canRng ? "grid" : "none";
+  if (!canRng) $("hrng").checked = false;
+  var rngOn = canRng && $("hrng").checked;
+  $("hrngBox").style.display = rngOn ? "grid" : "none";
+  var RD = rngOn ? hRangeDays() : null;
+  if (rngOn) hRangeHint(RD);
+  if (!H.busy) $("hsave").textContent = H.confirm ? $("hsave").textContent : (rngOn && RD && RD.days.length ? RD.days.length + "일 저장" : "저장");
   if (isHalf && H.half !== m[1]) $("hhrs").value = HALF_HRS[m[1]];   // 반차 종류를 바꿀 때만 기본값
   H.half = isHalf ? m[1] : "";
 
@@ -8966,7 +8992,87 @@ function updNote() {
   h.appendChild(el("b", null, lo ? (isHalf ? "(" + (+hd.slice(5, 7)) + "월이 되면 근무시간 입력)" : m[1]) : isHalf ? ($("hhrs").value.trim() || "?") : m[1]));
   h.appendChild(document.createElement("br"));
   h.appendChild(document.createTextNode("　　　　 · schedule: "));
-  h.appendChild(el("b", null, nm + " " + m[1] + (note ? " (" + note + ")" : "")));
+  h.appendChild(el("b", null, nm + " " + m[1] + (note ? " (" + note + ")" : "") + (rngOn && RD && RD.days.length ? " × " + RD.days.length + "일" : "")));
+}
+
+/* 📅 여러 날 한 번에: 시작 = 위 날짜 칸 · 끝 = 끝나는 날 → 주말 · 공휴일 빼고 날짜 목록 (서버 요청 없음) */
+function hRangeDays() {
+  var a = $("hdate").value, b = $("hrend").value, mx = $("hdate").max || "";
+  var o = { days: [], we: 0, hol: [], err: "" };
+  if (!a) { o.err = "위에서 시작 날짜를 골라 주세요."; return o; }
+  if (!b) { o.err = "끝나는 날을 골라 주세요."; return o; }
+  if (b < a) { o.err = "끝나는 날이 시작 날짜보다 앞이에요."; return o; }
+  if (mx && b > mx) { o.err = "끝나는 날은 " + (+mx.slice(5, 7)) + "/" + (+mx.slice(8)) + "까지만 고를 수 있어요.\n그 뒤는 다음 달에 이어서 넣어 주세요."; return o; }
+  var p = a.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]), n = 0;
+  while (n++ < 120) {
+    var y = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+    if (y > b) break;
+    var w = d.getDay();
+    if (w === 0 || w === 6) o.we++;
+    else if (KR_HOLI[y]) o.hol.push((d.getMonth() + 1) + "/" + d.getDate() + " " + KR_HOLI[y]);
+    else o.days.push(y);
+    d.setDate(d.getDate() + 1);
+  }
+  if (o.days.length > 45) o.err = "한 번에 45일까지만 넣을 수 있어요. 나눠서 넣어 주세요.";
+  else if (!o.days.length) o.err = "고른 기간이 전부 주말 · 공휴일이에요.";
+  return o;
+}
+function hRangeHint(R) {
+  var h = $("hrngHint"); h.innerHTML = "";
+  if (R.err) { h.appendChild(el("span", null, R.err)); return; }
+  var md = function (y) { var dt = new Date(+y.slice(0, 4), +y.slice(5, 7) - 1, +y.slice(8)); return (dt.getMonth() + 1) + "/" + dt.getDate() + "(" + "일월화수목금토".charAt(dt.getDay()) + ")"; };
+  h.appendChild(document.createTextNode(md(R.days[0]) + " ~ " + md(R.days[R.days.length - 1]) + " · "));
+  h.appendChild(el("b", null, "평일 " + R.days.length + "일"));
+  var ex = [];
+  if (R.we) ex.push("주말 " + R.we + "일");
+  if (R.hol.length) ex.push("공휴일 " + R.hol.length + "일 (" + R.hol.join(", ") + ")");
+  if (ex.length) h.appendChild(document.createTextNode("\n" + ex.join(" · ") + "은 빼고 넣어요."));
+}
+$("hrng").onchange = function () { if ($("hrng").checked && !$("hrend").value) $("hrend").value = $("hdate").value; resetConfirm(); updNote(); };
+$("hrend").onchange = function () { resetConfirm(); updNote(); };
+
+/* 여러 날 저장 → saveHoursRange 1번 */
+function doRangeSave(kind, note, force) {
+  var name = $("hname").value, R = hRangeDays();
+  if (R.err) { showHErr(R.err); return; }
+  H.busy = true;
+  $("hsave").disabled = true; $("hclr").disabled = true;
+  $("hsave").textContent = R.days.length + "일 저장 중…";
+  callEdit("saveHoursRange", [name, R.days, kind, note, !!force]).then(function (r) {
+    H.busy = false; $("hsave").disabled = false; $("hclr").disabled = false;
+    var res = $("hres"); res.innerHTML = "";
+    if (r.error) { if (r.admBad) adminOff(); $("hsave").textContent = R.days.length + "일 저장"; showHErr(r.error); toast("⚠️ " + r.error, true); return; }
+    var md = function (y) { return (+y.slice(5, 7)) + "/" + (+y.slice(8)); };
+    var needOw = !!(r.skip && r.skip.length && !force);
+    if (!needOw) { resetConfirm(); res = $("hres"); }   // 다 끝남 → 버튼·안내 원래대로 (아래 결과 글자는 남김)
+    if (r.done && r.done.length) {
+      var what = name + " " + kind + (note ? " (" + note + ")" : "") + " " + r.done.length + "일 · " + md(r.done[0]) + " ~ " + md(r.done[r.done.length - 1]);
+      toast("✔ 저장 완료 · " + what);
+      res.appendChild(el("div", "okmsg", "저장 완료 ✔ " + what));
+      r.done.forEach(function (d) { prevDone(name, d); });
+      LV.loaded = false; sdel("c_leave");
+      try { var g = hpgAll(); r.done.forEach(function (d) { delete g[d.slice(0, 7)]; }); cset("hpg", g); } catch (eg) {}
+    }
+    if (r.fail && r.fail.length) res.appendChild(el("div", "warn", "못 넣은 날 " + r.fail.length + "일: " + r.fail.map(function (x) { return md(x.d) + " (" + x.e + ")"; }).join(", ")));
+    if (needOw) {
+      H.confirm = true; H.rangeSkip = true;
+      $("hsave").textContent = "덮어쓰기 확인"; $("hsave").className = "save confirm";
+      res.appendChild(el("div", "warn", "이미 값이 있는 날 " + r.skip.length + "일은 건너뛰었어요: " + r.skip.map(function (x) { return md(x.d) + "(" + x.cur + ")"; }).join(", ") + "\n이 날들도 " + kind + "로 덮어쓰려면 한 번 더 눌러 주세요."));
+      setTimeout(function () { loadHoursMeta(true); }, 300);
+      return;
+    }
+    H.otherOK = false; H.rangeSkip = false;
+    $("hval").value = ""; $("hnote").value = ""; $("hrng").checked = false; $("hrend").value = ""; H.half = ""; updNote();
+    sset("hoursName", name);
+    H.token++;
+    setTimeout(function () { loadHoursMeta(true); }, 300);
+  }).catch(function (e) {
+    H.busy = false; $("hsave").disabled = false; $("hclr").disabled = false;
+    $("hsave").textContent = "저장";
+    showHErr("저장 실패: " + errText(e) + "\n일부 날짜는 들어갔을 수 있어요. 달력을 확인해 주세요.");
+    toast("⚠️ 저장 실패: " + errText(e), true);
+    setTimeout(function () { loadHoursMeta(true); }, 500);
+  });
 }
 
 function doSave(value, force, delForce) {
@@ -8992,8 +9098,12 @@ function doSave(value, force, delForce) {
     return;
   }
 
-  var label = $("hsave").textContent;
   var note = $("hnoteBox").style.display === "none" ? "" : $("hnote").value.trim();
+  var rlm = String(value).trim().match(LEAVE_RX);
+  if (rlm && (rlm[1] === "연차" || rlm[1] === "공가") && $("hrangeRow").style.display !== "none" && $("hrng").checked) {   // 📅 여러 날 한 번에
+    doRangeSave(rlm[1], note || rlm[2] || "", H.confirm || !!force); return;
+  }
+  var label = $("hsave").textContent;
   var leave = "";
   var lo = hMonthInfo(date).leaveOnly;
   if (lo && value !== "__CLEAR__" && !LEAVE_RX.test(String(value).trim())) {
@@ -9113,10 +9223,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-08-5";
+var APP_VER = "2026-11-09-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-09-2", ["근무시간: 탭을 열거나 앱으로 돌아오면 바뀐 값을 알아서 새로 불러와요 (새로고침 안 눌러도 돼요)"]],
+  ["2026-11-09-1", ["근무시간: 연차 · 공가를 여러 날 한 번에 넣을 수 있어요 (주말 · 공휴일은 자동으로 빼요)", "근무시간: 시트에서 바로 적은 값도 앱에 바로 보여요"]],
   ["2026-11-08-5", []],
   ["2026-11-08-4", []],
   ["2026-11-08-3", []],
@@ -9557,7 +9669,7 @@ function refreshIfStale() {
   if (cur === 7) loadInsp(false); else if (cur === 8) loadNc(false); else setTimeout(qPrefetch, 4000);   // 수입검사·부적합도 최신으로
   if (cur === 4) loadLeave(false);
   else if (cur === 5) loadStats(false);
-  else if (cur === 3 && !H.busy && !hoursLock()) loadHoursMeta(true);
+  else if (cur === 3 && !H.busy && !hoursLock() && Date.now() - (H.metaAt || 0) > 60000) loadHoursMeta(true);   // 방금 자동 새로고침했으면 또 안 부름
   if (dayChanged) toast("📅 날짜가 바뀌어서 오늘 기준으로 새로 불러왔어요");
 }
 
@@ -9592,7 +9704,21 @@ $("chggo").onclick = function () {
   }, function (e) { b.disabled = false; toast("⚠️ 새로고침 실패: " + errText(e), true); });
 };
 
-function onResume() { try { chgCheck(); } catch (eC) {} checkUpdate(); try { relCheck(); } catch (eR) {} refreshIfStale(); try { adminUI(); } catch (e) {} try { pushBar(); } catch (e2) {} }
+/* 🔄 근무시간 자동 새로고침 (2026-11-09)
+ *  시트(PC)에서 고친 값도 따로 새로고침 안 눌러도 보이게: 근무시간 탭에 들어올 때 · 앱으로 돌아올 때 · 탭을 보고 있는 동안 3분마다
+ *  - 마지막으로 불러온 지 1분 안이면 안 함 · 입력 중(칸에 값 있음 · 덮어쓰기 확인 중 · 저장 중)이면 안 함
+ *  - 서버는 캐시에서 바로 줌 (시트에서 고쳤을 때만 시트를 새로 읽음) · 내 화면 값이 바뀌었으면 초록 알림 */
+function hSig() { try { return JSON.stringify(H.meta && H.meta.grid && H.meta.grid.rows || null); } catch (e) { return ""; } }
+function hAutoRefresh() {
+  if (cur !== 3 || document.hidden || H.busy || !H.loaded || hoursLock()) return;
+  if (String($("hval").value || "").trim() || H.confirm) return;
+  if (Date.now() - (H.metaAt || 0) < 60000) return;
+  var sig = hSig();
+  var p = loadHoursMeta(true);
+  if (p && p.then) p.then(function () { var s2 = hSig(); if (sig && s2 && s2 !== sig) toast("🔄 근무시간이 바뀌어서 새로 반영했어요"); });
+}
+setInterval(hAutoRefresh, 180000);
+function onResume() { try { chgCheck(); } catch (eC) {} checkUpdate(); try { relCheck(); } catch (eR) {} try { hAutoRefresh(); } catch (eH) {} refreshIfStale(); try { adminUI(); } catch (e) {} try { pushBar(); } catch (e2) {} }
 document.addEventListener("visibilitychange", function () { if (!document.hidden) onResume(); });
 window.addEventListener("pageshow", function (e) { if (e.persisted) onResume(); });
 window.addEventListener("focus", onResume);
