@@ -2673,7 +2673,7 @@ var SPX = (function () {
     var cs = getComputedStyle(root), g = function (k) { return cs.getPropertyValue(k).trim(); };
     return { ink: g("--ink"), sub: g("--sub"), a1: g("--a1"), a3: g("--a3"), ok: g("--ok"), warn: g("--warn"), bg: g("--bg") };
   }
-  var VAR = 0, run = 0;
+  var VAR = 0, run = 0, CUR = null, PROG = 0;   // ⏱ 지금 그리는 시작 화면 · 실제로 그린 시간 (닫는 시점 맞추기용)
   function pick() {
     if (VAR) return VAR;
     var n = 1;
@@ -2951,20 +2951,23 @@ var SPX = (function () {
       if (!svg) return;
       var v = pick(), DK = dark(), T = tok(root), S = v === 1 ? build1(svg, T, DK) : build2(svg, T, DK), draw = v === 1 ? draw1 : draw2;
       var my = ++run, t0 = 0, END = 4400;
+      CUR = root; PROG = 0;
       var still = false; try { still = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
-      if (still) { draw(S, T, DK, END); return; }
+      if (still) { draw(S, T, DK, END); PROG = END; return; }
       draw(S, T, DK, 0);
       (function f() {
         if (my !== run || !root.isConnected || root.style.display === "none") return;   // 다시 시작했거나 닫힘 → 멈춤
         if (document.hidden) { requestAnimationFrame(f); return; }                      // 안 보이는 동안은 시간도 멈춤
         var now = performance.now(); if (!t0) t0 = now;
         var t = Math.min(END, now - t0);
-        draw(S, T, DK, t);
+        draw(S, T, DK, t); PROG = t;
         if (t < END) requestAnimationFrame(f);
       })();
     } catch (e) { try { document.documentElement.classList.remove("spx", "spx1", "spx2"); } catch (e2) {} }   // 문제 생기면 예전 시작 화면으로
   }
-  return { start: start };
+  // ⏱ 이 시작 화면이 지금까지 실제로 그려진 시간 (ms) · 이 화면을 안 그리는 중이면 null
+  function progOf(node) { return CUR && node === CUR ? PROG : null; }   // (이름 겹치지 않게 · 위에 el = 요소 찾기)
+  return { start: start, prog: progOf };
 })();
 SPX.start();
 </script>
@@ -9588,10 +9591,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-09-15";
+var APP_VER = "2026-11-09-16";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-09-16", ["시작 화면: 웨이퍼 화면이 끝까지 다 나온 다음에 메인으로 넘어가요"]],
   ["2026-11-09-15", ["PC 시트에서 근무시간을 고쳐도 위에 초록 알림이 떠요 (새로고침 누르면 바로 반영)"]],
   ["2026-11-09-14", ["시작 화면: 새 웨이퍼 화면으로 바뀌었어요 (켤 때 흔들림 · 위쪽 색 차이도 고쳤어요)"]],
   ["2026-11-09-13", ["시작 화면: 회로가 이어지며 칩이 켜지는 새 화면으로 바뀌었어요"]],
@@ -11966,6 +11970,7 @@ document.addEventListener("visibilitychange", function () {
   var n = s.cloneNode(true); n.className = ""; n.style.display = "";
   var w0 = s.querySelector("#splwait"), w1 = n.querySelector("#splwait"); if (w0 && w1) w1.className = w0.className;
   s.parentNode.replaceChild(n, s);
+  try { if (window.SPX) SPX.start(n); } catch (eS) {}   // 💿 웨이퍼도 처음부터 다시 (예전엔 멈춘 그림으로 남았음)
   SPL.vt = 0; requestAnimationFrame(function () { requestAnimationFrame(function () { SPL.vt = Date.now(); }); });
 });
 // 🎬 시작 화면 애니메이션이 실제로 돈 시간 (ms) — 웨이퍼 회전의 진짜 재생 시간과 화면에 보인 시간 중 작은 쪽
@@ -11975,6 +11980,9 @@ function splEl(node, t0) {
     var sp = node && node.querySelector(".spin"), an = sp && sp.getAnimations ? sp.getAnimations() : [];
     for (var i = 0; i < an.length; i++) if (an[i].animationName === "sxSpin" && an[i].currentTime != null) a = an[i].currentTime;
   } catch (e) {}
+  // 💿 2026-11-09: 웨이퍼 화면은 첫 장면을 그린 순간부터 4.4초를 셈 (폰이 앱을 준비하느라 첫 장면이 늦게 그려지면 끝나기 전에 닫히던 것 고침)
+  //    · 혹시 그리기가 멈춰도 8초 지나면 예전처럼 시간으로만 닫음
+  try { var p = window.SPX && SPX.prog ? SPX.prog(node) : null; if (p != null && v < 8000) a = Math.min(a, p); } catch (e2) {}
   return Math.min(v, a);
 }
 var SPL_MIN = 4400;   // 🎬 시작 화면은 딱 4.4초 (AI 반도체 · 크리스마스 둘 다)
