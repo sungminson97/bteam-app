@@ -2190,8 +2190,10 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #srch .sbar{flex:1;max-width:120px;height:6px;border-radius:999px;background:color-mix(in srgb,var(--text) 9%,transparent);overflow:hidden}
 #srch .sbar u{display:block;height:100%;border-radius:999px;background:var(--sub)}
 #srch .sn{flex:none;font-size:11.5px;font-weight:800;color:var(--sub)}
-#srch .sloc{flex:none;margin-left:auto;font-size:13px;font-weight:900;color:var(--text)}
-#srch .sloc.none{font-weight:700;color:var(--sub)}
+#srch .sloc{flex:none;margin-left:auto;display:inline-flex;align-items:baseline;gap:5px;padding:3px 10px;border-radius:8px;background:color-mix(in srgb,var(--text) 6%,transparent)}
+#srch .sloc i{font-style:normal;font-size:11.5px;font-weight:800;color:var(--sub)}
+#srch .sloc b{font-size:14px;font-weight:900;color:var(--text)}
+#srch .sloc.none b{font-size:12.5px;font-weight:800;color:var(--sub)}
 #srch .prn.p2{background:#f59e0b}
 #srch .prn.p3{background:var(--accent)}
 #srch .prn.p0{background:var(--sub)}
@@ -8294,9 +8296,8 @@ function renderPr(box, idx, today) {
     if (si >= 0) pill.style.setProperty("--c", SC[si] || "#94a3b8");
     r2.appendChild(pill);
     var bar = el("span", "sbar"), u = el("u"); u.style.width = Math.round((si + 1) / st.length * 100) + "%"; if (si >= 0) u.style.background = SC[si]; bar.appendChild(u); r2.appendChild(bar);
-    r2.appendChild(el("span", "sn", (si + 1) + "/" + st.length));
     var lm = String(r[4] || "").match(/\(동탄\)\s*\(([^)]+)\)/), loc = lm ? lm[1].replace(/-/g, "") : "";
-    r2.appendChild(el("span", "sloc" + (loc ? "" : " none"), loc || "미배정"));
+    var lc = el("span", "sloc" + (loc ? "" : " none")); lc.appendChild(el("i", null, "자리")); lc.appendChild(el("b", null, loc || "미배정")); r2.appendChild(lc);
     c.appendChild(r2);
     var ven = r[8] || "", who = String(r[2] || "").split(" · ").filter(function (t) { return t && t !== ven; }).join(" · ");
     var r3 = el("div", "r3");
@@ -8318,7 +8319,7 @@ function renderPr(box, idx, today) {
     var noPr = FLT.pr > 1 && !(idx.rows || []).some(function (r) { return r.length > 10; });
     box.appendChild(el("div", "msg", SR.loading ? "장비 목록 받는 중…" : noPr ? "PR." + FLT.pr + "는 서버를 새 버전으로 배포한 뒤부터 보여요." : "조건에 맞는 장비가 없어요."));
   }
-  box.appendChild(el("div", "hint", "Backlog 'PR.' 열 기준 · A팀 장비는 빼요 · 색 = 지금 공정 · 막대 = 11개 공정 중 어디까지 · 누르면 공정별 날짜 · " + (idx.built || "") + " 기준"));
+  box.appendChild(el("div", "hint", "Backlog 'PR.' 열 기준 · A팀 장비는 빼요 · 색 = 지금 공정 · 막대 = 진행 정도 · 누르면 공정별 날짜 · " + (idx.built || "") + " 기준"));
 }
 
 // 🚨 긴급 장비(PR. = 1): 장비명만 빨간색, 목록 맨 위로
@@ -9462,10 +9463,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-09-10";
+var APP_VER = "2026-11-09-11";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-09-11", ["장비 검색: 필터 목록에서 장비 자리가 더 잘 보여요"]],
   ["2026-11-09-10", ["장비 검색: '필터로 보기'에서 동탄 장비를 우선순위(PR)별로 출하 빠른 순 목록으로 볼 수 있어요 (누르면 공정별 날짜)"]],
   ["2026-11-09-9", []],
   ["2026-11-09-8", []],
