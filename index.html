@@ -1610,6 +1610,10 @@ body.kb #tabbar{transform:translateY(140%)}
 #leave .card.lv .lvrow span{padding:9px 11px;border-radius:13px;font-size:11.5px}
 #leave .card.lv .lvrow b{font-size:18px}
 #leave .card.lv .lvsub{grid-column:2;grid-row:3;margin-top:9px}
+#leave .card.lv .lvnew{grid-column:1/-1;margin-top:12px;padding:10px 12px;border-radius:13px;font-size:12px;font-weight:600;line-height:1.5;color:var(--sub);background:color-mix(in srgb,var(--accent) 5%,var(--bg));word-break:keep-all}
+#leave .card.lv .lvnew span{display:block}
+#leave .card.lv .lvnew .nx{margin-top:3px;color:var(--text)}
+#leave .card.lv .lvnew .nx b{color:var(--accent);font-weight:800}
 #leave .card.lv .lvtog{grid-column:1/-1;display:block;margin-top:14px;padding:12px;border-radius:15px;text-align:center;font-size:14px;font-weight:800;color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--bg));cursor:pointer}
 #leave .card.lv .lvdays{grid-column:1/-1}
 #leave .card.lv.me .hd .ttl::after{content:"나";margin-left:8px;font-size:11px;font-weight:800;color:#fff;background:var(--grd);padding:2px 8px;border-radius:999px;vertical-align:3px}
@@ -7263,6 +7267,19 @@ function renderLeaveCal(box, d) {
   box.appendChild(det);
 }
 
+// 🗓 2026-11-10 입사 1년 미만 → "입사일 기준 한 달마다 연차 1개" + 다음 생기는 날 (입사일이 31일이면 그 달 마지막 날)
+function lvNewNote(hire) {
+  var m = String(hire || "").match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if (!m) return "";
+  var y = +m[1], mo = +m[2] - 1, d = +m[3];
+  var at = function (k) { var last = new Date(y, mo + k + 1, 0).getDate(); return new Date(y, mo + k, Math.min(d, last)); };
+  var now = new Date(), t = new Date(now.getFullYear(), now.getMonth(), now.getDate()), one = at(12);
+  if (t >= one || t < at(0)) return "";
+  var nx = null; for (var k = 1; k < 12; k++) { var x = at(k); if (x >= t) { nx = x; break; } }
+  var w = el("div", "lvnew");
+  w.appendChild(el("span", null, "입사 1년 미만 근무자는 입사일 기준 매월 연차 1일이 발생합니다"));
+  if (nx) { var n2 = el("span", "nx", "다음 발생일 "); n2.appendChild(el("b", null, (nx.getMonth() + 1) + "/" + nx.getDate() + (+nx === +t ? " (오늘)" : ""))); w.appendChild(n2); }
+  return w;
+}
 function renderLeave(d) {
   var box = $("leave");
   box.innerHTML = "";
@@ -7316,6 +7333,7 @@ function renderLeave(d) {
     if (p.hire) sub.push("입사 " + p.hire);
     if (p.tenure) sub.push(p.tenure);
     if (sub.length) card.appendChild(el("div", "lvsub", sub.join(" · ")));
+    var nw = lvNewNote(p.hire); if (nw) card.appendChild(nw);   // 🗓 2026-11-10 입사 1년 미만: 한 달마다 연차 1개
 
     // 누르면 연차 쓴 날짜 펼치기
     if (p.days) {
@@ -9730,10 +9748,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-10-6";
+var APP_VER = "2026-11-10-7";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-10-7", ["연차: 입사 1년 미만 근무자는 매월 연차 발생 안내와 다음 발생일이 표시됩니다"]],
   ["2026-11-10-6", ["입고: 장비 이름이 Backlog처럼 EFEM · PROCESS까지 붙어서 보여요 (CJ07-132 EFEM처럼, 둘 다 있으면 따로 나와요)"]],
   ["2026-11-10-5", ["입고: 장비를 찾을 때도 · 고른 뒤에도 TYPE이 보여요 (EFEM · PROCESS처럼 탭이 여러 개면 눌러서 그 TYPE 품목만)"]],
   ["2026-11-10-4", ["입고: 장비를 고르면 정렬 옆 [3공장] [1공장]으로 불출 품목만 걸러 볼 수 있어요 (자재팀 시트 규격명 기준 · 한 번 더 누르면 해제)"]],
