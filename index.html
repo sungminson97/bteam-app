@@ -2513,7 +2513,10 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #mat .mtf button{height:38px;border:0;border-radius:10px;background:transparent;color:var(--sub);font:inherit;font-size:13px;font-weight:800;white-space:nowrap}
 #mat .mtf button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.06)}
 #mat .mtw{display:grid;gap:12px}
-#mat .mto{display:flex;align-items:center;gap:6px}
+#mat .mto{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+#mat .mto>button{padding:0 10px}
+#mat .mto .mfac{display:flex;gap:5px;margin-left:auto}
+#mat .mto .mfac button{padding:0 9px}
 #mat .mto span{font-size:12px;font-weight:800;color:var(--sub);margin-right:2px}
 #mat .mto button{height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:800}
 #mat .mto button.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--card))}
@@ -5770,11 +5773,12 @@ function ocrLabel(shot, v) {
  *  장비 고르기 → 그 장비 탭을 서버가 바로 읽어 줌 (2분 기억) · 업체별로 묶어서 발주 · 입고 · 3공장 · 1공장 수량
  *  행 = [납기예정일, 상위품목, 상위품목명, 거래처, 품목, 품목명, 규격명, 발주, 입고, 3공장, 1공장, 발주번호]
  */
-var MT = { list: null, ld: false, prj: "", data: {}, q: "", f: "all", s: "", o: "due", err: "" };
+var MT = { list: null, ld: false, prj: "", data: {}, q: "", f: "all", s: "", o: "due", err: "", fac: "" };
 function mtDk(s) { s = String(s || ""); var e = s.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+(\d{1,2})\s+(\d{4})/i); if (e) return e[3] + ("0" + ("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(e[1].slice(0, 1).toUpperCase() + e[1].slice(1, 3).toLowerCase()) / 3 + 1)).slice(-2) + ("0" + e[2]).slice(-2); var m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? m[1] + ("0" + m[2]).slice(-2) + ("0" + m[3]).slice(-2) : "99999999"; }
 function mtNum(x) { var n = parseFloat(String(x == null ? "" : x).replace(/,/g, "")); return isNaN(n) ? 0 : n; }
 function mtDue(s) { s = String(s || ""); var e = s.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+(\d{1,2})/i); if (e) return ("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(e[1].slice(0, 1).toUpperCase() + e[1].slice(1, 3).toLowerCase()) / 3 + 1) + "/" + (+e[2]); var m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? (+m[2]) + "/" + (+m[3]) : s; }
 function mtOut(r) { return /외주\s*조립/.test(r[6] || ""); }
+function mtFac(r, k) { return String(r[6] || "").indexOf(k) >= 0; }   // 🏭 2026-11-10 규격명 (3공장) · (1공장)
 function mtVen(v) { return String(v || "").replace(/\(주\)|㈜|주식회사|\s+/g, " ").replace(/\s+/g, " ").trim(); }
 function loadMatList(force) {
   if (MT.ld && !force) return Promise.resolve();
@@ -5942,9 +5946,22 @@ function renderMat() {
   var ob = el("div", "mto"); ob.appendChild(el("span", null, "정렬"));
   [["due", "납기순"], ["ven", "업체순"], ["pn", "품목순"]].forEach(function (o) {
     var b = el("button", MT.o === o[0] ? "on" : "", o[1]); b.type = "button";
-    b.onclick = function () { MT.o = o[0]; [].forEach.call(ob.querySelectorAll("button"), function (c) { c.className = ""; }); b.className = "on"; try { sset("matSort", o[0]); } catch (e) {} draw(); };
+    b.onclick = function () { MT.o = o[0]; [].forEach.call(ob.children, function (c) { if (c.tagName === "BUTTON") c.className = ""; }); b.className = "on"; try { sset("matSort", o[0]); } catch (e) {} draw(); };
     ob.appendChild(b);
   });
+  // 🏭 2026-11-10: 정렬 옆 — 3공장 · 1공장 불출만 (규격명 기준 · 다시 누르면 해제 · 위 거르기와 같이 씀)
+  var n3 = R.filter(function (r) { return mtFac(r, "3공장"); }).length, n1 = R.filter(function (r) { return mtFac(r, "1공장"); }).length;
+  if ((MT.fac === "3공장" && !n3) || (MT.fac === "1공장" && !n1)) MT.fac = "";
+  if (n3 || n1) {
+    var fw = el("div", "mfac");
+    [["3공장", n3], ["1공장", n1]].forEach(function (o) {
+      if (!o[1]) return;
+      var b = el("button", MT.fac === o[0] ? "on" : "", o[0]); b.type = "button";
+      b.onclick = function () { MT.fac = MT.fac === o[0] ? "" : o[0]; [].forEach.call(fw.children, function (c) { c.className = ""; }); if (MT.fac) b.className = "on"; draw(); };
+      fw.appendChild(b);
+    });
+    ob.appendChild(fw);
+  }
   box.appendChild(ob);
   var wrap = el("div", "mtw"); box.appendChild(wrap);
   var draw = function () {
@@ -5954,6 +5971,7 @@ function renderMat() {
       if (MT.f === "wait" && !(mtNum(r[8]) < mtNum(r[7]))) return false;
       if (MT.f === "out" && !mtOut(r)) return false;
       if (MT.f === "noout" && mtOut(r)) return false;
+      if (MT.fac && !mtFac(r, MT.fac)) return false;   // 🏭 3공장 · 1공장 불출만
       if (!ws.length) return true;
       var t = (r[4] + " " + r[5] + " " + r[3] + " " + r[6]).toUpperCase();
       return ws.every(function (w) { return t.indexOf(w) >= 0; });
@@ -9664,10 +9682,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-10-3";
+var APP_VER = "2026-11-10-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-10-4", ["입고: 장비를 고르면 정렬 옆 [3공장] [1공장]으로 불출 품목만 걸러 볼 수 있어요 (자재팀 시트 규격명 기준 · 한 번 더 누르면 해제)"]],
   ["2026-11-10-3", ["주 52시간: 휴가 날은 '연차' · '오전반'처럼 이름만 보여요 (자세한 건 달력에서 그 날을 누르면 아래에 나와요)"]],
   ["2026-11-10-2", ["장비 검색: 장비를 누르면 가공업체 · 하네스업체도 보여요"]],
   ["2026-11-10-1", ["근무시간: 이번 달 입력 내역(달력)을 접었다 펼 수 있어요 (처음엔 접혀 있어요 · 제목을 누르면 펼쳐져요)", "근무시간: 팀원들이 오늘 몇 시간 입력했는지 한눈에 볼 수 있어요 (위쪽 '오늘 팀 입력' · 이름을 누르면 그 사람 달력)"]],
