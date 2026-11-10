@@ -5800,6 +5800,10 @@ function mtTypeOf(p) {
   if (!a.length) { try { var k = nfPrjKey(p), rr = (SR.idx && SR.idx.rows) || []; for (var j = 0; j < rr.length; j++) { var nk = nfPrjKey(rr[j][0]); if ((nk === k || nk.indexOf(k) === 0 && /^(EFEM|PROCESS)/.test(nk.slice(k.length))) && rr[j][1] && a.indexOf(rr[j][1]) < 0) a.push(String(rr[j][1])); } } catch (e) {} }
   return a.join(" / ");
 }
+// 🏷 2026-11-10: Backlog처럼 장비명 뒤에 EFEM · PROCESS ("CJ07-132" + "12CH-S-L3 EFEM" → "CJ07-132 EFEM")
+function mtName(p, t) { var m = String(t || "").match(/\b(EFEM|PROCESS)\s*$/i); return m && !new RegExp("\\b" + m[1] + "\\b", "i").test(p) ? p + " " + m[1].toUpperCase() : p; }
+// 🏷 검색 목록 칸: TYPE 하나당 한 칸 [이름, 장비, TYPE]
+function mtEntries(p) { var ty = mtTypeOf(p), a = ty ? ty.split(" / ") : [""]; return a.map(function (t) { return [a.length > 1 || t ? mtName(p, t) : p, p, t]; }); }
 function mtFac(r, k) { return String(r[6] || "").indexOf(k) >= 0; }   // 🏭 2026-11-10 규격명 (3공장) · (1공장)
 function mtVen(v) { return String(v || "").replace(/\(주\)|㈜|주식회사|\s+/g, " ").replace(/\s+/g, " ").trim(); }
 function loadMatList(force) {
@@ -5829,8 +5833,8 @@ function loadMatTab(prj, force, hard) {
     if (cur === 9 && MT.prj === prj) renderMat();
   }).catch(function (e) { if (d && d.rows) { d.ld = false; d.t = Date.now(); } else MT.data[prj] = { err: errText(e) }; if (cur === 9 && MT.prj === prj) renderMat(); return errText(e); });
 }
-function openMat(prj) {
-  MT.prj = prj; MT.f = "all"; MT.s = ""; MT.tab = ""; try { MT.o = sget("matSort") || "due"; } catch (e) {}
+function openMat(prj, ty) {
+  MT.prj = prj; MT.f = "all"; MT.s = ""; MT.tab = ""; MT.tabT = ty || ""; try { MT.o = sget("matSort") || "due"; } catch (e) {}
   try { var rc = JSON.parse(sget("matRecent") || "[]").filter(function (x) { return x !== prj; }); rc.unshift(prj); sset("matRecent", JSON.stringify(rc.slice(0, 6))); } catch (e) {}
   try { var mc = JSON.parse(sget("matCnt") || "{}"); mc[prj] = (mc[prj] || 0) + 1; sset("matCnt", JSON.stringify(mc)); } catch (e) {}   // 🧠 자주 여는 장비
   loadMatTab(prj, false); renderMat(); window.scrollTo(0, 0);
@@ -5879,7 +5883,7 @@ function renderMat() {
     };
     var card = function (p, tag, sub) {
       var b = el("button", "mtc"); b.type = "button";
-      var t = el("div", "mtct"); t.appendChild(el("b", null, p)); if (tag) t.appendChild(el("i", null, tag));
+      var t = el("div", "mtct"), en = mtEntries(p); t.appendChild(el("b", null, en.length === 1 ? en[0][0] : p)); if (tag) t.appendChild(el("i", null, tag));
       var dd = MT.data[p]; if (dd && dd.rows && dd.t && Date.now() - dd.t < 15 * 60000) t.appendChild(el("i", "fast", "⚡ 바로"));   // 🧠 미리 받아 둠
       b.appendChild(t);
       var s = sum(p);
@@ -5929,14 +5933,15 @@ function renderMat() {
       lst.style.display = k ? "" : "none";
       if (!k) { drawHome(); return; }
       if (!MT.list) { lst.appendChild(MT.err ? el("div", "msg", MT.err) : mtLoading("")); return; }
-      var L = MT.list.filter(function (p) { return nfPrjKey(p).indexOf(k) >= 0; });
+      var L = MT.list.filter(function (p) { return nfPrjKey(p).indexOf(k) >= 0 || k.indexOf(nfPrjKey(p)) === 0; });
       if (!L.length) { lst.appendChild(el("div", "msg", "'" + MT.q + "' 장비가 없어요")); return; }
       L = L.map(function (p, i) { return [p, i, nfPrjKey(p).indexOf(k)]; }).sort(function (a, b) { return a[2] - b[2] || (MC[b[0]] || 0) - (MC[a[0]] || 0) || a[1] - b[1]; }).map(function (x) { return x[0]; });
-      L.slice(0, 40).forEach(function (p) { var b = el("button", null), ty = mtTypeOf(p); b.type = "button"; b.appendChild(el("b", null, p)); if (ty) { b.className = "ty"; ty.split(" / ").forEach(function (t) { b.appendChild(el("small", null, t)); }); } b.onclick = function () { openMat(p); }; lst.appendChild(b); });   // 🏷 장비명 + TYPE
+      var E = []; L.slice(0, 40).forEach(function (p) { mtEntries(p).forEach(function (x) { if (nfPrjKey(x[0]).indexOf(k) >= 0 || nfPrjKey(p).indexOf(k) >= 0) E.push(x); }); });
+      E.forEach(function (x) { var b = el("button", null); b.type = "button"; b.appendChild(el("b", null, x[0])); if (x[2]) { b.className = "ty"; b.appendChild(el("small", null, x[2])); } b.onclick = function () { openMat(x[1], x[2]); }; lst.appendChild(b); });   // 🏷 Backlog처럼 장비명(EFEM · PROCESS) + TYPE, TYPE마다 한 칸
       if (L.length > 40) lst.appendChild(el("div", "hint", "외 " + (L.length - 40) + "대 · 더 쳐서 좁혀 주세요"));
     };
     inp.oninput = function () { MT.q = inp.value; draw(); };
-    inp.onkeydown = function (e) { if (e.key === "Enter") { var k = nfPrjKey(MT.q), L = (MT.list || []).filter(function (p) { return nfPrjKey(p).indexOf(k) >= 0; }); if (L.length === 1) openMat(L[0]); } };
+    inp.onkeydown = function (e) { if (e.key === "Enter") { var k = nfPrjKey(MT.q), E = []; (MT.list || []).forEach(function (p) { if (nfPrjKey(p).indexOf(k) >= 0 || k.indexOf(nfPrjKey(p)) === 0) mtEntries(p).forEach(function (x) { if (nfPrjKey(x[0]).indexOf(k) >= 0 || nfPrjKey(p).indexOf(k) >= 0) E.push(x); }); }); if (E.length === 1) openMat(E[0][1], E[0][2]); } };
     draw();
     if (!MT.ld && !MT.lt) loadMatList(false);
     return;
@@ -5952,9 +5957,10 @@ function renderMat() {
   }
   $("upd").textContent = (d.at ? d.at + " 기준" : "") + (d.ld ? " · 새로 확인 중…" : "");
   var R = d.rows, nOut = R.filter(mtOut).length, nWait = R.filter(function (r) { return mtNum(r[8]) < mtNum(r[7]); }).length;
-  box.appendChild(heroX(MT.prj, R.length, "품목", [["입고 완료", R.length - nWait, "건"], ["미입고", nWait, "건", nWait > 0], ["외주조립", nOut, "건"]]));
-  // 🏷 TYPE (자재팀 탭) — 탭이 여러 개(EFEM · PROCESS 등)면 눌러서 그 TYPE 품목만
   var TB = (d.tabs || []).map(function (t) { return mtTabInfo(t, MT.prj); }), hasIx = R.some(function (r) { return r[11] !== "" && r[11] != null; });
+  if (MT.tabT) { if (TB.length > 1 && hasIx) for (var ti = 0; ti < TB.length; ti++) if (TB[ti].t === MT.tabT) { MT.tab = String(ti); break; } MT.tabT = ""; }   // 🏷 검색에서 고른 TYPE으로 바로
+  box.appendChild(heroX(TB.length === 1 ? mtName(MT.prj, TB[0].t) : MT.prj, R.length, "품목", [["입고 완료", R.length - nWait, "건"], ["미입고", nWait, "건", nWait > 0], ["외주조립", nOut, "건"]]));
+  // 🏷 TYPE (자재팀 탭) — 탭이 여러 개(EFEM · PROCESS 등)면 눌러서 그 TYPE 품목만
   if (MT.tab !== "" && (!hasIx || !TB[+MT.tab])) MT.tab = "";
   if (TB.length) {
     var tw = el("div", "mtty");
@@ -9724,10 +9730,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-10-5";
+var APP_VER = "2026-11-10-6";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-10-6", ["입고: 장비 이름이 Backlog처럼 EFEM · PROCESS까지 붙어서 보여요 (CJ07-132 EFEM처럼, 둘 다 있으면 따로 나와요)"]],
   ["2026-11-10-5", ["입고: 장비를 찾을 때도 · 고른 뒤에도 TYPE이 보여요 (EFEM · PROCESS처럼 탭이 여러 개면 눌러서 그 TYPE 품목만)"]],
   ["2026-11-10-4", ["입고: 장비를 고르면 정렬 옆 [3공장] [1공장]으로 불출 품목만 걸러 볼 수 있어요 (자재팀 시트 규격명 기준 · 한 번 더 누르면 해제)"]],
   ["2026-11-10-3", ["주 52시간: 휴가 날은 '연차' · '오전반'처럼 이름만 보여요 (자세한 건 달력에서 그 날을 누르면 아래에 나와요)"]],
