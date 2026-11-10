@@ -515,6 +515,23 @@ li:first-child{border-top:0}
 .unl .row button{padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font-weight:700;font-family:inherit}
 .psl{display:grid;gap:10px;font-size:14px}
 /* 팀원 관리 (관리자) */
+#eqov .ei .b .rt{display:flex;align-items:center;gap:8px;flex:none;min-width:0}
+#eqov .ei .b .vd{flex:none;font-size:12.5px;font-weight:800;color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent);padding:3px 9px;border-radius:999px;white-space:nowrap}
+.rsl .ro{opacity:.78}
+.rsl .ro .st{background:var(--line);color:var(--sub)}
+.rsl .me .st{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+#rsprog{display:grid;gap:7px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--bg);font-size:13px;line-height:1.45}
+#rsprog:empty{display:none}
+#rsprog .h{font-weight:800;color:var(--text)}
+#rsprog .s{display:flex;justify-content:space-between;gap:10px;color:var(--sub)}
+#rsprog .s b{flex:none;font-weight:800}
+#rsprog .s b.ok{color:var(--ok)} #rsprog .s b.bad{color:var(--warn)} #rsprog .s b.wait{color:var(--accent)}
+#rsprog .d{font-size:12px;color:var(--warn);white-space:pre-line;word-break:keep-all}
+#rsdc{display:grid;gap:10px;padding:14px;border-radius:14px;border:1.5px solid color-mix(in srgb,var(--warn) 45%,var(--line));background:color-mix(in srgb,var(--warn) 6%,var(--bg))}
+#rsdc p{margin:0;font-size:13.5px;line-height:1.5;color:var(--text);word-break:keep-all}
+#rsdc .bt{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#rsdc button{padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-weight:800;font-size:14px}
+#rsdc button.x{background:var(--warn);border-color:var(--warn);color:#fff}
 .rsl{display:grid;gap:8px}
 .rsl button{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-family:inherit;text-align:left}
 .rsl b{font-size:15.5px;font-weight:800;display:block}
@@ -1868,7 +1885,7 @@ html.spx:not(.xmas) #splash{--ink:#111a2b;--sub:#6b7689;--a1:#2f6fed;--a3:#12c6e
 @media (prefers-color-scheme:dark){html.spx:not(.xmas) #splash{--ink:#eef2f8;--sub:#8a96ab;--a1:#6f9dff;--a3:#2ee6ff;--ok:#4ade80;--warn:#fbbf24;--bg:#070a12}}
 html.spx:not(.xmas) #splash .bgx,html.spx:not(.xmas) #splash .scene,html.spx:not(.xmas) #splash .tx,html.spx:not(.xmas) #splash .pts,html.spx:not(.xmas) #splash .det,html.spx:not(.xmas) #splash .hud{display:none!important}
 html.spx:not(.xmas) #spx{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;font-family:inherit}
-html.spx.spx2:not(.xmas) #splash .ft{display:none}
+html.spx.spx2:not(.xmas) #splash .ft,html.spx.spx1:not(.xmas) #splash .ft{display:none}
 html.spx:not(.xmas) #splash .spxcr{display:block;position:absolute;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));text-align:center;font-size:9px;font-weight:700;letter-spacing:.22em;color:var(--sub);opacity:0;animation:sxSoft .8s ease 2.4s forwards;pointer-events:none}
 /* ===================== 🎄 크리스마스 테마 (html.xmas · 12/1~25) ===================== */
 .xsnow,#xsnow,.xscene,.xbok,.xmc,#xgar{display:none}
@@ -2689,7 +2706,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 <body>
 <div id="splash"><div class="bgx"></div><div class="xbok" aria-hidden="true"><i style="left:62%;top:79%;--bs:109px;--bc:#ff9f43;--bd:8.5s;--bo:0.28"></i><i style="left:28%;top:73%;--bs:110px;--bc:#ffd166;--bd:6.5s;--bo:0.23"></i><i style="left:16%;top:76%;--bs:55px;--bc:#ff9f43;--bd:10.8s;--bo:0.29"></i><i style="left:83%;top:28%;--bs:51px;--bc:#ff3b55;--bd:6.3s;--bo:0.21"></i><i style="left:35%;top:11%;--bs:109px;--bc:#3ddc97;--bd:8.2s;--bo:0.32"></i><i style="left:71%;top:37%;--bs:87px;--bc:#ff9f43;--bd:6.0s;--bo:0.19"></i><i style="left:88%;top:43%;--bs:102px;--bc:#ff3b55;--bd:9.5s;--bo:0.23"></i><i style="left:34%;top:73%;--bs:86px;--bc:#ff3b55;--bd:6.4s;--bo:0.31"></i><i style="left:56%;top:21%;--bs:87px;--bc:#ff9f43;--bd:6.3s;--bo:0.18"></i></div><div class="xsnow" aria-hidden="true"><i style="left:27%;--sz:5.0px;--du:6.5s;--de:-1.4s;--sw:-23px;--op:0.76"></i><i style="left:90%;--sz:3.9px;--du:7.9s;--de:-3.2s;--sw:-22px;--op:0.63"></i><i style="left:25%;--sz:4.4px;--du:7.3s;--de:-5.7s;--sw:-9px;--op:0.69"></i><i class="f" style="left:39%;--sz:3.3px;--du:8.8s;--de:-2.9s;--sw:0px;--op:0.55"></i><i style="left:15%;--sz:5.3px;--du:6.1s;--de:-0.8s;--sw:19px;--op:0.80"></i><i class="f" style="left:7%;--sz:2.1px;--du:10.3s;--de:-4.8s;--sw:5px;--op:0.41"></i><i class="f" style="left:71%;--sz:2.5px;--du:9.8s;--de:-1.9s;--sw:6px;--op:0.46"></i><i class="f" style="left:93%;--sz:2.5px;--du:9.8s;--de:-7.5s;--sw:0px;--op:0.46"></i><i style="left:14%;--sz:4.8px;--du:6.8s;--de:-2.7s;--sw:-13px;--op:0.74"></i><i class="f" style="left:75%;--sz:1.6px;--du:11.0s;--de:-3.3s;--sw:-25px;--op:0.35"></i><i class="f" style="left:50%;--sz:2.6px;--du:9.6s;--de:-9.6s;--sw:12px;--op:0.48"></i><i style="left:12%;--sz:4.7px;--du:6.8s;--de:-0.3s;--sw:-17px;--op:0.74"></i><i class="f" style="left:33%;--sz:2.6px;--du:9.6s;--de:-0.1s;--sw:13px;--op:0.48"></i><i class="f" style="left:37%;--sz:3.2px;--du:8.9s;--de:-3.4s;--sw:-22px;--op:0.55"></i><i class="f" style="left:74%;--sz:2.0px;--du:10.4s;--de:-6.6s;--sw:-26px;--op:0.40"></i><i style="left:47%;--sz:4.5px;--du:7.1s;--de:-4.4s;--sw:-18px;--op:0.71"></i><i class="n" style="left:61%;--sz:6.3px;--du:4.8s;--de:-4.0s;--sw:-18px;--op:0.93"></i><i class="n" style="left:23%;--sz:5.8px;--du:5.4s;--de:-3.4s;--sw:-7px;--op:0.87"></i><i class="n" style="left:78%;--sz:6.1px;--du:5.1s;--de:-1.3s;--sw:-14px;--op:0.90"></i><i class="f" style="left:80%;--sz:2.4px;--du:10.0s;--de:-9.4s;--sw:-14px;--op:0.45"></i><i style="left:49%;--sz:5.0px;--du:6.5s;--de:-5.8s;--sw:12px;--op:0.76"></i><i class="f" style="left:6%;--sz:2.0px;--du:10.5s;--de:-1.1s;--sw:-24px;--op:0.40"></i><i style="left:32%;--sz:4.1px;--du:7.7s;--de:-1.8s;--sw:19px;--op:0.66"></i><i style="left:53%;--sz:3.5px;--du:8.5s;--de:-7.0s;--sw:12px;--op:0.58"></i><i style="left:66%;--sz:4.0px;--du:7.8s;--de:-1.4s;--sw:20px;--op:0.64"></i><i class="n" style="left:16%;--sz:6.4px;--du:4.6s;--de:-1.1s;--sw:9px;--op:0.94"></i><i style="left:78%;--sz:4.8px;--du:6.8s;--de:-4.1s;--sw:-9px;--op:0.74"></i><i class="f" style="left:26%;--sz:2.6px;--du:9.6s;--de:-7.2s;--sw:-22px;--op:0.48"></i><i class="f" style="left:57%;--sz:2.9px;--du:9.3s;--de:-2.3s;--sw:-24px;--op:0.51"></i><i class="f" style="left:47%;--sz:2.5px;--du:9.9s;--de:-5.2s;--sw:-18px;--op:0.46"></i><i class="f" style="left:17%;--sz:2.1px;--du:10.4s;--de:-9.3s;--sw:-5px;--op:0.41"></i><i style="left:88%;--sz:4.8px;--du:6.7s;--de:-3.5s;--sw:-18px;--op:0.74"></i><i style="left:2%;--sz:4.5px;--du:7.2s;--de:-3.4s;--sw:-4px;--op:0.70"></i><i style="left:4%;--sz:5.0px;--du:6.4s;--de:-0.1s;--sw:14px;--op:0.77"></i><i class="f" style="left:8%;--sz:2.0px;--du:10.5s;--de:-7.7s;--sw:-6px;--op:0.39"></i><i class="f" style="left:9%;--sz:2.3px;--du:10.1s;--de:-0.8s;--sw:8px;--op:0.43"></i><i style="left:5%;--sz:3.4px;--du:8.6s;--de:-7.8s;--sw:21px;--op:0.57"></i><i style="left:16%;--sz:5.2px;--du:6.2s;--de:-4.9s;--sw:-5px;--op:0.79"></i><i style="left:87%;--sz:3.3px;--du:8.7s;--de:-4.1s;--sw:-22px;--op:0.56"></i><i class="n" style="left:53%;--sz:5.9px;--du:5.3s;--de:-5.0s;--sw:-25px;--op:0.87"></i></div><div class="xscene" aria-hidden="true"><svg class="xtree" viewBox="0 0 300 400" aria-hidden="true"><defs><linearGradient id="xtg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0a4630"/><stop offset=".42" stop-color="#17774c"/><stop offset=".62" stop-color="#219160"/><stop offset="1" stop-color="#0b4d34"/></linearGradient><linearGradient id="xtv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".10"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".26"/></linearGradient><linearGradient id="xtk" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4a2a15"/><stop offset=".5" stop-color="#7a4a26"/><stop offset="1" stop-color="#3f2410"/></linearGradient><radialGradient id="xsnw" cx=".5" cy=".32" r=".62"><stop offset="0" stop-color="var(--sn1)"/><stop offset=".6" stop-color="var(--sn2)" stop-opacity=".95"/><stop offset="1" stop-color="var(--sn2)" stop-opacity="0"/></radialGradient><radialGradient id="xsg" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff8d6"/><stop offset=".3" stop-color="#ffd76a" stop-opacity=".8"/><stop offset="1" stop-color="#ffb020" stop-opacity="0"/></radialGradient><linearGradient id="xstg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4b8"/><stop offset=".45" stop-color="#ffcf3a"/><stop offset="1" stop-color="#e09400"/></linearGradient><radialGradient id="xor" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#ff8a95"/><stop offset=".5" stop-color="#d81e34"/><stop offset="1" stop-color="#7c0816"/></radialGradient><radialGradient id="xog" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#fff1b0"/><stop offset=".5" stop-color="#f0b21a"/><stop offset="1" stop-color="#9a6200"/></radialGradient><radialGradient id="xob" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#e2f2ff"/><stop offset=".5" stop-color="#4f9fe0"/><stop offset="1" stop-color="#1b4f86"/></radialGradient><filter id="xbl" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="2.4"/></filter></defs><ellipse class="xg1" cx="150" cy="340" rx="200" ry="48" fill="url(#xsnw)"/><ellipse class="xg2" cx="150" cy="322" rx="100" ry="9" fill="#0a2a1c" opacity="0"/><rect class="xtk" x="139" y="292" width="22" height="32" rx="3" fill="url(#xtk)"/><g class="xtr" style="--dl:0.3s"><path d="M150,128 Q104.4,238.1 36,300 Q52.3,310 68.6,300 Q84.9,310 101.1,300 Q117.4,310 133.7,300 Q150,310 166.3,300 Q182.6,310 198.9,300 Q215.1,310 231.4,300 Q247.7,310 264,300 Q195.6,238.1 150,128 Z" fill="url(#xtg)"/><path d="M150,128 Q104.4,238.1 36,300 Q52.3,310 68.6,300 Q84.9,310 101.1,300 Q117.4,310 133.7,300 Q150,310 166.3,300 Q182.6,310 198.9,300 Q215.1,310 231.4,300 Q247.7,310 264,300 Q195.6,238.1 150,128 Z" fill="url(#xtv)"/><path class="xlf" d="M147,138 Q113.5,222.6 61.1,294" /><path class="xsn" d="M39,299 Q52.3,308 68.6,299 Q84.9,308 101.1,299 Q117.4,308 133.7,299 Q150,308 166.3,299 Q182.6,308 198.9,299 Q215.1,308 231.4,299 Q246.2,308 261,299"/></g><g class="xtr" style="--dl:0.5s"><path d="M150,90 Q113.2,184.7 58,238 Q73.3,248 88.7,238 Q104,248 119.3,238 Q134.7,248 150,238 Q165.3,248 180.7,238 Q196,248 211.3,238 Q226.7,248 242,238 Q186.8,184.7 150,90 Z" fill="url(#xtg)"/><path d="M150,90 Q113.2,184.7 58,238 Q73.3,248 88.7,238 Q104,248 119.3,238 Q134.7,248 150,238 Q165.3,248 180.7,238 Q196,248 211.3,238 Q226.7,248 242,238 Q186.8,184.7 150,90 Z" fill="url(#xtv)"/><path class="xlf" d="M147,100 Q120.6,171.4 78.2,232" /><path class="xsn" d="M61,237 Q73.3,246 88.7,237 Q104,246 119.3,237 Q134.7,246 150,237 Q165.3,246 180.7,237 Q196,246 211.3,237 Q225.2,246 239,237"/></g><g class="xtr" style="--dl:0.6s"><path d="M150,58 Q122.8,136.1 82,180 Q95.6,190 109.2,180 Q122.8,190 136.4,180 Q150,190 163.6,180 Q177.2,190 190.8,180 Q204.4,190 218,180 Q177.2,136.1 150,58 Z" fill="url(#xtg)"/><path d="M150,58 Q122.8,136.1 82,180 Q95.6,190 109.2,180 Q122.8,190 136.4,180 Q150,190 163.6,180 Q177.2,190 190.8,180 Q204.4,190 218,180 Q177.2,136.1 150,58 Z" fill="url(#xtv)"/><path class="xlf" d="M147,68 Q128.2,125.1 97,174" /><path class="xsn" d="M85,179 Q95.6,188 109.2,179 Q122.8,188 136.4,179 Q150,188 163.6,179 Q177.2,188 190.8,179 Q202.9,188 215,179"/></g><g class="xtr" style="--dl:0.8s"><path d="M150,34 Q132.4,91.6 106,124 Q117,134 128,124 Q139,134 150,124 Q161,134 172,124 Q183,134 194,124 Q167.6,91.6 150,34 Z" fill="url(#xtg)"/><path d="M150,34 Q132.4,91.6 106,124 Q117,134 128,124 Q139,134 150,124 Q161,134 172,124 Q183,134 194,124 Q167.6,91.6 150,34 Z" fill="url(#xtv)"/><path class="xlf" d="M147,44 Q135.9,83.5 115.7,118" /><path class="xsn" d="M109,123 Q117,132 128,123 Q139,132 150,123 Q161,132 172,123 Q181.5,132 191,123"/></g><path class="xw" pathLength="1" style="--dl:0.9s" d="M130.4,70 Q154.6,104 178.7,88"/><g class="xb" style="--dl:1.1s;--tw:1.8s;--to:0.4s"><circle class="h" cx="136.5" cy="78.9" r="6.5" fill="#ffd166" filter="url(#xbl)"/><circle cx="136.5" cy="78.9" r="2.7" fill="#ffd166"/></g><g class="xb" style="--dl:1.2s;--tw:2.5s;--to:0.7s"><circle class="h" cx="148.5" cy="89.7" r="6.5" fill="#ff4d5e" filter="url(#xbl)"/><circle cx="148.5" cy="89.7" r="2.7" fill="#ff4d5e"/></g><g class="xb" style="--dl:1.3s;--tw:1.7s;--to:0s"><circle class="h" cx="160.6" cy="94.2" r="6.5" fill="#7fd3ff" filter="url(#xbl)"/><circle cx="160.6" cy="94.2" r="2.7" fill="#7fd3ff"/></g><g class="xb" style="--dl:1.4s;--tw:1.5s;--to:0.4s"><circle class="h" cx="172.7" cy="92.4" r="6.5" fill="#fff1c9" filter="url(#xbl)"/><circle cx="172.7" cy="92.4" r="2.7" fill="#fff1c9"/></g><path class="xw" pathLength="1" style="--dl:1.1s" d="M186.2,108 Q144.6,148 103.1,132"/><g class="xb" style="--dl:1.3s;--tw:1.8s;--to:0.4s"><circle class="h" cx="179.2" cy="115.5" r="6.5" fill="#ff9f43" filter="url(#xbl)"/><circle cx="179.2" cy="115.5" r="2.7" fill="#ff9f43"/></g><g class="xb" style="--dl:1.3s;--tw:2.1s;--to:0.5s"><circle class="h" cx="165.4" cy="125.7" r="6.5" fill="#ffd166" filter="url(#xbl)"/><circle cx="165.4" cy="125.7" r="2.7" fill="#ffd166"/></g><g class="xb" style="--dl:1.4s;--tw:2.1s;--to:0.1s"><circle class="h" cx="151.5" cy="132.8" r="6.5" fill="#ff4d5e" filter="url(#xbl)"/><circle cx="151.5" cy="132.8" r="2.7" fill="#ff4d5e"/></g><g class="xb" style="--dl:1.5s;--tw:2.4s;--to:0.8s"><circle class="h" cx="137.7" cy="136.8" r="6.5" fill="#7fd3ff" filter="url(#xbl)"/><circle cx="137.7" cy="136.8" r="2.7" fill="#7fd3ff"/></g><g class="xb" style="--dl:1.5s;--tw:2.2s;--to:1s"><circle class="h" cx="123.8" cy="137.7" r="6.5" fill="#fff1c9" filter="url(#xbl)"/><circle cx="123.8" cy="137.7" r="2.7" fill="#fff1c9"/></g><g class="xb" style="--dl:1.6s;--tw:2.2s;--to:0.7s"><circle class="h" cx="110" cy="135.5" r="6.5" fill="#ff9f43" filter="url(#xbl)"/><circle cx="110" cy="135.5" r="2.7" fill="#ff9f43"/></g><path class="xw" pathLength="1" style="--dl:1.3s" d="M94.9,150 Q153.8,192 212.8,176"/><g class="xb" style="--dl:1.4s;--tw:2.3s;--to:0.1s"><circle class="h" cx="102.3" cy="156.2" r="6.5" fill="#ffd166" filter="url(#xbl)"/><circle cx="102.3" cy="156.2" r="2.7" fill="#ffd166"/></g><g class="xb" style="--dl:1.5s;--tw:1.9s;--to:0s"><circle class="h" cx="117" cy="164.9" r="6.5" fill="#ff4d5e" filter="url(#xbl)"/><circle cx="117" cy="164.9" r="2.7" fill="#ff4d5e"/></g><g class="xb" style="--dl:1.5s;--tw:1.9s;--to:0.4s"><circle class="h" cx="131.8" cy="171.8" r="6.5" fill="#7fd3ff" filter="url(#xbl)"/><circle cx="131.8" cy="171.8" r="2.7" fill="#7fd3ff"/></g><g class="xb" style="--dl:1.6s;--tw:2.5s;--to:1s"><circle class="h" cx="146.5" cy="176.8" r="6.5" fill="#fff1c9" filter="url(#xbl)"/><circle cx="146.5" cy="176.8" r="2.7" fill="#fff1c9"/></g><g class="xb" style="--dl:1.6s;--tw:1.8s;--to:0.3s"><circle class="h" cx="161.2" cy="180.1" r="6.5" fill="#ff9f43" filter="url(#xbl)"/><circle cx="161.2" cy="180.1" r="2.7" fill="#ff9f43"/></g><g class="xb" style="--dl:1.7s;--tw:1.7s;--to:1.1s"><circle class="h" cx="175.9" cy="181.5" r="6.5" fill="#ffd166" filter="url(#xbl)"/><circle cx="175.9" cy="181.5" r="2.7" fill="#ffd166"/></g><g class="xb" style="--dl:1.7s;--tw:1.4s;--to:0.7s"><circle class="h" cx="190.7" cy="181.2" r="6.5" fill="#ff4d5e" filter="url(#xbl)"/><circle cx="190.7" cy="181.2" r="2.7" fill="#ff4d5e"/></g><g class="xb" style="--dl:1.8s;--tw:1.6s;--to:0.2s"><circle class="h" cx="205.4" cy="179" r="6.5" fill="#7fd3ff" filter="url(#xbl)"/><circle cx="205.4" cy="179" r="2.7" fill="#7fd3ff"/></g><path class="xw" pathLength="1" style="--dl:1.5s" d="M224.3,198 Q145,242 65.7,226"/><g class="xb" style="--dl:1.6s;--tw:1.8s;--to:0.9s"><circle class="h" cx="217.1" cy="203.1" r="6.5" fill="#fff1c9" filter="url(#xbl)"/><circle cx="217.1" cy="203.1" r="2.7" fill="#fff1c9"/></g><g class="xb" style="--dl:1.6s;--tw:1.7s;--to:0.8s"><circle class="h" cx="202.7" cy="210.1" r="6.5" fill="#ff9f43" filter="url(#xbl)"/><circle cx="202.7" cy="210.1" r="2.7" fill="#ff9f43"/></g><g class="xb" style="--dl:1.7s;--tw:1.6s;--to:1.1s"><circle class="h" cx="188.2" cy="216.1" r="6.5" fill="#ffd166" filter="url(#xbl)"/><circle cx="188.2" cy="216.1" r="2.7" fill="#ffd166"/></g><g class="xb" style="--dl:1.7s;--tw:1.8s;--to:0.8s"><circle class="h" cx="173.8" cy="221.1" r="6.5" fill="#ff4d5e" filter="url(#xbl)"/><circle cx="173.8" cy="221.1" r="2.7" fill="#ff4d5e"/></g><g class="xb" style="--dl:1.7s;--tw:1.5s;--to:0.4s"><circle class="h" cx="159.4" cy="225.2" r="6.5" fill="#7fd3ff" filter="url(#xbl)"/><circle cx="159.4" cy="225.2" r="2.7" fill="#7fd3ff"/></g><g class="xb" style="--dl:1.8s;--tw:1.7s;--to:0.8s"><circle class="h" cx="145" cy="228.2" r="6.5" fill="#fff1c9" filter="url(#xbl)"/><circle cx="145" cy="228.2" r="2.7" fill="#fff1c9"/></g><g class="xb" style="--dl:1.8s;--tw:1.5s;--to:1.1s"><circle class="h" cx="130.6" cy="230.2" r="6.5" fill="#ff9f43" filter="url(#xbl)"/><circle cx="130.6" cy="230.2" r="2.7" fill="#ff9f43"/></g><g class="xb" style="--dl:1.8s;--tw:2.2s;--to:1.2s"><circle class="h" cx="116.1" cy="231.3" r="6.5" fill="#ffd166" filter="url(#xbl)"/><circle cx="116.1" cy="231.3" r="2.7" fill="#ffd166"/></g><g class="xb" style="--dl:1.9s;--tw:2.5s;--to:0.5s"><circle class="h" cx="101.7" cy="231.4" r="6.5" fill="#ff4d5e" filter="url(#xbl)"/><circle cx="101.7" cy="231.4" r="2.7" fill="#ff4d5e"/></g><g class="xb" style="--dl:1.9s;--tw:1.3s;--to:0.4s"><circle class="h" cx="87.3" cy="230.4" r="6.5" fill="#7fd3ff" filter="url(#xbl)"/><circle cx="87.3" cy="230.4" r="2.7" fill="#7fd3ff"/></g><g class="xb" style="--dl:2s;--tw:1.3s;--to:0.7s"><circle class="h" cx="72.9" cy="228.5" r="6.5" fill="#fff1c9" filter="url(#xbl)"/><circle cx="72.9" cy="228.5" r="2.7" fill="#fff1c9"/></g><path class="xw" pathLength="1" style="--dl:1.6s" d="M60.8,246 Q156.3,290 251.7,274"/><g class="xb" style="--dl:1.7s;--tw:1.8s;--to:0.6s"><circle class="h" cx="68.2" cy="250.5" r="6.5" fill="#ff9f43" filter="url(#xbl)"/><circle cx="68.2" cy="250.5" r="2.7" fill="#ff9f43"/></g><g class="xb" style="--dl:1.8s;--tw:2.3s;--to:0.6s"><circle class="h" cx="82.9" cy="256.6" r="6.5" fill="#ffd166" filter="url(#xbl)"/><circle cx="82.9" cy="256.6" r="2.7" fill="#ffd166"/></g><g class="xb" style="--dl:1.8s;--tw:1.3s;--to:1.2s"><circle class="h" cx="97.5" cy="261.9" r="6.5" fill="#ff4d5e" filter="url(#xbl)"/><circle cx="97.5" cy="261.9" r="2.7" fill="#ff4d5e"/></g><g class="xb" style="--dl:1.8s;--tw:2.6s;--to:0.8s"><circle class="h" cx="112.2" cy="266.5" r="6.5" fill="#7fd3ff" filter="url(#xbl)"/><circle cx="112.2" cy="266.5" r="2.7" fill="#7fd3ff"/></g><g class="xb" style="--dl:1.9s;--tw:2.6s;--to:0.4s"><circle class="h" cx="126.9" cy="270.5" r="6.5" fill="#fff1c9" filter="url(#xbl)"/><circle cx="126.9" cy="270.5" r="2.7" fill="#fff1c9"/></g><g class="xb" style="--dl:1.9s;--tw:1.4s;--to:0.8s"><circle class="h" cx="141.6" cy="273.7" r="6.5" fill="#ff9f43" filter="url(#xbl)"/><circle cx="141.6" cy="273.7" r="2.7" fill="#ff9f43"/></g><g class="xb" style="--dl:1.9s;--tw:2.2s;--to:0.8s"><circle class="h" cx="156.3" cy="276.2" r="6.5" fill="#ffd166" filter="url(#xbl)"/><circle cx="156.3" cy="276.2" r="2.7" fill="#ffd166"/></g><g class="xb" style="--dl:2s;--tw:1.7s;--to:0.5s"><circle class="h" cx="171" cy="278" r="6.5" fill="#ff4d5e" filter="url(#xbl)"/><circle cx="171" cy="278" r="2.7" fill="#ff4d5e"/></g><g class="xb" style="--dl:2s;--tw:1.8s;--to:0.6s"><circle class="h" cx="185.7" cy="279.1" r="6.5" fill="#7fd3ff" filter="url(#xbl)"/><circle cx="185.7" cy="279.1" r="2.7" fill="#7fd3ff"/></g><g class="xb" style="--dl:2s;--tw:1.7s;--to:0.4s"><circle class="h" cx="200.3" cy="279.5" r="6.5" fill="#fff1c9" filter="url(#xbl)"/><circle cx="200.3" cy="279.5" r="2.7" fill="#fff1c9"/></g><g class="xb" style="--dl:2.1s;--tw:1.7s;--to:0.1s"><circle class="h" cx="215" cy="279.1" r="6.5" fill="#ff9f43" filter="url(#xbl)"/><circle cx="215" cy="279.1" r="2.7" fill="#ff9f43"/></g><g class="xb" style="--dl:2.1s;--tw:2.1s;--to:1s"><circle class="h" cx="229.7" cy="278.1" r="6.5" fill="#ffd166" filter="url(#xbl)"/><circle cx="229.7" cy="278.1" r="2.7" fill="#ffd166"/></g><g class="xb" style="--dl:2.1s;--tw:1.9s;--to:0.1s"><circle class="h" cx="244.4" cy="276.3" r="6.5" fill="#ff4d5e" filter="url(#xbl)"/><circle cx="244.4" cy="276.3" r="2.7" fill="#ff4d5e"/></g><g class="xo" style="--dl:1.4s;--sw:3.1s"><rect x="124" y="95.4" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="126" cy="104" r="6" fill="url(#xor)"/><ellipse cx="123.9" cy="101.7" rx="1.7" ry="1.1" fill="#fff" opacity=".75"/></g><g class="xo" style="--dl:1.5s;--sw:3.3s"><rect x="172" y="107.9" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="174" cy="116" r="5.5" fill="url(#xog)"/><ellipse cx="172.1" cy="113.9" rx="1.5" ry="1" fill="#fff" opacity=".75"/></g><g class="xo" style="--dl:1.6s;--sw:3.4s"><rect x="110" y="146.9" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="112" cy="156" r="6.5" fill="url(#xog)"/><ellipse cx="109.7" cy="153.5" rx="1.8" ry="1.2" fill="#fff" opacity=".75"/></g><g class="xo" style="--dl:1.6s;--sw:3.1s"><rect x="184" y="152.9" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="186" cy="162" r="6.5" fill="url(#xob)"/><ellipse cx="183.7" cy="159.5" rx="1.8" ry="1.2" fill="#fff" opacity=".75"/></g><g class="xo" style="--dl:1.7s;--sw:2.6s"><rect x="148" y="128.4" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="150" cy="136" r="5" fill="url(#xob)"/><ellipse cx="148.2" cy="134.1" rx="1.4" ry="0.9" fill="#fff" opacity=".75"/></g><g class="xo" style="--dl:1.8s;--sw:3.3s"><rect x="96" y="204.4" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="98" cy="214" r="7" fill="url(#xob)"/><ellipse cx="95.5" cy="211.3" rx="2" ry="1.3" fill="#fff" opacity=".75"/></g><g class="xo" style="--dl:1.8s;--sw:2.8s"><rect x="150" y="186.9" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="152" cy="196" r="6.5" fill="url(#xor)"/><ellipse cx="149.7" cy="193.5" rx="1.8" ry="1.2" fill="#fff" opacity=".75"/></g><g class="xo" style="--dl:1.9s;--sw:3.3s"><rect x="202" y="198.4" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="204" cy="208" r="7" fill="url(#xor)"/><ellipse cx="201.6" cy="205.3" rx="2" ry="1.3" fill="#fff" opacity=".75"/></g><g class="xo" style="--dl:1.9s;--sw:3.4s"><rect x="124" y="245.9" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="126" cy="256" r="7.5" fill="url(#xor)"/><ellipse cx="123.4" cy="253.2" rx="2.1" ry="1.3" fill="#fff" opacity=".75"/></g><g class="xo" style="--dl:2s;--sw:3.4s"><rect x="180" y="242.4" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="182" cy="252" r="7" fill="url(#xog)"/><ellipse cx="179.6" cy="249.3" rx="2" ry="1.3" fill="#fff" opacity=".75"/></g><g class="xo" style="--dl:2s;--sw:2.8s"><rect x="72" y="268.9" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="74" cy="278" r="6.5" fill="url(#xog)"/><ellipse cx="71.7" cy="275.5" rx="1.8" ry="1.2" fill="#fff" opacity=".75"/></g><g class="xo" style="--dl:2.1s;--sw:3.3s"><rect x="224" y="272.9" width="4" height="3.4" rx=".8" fill="#c9a24a"/><circle cx="226" cy="282" r="6.5" fill="url(#xob)"/><ellipse cx="223.7" cy="279.5" rx="1.8" ry="1.2" fill="#fff" opacity=".75"/></g><g class="xgf" style="--dl:1.9s"><rect x="66" y="300" width="46" height="34" rx="2.5" fill="#d62839"/><rect x="91.3" y="300" width="20.7" height="34" rx="2.5" fill="#000" opacity=".12"/><rect x="63.5" y="297" width="51" height="8" rx="2" fill="#d62839"/><rect x="63.5" y="297" width="51" height="8" rx="2" fill="#fff" opacity=".14"/><rect x="86" y="297" width="6" height="37" fill="#ffd166"/><path d="M89,297 c-9,-11 -16,-3 -9,2 c3,2 6,1 9,-2 Z M89,297 c9,-11 16,-3 9,2 c-3,2 -6,1 -9,-2 Z" fill="#ffd166"/><circle cx="89" cy="297" r="2.6" fill="#ffd166"/></g><g class="xgf" style="--dl:2s"><rect x="192" y="306" width="42" height="28" rx="2.5" fill="#1c8a57"/><rect x="215.1" y="306" width="18.9" height="28" rx="2.5" fill="#000" opacity=".12"/><rect x="189.5" y="303" width="47" height="8" rx="2" fill="#1c8a57"/><rect x="189.5" y="303" width="47" height="8" rx="2" fill="#fff" opacity=".14"/><rect x="210" y="303" width="6" height="31" fill="#ff4d5e"/><path d="M213,303 c-9,-11 -16,-3 -9,2 c3,2 6,1 9,-2 Z M213,303 c9,-11 16,-3 9,2 c-3,2 -6,1 -9,-2 Z" fill="#ff4d5e"/><circle cx="213" cy="303" r="2.6" fill="#ff4d5e"/></g><g class="xgf" style="--dl:2.1s"><rect x="108" y="316" width="30" height="22" rx="2.5" fill="#f3f6fb"/><rect x="124.5" y="316" width="13.5" height="22" rx="2.5" fill="#000" opacity=".12"/><rect x="105.5" y="313" width="35" height="8" rx="2" fill="#f3f6fb"/><rect x="105.5" y="313" width="35" height="8" rx="2" fill="#fff" opacity=".14"/><rect x="120" y="313" width="6" height="25" fill="#d62839"/><path d="M123,313 c-9,-11 -16,-3 -9,2 c3,2 6,1 9,-2 Z M123,313 c9,-11 16,-3 9,2 c-3,2 -6,1 -9,-2 Z" fill="#d62839"/><circle cx="123" cy="313" r="2.6" fill="#d62839"/></g><g class="xgf" style="--dl:2.2s"><rect x="230" y="316" width="26" height="20" rx="2.5" fill="#f2b21a"/><rect x="244.3" y="316" width="11.7" height="20" rx="2.5" fill="#000" opacity=".12"/><rect x="227.5" y="313" width="31" height="8" rx="2" fill="#f2b21a"/><rect x="227.5" y="313" width="31" height="8" rx="2" fill="#fff" opacity=".14"/><rect x="240" y="313" width="6" height="23" fill="#c1121f"/><path d="M243,313 c-9,-11 -16,-3 -9,2 c3,2 6,1 9,-2 Z M243,313 c9,-11 16,-3 9,2 c-3,2 -6,1 -9,-2 Z" fill="#c1121f"/><circle cx="243" cy="313" r="2.6" fill="#c1121f"/></g><g class="xst"><circle class="glw" cx="150" cy="30" r="40" fill="url(#xsg)"/><g class="rays"><line x1="150" y1="8" x2="150" y2="-4" style="--a:15deg"/><line x1="150" y1="8" x2="150" y2="-10" style="--a:45deg"/><line x1="150" y1="8" x2="150" y2="-4" style="--a:75deg"/><line x1="150" y1="8" x2="150" y2="-10" style="--a:105deg"/><line x1="150" y1="8" x2="150" y2="-4" style="--a:135deg"/><line x1="150" y1="8" x2="150" y2="-10" style="--a:165deg"/><line x1="150" y1="8" x2="150" y2="-4" style="--a:195deg"/><line x1="150" y1="8" x2="150" y2="-10" style="--a:225deg"/><line x1="150" y1="8" x2="150" y2="-4" style="--a:255deg"/><line x1="150" y1="8" x2="150" y2="-10" style="--a:285deg"/><line x1="150" y1="8" x2="150" y2="-4" style="--a:315deg"/><line x1="150" y1="8" x2="150" y2="-10" style="--a:345deg"/></g><polygon class="s" points="150,13 154.2,24.2 166.2,24.7 156.8,32.2 160,43.8 150,37.2 140,43.8 143.2,32.2 133.8,24.7 145.8,24.2" fill="url(#xstg)"/></g><path class="xsp" style="--dl:2.4s;--tw:2.6s" d="M78,63.5 Q78,70 84.5,70 Q78,70 78,76.5 Q78,70 71.5,70 Q78,70 78,63.5 Z" fill="#fff6d0"/><path class="xsp" style="--dl:2.4s;--tw:2.2s" d="M226,86.8 Q226,92 231.2,92 Q226,92 226,97.2 Q226,92 220.8,92 Q226,92 226,86.8 Z" fill="#fff6d0"/><path class="xsp" style="--dl:2.5s;--tw:1.6s" d="M60,164.2 Q60,170 65.8,170 Q60,170 60,175.8 Q60,170 54.1,170 Q60,170 60,164.2 Z" fill="#fff6d0"/><path class="xsp" style="--dl:2.6s;--tw:2.3s" d="M246,178.8 Q246,186 253.2,186 Q246,186 246,193.2 Q246,186 238.8,186 Q246,186 246,178.8 Z" fill="#fff6d0"/><path class="xsp" style="--dl:2.7s;--tw:1.6s" d="M104,29.4 Q104,34 108.5,34 Q104,34 104,38.5 Q104,34 99.5,34 Q104,34 104,29.4 Z" fill="#fff6d0"/><path class="xsp" style="--dl:2.8s;--tw:2.1s" d="M204,34.1 Q204,40 209.8,40 Q204,40 204,45.9 Q204,40 198.2,40 Q204,40 204,34.1 Z" fill="#fff6d0"/><path class="xsp" style="--dl:2.9s;--tw:2.3s" d="M40,242.8 Q40,248 45.2,248 Q40,248 40,253.2 Q40,248 34.8,248 Q40,248 40,242.8 Z" fill="#fff6d0"/><path class="xsp" style="--dl:3s;--tw:1.9s" d="M262,245.4 Q262,250 266.6,250 Q262,250 262,254.6 Q262,250 257.4,250 Q262,250 262,245.4 Z" fill="#fff6d0"/></svg></div><div class="xscene2" aria-hidden="true"><svg class="xglobe" viewBox="0 0 300 400" aria-hidden="true"><defs><clipPath id="xgc"><circle cx="150" cy="158" r="115"/></clipPath><linearGradient id="xgsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#081631"/><stop offset=".55" stop-color="#173a6e"/><stop offset="1" stop-color="#3f6aa6"/></linearGradient><radialGradient id="xgmn" cx=".4" cy=".38" r=".7"><stop offset="0" stop-color="#fffdf2"/><stop offset=".6" stop-color="#fbeec2"/><stop offset="1" stop-color="#ead18a"/></radialGradient><radialGradient id="xgmg" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff3c8" stop-opacity=".55"/><stop offset="1" stop-color="#fff3c8" stop-opacity="0"/></radialGradient><radialGradient id="xgsh" cx=".42" cy=".38" r=".62"><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".38"/></radialGradient><linearGradient id="xgbs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8203a"/><stop offset="1" stop-color="#7e0d1f"/></linearGradient><linearGradient id="xggd" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a8761c"/><stop offset=".3" stop-color="#ffe08a"/><stop offset=".6" stop-color="#e2a92e"/><stop offset="1" stop-color="#9c6a14"/></linearGradient><filter id="xgbl" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="2"/></filter></defs><ellipse class="xgsd" cx="150" cy="330" rx="104" ry="9" fill="#000"/><g class="xgw"><g class="xgbase"><path d="M78,262 L222,262 L240,316 Q242,326 232,326 L68,326 Q58,326 60,316 Z" fill="url(#xgbs)"/><path d="M70,286 L230,286 L233,295 L67,295 Z" fill="url(#xggd)"/><rect x="72" y="257" width="156" height="9" rx="4.5" fill="url(#xggd)"/><rect x="122" y="300" width="56" height="17" rx="4" fill="url(#xggd)"/><text x="150" y="312.6" text-anchor="middle">2026</text></g><g clip-path="url(#xgc)"><rect x="20" y="30" width="260" height="260" fill="url(#xgsky)"/><circle class="xgst" cx="146.1" cy="115.2" r="0.7" style="--dl:1s;--tw:2.1s"/><circle class="xgst" cx="166.3" cy="113.2" r="1.4" style="--dl:1.2s;--tw:1.9s"/><circle class="xgst" cx="239.8" cy="128" r="1.3" style="--dl:0.7s;--tw:1.6s"/><circle class="xgst" cx="88.3" cy="133.2" r="0.8" style="--dl:0.5s;--tw:1.8s"/><circle class="xgst" cx="121.2" cy="118" r="0.8" style="--dl:0.6s;--tw:2.9s"/><circle class="xgst" cx="191.1" cy="142.3" r="1.2" style="--dl:1.1s;--tw:2.9s"/><circle class="xgst" cx="141.5" cy="77.9" r="0.9" style="--dl:0.9s;--tw:2.7s"/><circle class="xgst" cx="214" cy="129.4" r="1.1" style="--dl:0.6s;--tw:3s"/><circle class="xgst" cx="137.5" cy="118.2" r="0.8" style="--dl:0.7s;--tw:1.8s"/><circle class="xgst" cx="142.8" cy="60.1" r="1.2" style="--dl:0.8s;--tw:2.7s"/><circle class="xgst" cx="148" cy="130.1" r="1.3" style="--dl:0.7s;--tw:2.2s"/><circle class="xgst" cx="242.9" cy="108.4" r="1.4" style="--dl:0.6s;--tw:1.6s"/><circle class="xgst" cx="71.8" cy="101.5" r="1.2" style="--dl:0.7s;--tw:1.5s"/><g class="xgmoon"><circle cx="192" cy="86" r="62" fill="url(#xgmg)"/><circle cx="192" cy="86" r="26" fill="url(#xgmn)"/><circle cx="183" cy="80" r="4.5" fill="#e7cf8f" opacity=".45"/><circle cx="199" cy="94" r="3.2" fill="#e7cf8f" opacity=".4"/><circle cx="196" cy="74" r="2.2" fill="#e7cf8f" opacity=".4"/></g><g class="xgvil"><path d="M20,214 Q70,192 120,206 T220,198 T290,210 L290,290 L20,290 Z" fill="#9fb6d8"/><g transform="translate(48,206) scale(1)"><path d="M0,-30 L11,-8 L6,-8 L14,4 L-14,4 L-6,-8 L-11,-8 Z" fill="#1d5a45"/><path d="M0,-30 L4,-22 L-4,-22 Z M-6,-8 L-2,-11 L2,-8 L6,-8 L-6,-8 Z" fill="#eef4fc"/><rect x="-2" y="4" width="4" height="5" fill="#4a3020"/></g><g transform="translate(262,204) scale(0.9)"><path d="M0,-30 L11,-8 L6,-8 L14,4 L-14,4 L-6,-8 L-11,-8 Z" fill="#1d5a45"/><path d="M0,-30 L4,-22 L-4,-22 Z M-6,-8 L-2,-11 L2,-8 L6,-8 L-6,-8 Z" fill="#eef4fc"/><rect x="-2" y="4" width="4" height="5" fill="#4a3020"/></g><g transform="translate(150,205) scale(0.8)"><path d="M0,-30 L11,-8 L6,-8 L14,4 L-14,4 L-6,-8 L-11,-8 Z" fill="#1d5a45"/><path d="M0,-30 L4,-22 L-4,-22 Z M-6,-8 L-2,-11 L2,-8 L6,-8 L-6,-8 Z" fill="#eef4fc"/><rect x="-2" y="4" width="4" height="5" fill="#4a3020"/></g><g transform="translate(98,208) scale(0.8)"><path d="M0,-30 L11,-8 L6,-8 L14,4 L-14,4 L-6,-8 L-11,-8 Z" fill="#1d5a45"/><path d="M0,-30 L4,-22 L-4,-22 Z M-6,-8 L-2,-11 L2,-8 L6,-8 L-6,-8 Z" fill="#eef4fc"/><rect x="-2" y="4" width="4" height="5" fill="#4a3020"/></g><path d="M20,236 Q80,214 150,226 T290,220 L290,290 L20,290 Z" fill="#dce7f5"/><rect x="64" y="214" width="30" height="22" fill="#e9dcc6"/><rect x="82.6" y="214" width="11.4" height="22" fill="#000" opacity=".12"/><rect x="85.6" y="201" width="5" height="10" fill="#6d3b2e"/><circle class="xgsm" cx="88.1" cy="199" r="2.4" style="--dl:2.4s"/><circle class="xgsm" cx="88.1" cy="199" r="3" style="--dl:3.3s"/><circle class="xgsm" cx="88.1" cy="199" r="3.6" style="--dl:4.1s"/><path d="M60,215 L79,200.4 L98,215 Z" fill="#a3313a"/><path d="M61,214 L79,201.4 L97,214" fill="none" stroke="#fbfdff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><rect class="xgwin" x="69.4" y="218.8" width="7" height="7" rx="1" style="--dl:1.4s"/><rect class="xgwin" x="81.4" y="218.8" width="7" height="7" rx="1" style="--dl:1.6s"/><rect x="82" y="226" width="6" height="10" rx="1" fill="#6d3b2e"/><rect x="104" y="215" width="36" height="27" fill="#f3e7d3"/><rect x="126.3" y="215" width="13.7" height="27" fill="#000" opacity=".12"/><rect x="129.9" y="202" width="5" height="10" fill="#6d3b2e"/><circle class="xgsm" cx="132.4" cy="200" r="2.4" style="--dl:2.5s"/><circle class="xgsm" cx="132.4" cy="200" r="3" style="--dl:3.2s"/><circle class="xgsm" cx="132.4" cy="200" r="3.6" style="--dl:4.3s"/><path d="M100,216 L122,198.3 L144,216 Z" fill="#8b2b33"/><path d="M101,215 L122,199.3 L143,215" fill="none" stroke="#fbfdff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><rect class="xgwin" x="110.5" y="220.9" width="7" height="7" rx="1" style="--dl:1.6s"/><rect class="xgwin" x="124.9" y="220.9" width="7" height="7" rx="1" style="--dl:1.8s"/><rect x="125" y="232" width="6" height="10" rx="1" fill="#6d3b2e"/><rect x="170" y="216" width="32" height="24" fill="#e6d6bf"/><rect x="189.8" y="216" width="12.2" height="24" fill="#000" opacity=".12"/><rect x="193" y="203" width="5" height="10" fill="#6d3b2e"/><circle class="xgsm" cx="195.5" cy="201" r="2.4" style="--dl:2.6s"/><circle class="xgsm" cx="195.5" cy="201" r="3" style="--dl:3.4s"/><circle class="xgsm" cx="195.5" cy="201" r="3.6" style="--dl:4.4s"/><path d="M166,217 L186,201.1 L206,217 Z" fill="#2f5d7c"/><path d="M167,216 L186,202.1 L205,216" fill="none" stroke="#fbfdff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><rect class="xgwin" x="175.8" y="221.3" width="7" height="7" rx="1" style="--dl:1.9s"/><rect class="xgwin" x="188.6" y="221.3" width="7" height="7" rx="1" style="--dl:1.9s"/><rect x="189" y="230" width="6" height="10" rx="1" fill="#6d3b2e"/><rect x="212" y="214" width="26" height="20" fill="#efe3cf"/><rect x="228.1" y="214" width="9.9" height="20" fill="#000" opacity=".12"/><rect x="230.7" y="201" width="5" height="10" fill="#6d3b2e"/><circle class="xgsm" cx="233.2" cy="199" r="2.4" style="--dl:2.3s"/><circle class="xgsm" cx="233.2" cy="199" r="3" style="--dl:3.4s"/><circle class="xgsm" cx="233.2" cy="199" r="3.6" style="--dl:4.5s"/><path d="M208,215 L225,201.6 L242,215 Z" fill="#a3313a"/><path d="M209,214 L225,202.6 L241,214" fill="none" stroke="#fbfdff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><rect class="xgwin" x="219.8" y="218.4" width="7" height="7" rx="1" style="--dl:2s"/><rect x="222" y="224" width="6" height="10" rx="1" fill="#6d3b2e"/><g transform="translate(155,244)"><path d="M0,-40 L10,-24 L6,-24 L14,-11 L9,-11 L17,2 L-17,2 L-9,-11 L-14,-11 L-6,-24 L-10,-24 Z" fill="#17603f"/><path d="M0,-40 L3.5,-34 L-3.5,-34 Z M-6,-24 L-2,-26.5 L2,-24 L6,-24 Z M-9,-11 L-4,-13.5 L1,-11 L9,-11 Z" fill="#eef4fc"/><rect x="-2" y="2" width="4" height="5" fill="#4a3020"/><circle class="xglt" cx="-3" cy="-29" r="1.3" fill="#ffd166" style="--dl:1.7s;--tw:1.6s"/><circle class="xglt" cx="3" cy="-21" r="1.3" fill="#ff4d5e" style="--dl:1.8s;--tw:1s"/><circle class="xglt" cx="-6" cy="-17" r="1.3" fill="#7fd3ff" style="--dl:1.8s;--tw:1.2s"/><circle class="xglt" cx="5" cy="-13" r="1.3" fill="#ffd166" style="--dl:1.9s;--tw:1.9s"/><circle class="xglt" cx="-9" cy="-5" r="1.3" fill="#ff4d5e" style="--dl:2s;--tw:1.9s"/><circle class="xglt" cx="0" cy="-7" r="1.3" fill="#fff1c9" style="--dl:2s;--tw:1.8s"/><circle class="xglt" cx="9" cy="-3" r="1.3" fill="#7fd3ff" style="--dl:2.1s;--tw:1.8s"/><circle class="xglt" cx="-3" cy="-1" r="1.3" fill="#ffd166" style="--dl:2.2s;--tw:1.6s"/><path class="xgts" d="M0,-46 L1.6,-42.2 L5.6,-42 L2.5,-39.5 L3.5,-35.6 L0,-37.8 L-3.5,-35.6 L-2.5,-39.5 L-5.6,-42 L-1.6,-42.2 Z" fill="#ffd166"/></g><path d="M20,250 Q90,236 160,246 T290,240 L290,290 L20,290 Z" fill="#ffffff"/></g><path class="xgtr" pathLength="1" d="M-40,214 Q100,114 300,52"/><g class="xgfly"><g transform="scale(.8)"><path d="M3,4 L23,4 Q27,4 27,0 L30,0 Q30,9 23,11 L5,11 Q0,11 3,4 Z" fill="#0c1a33"/><path d="M-3,15 L26,15 Q32,15 32,9" stroke="#0c1a33" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M6,11 L6,15 M20,11 L20,15" stroke="#0c1a33" stroke-width="1.4"/><circle cx="7" cy="0" r="5.5" fill="#0c1a33"/><path d="M12,4 Q12,-6 17,-6 Q22,-6 21,4 Z" fill="#0c1a33"/><circle cx="17" cy="-9" r="3" fill="#0c1a33"/><path d="M15,-11 L19,-17 L20.5,-11 Z" fill="#0c1a33"/><path d="M28,4 L104,-12" stroke="#0c1a33" stroke-width=".8" opacity=".8"/><g class="xgrd" style="--b:0s" transform="translate(36,-4)"><path d="M0,8 C2,4 12,3 16,5 L19,1 L22,0 L24.5,2 L21,3.6 L18,7 C16,10 6,11 2,10 Z" fill="#0c1a33"/><path d="M16,9 L22,13 M14,9.5 L19.5,14 M4,9.5 L-3,12 M2.5,9.5 L-3,14.5 M0.5,8 L-2.5,6 M20.5,0.6 L19.2,-4 M19.8,-2 L17.6,-3.4 M21.6,0.4 L23.2,-3.8 M22.5,-2 L24.8,-2.8" stroke="#0c1a33" stroke-width="1.5" stroke-linecap="round" fill="none"/></g><g class="xgrd" style="--b:0.1s" transform="translate(57,-8.4)"><path d="M0,8 C2,4 12,3 16,5 L19,1 L22,0 L24.5,2 L21,3.6 L18,7 C16,10 6,11 2,10 Z" fill="#0c1a33"/><path d="M16,9 L22,13 M14,9.5 L19.5,14 M4,9.5 L-3,12 M2.5,9.5 L-3,14.5 M0.5,8 L-2.5,6 M20.5,0.6 L19.2,-4 M19.8,-2 L17.6,-3.4 M21.6,0.4 L23.2,-3.8 M22.5,-2 L24.8,-2.8" stroke="#0c1a33" stroke-width="1.5" stroke-linecap="round" fill="none"/></g><g class="xgrd" style="--b:0.2s" transform="translate(78,-12.8)"><path d="M0,8 C2,4 12,3 16,5 L19,1 L22,0 L24.5,2 L21,3.6 L18,7 C16,10 6,11 2,10 Z" fill="#0c1a33"/><path d="M16,9 L22,13 M14,9.5 L19.5,14 M4,9.5 L-3,12 M2.5,9.5 L-3,14.5 M0.5,8 L-2.5,6 M20.5,0.6 L19.2,-4 M19.8,-2 L17.6,-3.4 M21.6,0.4 L23.2,-3.8 M22.5,-2 L24.8,-2.8" stroke="#0c1a33" stroke-width="1.5" stroke-linecap="round" fill="none"/></g><g class="xgrd" style="--b:0.4s" transform="translate(99,-17.2)"><path d="M0,8 C2,4 12,3 16,5 L19,1 L22,0 L24.5,2 L21,3.6 L18,7 C16,10 6,11 2,10 Z" fill="#0c1a33"/><path d="M16,9 L22,13 M14,9.5 L19.5,14 M4,9.5 L-3,12 M2.5,9.5 L-3,14.5 M0.5,8 L-2.5,6 M20.5,0.6 L19.2,-4 M19.8,-2 L17.6,-3.4 M21.6,0.4 L23.2,-3.8 M22.5,-2 L24.8,-2.8" stroke="#0c1a33" stroke-width="1.5" stroke-linecap="round" fill="none"/></g></g></g><circle class="xgsn" cx="197.6" cy="203.8" r="0.9" style="--du:5.6s;--de:-3.7s;--sx:0.8px"/><circle class="xgsn" cx="93.3" cy="181.2" r="0.9" style="--du:3.3s;--de:-2.6s;--sx:8.6px"/><circle class="xgsn" cx="156.4" cy="226" r="1.3" style="--du:6s;--de:-4.2s;--sx:-7.3px"/><circle class="xgsn" cx="156.6" cy="67.1" r="1.5" style="--du:5s;--de:-1.1s;--sx:2.9px"/><circle class="xgsn" cx="71.2" cy="45.7" r="1.2" style="--du:3.5s;--de:-0.7s;--sx:-9.4px"/><circle class="xgsn" cx="145.1" cy="199.7" r="1.4" style="--du:4.3s;--de:-0.1s;--sx:2.1px"/><circle class="xgsn" cx="94.2" cy="78.4" r="1.7" style="--du:5.7s;--de:-2.8s;--sx:8.1px"/><circle class="xgsn" cx="68.7" cy="191.1" r="1.6" style="--du:5.7s;--de:-3.5s;--sx:5.1px"/><circle class="xgsn" cx="255.3" cy="163.5" r="1.9" style="--du:5.6s;--de:-3.9s;--sx:5.7px"/><circle class="xgsn" cx="195" cy="169" r="2" style="--du:4s;--de:-1.1s;--sx:5.4px"/><circle class="xgsn" cx="169" cy="96.6" r="1.2" style="--du:3.6s;--de:-3.7s;--sx:6.5px"/><circle class="xgsn" cx="72.8" cy="190.3" r="1.7" style="--du:5.9s;--de:-4.2s;--sx:-4px"/><circle class="xgsn" cx="167.8" cy="80.3" r="1.7" style="--du:5.9s;--de:-2.2s;--sx:-5.4px"/><circle class="xgsn" cx="235.9" cy="202.6" r="1.6" style="--du:3.7s;--de:-1.6s;--sx:4.2px"/><circle class="xgsn" cx="136.2" cy="176.4" r="1.8" style="--du:4.7s;--de:-4.7s;--sx:-0.3px"/><circle class="xgsn" cx="41.2" cy="88.5" r="1.5" style="--du:4.9s;--de:-3.7s;--sx:-9.3px"/><circle class="xgsn" cx="91.8" cy="80.8" r="1.7" style="--du:4.5s;--de:-4.6s;--sx:3.7px"/><circle class="xgsn" cx="252.1" cy="181.2" r="1.5" style="--du:5.7s;--de:-4s;--sx:4.2px"/><circle class="xgsn" cx="217.9" cy="185.6" r="1.9" style="--du:5.5s;--de:-0.3s;--sx:-1.2px"/><circle class="xgsn" cx="253.2" cy="151.3" r="1.8" style="--du:4.7s;--de:-1s;--sx:7.8px"/><circle class="xgsn" cx="241.1" cy="186.9" r="2.1" style="--du:3.8s;--de:-2.9s;--sx:9.7px"/><circle class="xgsn" cx="244.6" cy="126" r="1.3" style="--du:3.7s;--de:-3.6s;--sx:-4px"/><circle class="xgsn" cx="244.8" cy="125.7" r="1.9" style="--du:4s;--de:-4.3s;--sx:9.6px"/><circle class="xgsn" cx="118.4" cy="170.5" r="0.9" style="--du:5.6s;--de:-3.8s;--sx:-9.5px"/><circle class="xgsn" cx="156.6" cy="209.1" r="1.2" style="--du:4.6s;--de:-2.6s;--sx:0.2px"/><circle class="xgsn" cx="158.4" cy="91.6" r="1.7" style="--du:3.8s;--de:-1.2s;--sx:-8.6px"/><circle class="xgsn" cx="117.9" cy="110.3" r="2.1" style="--du:4.5s;--de:-0.1s;--sx:-6.2px"/><circle class="xgsn" cx="97.6" cy="95.8" r="1.1" style="--du:4.5s;--de:-1.3s;--sx:5px"/><circle class="xgsn" cx="212" cy="83.9" r="1.7" style="--du:4.6s;--de:-2.3s;--sx:-3.5px"/><circle class="xgsn" cx="169.7" cy="226.6" r="2.1" style="--du:5.9s;--de:-3.9s;--sx:9px"/><circle cx="150" cy="158" r="118" fill="url(#xgsh)"/></g><circle cx="150" cy="158" r="117" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2.2"/><path class="xghl" d="M58,146.2 A104,104 0 0 1 128.8,63.6" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".28"/><circle cx="124" cy="56.5" r="4" fill="#fff" opacity=".5"/></g><path class="xsp" style="--dl:2.6s;--tw:1.6s" d="M30,63.5 Q30,70 36.5,70 Q30,70 30,76.5 Q30,70 23.5,70 Q30,70 30,63.5 Z" fill="#fff6d0"/><path class="xsp" style="--dl:2.7s;--tw:2.6s" d="M272,52.1 Q272,58 277.9,58 Q272,58 272,63.9 Q272,58 266.1,58 Q272,58 272,52.1 Z" fill="#fff6d0"/><path class="xsp" style="--dl:2.8s;--tw:2s" d="M18,194.8 Q18,200 23.2,200 Q18,200 18,205.2 Q18,200 12.8,200 Q18,200 18,194.8 Z" fill="#fff6d0"/><path class="xsp" style="--dl:2.9s;--tw:2s" d="M284,175.5 Q284,182 290.5,182 Q284,182 284,188.5 Q284,182 277.5,182 Q284,182 284,175.5 Z" fill="#fff6d0"/><path class="xsp" style="--dl:3s;--tw:1.8s" d="M60,13.4 Q60,18 64.5,18 Q60,18 60,22.6 Q60,18 55.5,18 Q60,18 60,13.4 Z" fill="#fff6d0"/><path class="xsp" style="--dl:3.1s;--tw:2.5s" d="M246,8.8 Q246,14 251.2,14 Q246,14 246,19.2 Q246,14 240.8,14 Q246,14 246,8.8 Z" fill="#fff6d0"/></svg></div><div class="scene"><div class="beam"><b></b></div><div class="halo"></div><div class="tilt"><div class="wafer"><div class="side"></div><div class="spin"><svg class="face" viewBox="0 0 240 240" aria-hidden="true"><defs><clipPath id="wc"><circle cx="120" cy="120" r="110"/></clipPath><radialGradient id="wg" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="var(--wf1)"/><stop offset="1" stop-color="var(--wf2)"/></radialGradient></defs><circle cx="120" cy="120" r="110" fill="url(#wg)"/><g clip-path="url(#wc)"><rect class="d p" x="94.8" y="3.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.72s"/><rect class="d p" x="107.8" y="3.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="120.8" y="3.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="133.8" y="3.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.72s"/><rect class="d p" x="55.8" y="16.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.73s"/><rect class="d p" x="68.8" y="16.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.68s"/><rect class="d p" x="81.8" y="16.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d" x="94.8" y="16.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.63s"/><rect class="d" x="107.8" y="16.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.62s"/><rect class="d" x="120.8" y="16.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.62s"/><rect class="d" x="133.8" y="16.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.63s"/><rect class="d p" x="146.8" y="16.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d p" x="159.8" y="16.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.68s"/><rect class="d p" x="172.8" y="16.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.73s"/><rect class="d p" x="42.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="55.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d" x="68.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.60s"/><rect class="d" x="81.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.57s"/><rect class="d" x="94.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.54s"/><rect class="d" x="107.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="120.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="133.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.54s"/><rect class="d" x="146.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.57s"/><rect class="d" x="159.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.60s"/><rect class="d p" x="172.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d p" x="185.8" y="29.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="29.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="42.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.64s"/><rect class="d" x="55.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.58s"/><rect class="d" x="68.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="81.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.49s"/><rect class="d" x="94.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="107.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.44s"/><rect class="d" x="120.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.44s"/><rect class="d" x="133.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="146.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.49s"/><rect class="d" x="159.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="172.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.58s"/><rect class="d p" x="185.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.64s"/><rect class="d p" x="198.8" y="42.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="16.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.73s"/><rect class="d p" x="29.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d" x="42.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.58s"/><rect class="d" x="55.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.51s"/><rect class="d b" x="68.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s;--bd:3.45s;--bo:0.43s"/><rect class="d" x="81.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.41s"/><rect class="d" x="94.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.37s"/><rect class="d" x="107.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.35s"/><rect class="d" x="120.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.35s"/><rect class="d" x="133.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.37s"/><rect class="d" x="146.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.41s"/><rect class="d" x="159.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="172.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.51s"/><rect class="d" x="185.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.58s"/><rect class="d p" x="198.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d p" x="211.8" y="55.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.73s"/><rect class="d p" x="16.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.68s"/><rect class="d" x="29.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.60s"/><rect class="d" x="42.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="55.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="68.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.39s"/><rect class="d" x="81.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.33s"/><rect class="d" x="94.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.29s"/><rect class="d" x="107.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s"/><rect class="d" x="120.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s"/><rect class="d" x="133.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.29s"/><rect class="d" x="146.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.33s"/><rect class="d" x="159.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.39s"/><rect class="d" x="172.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="185.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d b" x="198.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.60s;--bd:3.71s;--bo:2.67s"/><rect class="d p" x="211.8" y="68.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.68s"/><rect class="d p" x="16.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d b" x="29.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.57s;--bd:3.98s;--bo:1.79s"/><rect class="d" x="42.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.49s"/><rect class="d" x="55.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.41s"/><rect class="d" x="68.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.33s"/><rect class="d" x="81.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s"/><rect class="d" x="94.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.21s"/><rect class="d" x="107.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.18s"/><rect class="d" x="120.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.18s"/><rect class="d" x="133.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.21s"/><rect class="d" x="146.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s"/><rect class="d" x="159.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.33s"/><rect class="d" x="172.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.41s"/><rect class="d" x="185.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.49s"/><rect class="d" x="198.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.57s"/><rect class="d p" x="211.8" y="81.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d p" x="3.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.72s"/><rect class="d" x="16.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.63s"/><rect class="d" x="29.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.54s"/><rect class="d" x="42.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="55.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.37s"/><rect class="d" x="68.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.29s"/><rect class="d" x="81.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.21s"/><rect class="d" x="94.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.14s"/><rect class="d" x="107.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.09s"/><rect class="d" x="120.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.09s"/><rect class="d" x="133.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.14s"/><rect class="d" x="146.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.21s"/><rect class="d" x="159.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.29s"/><rect class="d" x="172.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.37s"/><rect class="d" x="185.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="198.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.54s"/><rect class="d" x="211.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.63s"/><rect class="d p" x="224.8" y="94.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.72s"/><rect class="d p" x="3.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d" x="16.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.62s"/><rect class="d" x="29.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="42.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.44s"/><rect class="d" x="55.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.35s"/><rect class="d" x="68.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s"/><rect class="d" x="81.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.18s"/><rect class="d" x="94.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.09s"/><rect class="d" x="107.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.01s"/><rect class="d" x="120.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.01s"/><rect class="d" x="133.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.09s"/><rect class="d" x="146.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.18s"/><rect class="d" x="159.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s"/><rect class="d" x="172.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.35s"/><rect class="d" x="185.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.44s"/><rect class="d" x="198.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="211.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.62s"/><rect class="d p" x="224.8" y="107.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="3.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d" x="16.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.62s"/><rect class="d" x="29.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="42.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.44s"/><rect class="d" x="55.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.35s"/><rect class="d" x="68.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s"/><rect class="d" x="81.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.18s"/><rect class="d" x="94.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.09s"/><rect class="d" x="107.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.01s"/><rect class="d" x="120.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.01s"/><rect class="d" x="133.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.09s"/><rect class="d" x="146.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.18s"/><rect class="d" x="159.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s"/><rect class="d" x="172.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.35s"/><rect class="d" x="185.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.44s"/><rect class="d" x="198.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="211.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.62s"/><rect class="d p" x="224.8" y="120.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="3.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.72s"/><rect class="d" x="16.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.63s"/><rect class="d" x="29.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.54s"/><rect class="d" x="42.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="55.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.37s"/><rect class="d" x="68.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.29s"/><rect class="d b" x="81.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.21s;--bd:3.31s;--bo:1.36s"/><rect class="d" x="94.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.14s"/><rect class="d" x="107.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.09s"/><rect class="d" x="120.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.09s"/><rect class="d b" x="133.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.14s;--bd:4.27s;--bo:1.95s"/><rect class="d" x="146.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.21s"/><rect class="d b" x="159.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.29s;--bd:3.94s;--bo:2.50s"/><rect class="d" x="172.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.37s"/><rect class="d" x="185.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="198.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.54s"/><rect class="d" x="211.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.63s"/><rect class="d p" x="224.8" y="133.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.72s"/><rect class="d p" x="16.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d" x="29.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.57s"/><rect class="d" x="42.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.49s"/><rect class="d" x="55.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.41s"/><rect class="d" x="68.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.33s"/><rect class="d b" x="81.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s;--bd:2.38s;--bo:0.11s"/><rect class="d b" x="94.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.21s;--bd:4.66s;--bo:1.80s"/><rect class="d" x="107.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.18s"/><rect class="d" x="120.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.18s"/><rect class="d" x="133.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.21s"/><rect class="d" x="146.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s"/><rect class="d" x="159.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.33s"/><rect class="d" x="172.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.41s"/><rect class="d" x="185.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.49s"/><rect class="d" x="198.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.57s"/><rect class="d p" x="211.8" y="146.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d p" x="16.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.68s"/><rect class="d" x="29.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.60s"/><rect class="d" x="42.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="55.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d b" x="68.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.39s;--bd:4.38s;--bo:0.98s"/><rect class="d" x="81.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.33s"/><rect class="d" x="94.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.29s"/><rect class="d" x="107.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s"/><rect class="d" x="120.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.26s"/><rect class="d" x="133.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.29s"/><rect class="d" x="146.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.33s"/><rect class="d b" x="159.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.39s;--bd:3.85s;--bo:0.59s"/><rect class="d" x="172.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="185.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="198.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.60s"/><rect class="d p" x="211.8" y="159.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.68s"/><rect class="d p" x="16.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.73s"/><rect class="d p" x="29.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d" x="42.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.58s"/><rect class="d" x="55.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.51s"/><rect class="d" x="68.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d b" x="81.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.41s;--bd:2.85s;--bo:0.88s"/><rect class="d" x="94.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.37s"/><rect class="d" x="107.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.35s"/><rect class="d" x="120.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.35s"/><rect class="d b" x="133.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.37s;--bd:2.21s;--bo:0.25s"/><rect class="d" x="146.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.41s"/><rect class="d" x="159.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="172.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.51s"/><rect class="d" x="185.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.58s"/><rect class="d p" x="198.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d p" x="211.8" y="172.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.73s"/><rect class="d p" x="29.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="42.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.64s"/><rect class="d" x="55.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.58s"/><rect class="d" x="68.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="81.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.49s"/><rect class="d" x="94.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="107.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.44s"/><rect class="d" x="120.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.44s"/><rect class="d" x="133.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.46s"/><rect class="d" x="146.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.49s"/><rect class="d" x="159.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="172.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.58s"/><rect class="d p" x="185.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.64s"/><rect class="d p" x="198.8" y="185.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="42.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="55.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d" x="68.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.60s"/><rect class="d" x="81.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.57s"/><rect class="d" x="94.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.54s"/><rect class="d" x="107.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="120.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.53s"/><rect class="d" x="133.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.54s"/><rect class="d" x="146.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.57s"/><rect class="d" x="159.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.60s"/><rect class="d p" x="172.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d p" x="185.8" y="198.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="55.8" y="211.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.73s"/><rect class="d p" x="68.8" y="211.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.68s"/><rect class="d p" x="81.8" y="211.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d" x="94.8" y="211.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.63s"/><rect class="d" x="107.8" y="211.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.62s"/><rect class="d" x="120.8" y="211.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.62s"/><rect class="d" x="133.8" y="211.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.63s"/><rect class="d p" x="146.8" y="211.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.65s"/><rect class="d p" x="159.8" y="211.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.68s"/><rect class="d p" x="172.8" y="211.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.73s"/><rect class="d p" x="94.8" y="224.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.72s"/><rect class="d p" x="107.8" y="224.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="120.8" y="224.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.70s"/><rect class="d p" x="133.8" y="224.8" width="11.4" height="11.4" rx="1.4" style="--dl:1.72s"/></g><circle class="ring" cx="120" cy="120" r="4"/><circle class="edge" cx="120" cy="120" r="109.2"/><circle class="bev" cx="120" cy="120" r="106.8"/><path class="flat" d="M108 229.4 h24"/></svg><div class="sheen"></div></div><div class="gloss"></div></div><div class="hud"><svg viewBox="0 0 240 240" aria-hidden="true"><g class="tk"><line x1="238.0" y1="120.0" x2="226.0" y2="120.0"/><line x1="237.6" y1="130.3" x2="231.6" y2="129.8"/><line x1="236.2" y1="140.5" x2="230.3" y2="139.4"/><line x1="234.0" y1="150.5" x2="228.2" y2="149.0"/><line x1="230.9" y1="160.4" x2="225.2" y2="158.3"/><line x1="226.9" y1="169.9" x2="221.5" y2="167.3"/><line x1="222.2" y1="179.0" x2="211.8" y2="173.0"/><line x1="216.7" y1="187.7" x2="211.7" y2="184.2"/><line x1="210.4" y1="195.8" x2="205.8" y2="192.0"/><line x1="203.4" y1="203.4" x2="199.2" y2="199.2"/><line x1="195.8" y1="210.4" x2="192.0" y2="205.8"/><line x1="187.7" y1="216.7" x2="184.2" y2="211.7"/><line x1="179.0" y1="222.2" x2="173.0" y2="211.8"/><line x1="169.9" y1="226.9" x2="167.3" y2="221.5"/><line x1="160.4" y1="230.9" x2="158.3" y2="225.2"/><line x1="150.5" y1="234.0" x2="149.0" y2="228.2"/><line x1="140.5" y1="236.2" x2="139.4" y2="230.3"/><line x1="130.3" y1="237.6" x2="129.8" y2="231.6"/><line x1="120.0" y1="238.0" x2="120.0" y2="226.0"/><line x1="109.7" y1="237.6" x2="110.2" y2="231.6"/><line x1="99.5" y1="236.2" x2="100.6" y2="230.3"/><line x1="89.5" y1="234.0" x2="91.0" y2="228.2"/><line x1="79.6" y1="230.9" x2="81.7" y2="225.2"/><line x1="70.1" y1="226.9" x2="72.7" y2="221.5"/><line x1="61.0" y1="222.2" x2="67.0" y2="211.8"/><line x1="52.3" y1="216.7" x2="55.8" y2="211.7"/><line x1="44.2" y1="210.4" x2="48.0" y2="205.8"/><line x1="36.6" y1="203.4" x2="40.8" y2="199.2"/><line x1="29.6" y1="195.8" x2="34.2" y2="192.0"/><line x1="23.3" y1="187.7" x2="28.3" y2="184.2"/><line x1="17.8" y1="179.0" x2="28.2" y2="173.0"/><line x1="13.1" y1="169.9" x2="18.5" y2="167.3"/><line x1="9.1" y1="160.4" x2="14.8" y2="158.3"/><line x1="6.0" y1="150.5" x2="11.8" y2="149.0"/><line x1="3.8" y1="140.5" x2="9.7" y2="139.4"/><line x1="2.4" y1="130.3" x2="8.4" y2="129.8"/><line x1="2.0" y1="120.0" x2="14.0" y2="120.0"/><line x1="2.4" y1="109.7" x2="8.4" y2="110.2"/><line x1="3.8" y1="99.5" x2="9.7" y2="100.6"/><line x1="6.0" y1="89.5" x2="11.8" y2="91.0"/><line x1="9.1" y1="79.6" x2="14.8" y2="81.7"/><line x1="13.1" y1="70.1" x2="18.5" y2="72.7"/><line x1="17.8" y1="61.0" x2="28.2" y2="67.0"/><line x1="23.3" y1="52.3" x2="28.3" y2="55.8"/><line x1="29.6" y1="44.2" x2="34.2" y2="48.0"/><line x1="36.6" y1="36.6" x2="40.8" y2="40.8"/><line x1="44.2" y1="29.6" x2="48.0" y2="34.2"/><line x1="52.3" y1="23.3" x2="55.8" y2="28.3"/><line x1="61.0" y1="17.8" x2="67.0" y2="28.2"/><line x1="70.1" y1="13.1" x2="72.7" y2="18.5"/><line x1="79.6" y1="9.1" x2="81.7" y2="14.8"/><line x1="89.5" y1="6.0" x2="91.0" y2="11.8"/><line x1="99.5" y1="3.8" x2="100.6" y2="9.7"/><line x1="109.7" y1="2.4" x2="110.2" y2="8.4"/><line x1="120.0" y1="2.0" x2="120.0" y2="14.0"/><line x1="130.3" y1="2.4" x2="129.8" y2="8.4"/><line x1="140.5" y1="3.8" x2="139.4" y2="9.7"/><line x1="150.5" y1="6.0" x2="149.0" y2="11.8"/><line x1="160.4" y1="9.1" x2="158.3" y2="14.8"/><line x1="169.9" y1="13.1" x2="167.3" y2="18.5"/><line x1="179.0" y1="17.8" x2="173.0" y2="28.2"/><line x1="187.7" y1="23.3" x2="184.2" y2="28.3"/><line x1="195.8" y1="29.6" x2="192.0" y2="34.2"/><line x1="203.4" y1="36.6" x2="199.2" y2="40.8"/><line x1="210.4" y1="44.2" x2="205.8" y2="48.0"/><line x1="216.7" y1="52.3" x2="211.7" y2="55.8"/><line x1="222.2" y1="61.0" x2="211.8" y2="67.0"/><line x1="226.9" y1="70.1" x2="221.5" y2="72.7"/><line x1="230.9" y1="79.6" x2="225.2" y2="81.7"/><line x1="234.0" y1="89.5" x2="228.2" y2="91.0"/><line x1="236.2" y1="99.5" x2="230.3" y2="100.6"/><line x1="237.6" y1="109.7" x2="231.6" y2="110.2"/></g><circle class="h1" cx="120" cy="120" r="124"/><circle class="h2" cx="120" cy="120" r="129" pathLength="100"/><circle class="h3" cx="120" cy="120" r="116" pathLength="100"/></svg></div></div><div class="det"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i><i class="sl"></i><b class="dl"><em>AI VISION</em><span class="sw"><span class="s1">INSPECTING</span><span class="s2">✓ PASS 99.8%</span></span></b></div><div class="pts"><i style="left:63%;--pd:2.18s;--pt:4.9s;--ps:2.9px"></i><i style="left:15%;--pd:1.81s;--pt:5.4s;--ps:2.3px"></i><i style="left:10%;--pd:2.55s;--pt:3.8s;--ps:1.7px"></i><i style="left:32%;--pd:1.36s;--pt:3.5s;--ps:2.5px"></i><i style="left:26%;--pd:3.42s;--pt:3.6s;--ps:2.1px"></i><i style="left:68%;--pd:2.21s;--pt:4.9s;--ps:1.8px"></i><i style="left:65%;--pd:2.01s;--pt:4.3s;--ps:1.5px"></i><i style="left:42%;--pd:3.41s;--pt:3.8s;--ps:2.6px"></i><i style="left:9%;--pd:2.32s;--pt:4.7s;--ps:2.5px"></i><i style="left:24%;--pd:2.42s;--pt:6.0s;--ps:2.7px"></i><i style="left:43%;--pd:2.12s;--pt:4.5s;--ps:3.0px"></i><i style="left:8%;--pd:3.27s;--pt:5.9s;--ps:2.4px"></i><i style="left:92%;--pd:1.25s;--pt:4.0s;--ps:3.0px"></i><i style="left:59%;--pd:2.58s;--pt:3.6s;--ps:1.7px"></i><i style="left:45%;--pd:1.22s;--pt:5.0s;--ps:2.7px"></i><i style="left:40%;--pd:1.38s;--pt:4.0s;--ps:2.5px"></i></div></div><div class="wt" id="splwait">최신 정보 받는 중…</div><div class="tx"><div class="xmc" aria-hidden="true"><span style="animation-delay:2.25s">M</span><span style="animation-delay:2.29s">E</span><span style="animation-delay:2.34s">R</span><span style="animation-delay:2.38s">R</span><span style="animation-delay:2.43s">Y</span><span style="animation-delay:2.48s">&nbsp;</span><span style="animation-delay:2.52s">C</span><span style="animation-delay:2.56s">H</span><span style="animation-delay:2.61s">R</span><span style="animation-delay:2.65s">I</span><span style="animation-delay:2.70s">S</span><span style="animation-delay:2.75s">T</span><span style="animation-delay:2.79s">M</span><span style="animation-delay:2.83s">A</span><span style="animation-delay:2.88s">S</span></div><div class="tt"><span style="animation-delay:1.200s">M</span><span style="animation-delay:1.235s">A</span><span style="animation-delay:1.270s">N</span><span style="animation-delay:1.305s">U</span><span style="animation-delay:1.340s">F</span><span style="animation-delay:1.375s">A</span><span style="animation-delay:1.410s">C</span><span style="animation-delay:1.445s">T</span><span style="animation-delay:1.480s">U</span><span style="animation-delay:1.515s">R</span><span style="animation-delay:1.550s">I</span><span style="animation-delay:1.585s">N</span><span style="animation-delay:1.620s">G</span></div><div class="big"><i><span style="--d:1.40s">1</span><span style="--d:1.49s">-</span><span style="--d:1.58s">B</span></i></div><div class="ln"></div><div class="st" id="splsub">AI · SEMICONDUCTOR EQUIPMENT</div></div><svg id="spx" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg><div class="aipill"><i></i><em id="aist">AI 시스템 부팅 중</em></div><div class="ft"><picture><source srcset="logo_dark.png" media="(prefers-color-scheme: dark)"><img src="logo.png" alt="NINEBELL" onerror="this.style.display='none'"></picture></div><div class="spxcr">Made by - SON</div></div>
 <script>
-/* 💿 시작 화면 2종 (2026-11-09) — 켤 때마다 번갈아: ① AI 웨이퍼 (3D 웨이퍼 · 빛줄기 · NINEBELL 각인) ② 빛 스캔 로고
+/* 💿 시작 화면 2종 (2026-11-10) — 켤 때마다 번갈아: ① EFEM 로봇 이송 (FOUP → 챔버 · NINEBELL 로고 빛 스윕) ② 빛 스캔 로고
  *  · 4.4초 고정 (SPL_MIN 그대로) · 폰에서만 그림 (서버 요청 없음)
  *  · 처음에 SVG 뼈대를 한 번 만들고, 매 프레임은 바뀐 값만 고침 (다이는 무늬 한 장 · 바뀐 값만) → 가벼움
  *  · 크리스마스 기간(html.xmas)엔 안 씀 · 움직임 줄이기 설정이면 마지막 장면만
@@ -2722,201 +2739,266 @@ var SPX = (function () {
       '<filter id="sxB8"><feGaussianBlur stdDeviation="8"/></filter><filter id="sxB3"><feGaussianBlur stdDeviation="3"/></filter></defs>';
   };
 
-  /* ---------- ① AI 웨이퍼 (2026-11-09 새로 · 검사 장면 아님 — 시스템 켜지는 연출) ----------
-   *  위에서 본 웨이퍼가 돌면서 비스듬히 눕고 받침대 위로 떠오름 → 빛줄기가 앞쪽까지 지나가며 다이가 켜짐
-   *  → 무지갯빛 반사가 흐르고 가장자리 빛 · 웨이퍼 위에 NINEBELL 각인이 빛남
-   *  · 화면 흔들림 없음 · 다크/라이트는 폰 설정 그대로 (위쪽 상태바 색이 메인 화면과 같게)
-   *  · 다이는 무늬(pattern) 한 장으로 그려서 가벼움 · 매 프레임은 바뀐 값만 고침
-   */
-  function build1(svg, T, DK) {
-    var R = 158, cx = 195, cy = 372, f1 = function (x) { return x.toFixed(1); }, VIO = DK ? "#a78bfa" : "#7c5cff";
-    var c = DK ? { w1: "#3a4766", w2: "#141c2e", w3: "#070b14", die: "#1a2438", dieIn: "#24314c", edge: "#5d6f96", side1: "#2b3550", side2: "#0b1020", stage: "#5b93ff" }
-               : { w1: "#ffffff", w2: "#dfe6f1", w3: "#aab6c9", die: "#d3dcea", dieIn: "#e9eef6", edge: "#ffffff", side1: "#c9d2e0", side2: "#8d9ab0", stage: "#2f6fed" };
-    var n = 0;   // 온전한 다이 수 (가장자리 잘린 건 빼고)
-    for (var i = -22; i <= 22; i++) for (var j = -22; j <= 22; j++) { var x = i * 8, y = j * 8, d = Math.max(Math.hypot(x - 4, y - 4), Math.hypot(x + 4, y + 4), Math.hypot(x - 4, y + 4), Math.hypot(x + 4, y - 4)); if (d < R - 7) n++; }
-    var h = DEFS(T, DK) + '<defs>' +
-      '<radialGradient id="sxWb" cx=".38" cy=".3" r=".85"><stop offset="0" stop-color="' + c.w1 + '"/><stop offset=".55" stop-color="' + c.w2 + '"/><stop offset="1" stop-color="' + c.w3 + '"/></radialGradient>' +
-      '<linearGradient id="sxSd" x1="0" x2="1"><stop offset="0" stop-color="' + c.side2 + '"/><stop offset=".3" stop-color="' + c.side1 + '"/><stop offset=".55" stop-color="' + (DK ? "#55638a" : "#eef2f8") + '"/><stop offset=".8" stop-color="' + c.side1 + '"/><stop offset="1" stop-color="' + c.side2 + '"/></linearGradient>' +
-      '<linearGradient id="sxDlg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + (DK ? "#9dc0ff" : "#6b98ff") + '"/><stop offset="1" stop-color="' + T.a1 + '"/></linearGradient>' +
-      '<pattern id="sxDp" width="8" height="8" patternUnits="userSpaceOnUse" x="-4" y="-4"><rect x=".45" y=".45" width="7.1" height="7.1" rx=".7" fill="' + c.die + '"/><rect x="2" y="2" width="4" height="4" rx=".4" fill="' + c.dieIn + '"/><path d="M1.2 1.2h1.4M1.2 1.2v1.4M6.8 6.8h-1.4M6.8 6.8v-1.4" stroke="' + (DK ? "#4a5c84" : "#ffffff") + '" stroke-width=".35"/></pattern>' +
-      '<pattern id="sxDl" width="8" height="8" patternUnits="userSpaceOnUse" x="-4" y="-4"><rect x=".45" y=".45" width="7.1" height="7.1" rx=".7" fill="url(#sxDlg)" fill-opacity=".6"/><rect x="2" y="2" width="4" height="4" rx=".4" fill="#fff" fill-opacity="' + (DK ? .28 : .45) + '"/></pattern>' +
-      '<linearGradient id="sxSb2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="' + (DK ? .32 : .75) + '"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
-      '<linearGradient id="sxIr" gradientUnits="userSpaceOnUse" spreadMethod="reflect" x1="' + (-R * .55) + '" y1="' + (-R * .55) + '" x2="' + (R * .55) + '" y2="' + (R * .55) + '">' +
-        '<stop offset="0" stop-color="#4fe3ff" stop-opacity=".85"/><stop offset=".2" stop-color="#7b8cff" stop-opacity=".8"/><stop offset=".38" stop-color="#d07bff" stop-opacity=".8"/><stop offset=".55" stop-color="#ff8fc2" stop-opacity=".7"/><stop offset=".72" stop-color="#ffd27c" stop-opacity=".75"/><stop offset=".88" stop-color="#7dffb4" stop-opacity=".7"/><stop offset="1" stop-color="#4fe3ff" stop-opacity=".85"/></linearGradient>' +
-      '<radialGradient id="sxSp"><stop offset="0" stop-color="#fff" stop-opacity="' + (DK ? .55 : .9) + '"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>' +
-      '<linearGradient id="sxLs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff"/></linearGradient>' +
-      '<mask id="sxLm" maskUnits="userSpaceOnUse" x="' + (-R - 10) + '" y="' + (-R - 10) + '" width="' + (2 * R + 20) + '" height="' + (2 * R + 20) + '"><rect id="sxLmA" x="' + (-R - 10) + '" y="' + (-R - 10) + '" width="' + (2 * R + 20) + '" height="0" fill="#fff"/><rect id="sxLmB" x="' + (-R - 10) + '" y="' + (-R - 10) + '" width="' + (2 * R + 20) + '" height="24" fill="url(#sxLs)"/></mask>' +
-      '<linearGradient id="sxBmS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + T.a3 + '" stop-opacity="0"/><stop offset=".85" stop-color="' + T.a3 + '" stop-opacity="' + (DK ? .42 : .3) + '"/><stop offset="1" stop-color="#fff" stop-opacity=".9"/></linearGradient>' +
-      '<clipPath id="sxWc"><circle r="' + (R - 1) + '"/></clipPath>' +
-      '<linearGradient id="sxBm" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="' + T.a3 + '" stop-opacity="0"/><stop offset=".14" stop-color="' + T.a3 + '" stop-opacity="' + (DK ? .34 : .24) + '"/><stop offset="1" stop-color="' + T.a3 + '" stop-opacity="0"/></linearGradient>' +
-      '<linearGradient id="sxTt" x1="0" x2="1"><stop offset="0" stop-color="' + T.ink + '"/><stop offset=".55" stop-color="' + T.a1 + '"/><stop offset="1" stop-color="' + T.a3 + '"/></linearGradient>' +
-      '<linearGradient id="sxNb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="' + VIO + '"/><stop offset=".5" stop-color="' + (DK ? "#ffffff" : T.a1) + '"/><stop offset="1" stop-color="' + T.a3 + '"/></linearGradient>' +
-      '<radialGradient id="sxBg" cx=".5" cy=".42" r=".62"><stop offset="0" stop-color="' + T.a1 + '" stop-opacity="' + (DK ? .22 : .1) + '"/><stop offset="1" stop-color="' + T.a1 + '" stop-opacity="0"/></radialGradient>' +
-      '<radialGradient id="sxSt"><stop offset=".6" stop-color="' + c.stage + '" stop-opacity="0"/><stop offset=".86" stop-color="' + c.stage + '" stop-opacity="' + (DK ? .16 : .1) + '"/><stop offset="1" stop-color="' + c.stage + '" stop-opacity="0"/></radialGradient>' +
-      '<linearGradient id="sxEg" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".35" stop-color="#fff" stop-opacity="' + (DK ? .75 : .95) + '"/><stop offset=".6" stop-color="' + T.a3 + '" stop-opacity=".8"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
-      '<linearGradient id="sxCg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + T.a3 + '" stop-opacity="' + (DK ? .05 : .03) + '"/><stop offset="1" stop-color="' + T.a3 + '" stop-opacity="' + (DK ? .3 : .22) + '"/></linearGradient>' +
-      '<radialGradient id="sxFl"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="' + T.a3 + '" stop-opacity=".7"/><stop offset="1" stop-color="' + T.a3 + '" stop-opacity="0"/></radialGradient>' +
-      '<pattern id="sxP" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="13" cy="13" r=".7" fill="' + T.a1 + '" fill-opacity="' + (DK ? .18 : .12) + '"/></pattern></defs>';
-    h += '<g id="sxBG"><rect width="390" height="844" fill="url(#sxP)"/><rect width="390" height="844" fill="url(#sxBg)"/></g>';
-    // 검사대 (웨이퍼 아래 · 같은 기울기)
-    var tk = "";
-    for (var k = 0; k < 96; k++) { var an = k / 96 * Math.PI * 2, r1 = R + 40, r2 = R + (k % 8 ? 45 : 52); tk += '<line x1="' + f1(Math.cos(an) * r1) + '" y1="' + f1(Math.sin(an) * r1) + '" x2="' + f1(Math.cos(an) * r2) + '" y2="' + f1(Math.sin(an) * r2) + '"/>'; }
-    h += '<g id="sxStg"><circle r="' + (R + 70) + '" fill="url(#sxSt)"/><circle r="' + (R + 22) + '" fill="none" stroke="' + c.stage + '" stroke-opacity="' + (DK ? .22 : .18) + '" stroke-width="1.2"/>' +
-      '<circle r="' + (R + 32) + '" fill="none" stroke="' + c.stage + '" stroke-opacity="' + (DK ? .14 : .12) + '" stroke-dasharray="2 6"/><g stroke="' + T.sub + '" stroke-opacity=".3">' + tk + '</g>' +
-      '<circle id="sxStR" r="' + (R + 22) + '" fill="none" stroke="' + T.a3 + '" stroke-width="2.4" stroke-dasharray="0 2000" stroke-linecap="round"/></g>';
-    // 웨이퍼 그림자 · 옆면 (화면 좌표 · 매 프레임)
-    h += '<ellipse id="sxShd" fill="#000" filter="url(#sxB8)"/><path id="sxSide" fill="url(#sxSd)"/><path id="sxSideL" fill="none" stroke="' + T.a3 + '" stroke-width="1.4"/>';
-    // 웨이퍼 윗면
-    h += '<g id="sxWf"><g id="sxSpin">' +
-      '<circle r="' + R + '" fill="url(#sxWb)"/>' +
-      '<circle r="' + (R - 7) + '" fill="url(#sxDp)"/>' +
-      '<circle id="sxLit" r="' + (R - 7) + '" fill="url(#sxDl)" mask="url(#sxLm)"/>' +
-      '<path d="M-6 ' + R + ' a6 6 0 0 1 12 0" fill="' + c.w3 + '"/></g>' +
-      '<circle id="sxIrC" r="' + (R - 1) + '" fill="url(#sxIr)" opacity="0"' + (DK ? ' style="mix-blend-mode:screen"' : '') + '/>' +
-      '<g clip-path="url(#sxWc)"><ellipse id="sxSpc" rx="' + (R * .55) + '" ry="' + (R * .3) + '" fill="url(#sxSp)" opacity=".5"/><rect id="sxSwp" x="-40" y="' + (-R * 1.6) + '" width="80" height="' + (R * 3.2) + '" fill="url(#sxSb2)" opacity="0"/><g id="sxScan"></g></g>' +
-      '<circle r="' + (R - .8) + '" fill="none" stroke="' + c.edge + '" stroke-opacity="' + (DK ? .7 : .95) + '" stroke-width="1.4"/>' +
-      '<circle r="' + (R - 5) + '" fill="none" stroke="' + (DK ? "#000" : "#8d9ab0") + '" stroke-opacity=".25"/>' +
-      '<circle id="sxRim" r="' + (R - .6) + '" fill="none" stroke="url(#sxNb)" stroke-width="2.2" opacity="0"/>' +
-      '<g id="sxDef"></g><g id="sxTw"></g>' +
-      '<g id="sxNx" opacity="0">' +
-      '<text y="11" text-anchor="middle" font-size="34" font-weight="900" letter-spacing="2.5" fill="none" stroke="' + (DK ? "#05080f" : "#ffffff") + '" stroke-width="9" stroke-linejoin="round" opacity="' + (DK ? .55 : .7) + '">NINEBELL</text>' +
-      '<text y="11" text-anchor="middle" font-size="34" font-weight="900" letter-spacing="2.5" fill="none" stroke="' + T.a3 + '" stroke-width="5" stroke-linejoin="round" opacity=".28">NINEBELL</text>' +
-      '<text y="11" text-anchor="middle" font-size="34" font-weight="900" letter-spacing="2.5" fill="url(#sxNb)">NINEBELL</text>' +
-      '<text y="34" text-anchor="middle" font-size="10" font-weight="900" letter-spacing="5" fill="none" stroke="' + (DK ? "#05080f" : "#ffffff") + '" stroke-width="4" stroke-linejoin="round" opacity=".6">AI · 1-B</text>' +
-      '<text y="34" text-anchor="middle" font-size="10" font-weight="900" letter-spacing="5" fill="' + VIO + '">AI · 1-B</text></g>' +
-      '</g>';
-    h += '<path id="sxEdg" fill="none" stroke="url(#sxEg)" stroke-width="1.8" stroke-linecap="round"/><g id="sxCur"></g>';
-    h += '<g id="sxFx"></g><g id="sxBkG"></g><g id="sxO"></g>';
-    svg.innerHTML = h;
-    return { R: R, cx: cx, cy: cy, n: n, c: c, VIO: VIO, bg: el(svg, "sxBG"), stg: el(svg, "sxStg"), str: el(svg, "sxStR"), shd: el(svg, "sxShd"), side: el(svg, "sxSide"), sideL: el(svg, "sxSideL"),
-      wf: el(svg, "sxWf"), spin: el(svg, "sxSpin"), lmA: el(svg, "sxLmA"), lmB: el(svg, "sxLmB"), irc: el(svg, "sxIrC"), swp: el(svg, "sxSwp"), lit: el(svg, "sxLit"), ir: svg.querySelector("#sxIr"), spc: el(svg, "sxSpc"), scan: el(svg, "sxScan"),
-      rim: el(svg, "sxRim"), def: el(svg, "sxDef"), tw: el(svg, "sxTw"), edg: el(svg, "sxEdg"), cur: el(svg, "sxCur"), nx: el(svg, "sxNx"), fx: el(svg, "sxFx"), bk: el(svg, "sxBkG"), o: el(svg, "sxO") };
+  function f1(x) { return (+x).toFixed(1); }
+  function f2(x) { return (+x).toFixed(2); }
+  var LW = 1202, LH = 176;   // 로고 그림 크기
+  var MONO = 'font-family="ui-monospace,SFMono-Regular,Menlo,monospace"';
+
+  // 공통: 제목 (제조1-B + 작은 영문) · 로고 (빛 스윕으로 나타남)
+  function titleSvg(T, t, t0, y, size, sub) {
+    var wk = back(lin(t, t0, t0 + 560)), wls = (6 * (1 - eo(lin(t, t0, t0 + 760))) - .6).toFixed(2);
+    var o = '<text x="195" y="' + f1(y + (1 - wk) * 14) + '" text-anchor="middle" font-size="' + size + '" font-weight="900" letter-spacing="' + wls + '" fill="url(#svTt)" opacity="' + f2(cl(wk, 0, 1)) + '">제조1-B</text>';
+    var nn = Math.floor(lin(t, t0 + 260, t0 + 900) * sub.length);
+    o += '<text x="195" y="' + (y + 24) + '" text-anchor="middle" font-size="10" font-weight="800" letter-spacing="4" fill="' + T.sub + '">' + sub.slice(0, nn) + '</text>';
+    return o;
   }
-  function draw1(S, T, DK, t) {
-    var R = S.R, cx = S.cx, f1 = function (x) { return x.toFixed(1); }, DONE = 2850, VIO = S.VIO;
-    var ga = eo(lin(t, 0, 650));
-    S.bg.setAttribute("opacity", ga.toFixed(3));
-    // ① 위에서 본 모습 → 비스듬히 눕고 (기울기) · 아래에서 떠오르며 · 돌다가 멈춤
-    var p = eio(lin(t, 0, 1400)), sy = 1 - .4 * p, up = (1 - eo(lin(t, 0, 1300))) * 70, cy = S.cy + up, sc = .82 + .18 * eo(lin(t, 0, 1300));
-    var ang = -62 * (1 - eo(lin(t, 0, 1500)));
-    var ry = R * sy * sc, rx = R * sc, th = (4 + 8 * p) * sc;   // 화면에서 보이는 타원 · 두께
-    var wt = "translate(" + cx + " " + f1(cy) + ") scale(" + sc.toFixed(4) + " " + (sy * sc).toFixed(4) + ")";
-    S.wf.setAttribute("transform", wt); S.wf.setAttribute("opacity", ga.toFixed(3));
-    S.spin.setAttribute("transform", ang ? "rotate(" + ang.toFixed(2) + ")" : "");
-    S.stg.setAttribute("transform", "translate(" + cx + " " + f1(cy + th + 6) + ") scale(" + sc.toFixed(4) + " " + (sy * sc).toFixed(4) + ")");
-    S.stg.setAttribute("opacity", eo(lin(t, 200, 1100)).toFixed(3));
-    S.shd.setAttribute("cx", cx); S.shd.setAttribute("cy", f1(cy + th + 10 + up * .3)); S.shd.setAttribute("rx", f1(rx * .92)); S.shd.setAttribute("ry", f1(ry * .9)); S.shd.setAttribute("opacity", ((DK ? .55 : .18) * ga * (1 - up / 90)).toFixed(2));
-    var sd = "M" + f1(cx - rx) + " " + f1(cy) + " A" + f1(rx) + " " + f1(ry) + " 0 0 0 " + f1(cx + rx) + " " + f1(cy) + " L" + f1(cx + rx) + " " + f1(cy + th) + " A" + f1(rx) + " " + f1(ry) + " 0 0 1 " + f1(cx - rx) + " " + f1(cy + th) + " Z";
-    S.side.setAttribute("d", sd); S.side.setAttribute("opacity", ga.toFixed(3));
-    // ② 레이저 스캔: 뒤쪽 → 앞쪽으로 훑으며 다이가 켜짐
-    var sp = eio(lin(t, 1250, 2750)), sl = -R + sp * 2 * R;
-    S.lmA.setAttribute("height", f1(Math.max(0, sl - 14 + R + 10))); S.lmB.setAttribute("y", f1(sl - 24)); S.lmB.setAttribute("opacity", sp > 0 ? "1" : "0");
-    var sc2 = "";
-    if (sp > 0 && sp < 1) {
-      var hw = Math.sqrt(Math.max(0, R * R - sl * sl));
-      sc2 += '<rect x="' + (-R) + '" y="' + f1(sl - 46) + '" width="' + 2 * R + '" height="46" fill="url(#sxBmS)"/>' +
-        '<line x1="' + f1(-hw) + '" y1="' + f1(sl) + '" x2="' + f1(hw) + '" y2="' + f1(sl) + '" stroke="#fff" stroke-width="1.6"/><line x1="' + f1(-hw) + '" y1="' + f1(sl) + '" x2="' + f1(hw) + '" y2="' + f1(sl) + '" stroke="' + T.a3 + '" stroke-width="7" opacity=".35"/>';
-      for (var q = 0; q < 14; q++) { var xx = -hw + ((q * 0.137 + t / 900) % 1) * 2 * hw; sc2 += '<circle cx="' + f1(xx) + '" cy="' + f1(sl) + '" r="' + (q % 3 ? 1.6 : 2.6) + '" fill="#fff" opacity="' + (.5 + .5 * Math.sin(t / 60 + q)).toFixed(2) + '"/>'; }
+  function commonDefs(T, DK) {
+    return '<linearGradient id="svTt" x1="0" x2="1"><stop offset="0" stop-color="' + T.ink + '"/><stop offset=".55" stop-color="' + T.a1 + '"/><stop offset="1" stop-color="' + T.a3 + '"/></linearGradient>' +
+      '<radialGradient id="svGc"><stop offset="0" stop-color="' + T.a3 + '" stop-opacity=".6"/><stop offset="1" stop-color="' + T.a3 + '" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="svGa"><stop offset="0" stop-color="' + T.a1 + '" stop-opacity=".5"/><stop offset="1" stop-color="' + T.a1 + '" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="svWh"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".3" stop-color="' + T.a3 + '" stop-opacity=".6"/><stop offset="1" stop-color="' + T.a3 + '" stop-opacity="0"/></radialGradient>' +
+      '<linearGradient id="svSw" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="' + (DK ? .6 : .85) + '"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
+      '<filter id="svB2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2"/></filter>' +
+      '<filter id="svB5" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>' +
+      '<filter id="svB10" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>' +
+      '<filter id="svWf"><feFlood flood-color="#fff"/><feComposite in2="SourceAlpha" operator="in"/></filter>' +
+      '<filter id="svCf"><feFlood flood-color="' + T.a3 + '"/><feComposite in2="SourceAlpha" operator="in"/></filter>';
+  }
+  // 로고 빛 스윕: x 방향으로 열리면서 앞에 빛줄기
+  function logoBuild(DK, id, x0, y0, w) {
+    var h = w * LH / LW, src = DK ? "logo_dark.png" : "logo.png";
+    var img = function (ex) { return '<image href="' + src + '" x="' + f1(x0) + '" y="' + f1(y0) + '" width="' + f1(w) + '" height="' + f1(h) + '" ' + (ex || "") + '/>'; };
+    return {
+      defs: '<clipPath id="' + id + 'C"><rect id="' + id + 'R" x="' + f1(x0 - 20) + '" y="' + f1(y0 - 20) + '" width="0" height="' + f1(h + 40) + '"/></clipPath>' +
+        '<clipPath id="' + id + 'L"><rect x="' + f1(x0) + '" y="' + f1(y0) + '" width="' + f1(w) + '" height="' + f1(h) + '"/></clipPath>',
+      body: '<g id="' + id + '"><g clip-path="url(#' + id + 'C)">' + img() + '</g><g id="' + id + 'F" clip-path="url(#' + id + 'C)" opacity="0">' + img('filter="url(#svWf)"') + '</g><g id="' + id + 'S" clip-path="url(#' + id + 'L)"></g><g id="' + id + 'O"></g></g>',
+      x0: x0, y0: y0, w: w, h: h
+    };
+  }
+  function logoDraw(svg, L, id, T, t, t0, dur) {
+    var p = eio(lin(t, t0, t0 + dur)), x = L.x0 - 20 + p * (L.w + 40);
+    el(svg, id + "R").setAttribute("width", f1(Math.max(0, x - (L.x0 - 20))));
+    el(svg, id + "F").setAttribute("opacity", f2(p > 0 && p < 1 ? .55 : Math.max(0, .55 - lin(t, t0 + dur, t0 + dur + 400) * .55)));
+    var o = "";
+    if (p > 0 && p < 1) {
+      o += '<line x1="' + f1(x) + '" y1="' + f1(L.y0 - 16) + '" x2="' + f1(x) + '" y2="' + f1(L.y0 + L.h + 16) + '" stroke="' + T.a3 + '" stroke-width="10" opacity=".35" filter="url(#svB5)"/>' +
+        '<line x1="' + f1(x) + '" y1="' + f1(L.y0 - 12) + '" x2="' + f1(x) + '" y2="' + f1(L.y0 + L.h + 12) + '" stroke="#fff" stroke-width="1.6"/>' +
+        '<circle cx="' + f1(x) + '" cy="' + f1(L.y0 + L.h / 2) + '" r="22" fill="url(#svWh)"/>';
     }
-    S.scan.innerHTML = sc2;
-    // 레이저 헤드 + 빛 커튼 (위의 막대에서 스캔 선까지)
-    var cu = "", cvis = Math.min(lin(t, 1050, 1350), 1 - lin(t, 2650, 2950));
-    if (cvis > 0) {
-      var hw2 = Math.sqrt(Math.max(0, R * R - sl * sl)) * sc, ly = cy + sl * sy * sc, by = cy - 205 * sc + sl * sy * sc * .25, bw = rx * .78;
-      cu += '<polygon points="' + f1(cx - bw) + ',' + f1(by + 5) + ' ' + f1(cx + bw) + ',' + f1(by + 5) + ' ' + f1(cx + hw2) + ',' + f1(ly) + ' ' + f1(cx - hw2) + ',' + f1(ly) + '" fill="url(#sxCg)" opacity="' + cvis.toFixed(2) + '"/>' +
-        '<g opacity="' + cvis.toFixed(2) + '"><rect x="' + f1(cx - bw - 10) + '" y="' + f1(by - 6) + '" width="' + f1(2 * bw + 20) + '" height="11" rx="5.5" fill="' + (DK ? "#141b2b" : "#ffffff") + '" stroke="' + T.sub + '" stroke-opacity=".35"/>' +
-        '<rect x="' + f1(cx - bw) + '" y="' + f1(by + 2) + '" width="' + f1(2 * bw) + '" height="2.4" rx="1.2" fill="' + T.a3 + '"/><rect x="' + f1(cx - bw) + '" y="' + f1(by) + '" width="' + f1(2 * bw) + '" height="7" rx="3.5" fill="' + T.a3 + '" opacity=".3"/>' +
-        '</g>';
-    }
-    S.cur.innerHTML = cu;
-    // 앞쪽 가장자리 반짝 (윤나는 테두리)
-    var a0 = Math.PI * .58, a1 = Math.PI * .95, ex0 = cx + Math.cos(a0) * rx, ey0 = cy + Math.sin(a0) * ry, ex1 = cx + Math.cos(a1) * rx, ey1 = cy + Math.sin(a1) * ry;
-    S.edg.setAttribute("d", "M" + f1(ex1) + " " + f1(ey1) + " A" + f1(rx) + " " + f1(ry) + " 0 0 0 " + f1(ex0) + " " + f1(ey0));
-    S.edg.setAttribute("opacity", (ga * (.55 + .45 * Math.sin(t / 500))).toFixed(2));
-    // 불량 다이 3개: 레이저가 지나가면 주황으로 잡히고 → AI가 고쳐서 초록
-    var DF = [], df = "", fixT = DONE - 550;   // (불량 표시는 뺌 · 우리는 검사 안 함)
-    DF.forEach(function (d, i) {
-      if (sp <= 0 || sl < d[1] + 4) return;
-      var ft = lin(t, fixT + i * 120, fixT + i * 120 + 260), col = ft >= 1 ? T.ok : T.warn, pulse = ft >= 1 ? 1 : .6 + .4 * Math.sin(t / 90);
-      df += '<rect x="' + (d[0] - 4) + '" y="' + (d[1] - 4) + '" width="8" height="8" rx="1" fill="' + col + '" opacity="' + (pulse * (ft >= 1 ? .55 * (1 - lin(t, DONE + 300, DONE + 900)) : .9)).toFixed(2) + '"/>';
-      if (ft < 1 || t < DONE + 500) df += '<path d="M' + (d[0] - 9) + ' ' + (d[1] - 5) + 'v-4h4M' + (d[0] + 9) + ' ' + (d[1] - 5) + 'v-4h-4M' + (d[0] - 9) + ' ' + (d[1] + 5) + 'v4h4M' + (d[0] + 9) + ' ' + (d[1] + 5) + 'v4h-4" fill="none" stroke="' + col + '" stroke-width="1.6" opacity="' + (ft >= 1 ? 1 - lin(t, DONE + 100, DONE + 500) : 1).toFixed(2) + '"/>';
-    });
-    S.def.innerHTML = df;
-    // 검사 끝난 다이 반짝임
-    var tw = "";
-    if (t > 2000) for (var w = 0; w < 14; w++) {
-      var wx = (((w * 53) % 30) - 15) * 8, wy = (((w * 37) % 28) - 14) * 8; if (wx * wx + wy * wy > (R - 14) * (R - 14) || wy > sl) continue;
-      var ws = Math.pow(Math.max(0, Math.sin(t / (380 + (w % 5) * 60) + w * 2.1)), 12); if (ws < .04) continue;
-      tw += '<rect x="' + (wx - 3.6) + '" y="' + (wy - 3.6) + '" width="7.2" height="7.2" rx=".8" fill="#fff" opacity="' + (ws * (DK ? .8 : .9)).toFixed(2) + '"/><circle cx="' + wx + '" cy="' + wy + '" r="9" fill="' + T.a3 + '" opacity="' + (ws * .35).toFixed(2) + '"/>';
-    }
-    S.tw.innerHTML = tw;
-    // 웨이퍼 옆면 앞쪽 테두리 빛 (스캔이 끝나면)
-    var lit = sp, done = t >= DONE;
-    var el2 = "M" + f1(cx - rx) + " " + f1(cy + th) + " A" + f1(rx) + " " + f1(ry) + " 0 0 0 " + f1(cx + rx) + " " + f1(cy + th);
-    S.sideL.setAttribute("d", el2); S.sideL.setAttribute("opacity", (lit * .75).toFixed(2));
-    // ③ 무지갯빛 반사 (빛 방향은 고정 · 천천히 흐름) · 반짝 하이라이트
-    var ia = 30 + t * .018;
-    S.ir.setAttribute("gradientTransform", "rotate(" + ia.toFixed(2) + ")");
-    S.irc.setAttribute("opacity", (((DK ? .26 : .12) + (DK ? .2 : .12) * lit) * ga * (done ? 1 + .2 * Math.sin((t - DONE) / 260) : 1)).toFixed(3));
-    var wsw = lin(t, 500, 2300), wsw2 = lin(t, DONE + 150, DONE + 1150), wv = wsw > 0 && wsw < 1 ? wsw : wsw2 > 0 && wsw2 < 1 ? wsw2 : -1;   // 표면을 쓸고 지나가는 빛 (두 번)
-    S.swp.setAttribute("opacity", wv < 0 ? "0" : Math.sin(wv * Math.PI).toFixed(2));
-    if (wv >= 0) S.swp.setAttribute("transform", "rotate(-32) translate(" + f1(-R * 1.4 + wv * R * 2.8) + " 0)");
-    S.lit.setAttribute("opacity", (done ? .55 + .2 * Math.cos((t - DONE) / 300) : 1).toFixed(2));
-    var hx = -R * .55 + eio(lin(t, 300, 4400)) * R * 1.0, hy = -R * .45 + eio(lin(t, 300, 4400)) * R * .25;
-    S.spc.setAttribute("cx", f1(hx)); S.spc.setAttribute("cy", f1(hy)); S.spc.setAttribute("opacity", (.55 * ga).toFixed(2));
-    // ④ 완료: 가장자리 빛 · 검사대 링이 한 바퀴 · NINEBELL 각인
-    var rp = lin(t, DONE - 300, DONE + 600), circ = 2 * Math.PI * (R + 22);
-    S.str.setAttribute("stroke-dasharray", f1(circ * eio(rp)) + " " + f1(circ)); S.str.setAttribute("opacity", (rp > 0 ? .9 : 0).toFixed(2));
-    S.str.setAttribute("stroke", done ? T.ok : T.a3);
-    S.rim.setAttribute("opacity", (lin(t, DONE - 200, DONE + 300) * (done ? .75 + .25 * Math.cos((t - DONE) / 260) : 1)).toFixed(2));
-    var np = lin(t, DONE, DONE + 450), fk = np <= 0 ? 0 : np < 1 ? (Math.sin(t * .9) > -.15 ? np : np * .25) : .92 + .08 * Math.cos((t - DONE) / 300);
-    S.nx.setAttribute("opacity", fk.toFixed(2));
-    var fx = "", pu = lin(t, DONE, DONE + 850);   // 초록 파동
-    var fl = lin(t, DONE - 80, DONE + 700), fo = fl > 0 && fl < 1 ? Math.pow(1 - fl, 1.6) * Math.min(1, fl * 8) : 0;   // 완료 순간 렌즈 플레어
-    if (fo > 0) fx += '<ellipse cx="' + cx + '" cy="' + f1(cy - ry * .1) + '" rx="' + f1(240 * (.6 + .4 * fl)) + '" ry="2.6" fill="url(#sxFl)" opacity="' + fo.toFixed(2) + '"/>' +
-      '<ellipse cx="' + cx + '" cy="' + f1(cy - ry * .1) + '" rx="' + f1(90 + 60 * fl) + '" ry="' + f1(40 + 30 * fl) + '" fill="url(#sxFl)" opacity="' + (fo * .45).toFixed(2) + '"/>' +
-      '<line x1="' + cx + '" y1="' + f1(cy - ry * .1 - 60 * fo) + '" x2="' + cx + '" y2="' + f1(cy - ry * .1 + 60 * fo) + '" stroke="#fff" stroke-width="1.2" opacity="' + (fo * .8).toFixed(2) + '"/>';
-    if (pu > 0 && pu < 1) fx += '<ellipse cx="' + cx + '" cy="' + f1(cy) + '" rx="' + f1(rx * (1 + pu * .45)) + '" ry="' + f1(ry * (1 + pu * .45)) + '" fill="none" stroke="' + T.ok + '" stroke-width="2.4" opacity="' + ((1 - pu) * .85).toFixed(2) + '"/>';
-    var hb = eo(lin(t, DONE, DONE + 600)) * (1 - .35 * lin(t, 3900, 4400));
-    if (hb > 0) {
-      fx += '<rect x="' + (cx - 70) + '" y="' + f1(cy - 300) + '" width="140" height="300" fill="url(#sxBm)" opacity="' + (hb * .7).toFixed(2) + '"/>';
-      for (var s2 = 0; s2 < 22; s2++) {
-        var spp = ((t - DONE) / (900 + (s2 % 5) * 170) + s2 * .173) % 1, sx = cx + Math.sin(s2 * 2.3) * (24 + (s2 % 4) * 22), syy = cy - 8 - spp * (150 + (s2 % 3) * 50);
-        fx += '<circle cx="' + f1(sx) + '" cy="' + f1(syy) + '" r="' + (s2 % 3 ? 1.4 : 2.2) + '" fill="' + (s2 % 2 ? T.a3 : (s2 % 3 ? VIO : "#fff")) + '" opacity="' + (hb * Math.sin(spp * Math.PI) * .9).toFixed(2) + '"/>';
+    el(svg, id + "O").innerHTML = o;
+    var sp = lin(t, t0 + dur + 250, t0 + dur + 1000);
+    el(svg, id + "S").innerHTML = sp > 0 && sp < 1 ? '<rect x="' + f1(L.x0 - 70 + sp * (L.w + 140)) + '" y="' + f1(L.y0 - 10) + '" width="44" height="' + f1(L.h + 20) + '" fill="url(#svSw)" transform="skewX(-18)" transform-origin="' + f1(L.x0 + L.w / 2) + ' ' + f1(L.y0 + L.h / 2) + '"/>' : "";
+  }
+
+  /* =================== ① EFEM 로봇 이송 (2026-11-10 · 웨이퍼 화면 대신) =================== *
+   *  위에서 본 EFEM: 아래 FOUP(웨이퍼 통) → 가운데 로봇이 팔을 뻗어 웨이퍼를 집음 → 돌아서 위쪽 챔버로
+   *  → 게이트가 열리고 웨이퍼를 넣음 → 챔버가 켜지며 NINEBELL 로고가 빛으로 나타남 → 제조1-B
+   */
+  var A = { B: [195, 378], C: [195, 192], F: [195, 566], L: 100, RW: 38 };
+  function build3(svg, T, DK) {
+    var c = DK ? { m1: "#3a4868", m2: "#1a2234", m3: "#0d1320", ln: "#4a5b80", arm1: "#2c3954", arm2: "#566890", hi: "#8fa6d8", fl: "#0b1120", wf1: "#3b4a6b", wf2: "#141c2e", die: "#22304a", foup: "#1b2436", foup2: "#2a3550", sh: "#000" }
+               : { m1: "#ffffff", m2: "#dfe6f0", m3: "#b9c5d6", ln: "#c3cede", arm1: "#e8edf5", arm2: "#ffffff", hi: "#ffffff", fl: "#eef2f8", wf1: "#ffffff", wf2: "#cfd9e8", die: "#c3cfe2", foup: "#f7f9fc", foup2: "#dde4ee", sh: "#1d2b48" };
+    var Lg = logoBuild(DK, "svLg", 195 - 115, 650, 230);
+    var C = A.C, F = A.F, B = A.B;
+    var h = '<defs>' + commonDefs(T, DK) + Lg.defs +
+      '<radialGradient id="svBg" cx=".5" cy=".42" r=".7"><stop offset="0" stop-color="' + T.a1 + '" stop-opacity="' + (DK ? .2 : .09) + '"/><stop offset="1" stop-color="' + T.a1 + '" stop-opacity="0"/></radialGradient>' +
+      '<pattern id="svDot" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="11" cy="11" r=".75" fill="' + T.a1 + '" fill-opacity="' + (DK ? .2 : .14) + '"/></pattern>' +
+      '<linearGradient id="svMt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + c.m1 + '"/><stop offset=".55" stop-color="' + c.m2 + '"/><stop offset="1" stop-color="' + c.m3 + '"/></linearGradient>' +
+      '<linearGradient id="svMt2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + c.m1 + '"/><stop offset="1" stop-color="' + c.m3 + '"/></linearGradient>' +
+      '<radialGradient id="svWg" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="' + c.wf1 + '"/><stop offset=".6" stop-color="' + c.wf2 + '"/><stop offset="1" stop-color="' + (DK ? "#0a0f1a" : "#b4c1d4") + '"/></radialGradient>' +
+      '<pattern id="svDie" width="6" height="6" patternUnits="userSpaceOnUse"><rect x=".4" y=".4" width="5.2" height="5.2" rx=".5" fill="' + c.die + '"/></pattern>' +
+      '<linearGradient id="svIr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4fe3ff" stop-opacity="0"/><stop offset=".35" stop-color="#7b8cff" stop-opacity=".22"/><stop offset=".5" stop-color="#d07bff" stop-opacity=".26"/><stop offset=".65" stop-color="#4fe3ff" stop-opacity=".2"/><stop offset="1" stop-color="#4fe3ff" stop-opacity="0"/></linearGradient>' +
+      '<radialGradient id="svCh" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="' + (DK ? "#141d30" : "#e7edf6") + '"/><stop offset=".8" stop-color="' + (DK ? "#0c1322" : "#d6dfec") + '"/><stop offset="1" stop-color="' + (DK ? "#070b14" : "#c3cede") + '"/></radialGradient>' +
+      '<radialGradient id="svPl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="' + T.a3 + '" stop-opacity=".0"/><stop offset=".55" stop-color="' + T.a3 + '" stop-opacity=".18"/><stop offset=".82" stop-color="#9b7bff" stop-opacity=".42"/><stop offset="1" stop-color="' + T.a1 + '" stop-opacity="0"/></radialGradient>' +
+      '<linearGradient id="svArm" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="' + c.arm1 + '"/><stop offset=".5" stop-color="' + c.arm2 + '"/><stop offset="1" stop-color="' + c.arm1 + '"/></linearGradient>' +
+      '<clipPath id="svWc"><circle r="' + A.RW + '"/></clipPath>' +
+      '<mask id="svRing" maskUnits="userSpaceOnUse" x="0" y="0" width="390" height="844"><rect width="390" height="844" fill="#fff"/><rect id="svGap" x="' + (C[0] - 44) + '" y="' + (C[1] + 60) + '" width="88" height="0" fill="#000"/></mask>' +
+      '</defs>';
+    // 배경
+    h += '<g id="svBG"><rect width="390" height="844" fill="url(#svDot)"/><rect width="390" height="844" fill="url(#svBg)"/></g>';
+    // 설비 바닥 (EFEM 테두리 · 로드포트 · 챔버) — 선이 그려지며 나타남
+    var fr = 'M 58 300 H 332 V 470 H 58 Z';
+    h += '<g id="svFr" fill="none" stroke="' + c.ln + '" stroke-width="1.4">' +
+      '<path id="svFrP" d="' + fr + '" stroke-dasharray="900" stroke-dashoffset="900" rx="18"/>' +
+      '<path id="svFrK" d="M58 318 V300 H76 M314 300 H332 V318 M332 452 V470 H314 M76 470 H58 V452" stroke="' + T.a1 + '" stroke-width="2.2" stroke-linecap="round" opacity="0"/>' +
+      '</g>';
+    // 챔버 (위)
+    h += '<g id="svCham" opacity="0">' +
+      '<circle cx="' + C[0] + '" cy="' + C[1] + '" r="94" fill="' + c.sh + '" opacity="' + (DK ? .5 : .12) + '" filter="url(#svB10)" transform="translate(0 8)"/>' +
+      '<circle cx="' + C[0] + '" cy="' + C[1] + '" r="64" fill="url(#svCh)"/>' +
+      '<circle id="svPlz" cx="' + C[0] + '" cy="' + C[1] + '" r="64" fill="url(#svPl)" opacity="0"/>' +
+      '<g fill="none" stroke="' + (DK ? "#2a3756" : "#c4cfdf") + '"><circle cx="' + C[0] + '" cy="' + C[1] + '" r="46" stroke-width="2"/><circle cx="' + C[0] + '" cy="' + C[1] + '" r="40" stroke-width=".8"/>' +
+      '<path d="M' + (C[0] - 30) + ' ' + C[1] + 'H' + (C[0] + 30) + 'M' + C[0] + ' ' + (C[1] - 30) + 'V' + (C[1] + 30) + '" stroke-width=".6" stroke-dasharray="2 3"/></g>' +
+      '<g id="svLift" fill="' + (DK ? "#3a4a6e" : "#aebbd0") + '"><circle cx="' + (C[0] + 22) + '" cy="' + (C[1] - 13) + '" r="2.4"/><circle cx="' + (C[0] - 22) + '" cy="' + (C[1] - 13) + '" r="2.4"/><circle cx="' + C[0] + '" cy="' + (C[1] + 25) + '" r="2.4"/></g>' +
+      '</g>';
+    // FOUP (아래) — 웨이퍼가 겹겹이 들어 있는 통
+    h += '<g id="svFoup" opacity="0">' +
+      '<rect x="' + (F[0] - 74) + '" y="' + (F[1] - 54) + '" width="148" height="122" rx="18" fill="' + c.sh + '" opacity="' + (DK ? .5 : .12) + '" filter="url(#svB10)" transform="translate(0 8)"/>' +
+      '<rect x="' + (F[0] - 74) + '" y="' + (F[1] - 54) + '" width="148" height="122" rx="18" fill="url(#svMt2)" stroke="' + c.ln + '"/>' +
+      '<rect x="' + (F[0] - 60) + '" y="' + (F[1] - 48) + '" width="120" height="100" rx="12" fill="' + c.foup2 + '" opacity=".6"/>' +
+      '<path d="M' + (F[0] - 62) + ' ' + (F[1] - 54) + 'H' + (F[0] + 62) + '" stroke="' + T.a1 + '" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>' +
+      '<g fill="none" stroke="' + (DK ? "#33415f" : "#c9d3e2") + '" stroke-width="1">' +
+        '<circle cx="' + F[0] + '" cy="' + F[1] + '" r="' + (A.RW + 2) + '" transform="translate(0 6)"/><circle cx="' + F[0] + '" cy="' + F[1] + '" r="' + (A.RW + 2) + '" transform="translate(0 3)"/></g>' +
+      '<rect x="' + (F[0] - 30) + '" y="' + (F[1] + 56) + '" width="60" height="5" rx="2.5" fill="' + (DK ? "#33415f" : "#c9d3e2") + '"/>' +
+      '<g id="svFled"></g>' +
+      '</g>';
+    // 웨이퍼 그림자 · 웨이퍼 · 팔 (매 프레임)
+    h += '<g id="svDyn"></g>';
+    // 챔버 테두리 (게이트 자리가 열림)
+    h += '<g id="svRingG" opacity="0" mask="url(#svRing)">' +
+      '<circle cx="' + C[0] + '" cy="' + C[1] + '" r="76" fill="none" stroke="url(#svMt)" stroke-width="24"/>' +
+      '<circle cx="' + C[0] + '" cy="' + C[1] + '" r="88" fill="none" stroke="' + c.ln + '" stroke-width="1"/>' +
+      '<circle cx="' + C[0] + '" cy="' + C[1] + '" r="64" fill="none" stroke="' + (DK ? "#5a6c96" : "#ffffff") + '" stroke-width="1.2" opacity=".9"/>' +
+      '<g id="svBolt" fill="' + (DK ? "#56688f" : "#c3cede") + '"></g>' +
+      '</g>';
+    // 게이트 밸브 (문)
+    h += '<g id="svGate" opacity="0"><rect x="' + (C[0] - 48) + '" y="' + (C[1] + 62) + '" width="96" height="16" rx="4" fill="' + (DK ? "#0a0f1a" : "#c9d3e2") + '"/>' +
+      '<rect id="svDoor" x="' + (C[0] - 46) + '" y="' + (C[1] + 64) + '" width="92" height="12" rx="3" fill="url(#svMt)" stroke="' + c.ln + '"/>' +
+      '<rect id="svSlit" x="' + (C[0] - 44) + '" y="' + (C[1] + 69) + '" width="88" height="2" rx="1" fill="' + T.a3 + '" opacity="0"/></g>';
+    // 위 글자 · 단계 · 로고 · 제목
+    h += '<g id="svHud"></g>' + Lg.body + '<g id="svO"></g>';
+    svg.innerHTML = h;
+    // 볼트
+    var bo = ""; for (var i = 0; i < 12; i++) { var a = i / 12 * Math.PI * 2 + Math.PI / 12; if (Math.abs(Math.sin(a)) < .25 && Math.cos(a) < 0) {} bo += '<circle cx="' + f1(C[0] + Math.cos(a) * 76) + '" cy="' + f1(C[1] + Math.sin(a) * 76) + '" r="2"/>'; }
+    el(svg, "svBolt").innerHTML = bo;
+    return { c: c, Lg: Lg, bg: el(svg, "svBG"), frp: el(svg, "svFrP"), frk: el(svg, "svFrK"), cham: el(svg, "svCham"), plz: el(svg, "svPlz"), foup: el(svg, "svFoup"), fled: el(svg, "svFled"),
+      dyn: el(svg, "svDyn"), ring: el(svg, "svRingG"), gate: el(svg, "svGate"), door: el(svg, "svDoor"), slit: el(svg, "svSlit"), gap: el(svg, "svGap"), hud: el(svg, "svHud"), o: el(svg, "svO"), svg: svg };
+  }
+  // 로봇 위치 (시간 → 각도 · 뻗은 길이 · 웨이퍼 들었는지)
+  function robot(t) {
+    var up = -Math.PI / 2, dn = Math.PI / 2;   // 화면 각도 (위 = -90°)
+    var rF = A.F[1] - A.B[1] - 24, rC = A.B[1] - A.C[1] - 24, r0 = 46;
+    var th = dn, r = r0, hold = 0, lift = 0;
+    if (t < 700) { r = r0; }
+    else if (t < 1250) r = r0 + (rF - r0) * eio(lin(t, 700, 1250));
+    else if (t < 1480) { r = rF; lift = lin(t, 1250, 1480); hold = lift > .4 ? 1 : 0; }
+    else if (t < 1900) { r = rF + (r0 - rF) * eio(lin(t, 1480, 1900)); hold = 1; lift = 1; }
+    else if (t < 2450) { th = dn - Math.PI * eio(lin(t, 1900, 2450)); hold = 1; lift = 1; }   // 시계 반대로 반 바퀴 → 위
+    else if (t < 3000) { th = up; r = r0 + (rC - r0) * eio(lin(t, 2450, 3000)); hold = 1; lift = 1; }
+    else if (t < 3220) { th = up; r = rC; lift = 1 - lin(t, 3000, 3220); hold = lift > .4 ? 1 : 0; }
+    else { th = up; r = rC + (22 - rC) * eio(lin(t, 3220, 3750)); hold = 0; }   // 다 넣고 나면 팔을 바짝 접고 쉼
+    if (t >= 1900 && t < 2450) r = r0;
+    if (t >= 3000) th = up;
+    return { th: th, r: r, hold: hold, lift: lift };
+  }
+  function draw3(S, T, DK, t) {
+    var c = S.c, B = A.B, C = A.C, F = A.F, L = A.L, RW = A.RW;
+    var ga = eo(lin(t, 0, 600));
+    S.bg.setAttribute("opacity", f2(ga));
+    S.frp.setAttribute("stroke-dashoffset", f1(900 * (1 - eio(lin(t, 100, 900)))));
+    S.frk.setAttribute("opacity", f2(eo(lin(t, 700, 1000))));
+    var ap = back(lin(t, 250, 800)), fp = back(lin(t, 350, 900));
+    S.cham.setAttribute("opacity", f2(cl(ap, 0, 1))); S.ring.setAttribute("opacity", f2(cl(ap, 0, 1))); S.gate.setAttribute("opacity", f2(cl(ap, 0, 1)));
+    S.cham.setAttribute("transform", "translate(" + C[0] + " " + C[1] + ") scale(" + f2(.92 + .08 * ap) + ") translate(" + (-C[0]) + " " + (-C[1]) + ")");
+    S.foup.setAttribute("opacity", f2(cl(fp, 0, 1)));
+    S.foup.setAttribute("transform", "translate(0 " + f1((1 - cl(fp, 0, 1.2)) * 18) + ")");
+    // 게이트 문 열림 · 닫힘
+    var dopen = eio(lin(t, 2300, 2600)) * (1 - eio(lin(t, 3420, 3700)));
+    S.door.setAttribute("opacity", f2(1 - dopen));
+    S.slit.setAttribute("opacity", f2(dopen * (.55 + .25 * Math.sin(t / 70))));
+    S.gap.setAttribute("height", f1(28 * cl(dopen * 1.3, 0, 1)));
+    // FOUP 표시등
+    var ld = t > 1480 ? T.ok : T.a1, bl = t < 1480 ? (.5 + .5 * Math.sin(t / 90)) : 1;
+    S.fled.innerHTML = '<circle cx="' + (F[0] + 54) + '" cy="' + (F[1] + 58) + '" r="3" fill="' + ld + '" opacity="' + f2(bl) + '"/><circle cx="' + (F[0] + 54) + '" cy="' + (F[1] + 58) + '" r="8" fill="' + ld + '" opacity="' + f2(bl * .25) + '" filter="url(#svB2)"/>';
+    // 로봇
+    var R = robot(t), dir = function (a, d) { return [Math.cos(a) * d, Math.sin(a) * d]; };
+    var rr = cl(R.r, 10, 2 * L - 1), al = Math.acos(rr / (2 * L)), a1 = R.th + al;   // 팔꿈치 (오른쪽으로 꺾임)
+    var e = [B[0] + dir(a1, L)[0], B[1] + dir(a1, L)[1]], w = [B[0] + dir(R.th, rr)[0], B[1] + dir(R.th, rr)[1]];
+    var wc = [w[0] + dir(R.th, 24)[0], w[1] + dir(R.th, 24)[1]];
+    var rob = eo(lin(t, 450, 900));
+    var o = "";
+    // 웨이퍼 (FOUP 안 → 들림 → 챔버 안)
+    var wpos, wl = 0;
+    if (t < 1250 + 230 * .4) { wpos = [F[0], F[1]]; wl = R.lift * .3; }
+    else if (R.hold) { wpos = wc; wl = R.lift; }
+    else if (t >= 3000) { wpos = [C[0], C[1]]; wl = 0; }
+    else { wpos = [F[0], F[1]]; }
+    if (t >= 1250 && t < 1480) { wpos = [F[0], F[1]]; wl = R.lift; }
+    var sc = 1 + wl * .05, sh = 3 + wl * 9;
+    var wafer = function (x, y, s, shd, lit) {
+      var g = '<g transform="translate(' + f1(x) + ' ' + f1(y) + ')">' +
+        '<circle cx="' + f1(shd * .4) + '" cy="' + f1(shd) + '" r="' + f1(RW * s) + '" fill="' + c.sh + '" opacity="' + (DK ? .55 : .18) + '" filter="url(#svB5)"/>' +
+        '<g transform="scale(' + f2(s) + ')"><circle r="' + RW + '" fill="url(#svWg)"/>' +
+        '<g clip-path="url(#svWc)"><rect x="-40" y="-40" width="80" height="80" fill="url(#svDie)" opacity=".75"/>' +
+        '<rect x="-60" y="-14" width="120" height="28" fill="url(#svIr)" transform="rotate(' + f1(-30 + t / 18) + ')"/>' +
+        (lit ? '<circle r="' + RW + '" fill="' + T.a3 + '" opacity="' + f2(lit * .35) + '"/>' : "") + '</g>' +
+        '<circle r="' + RW + '" fill="none" stroke="' + (DK ? "#7d92c4" : "#ffffff") + '" stroke-width="1.2" opacity=".9"/>' +
+        '<path d="M-3 ' + (RW - .5) + ' A3 3 0 0 1 3 ' + (RW - .5) + '" fill="' + (DK ? "#0b1120" : "#aebbd0") + '"/></g></g>';
+      return g;
+    };
+    // 웨이퍼가 로봇 손 아래에 깔리면 안 됨 → 웨이퍼 먼저 그리고 손 · 팔
+    var lit = lin(t, 3250, 3800) * (1 - lin(t, 4100, 4400) * .4);
+    var waferSvg = '<g opacity="' + f2(t < 1000 ? cl(fp, 0, 1) : 1) + '" transform="translate(0 ' + f1(t < 1000 ? (1 - cl(fp, 0, 1.2)) * 18 : 0) + ')">' + wafer(wpos[0], wpos[1], sc, sh, t >= 3000 ? lit : 0) + '</g>';
+    // 팔 그림자
+    var armPath = 'M' + f1(B[0]) + ' ' + f1(B[1]) + 'L' + f1(e[0]) + ' ' + f1(e[1]) + 'L' + f1(w[0]) + ' ' + f1(w[1]);
+    var fk = function (ox, oy) {
+      var d1 = dir(R.th, 4), d2 = dir(R.th, 44), n = dir(R.th + Math.PI / 2, 11);
+      return 'M' + f1(w[0] + ox) + ' ' + f1(w[1] + oy) + 'L' + f1(w[0] + d1[0] + ox) + ' ' + f1(w[1] + d1[1] + oy) +
+        'M' + f1(w[0] + d1[0] + n[0] + ox) + ' ' + f1(w[1] + d1[1] + n[1] + oy) + 'L' + f1(w[0] + d1[0] - n[0] + ox) + ' ' + f1(w[1] + d1[1] - n[1] + oy) +
+        'M' + f1(w[0] + d1[0] + n[0] + ox) + ' ' + f1(w[1] + d1[1] + n[1] + oy) + 'L' + f1(w[0] + d2[0] + n[0] + ox) + ' ' + f1(w[1] + d2[1] + n[1] + oy) +
+        'M' + f1(w[0] + d1[0] - n[0] + ox) + ' ' + f1(w[1] + d1[1] - n[1] + oy) + 'L' + f1(w[0] + d2[0] - n[0] + ox) + ' ' + f1(w[1] + d2[1] - n[1] + oy);
+    };
+    var armSvg = '<g opacity="' + f2(rob) + '">' +
+      '<path d="' + armPath + '" stroke="' + c.sh + '" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="' + (DK ? .5 : .14) + '" filter="url(#svB5)" transform="translate(4 9)"/>' +
+      '<circle cx="' + B[0] + '" cy="' + B[1] + '" r="34" fill="url(#svMt)" stroke="' + c.ln + '"/>' +
+      '<circle cx="' + B[0] + '" cy="' + B[1] + '" r="27" fill="none" stroke="' + c.ln + '" stroke-opacity=".7"/>' +
+      '<circle cx="' + B[0] + '" cy="' + B[1] + '" r="40" fill="none" stroke="' + T.a1 + '" stroke-opacity=".35" stroke-dasharray="3 5" transform="rotate(' + f1(t / 14) + ' ' + B[0] + ' ' + B[1] + ')"/>' +
+      '<g transform="translate(' + f1(w[0]) + ' ' + f1(w[1]) + ') rotate(' + f1(R.th * 180 / Math.PI) + ')">' +
+        '<path d="M-2 -9 H14 Q20 -9 22 -15 L46 -15 Q50 -15 50 -11 L50 -7 Q50 -5 47 -5 L28 -5 Q25 -5 25 -2 L25 2 Q25 5 28 5 L47 5 Q50 5 50 7 L50 11 Q50 15 46 15 L22 15 Q20 9 14 9 H-2 Z" fill="' + T.a1 + '" opacity="' + (DK ? .9 : .95) + '"/>' +
+        '<path d="M2 -6 H13 M2 6 H13" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" stroke-linecap="round"/>' +
+        '<circle cx="38" cy="-10" r="1.6" fill="#fff" opacity=".8"/><circle cx="38" cy="10" r="1.6" fill="#fff" opacity=".8"/></g>' +
+      '<path d="' + armPath + '" stroke="' + c.ln + '" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none"/>' +
+      '<path d="' + armPath + '" stroke="url(#svArm)" stroke-width="19.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>' +
+      '<path d="' + armPath + '" stroke="' + c.hi + '" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="' + (DK ? .35 : .9) + '" transform="translate(-2 -3)"/>' +
+      '<circle cx="' + f1(e[0]) + '" cy="' + f1(e[1]) + '" r="8" fill="url(#svMt)" stroke="' + c.ln + '"/><circle cx="' + f1(e[0]) + '" cy="' + f1(e[1]) + '" r="2.6" fill="' + T.a1 + '"/>' +
+      '<circle cx="' + f1(w[0]) + '" cy="' + f1(w[1]) + '" r="7" fill="url(#svMt)" stroke="' + c.ln + '"/><circle cx="' + f1(w[0]) + '" cy="' + f1(w[1]) + '" r="2.2" fill="' + T.a3 + '"/>' +
+      '<circle cx="' + B[0] + '" cy="' + B[1] + '" r="15" fill="url(#svMt2)" stroke="' + c.ln + '"/><circle cx="' + B[0] + '" cy="' + B[1] + '" r="4" fill="' + T.a1 + '"/>' +
+      '</g>';
+    // 웨이퍼가 손에 있으면 손 위 · 아니면 손 아래
+    var hand = R.hold || (t >= 1250 && t < 1480) ? armSvg + waferSvg : waferSvg + armSvg;
+    if (t >= 3000 && !R.hold) hand = waferSvg + armSvg;
+    if (t < 1250) hand = waferSvg + armSvg;
+    // 움직일 때 빛 꼬리 (돌 때)
+    var tr = "";
+    if (t > 1900 && t < 2550) {
+      for (var k = 1; k <= 7; k++) {
+        var tt = t - k * 34; if (tt < 1900) break;
+        var Rk = robot(tt), wk2 = [B[0] + Math.cos(Rk.th) * (Rk.r + 24), B[1] + Math.sin(Rk.th) * (Rk.r + 24)];
+        tr += '<circle cx="' + f1(wk2[0]) + '" cy="' + f1(wk2[1]) + '" r="' + f1(RW * (1 - k * .06)) + '" fill="none" stroke="' + T.a3 + '" stroke-width="1.2" opacity="' + f2(.32 * (1 - k / 8)) + '"/>';
       }
     }
-    S.fx.innerHTML = fx;
-    // ⑤ 글자: 위 제목 · 검사 로그 · SYNC · 아래 '제조1-B'
-    var dies = Math.round(S.n * sp), sync = Math.round(100 * (.08 * eo(lin(t, 300, 1200)) + .92 * sp)), o = "", mono = 'font-family="ui-monospace,SFMono-Regular,Menlo,monospace"';
-    var na = eo(lin(t, 200, 700));
-    o += '<g opacity="' + na.toFixed(2) + '"><text x="195" y="56" text-anchor="middle" font-size="10.5" font-weight="800" letter-spacing="3.5" fill="' + T.sub + '">AI SYSTEM BOOT</text>' +
-      '<line x1="' + f1(195 - 100 * na) + '" y1="68" x2="' + f1(195 + 100 * na) + '" y2="68" stroke="' + T.sub + '" stroke-opacity=".25"/></g>';
-    var lines = [[350, "POWER", "48V", "OK", true], [1250, "LINK", dies + "/" + S.n, sp >= 1 ? "OK" : "··", sp >= 1], [DONE, "AI CORE", "1-B", "ONLINE", true]];
-    o += '<g ' + mono + ' font-size="9.5" font-weight="700" letter-spacing=".6">';
-    lines.forEach(function (ln, i) {
-      var a = lin(t, ln[0], ln[0] + 260); if (a <= 0) return;
-      var y = 96 + i * 16, full = "▸ " + ln[1] + " " + ln[2], nn = Math.ceil(a * full.length);
-      o += '<text x="36" y="' + y + '" fill="' + T.sub + '">' + full.slice(0, nn) + '</text>';
-      if (a >= 1) o += '<text x="182" y="' + y + '" text-anchor="end" fill="' + (ln[4] ? T.ok : T.sub) + '">' + ln[3] + '</text><line x1="' + (36 + full.length * 6.6 + 6).toFixed(0) + '" y1="' + (y - 3) + '" x2="' + (182 - ln[3].length * 6.6 - 6).toFixed(0) + '" y2="' + (y - 3) + '" stroke="' + T.sub + '" stroke-opacity=".3" stroke-dasharray="1 3"/>';
+    S.dyn.innerHTML = tr + hand;
+    // 챔버 공정 (빛)
+    var pz = lin(t, 3250, 3700), pz2 = .65 + .35 * Math.sin(t / 120);
+    S.plz.setAttribute("opacity", f2(pz * pz2));
+    var hud = "";
+    if (pz > 0) {
+      hud += '<g opacity="' + f2(pz) + '"><circle cx="' + C[0] + '" cy="' + C[1] + '" r="54" fill="none" stroke="' + T.a3 + '" stroke-width="1.6" stroke-dasharray="10 14" transform="rotate(' + f1(t / 6) + ' ' + C[0] + ' ' + C[1] + ')"/>' +
+        '<circle cx="' + C[0] + '" cy="' + C[1] + '" r="58" fill="none" stroke="#9b7bff" stroke-width="1" stroke-dasharray="3 9" opacity=".8" transform="rotate(' + f1(-t / 9) + ' ' + C[0] + ' ' + C[1] + ')"/>' +
+        '<circle cx="' + C[0] + '" cy="' + C[1] + '" r="120" fill="url(#svGc)" opacity="' + f2(.35 * pz2) + '"/></g>';
+    }
+    // 위 글자 + 단계 (LOAD → TRANSFER → PROCESS)
+    var na = eo(lin(t, 150, 650));
+    hud += '<g opacity="' + f2(na) + '"><text x="195" y="44" text-anchor="middle" ' + MONO + ' font-size="10" font-weight="800" letter-spacing="3.2" fill="' + T.sub + '">EFEM · WAFER TRANSFER</text></g>';
+    var st = [["LOAD", 700, 1480], ["TRANSFER", 1480, 3000], ["PROCESS", 3000, 3800]], sx = [95, 195, 295], sy = 64;
+    hud += '<g opacity="' + f2(na) + '"><line x1="' + sx[0] + '" y1="' + sy + '" x2="' + sx[2] + '" y2="' + sy + '" stroke="' + T.sub + '" stroke-opacity=".22" stroke-width="2" stroke-linecap="round"/>';
+    var pg = 0; st.forEach(function (s, i) { var p = lin(t, s[1], s[2]); if (i < 2) pg += p * 100; });
+    hud += '<line x1="' + sx[0] + '" y1="' + sy + '" x2="' + f1(sx[0] + Math.min(200, pg)) + '" y2="' + sy + '" stroke="' + T.a1 + '" stroke-width="2" stroke-linecap="round"/>';
+    st.forEach(function (s, i) {
+      var act = t >= s[1], done = t >= s[2], col = done ? T.ok : act ? T.a1 : T.sub;
+      var pulse = act && !done ? (.5 + .5 * Math.sin(t / 110)) : 0;
+      hud += '<circle cx="' + sx[i] + '" cy="' + sy + '" r="' + f1(act ? 5 : 4) + '" fill="' + (act ? col : T.bg) + '" stroke="' + col + '" stroke-width="1.6"/>' +
+        (pulse ? '<circle cx="' + sx[i] + '" cy="' + sy + '" r="' + f1(7 + pulse * 5) + '" fill="none" stroke="' + col + '" stroke-opacity="' + f2(.5 * (1 - pulse)) + '"/>' : "") +
+        '<text x="' + sx[i] + '" y="' + (sy + 19) + '" text-anchor="middle" ' + MONO + ' font-size="9" font-weight="800" letter-spacing="1.4" fill="' + (act ? col : T.sub) + '" fill-opacity="' + (act ? 1 : .7) + '">' + s[0] + '</text>';
     });
-    o += '</g>';
-    var ga2 = eo(lin(t, 350, 800));
-    o += '<g opacity="' + ga2.toFixed(2) + '"><text x="354" y="92" text-anchor="end" ' + mono + ' font-size="9" font-weight="700" letter-spacing="1.5" fill="' + T.sub + '">SYNC</text>' +
-      '<text x="354" y="119" text-anchor="end" font-size="26" font-weight="900" letter-spacing="-1" fill="' + (done ? T.ok : T.ink) + '">' + sync + '<tspan font-size="13" dx="1" font-weight="800">%</tspan></text>' +
-      '<rect x="284" y="128" width="70" height="3" rx="1.5" fill="' + T.sub + '" fill-opacity=".2"/><rect x="284" y="128" width="' + f1(70 * sync / 100) + '" height="3" rx="1.5" fill="' + (done ? T.ok : T.a1) + '"/></g>';
-    var wk = back(lin(t, DONE + 100, DONE + 650)), wls = (6 * (1 - eo(lin(t, DONE + 100, DONE + 800))) - .6).toFixed(2);
-    o += '<text x="195" y="' + f1(640 + (1 - wk) * 14) + '" text-anchor="middle" font-size="32" font-weight="900" letter-spacing="' + wls + '" fill="url(#sxTt)" opacity="' + cl(wk, 0, 1).toFixed(2) + '">제조1-B</text>';
-    var sub2 = "SMART MANUFACTURING", nn2 = Math.floor(lin(t, DONE + 350, DONE + 950) * sub2.length);
-    o += '<text x="195" y="666" text-anchor="middle" font-size="10" font-weight="800" letter-spacing="4" fill="' + T.sub + '">' + sub2.slice(0, nn2) + '</text>';
-    S.o.innerHTML = o;
-    // 흐린 빛망울 (깊이감)
-    var bk = "", BK = [[30, 210, 26], [362, 160, 18], [20, 470, 14], [370, 430, 24], [70, 560, 10], [330, 590, 12]];
-    BK.forEach(function (v, i) {
-      var dx = Math.sin(t / (1400 + i * 230) + i) * 10, dyy = -((t / (60 + i * 9)) % 40);
-      bk += '<circle cx="' + f1(v[0] + dx) + '" cy="' + f1(v[1] + dyy) + '" r="' + v[2] + '" fill="url(#sxGc)" opacity="' + (ga * (DK ? .35 : .25) * (.5 + .5 * Math.sin(t / 700 + i * 1.7))).toFixed(2) + '"/>';
-    });
-    S.bk.innerHTML = bk;
+    hud += '</g>';
+    S.hud.innerHTML = hud;
+    // 로고 (웨이퍼가 챔버에 들어가는 순간부터)
+    logoDraw(S.svg, S.Lg, "svLg", T, t, 3050, 750);
+    // 제목
+    S.o.innerHTML = titleSvg(T, t, 3450, 742, 30, "SMART MANUFACTURING");
   }
+
 
   /* ---------- ② 빛 스캔 로고 ---------- */
   function build2(svg, T, DK) {
@@ -2982,7 +3064,7 @@ var SPX = (function () {
       root = root || document.getElementById("splash");
       var svg = root && root.querySelector("#spx");
       if (!svg) return;
-      var v = pick(), DK = dark(), T = tok(root), S = v === 1 ? build1(svg, T, DK) : build2(svg, T, DK), draw = v === 1 ? draw1 : draw2;
+      var v = pick(), DK = dark(), T = tok(root), S = v === 1 ? build3(svg, T, DK) : build2(svg, T, DK), draw = v === 1 ? draw3 : draw2;
       var my = ++run, t0 = 0, END = 4400;
       CUR = root; PROG = 0;
       var still = false; try { still = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
@@ -3441,18 +3523,20 @@ SPX.start();
 <div class="ov" id="rsov">
   <div class="box">
     <h3 id="rsttl">팀원 관리</h3>
-    <p class="sub" id="rssub">여기서 바꾸면 앱 이름 목록 · 근무시간 시트 · 알림 · 장비통계에 자동으로 반영돼요.</p>
+    <p class="sub" id="rssub">새 팀원 추가와 본인 정보만 여기서 바꿀 수 있어요. 다른 사람(퇴사 · 이동 포함)은 팀_명단 시트에서 고쳐 주세요.</p>
+    <div id="rsprog"></div>
     <div id="rslist" class="rsl"></div>
     <div id="rsform" class="rsf" style="display:none">
       <label>이름<input type="text" id="rsname" maxlength="10" autocomplete="off" placeholder="예: 홍길동"></label>
-      <div class="lb">구분<div class="chips" id="rsrole"></div></div>
+      <div class="lb" id="rsrolew">구분<div class="chips" id="rsrole"></div></div>
       <label>입사일<input type="date" id="rshire"></label>
       <div class="lb">상태<div class="chips" id="rsst"></div></div>
       <label id="rsdatew">날짜<input type="date" id="rsdate"></label>
-      <label>장비통계 표시 (선택)<input type="text" id="rsmark" maxlength="10" autocomplete="off" placeholder="예: 트랙 · 비워도 돼요"></label>
-      <label>메모 (선택)<input type="text" id="rsmemo" maxlength="40" autocomplete="off"></label>
+      <label>장비통계 표시 (선택)<input type="text" id="rsmark" maxlength="10" autocomplete="off" placeholder="예) 트랙 · 출하 담당이 아니면 비워 두세요"></label>
+      <label>메모 (선택)<input type="text" id="rsmemo" maxlength="40" autocomplete="off" placeholder="특이사항이 없으면 비워 두세요"></label>
       <div id="rsinfo"></div>
       <button type="button" id="rsdel">명단에서 지우기</button>
+      <div id="rsdc" style="display:none"></div>
     </div>
     <p id="rsmsg"></p>
     <div class="ob"><button id="rsno" type="button">닫기</button><button id="rsgo" type="button" class="go">새 팀원 추가</button></div>
@@ -4220,6 +4304,7 @@ function eqsList(d, off) {
     out.forEach(function (e) {
       var r = idx._m[normQ(e.n)]; if (!r) return;
       if (r[7]) e.u = 1;
+      if (r[8]) e.v = String(r[8]);   // 🏭 2026-11-11 업체 (시노드 등)
       var ds = r[5] || [];
       for (var i = 0; i < ds.length; i++) if (ds[i] && ds[i] > base) { e.due = { l: idx.stages[i][1], d: ds[i], dd: ymdDiff(today, ds[i]) }; break; }
     });
@@ -4271,7 +4356,10 @@ function eqsRender(anim) {
     var b = el("div", "b"), ps = el("div", "ps");
     e.st.forEach(function (l, i) { ps.appendChild(el("span", i === e.st.length - 1 ? "last" : "", l)); });
     b.appendChild(ps);
-    b.appendChild(e.loc ? el("span", "lc", "📍" + locShort(e.loc)) : el("span", "lc no", "📍 자리 정보 없음"));
+    var rt = el("div", "rt");
+    if (e.v) rt.appendChild(el("span", "vd", e.v));   // 🏭 업체
+    rt.appendChild(e.loc ? el("span", "lc", "📍" + locShort(e.loc)) : el("span", "lc no", "📍 자리 정보 없음"));
+    b.appendChild(rt);
     it.appendChild(b);
     it.onclick = function () { closeEqs(); ovLock(false); openEquip(e.n); };   // 고정을 먼저 풀고 이동 (위치 안 틀어지게)
     box.appendChild(it);
@@ -9748,10 +9836,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-10-7";
+var APP_VER = "2026-11-11-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-1", ["진행 장비 목록에 업체(시노드 등)도 같이 보여요"]],
+  ["2026-11-10-8", ["시작 화면: 웨이퍼 대신 로봇이 웨이퍼를 챔버로 옮기는 새 화면이 나와요"]],
   ["2026-11-10-7", ["연차: 입사 1년 미만 근무자는 매월 연차 발생 안내와 다음 발생일이 표시됩니다"]],
   ["2026-11-10-6", ["입고: 장비 이름이 Backlog처럼 EFEM · PROCESS까지 붙어서 보여요 (CJ07-132 EFEM처럼, 둘 다 있으면 따로 나와요)"]],
   ["2026-11-10-5", ["입고: 장비를 찾을 때도 · 고른 뒤에도 TYPE이 보여요 (EFEM · PROCESS처럼 탭이 여러 개면 눌러서 그 TYPE 품목만)"]],
@@ -10553,14 +10643,17 @@ function rsMd(ymd) { var p = String(ymd || "").split("-"); return p.length === 3
 function rsNext(ymd) { var p = ymd.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2] + 1); return (d.getMonth() + 1) + "/" + d.getDate(); }
 function rsToday() { return RS.today || ymdLocal(); }
 function rsMsg(t) { $("rsmsg").textContent = t || ""; }
+// 🛠 개발자 모드 (개발자 메뉴에서 PIN 확인한 뒤 30분) → 모든 사람 고치기 · 지우기
+function rsDev() { try { return DV.pin && DV.until > Date.now() ? DV.pin : ""; } catch (e) { return ""; } }
+function rsDevBad(r) { if (r && r.devBad) { try { DV.pin = ""; DV.until = 0; } catch (e) {} } if (r && r.admBad) adminOff(); }
 function openRoster() {
   RS.edit = null; rsMsg("");
   rsView();
   $("rsov").className = "ov on";
   if (!RS.rows) { $("rslist").innerHTML = ""; $("rslist").appendChild(el("span", "hint", "불러오는 중…")); }
-  call("getRoster").then(function (r) {
-    if (r && r.error) { if (r.admBad) adminOff(); rsMsg(r.error); return; }
-    RS.rows = r.rows || []; RS.today = r.today || "";
+  call("getRoster", [{ dev: rsDev() }]).then(function (r) {
+    if (r && r.error) { rsDevBad(r); rsMsg(r.error); return; }
+    RS.rows = r.rows || []; RS.today = r.today || ""; RS.dev = !!r.dev;
     if (!RS.edit) rsView();
   }).catch(function (e) { rsMsg("불러오기 실패: " + errText(e)); });
 }
@@ -10571,18 +10664,19 @@ function rsView() {
   $("rssub").style.display = "";
   $("rsform").style.display = "none"; L.style.display = "";
   $("rsno").textContent = "닫기"; $("rsgo").textContent = "새 팀원 추가"; $("rsgo").disabled = !RS.rows;
+  $("rssub").textContent = RS.dev ? "개발자 모드: 모든 사람(퇴사 · 이동 포함)을 고치고 지울 수 있어요." : "새 팀원 추가와 본인 정보만 여기서 바꿀 수 있어요. 다른 사람(퇴사 · 이동 포함)은 팀_명단 시트에서 고쳐 주세요.";
   if (!RS.rows) return;
   L.innerHTML = "";
   var on = RS.rows.filter(function (p) { return p.st === "재직"; }), off = RS.rows.filter(function (p) { return p.st !== "재직"; });
   function row(p) {
-    var gone = p.st !== "재직", b = el("button", gone ? "gone" : ""); b.type = "button";
+    var gone = p.st !== "재직", b = el("button", (gone ? "gone" : "") + (p.can ? (p.me ? " me" : "") : " ro")); b.type = "button";
     var t = el("span");
     t.appendChild(el("b", null, p.name));
     t.appendChild(el("small", null, [p.role, p.hire ? p.hire.replace(/-/g, ".") + " 입사" : "", p.mark].filter(function (x) { return x; }).join(" · ")));
     b.appendChild(t);
     var fut = gone && p.date && p.date >= rsToday();
-    b.appendChild(el("span", "st", gone ? p.st + (p.date ? " " + rsMd(p.date) : "") + (fut ? " 예정" : "") : (p.hire && p.hire > rsToday() ? rsMd(p.hire) + " 입사 예정" : "재직")));
-    b.onclick = function () { rsForm(p); };
+    b.appendChild(el("span", "st", p.me ? "본인" : gone ? p.st + (p.date ? " " + rsMd(p.date) : "") + (fut ? " 예정" : "") : (p.hire && p.hire > rsToday() ? rsMd(p.hire) + " 입사 예정" : p.nw ? "방금 추가" : "재직")));
+    b.onclick = function () { if (p.can) rsForm(p); else rsMsg(p.name + "님 정보는 팀_명단 시트에서 고쳐 주세요. (앱에서는 본인 · 방금 추가한 사람만)"); };
     L.appendChild(b);
   }
   on.forEach(row);
@@ -10610,7 +10704,8 @@ function rsForm(p) {
   $("rshire").value = RS.edit.hire || "";
   $("rsdate").value = RS.edit.date || "";
   $("rsmark").value = RS.edit.mark || ""; $("rsmemo").value = RS.edit.memo || "";
-  $("rsdel").style.display = isNew ? "none" : ""; $("rsdel").textContent = "명단에서 지우기";
+  $("rsdel").style.display = !isNew && (p.del || p.nw) ? "" : "none"; $("rsdel").textContent = "명단에서 지우기"; $("rsdc").style.display = "none";
+  $("rsrolew").style.display = isNew && !RS.dev ? "none" : "";   // 관리자: 새로 추가는 팀원만 (구분 칸 숨김) · 개발자 모드: 팀원 / 팀장 고르기
   $("rsno").textContent = "← 목록"; $("rsgo").textContent = "저장"; $("rsgo").disabled = false;
   rsFormSync();
   if (isNew) setTimeout(function () { try { $("rsname").focus(); } catch (e) {} }, 250);
@@ -10618,33 +10713,81 @@ function rsForm(p) {
 function rsFormSync() {
   var f = RS.edit; if (!f) return;
   rsChips("rsrole", ["팀원", "팀장"], f.role, function (x) { f.role = x; rsFormSync(); });
+  if (!f.orig && !RS.dev) f.role = "팀원";
   rsChips("rsst", f.orig ? ["재직", "퇴사", "이동"] : ["재직"], f.st, function (x) { f.st = x; if (x !== "재직" && !$("rsdate").value) $("rsdate").value = rsToday(); rsFormSync(); });
   var gone = f.st !== "재직";
   $("rsdatew").style.display = gone ? "" : "none";
   $("rsdatew").firstChild.textContent = f.st === "이동" ? "이동일 (이 날까지 B팀)" : "퇴사일 (마지막 근무일)";
   var nm = f.orig || $("rsname").value.trim() || "새 팀원", d = $("rsdate").value, hire = $("rshire").value, info;
-  if (!f.orig) info = nm + "님이 바로 앱 이름 목록과 근무시간 시트에 들어가요." +
-    (hire && hire > rsToday() ? "\n입사일(" + rsMd(hire) + ") 전까지는 근무시간 미입력 체크에서 빠져요." : "") +
-    "\n\n연차 표(Main_Log)는 시트에서 직접 넣어 주세요.";
+  if (!f.orig) info = nm + "님이 앱 이름 목록 · 근무시간 시트 · 연차 표(Main_Log)에 자동으로 들어가요." +
+    (hire && hire > rsToday() ? "\n입사일(" + rsMd(hire) + ") 전 평일은 근무시간 시트에 - 로 표시되고, 미입력 체크에서도 빠져요." : "") +
+    (RS.dev ? "" : "\n잘못 넣었으면 24시간 안에 여기서 지울 수 있어요.");
   else if (gone) info = d ? rsNext(d) + "부터 " + nm + " 이름으로는 앱을 못 쓰고, 이름 목록 · 알림 · 근무시간 체크 · 연차 · 장비통계에서 빠져요.\n그 전 기록은 그대로 남아요." : "날짜를 넣어 주세요.";
   else info = f.st !== (RS.rows.filter(function (p) { return p.name === f.orig; })[0] || {}).st ? nm + "님을 다시 재직으로 돌려요. 명단이 걸어 둔 앱 차단도 풀려요." : "입사일 · 표시를 고치면 장비통계 순서 · 근무시간 체크에 반영돼요.";
   $("rsinfo").textContent = info;
 }
 $("rsname").oninput = rsFormSync; $("rshire").onchange = rsFormSync; $("rsdate").onchange = rsFormSync;
+// 👥 2026-11-11 저장은 시트에 한 줄만 쓰고 바로 끝 → 이어서 '반영'을 따로 요청하면서 진행 상황을 보여 줌
+var RS_STEPS = ["근무시간 시트", "연차 표 (Main_Log)", "앱 이름 · 알림"];
+function rsProg(state, steps, extra) {
+  var b = $("rsprog"); b.innerHTML = "";
+  if (!state) return;
+  b.appendChild(el("div", "h", state === "run" ? "반영 중이에요… 창을 닫아도 계속 진행돼요" : state === "ok" ? "반영 완료" : "일부 반영이 안 됐어요"));
+  RS_STEPS.forEach(function (k, i) {
+    var s = steps && steps[i], r = el("div", "s"); r.appendChild(el("span", null, k));
+    r.appendChild(state === "run" ? el("b", "wait", "진행 중") : s && !s.ok ? el("b", "bad", "실패") : el("b", "ok", "완료"));
+    b.appendChild(r);
+  });
+  if (extra) b.appendChild(el("div", "d", extra));
+}
+function rsApply(name) {
+  try { sset("rsPend", JSON.stringify({ n: name || "", at: Date.now() })); } catch (eP) {}   // 앱을 닫아도 다시 켰을 때 결과 알려 주려고
+  rsProg("run");
+  var t0 = Date.now(), tick = setInterval(function () { var h = $("rsprog").querySelector(".h"); if (h && $("rsprog").dataset.st === "run") h.textContent = "반영 중이에요… " + Math.round((Date.now() - t0) / 1000) + "초 · 창을 닫아도 계속 진행돼요"; }, 1000);
+  $("rsprog").dataset.st = "run";
+  call("saveRoster", [{ act: "apply", dev: rsDev() }]).then(function (r) {
+    clearInterval(tick); $("rsprog").dataset.st = "";
+    if (r && r.error) { rsDevBad(r); rsProg("bad", null, r.error); return; }
+    try { sdel("rsPend"); } catch (eP) {}
+    if (r.rows) { RS.rows = r.rows; RS.today = r.today || RS.today; if (!RS.edit) { rsView(); } }
+    var bad = (r.steps || []).filter(function (s) { return !s.ok; });
+    rsProg(bad.length ? "bad" : "ok", r.steps, bad.length ? bad.map(function (s) { return s.k + ": " + s.t; }).join("\n") : "");
+    if (!bad.length) setTimeout(function () { if ($("rsprog").dataset.st !== "run") rsProg(""); }, 6000);
+  }).catch(function (e) {
+    clearInterval(tick); $("rsprog").dataset.st = "";
+    rsProg("bad", [{ ok: 0 }, { ok: 0 }, { ok: 0 }], "응답을 못 받았어요 (" + errText(e) + ").\n서버에서는 계속 진행돼서 10분 안에 자동으로 마무리돼요. 앱을 다시 켜면 결과를 알려 드려요.");
+  });
+}
+// 📣 앱을 다시 켰을 때: 닫는 사이 서버가 마무리한 팀원 반영 결과 알림 (관리자 · 개발자 모드일 때만 확인 · 시트 안 읽음)
+function rsPendCheck() {
+  var pd = null; try { pd = JSON.parse(sget("rsPend") || "null"); } catch (e) {}
+  if (!pd || !pd.at) return;
+  if (Date.now() - pd.at > 86400000) { sdel("rsPend"); return; }
+  if (RS.busy || $("rsprog").dataset.st === "run" || !(adminOn() || rsDev())) return;
+  call("saveRoster", [{ act: "status", dev: rsDev() }]).then(function (r) {
+    if (!r || r.error || r.pend) return;   // 아직 진행 중 → 다음에 켤 때 다시
+    var L = r.last; if (!L || !L.at || L.at < pd.at) return;
+    sdel("rsPend");
+    var bad = (L.steps || []).filter(function (s) { return !s.ok; }), who = pd.n ? pd.n + " " : "";
+    toast(bad.length ? who + "팀원 반영 중 일부가 안 됐어요 · " + bad.map(function (s) { return s.k; }).join(" · ") : who + "팀원 반영이 끝났어요 · 근무시간 시트 · 연차 표 · 앱 이름", !!bad.length, { label: "확인", fn: function () {} });
+  }, function () {});
+}
+setTimeout(rsPendCheck, 9000);
+document.addEventListener("visibilitychange", function () { if (!document.hidden) setTimeout(rsPendCheck, 2500); });
 function rsSend(op, done) {
   if (RS.busy) return;
   RS.busy = true; $("rsgo").disabled = true; rsMsg("");
-  var old = $("rsgo").textContent; $("rsgo").textContent = "반영 중…";
+  var old = $("rsgo").textContent; $("rsgo").textContent = "저장 중…";
   call("saveRoster", [op]).then(function (r) {
     RS.busy = false; $("rsgo").disabled = false; $("rsgo").textContent = old;
-    if (r && r.error) { if (r.admBad) adminOff(); rsMsg(r.error); return; }
-    RS.rows = r.rows || RS.rows; RS.today = r.today || RS.today;
+    if (r && r.error) { rsDevBad(r); rsMsg(r.error); return; }
+    RS.rows = r.rows || RS.rows; RS.today = r.today || RS.today; RS.dev = !!r.dev;
     RS.edit = null; rsView();
     toast(done(r.name));
-    if (r.warn) rsMsg(r.warn);
+    rsApply(r.name);
   }).catch(function (e) {
     RS.busy = false; $("rsgo").disabled = false; $("rsgo").textContent = old;
-    rsMsg("저장 실패: " + errText(e) + "\n목록을 다시 열어서 반영됐는지 확인해 주세요.");
+    rsMsg("저장 실패: " + errText(e) + "\n목록을 다시 열어서 들어갔는지 확인해 주세요.");
   });
 }
 $("rsgo").onclick = function () {
@@ -10654,14 +10797,22 @@ $("rsgo").onclick = function () {
   if (!f.orig && RS.rows && RS.rows.some(function (p) { return p.name === name; })) { rsMsg("'" + name + "'은(는) 이미 명단에 있어요."); return; }
   var d = $("rsdate").value;
   if (f.st !== "재직" && !d) { rsMsg((f.st === "퇴사" ? "퇴사일" : "이동일") + "을 넣어 주세요."); return; }
-  rsSend({ act: "save", orig: f.orig, name: name, role: f.role, hire: $("rshire").value, st: f.st, date: f.st === "재직" ? "" : d, mark: $("rsmark").value.trim(), memo: $("rsmemo").value.trim() },
-    function (n) { return f.orig ? n + " 저장했어요" : n + " 추가했어요 · 연차 표는 시트에서 넣어 주세요"; });
+  rsSend({ act: "save", dev: rsDev(), orig: f.orig, name: name, role: f.role, hire: $("rshire").value, st: f.st, date: f.st === "재직" ? "" : d, mark: $("rsmark").value.trim(), memo: $("rsmemo").value.trim() },
+    function (n) { return f.orig ? n + " 저장했어요" : n + " 추가했어요"; });
 };
 $("rsno").onclick = function () { if (RS.edit) { RS.edit = null; rsMsg(""); rsView(); } else rsClose(); };
 $("rsdel").onclick = function () {
   var f = RS.edit; if (!f || !f.orig) return;
-  if (Date.now() - RS.delArm > 4000) { RS.delArm = Date.now(); $("rsdel").textContent = "한 번 더 누르면 지워요 (잘못 넣은 경우만 · 나간 사람은 상태를 바꿔 주세요)"; return; }
-  rsSend({ act: "del", orig: f.orig, name: f.orig }, function (n) { return n + " 명단에서 지웠어요"; });
+  var c = $("rsdc"); c.innerHTML = "";
+  c.appendChild(el("p", null, f.orig + "님을 명단에서 지울까요?\n앱 이름 목록 · 근무시간 시트 · 연차 표(Main_Log)에서도 빠져요."));
+  c.firstChild.style.whiteSpace = "pre-line";
+  var bt = el("div", "bt"), no = el("button", null, "취소"), go = el("button", "x", "지우기");
+  no.type = go.type = "button";
+  no.onclick = function () { c.style.display = "none"; $("rsdel").style.display = ""; };
+  go.onclick = function () { c.style.display = "none"; rsSend({ act: "del", dev: rsDev(), orig: f.orig, name: f.orig }, function (n) { return n + " 명단에서 지웠어요"; }); };
+  bt.appendChild(no); bt.appendChild(go); c.appendChild(bt);
+  $("rsdel").style.display = "none"; c.style.display = "";
+  try { c.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) {}
 };
 $("rsov").onclick = function (e) { if (e.target === this && !RS.busy) rsClose(); };
 $("psov").onclick = function (e) { if (e.target === this) $("psov").className = "ov"; };
@@ -11322,7 +11473,7 @@ function openMenu() {
     if (adminOn()) { adminOff(); toast("🔑 관리자 모드 꺼짐"); } else openAdminGate("mode");
   }, adminOn() ? null : "apov");
   if (noticeIsAdmin()) item("📢 공지 보내기", "관리자", function () { openAdminGate("notice"); }, "apov");
-  if (noticeIsAdmin()) item("팀원 관리", "추가 · 퇴사 · 이동", function () { if (adminOn()) openRoster(); else openAdminGate("roster"); }, adminOn() ? "rsov" : "apov");
+  if (noticeIsAdmin() || rsDev()) item("팀원 관리", "추가 · 퇴사 · 이동", function () { if (adminOn() || rsDev()) openRoster(); else openAdminGate("roster"); }, adminOn() || rsDev() ? "rsov" : "apov");
   if (noticeIsAdmin() && ONESIGNAL_APP_ID) item("👥 알림 현황", "누가 켰는지", openPushStatus);   // 알림 현황은 아래쪽에 "← 메뉴로" 버튼
   item("🔄 앱 새로 불러오기", "v" + APP_VER.slice(5).replace("-", "."), function () { location.reload(); });
   item("🛠 Developer", "개발자", function () { openAdminGate("dev"); }, "apov");
