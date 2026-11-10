@@ -624,6 +624,22 @@ li.tap:active{background:rgba(47,111,237,.08)}
 .mon h4{margin:0;font-size:15px}
 .mon h4 span{color:var(--accent)}
 .mon.ld .cal,.mon.ld .msum{opacity:.3}
+/* 2026-11-10: 입력 내역 접기 · 펴기 (제목 줄만 남김) */
+.mon h4.tgl{cursor:pointer;-webkit-user-select:none;user-select:none}
+.mon h4 .ftg{font-size:12px;font-weight:800;color:var(--accent);padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--accent) 11%,transparent)}
+.mon.fold>:not(h4){display:none}#hours .mon.fold h4 .mnav{display:none}.mon.fold h4 .ftg{margin-left:auto}
+/* 2026-11-10: 오늘 팀 입력 */
+.wk.tdk{border-left-color:var(--accent)}
+.tdg{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:10px}
+.tdg button{display:grid;gap:2px;justify-items:center;padding:9px 4px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;cursor:pointer}
+.tdg button i{font-style:normal;font-size:12.5px;font-weight:700;color:var(--sub);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tdg button b{font-size:17px;font-weight:900;line-height:1.2}
+.tdg button.lv b{font-size:14px;color:var(--accent)}
+.tdg button.sv{border-style:dashed}
+.tdg button.em b{font-size:13px;font-weight:800;color:var(--warn)}
+.tdg button.we b{font-size:13px;color:var(--sub)}
+.tdg button.me{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.wk.tdk .hint{margin-top:8px}
 .mon.flash{animation:mflash .7s ease-out}
 @keyframes mflash{0%{background:rgba(47,111,237,.18)}100%{background:var(--card)}}
 .msum{font-size:13px;color:var(--sub);line-height:1.5}
@@ -3138,6 +3154,7 @@ SPX.start();
   <div id="hmiss" style="display:none"></div>
   <div id="hprev" class="prevmiss" style="display:none"></div>
   <details id="hweek" class="wk" style="display:none"></details>
+  <details id="hteam" class="wk tdk" style="display:none"></details>
   <div class="form">
     <div id="htop" class="top1" style="display:none"></div>
     <div id="hmonth" class="cur">시트 기준 월 확인 중…</div>
@@ -7735,7 +7752,7 @@ function setTab(n) {
   else if (n === 11) { renderLay(); loadEquipIndex(false).then(function () { if (cur === 11 && !SR.open) renderLay(); }); }
   else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
-  else if (n === 3) { $("upd").textContent = ""; if (!hoursLock()) { updLock(); if (!H.loaded) loadHoursMeta(); else hAutoRefresh(); } }
+  else if (n === 3) { $("upd").textContent = ""; hmFold(true); try { $("hteam").open = false; } catch (eT) {} if (!hoursLock()) { updLock(); if (!H.loaded) loadHoursMeta(); else hAutoRefresh(); } }
   else if (n === 4) { renderLeave(LV.data); if (!LV.loaded) loadLeave(); }
   else { renderStats(ST.data); if (!ST.loaded) loadStats(); }
   moreSync();
@@ -8728,6 +8745,7 @@ function goMon(n) {
     updNote();
   }
   if (H.meta) renderWeek(H.meta.week);
+  hmFold(false);
   H.scrollMon = true;          // 달력이 새 사람으로 그려지면 한 번 더 맞춰서 스크롤
   scrollMon();
 }
@@ -8890,9 +8908,49 @@ function applyMeta(m, fromCache) {
   if (m.prev) store.prevMiss = m.prev;
   renderTop(m.top);
   renderWeek(m.week);
+  renderTeamDay();
   hDateRange();
   checkMonth();
   hoursHero();
+}
+// 👥 2026-11-10: 오늘 팀 입력 — 미리 받아 둔 전원 값(H.meta.grid)으로 그림 (서버 요청 추가 없음)
+function renderTeamDay() {
+  var b = $("hteam"), m = H.meta;
+  if (!b) return;
+  var g = m && m.grid, today = (m && m.today) || "";
+  if (!g || !g.rows || !today || +today.slice(5, 7) !== g.m || !m.names || !m.names.length) { b.style.display = "none"; return; }
+  var open = b.open, day = +today.slice(8, 10), dt = new Date(+today.slice(0, 4), +today.slice(5, 7) - 1, day), dow = dt.getDay();
+  var off = dow === 0 || dow === 6 || !!KR_HOLI[today];   // 주말 · 공휴일은 비어 있어도 '미입력'으로 안 봄
+  var schm = (m.week && m.week.sch) || {}, me = $("hname").value, in0 = 0, all = 0, miss = [];
+  var grid = el("div", "tdg");
+  m.names.forEach(function (n) {
+    var row = g.rows[n]; if (!row) return;
+    var v = String(row.v[day - 1] == null ? "" : row.v[day - 1]).trim();
+    if (WEEKEND_MARK.test(v)) v = "";
+    var sv = !v && schm[n + "|" + day] ? schm[n + "|" + day][1] : "";
+    all++;
+    var cls = "", txt;
+    if (v) { in0++; txt = SHORT[v] || v; if (!/^\d+(\.\d+)?$/.test(v)) cls = "lv"; }
+    else if (sv) { txt = SHORT[sv] || sv; cls = "lv sv"; }
+    else if (off) { txt = "-"; cls = "we"; }
+    else { txt = "미입력"; cls = "em"; miss.push(n); }
+    var c = el("button", cls + (n === me ? " me" : "")); c.type = "button";
+    c.appendChild(el("i", null, n)); c.appendChild(el("b", null, txt));
+    c.title = n + " · " + (v || sv || "비어 있음");
+    c.onclick = function () { $("hdate").value = today; goMon(n); };   // 그 사람 달력으로
+    grid.appendChild(c);
+  });
+  if (!all) { b.style.display = "none"; return; }
+  b.innerHTML = ""; b.style.display = "block";
+  var sm = el("summary");
+  sm.appendChild(el("span", "tg", "팀 보기 ▾"));
+  sm.appendChild(document.createTextNode("오늘 팀 입력 " + (+today.slice(5, 7)) + "/" + day + "(" + "일월화수목금토"[dow] + ") "));
+  sm.appendChild(el("span", "bx", "입력 " + in0 + "/" + all + "명"));
+  sm.appendChild(el("small", null, off ? "쉬는 날이라 빈 칸은 미입력으로 보지 않아요" : miss.length ? "아직 입력 안 한 사람 " + miss.length + "명 · 하루가 끝나기 전엔 비어 있을 수 있어요" : "전원 입력했어요"));
+  b.appendChild(sm);
+  b.appendChild(grid);
+  b.appendChild(el("div", "hint", "시트 근무시간 칸 기준이에요. 점선 칸은 schedule에만 적힌 휴가예요. 이름을 누르면 그 사람 달력으로 가요."));
+  b.open = open;
 }
 // 🌟 근무시간 맨 위 요약: 고른 사람의 이번 달 · 이번 주 · 52시간까지
 function hoursHero() {
@@ -8989,10 +9047,18 @@ var SHORT = { "오전반차": "오전반", "오후반차": "오후반", "반반�
 var WEEKEND_MARK = /^(일|토|일요일|토요일)$/;
 
 // 이름/날짜를 바꾸는 순간 달력 제목을 새 이름으로 바꾸고 흐리게 (불러오는 중)
+// 📅 2026-11-10: 입력 내역 접기 · 펴기 (근무시간 탭에 들어올 때마다 접힌 상태로 시작)
+var HMF = true;
+function hmFold(on) {
+  HMF = !!on;
+  var b = $("hmon"); if (!b) return;
+  b.classList.toggle("fold", HMF);
+  var t = b.querySelector("h4 .ftg"); if (t) t.textContent = HMF ? "펼치기 ▾" : "접기 ▴";
+}
 function monLoading(name) {
   var b = $("hmon");
   if (b.style.display === "none") return;
-  b.className = "mon ld";
+  b.className = "mon ld" + (HMF ? " fold" : "");
   var h = b.querySelector("h4");
   if (h) {
     h.innerHTML = "";
@@ -9015,8 +9081,8 @@ function renderMonth(name, r) {
   if (!r || !r.days || !r.days.length) { b.style.display = "none"; return; }
   b.style.display = "grid";
   b.setAttribute("data-name", name);
-  b.className = "mon";
-  if (changed) { void b.offsetWidth; b.className = "mon flash"; }
+  b.className = "mon" + (HMF ? " fold" : "");
+  if (changed) { void b.offsetWidth; b.className = "mon flash" + (HMF ? " fold" : ""); }
 
   var sel = $("hdate").value;
   var today = H.meta ? H.meta.today : "";
@@ -9051,9 +9117,13 @@ function renderMonth(name, r) {
     $("hdate").value = today && ym2 === today.slice(0, 7) ? today : ym2 + "-" + ("0" + day).slice(-2);
     H.otherOK = false; resetConfirm(); refreshCell();
   }
-  pvb.onclick = function () { goMon(mm - 1); };
-  nxb.onclick = function () { goMon(mm + 1); };
+  pvb.onclick = function (e) { e.stopPropagation(); goMon(mm - 1); };
+  nxb.onclick = function (e) { e.stopPropagation(); goMon(mm + 1); };
+  var ftg = el("span", "ftg", HMF ? "펼치기 ▾" : "접기 ▴");
+  h4.appendChild(ftg);
   nav.appendChild(pvb); nav.appendChild(nxb); h4.appendChild(nav);
+  h4.className = "tgl";
+  h4.onclick = function () { hmFold(!HMF); };   // 제목 줄을 누르면 접기 · 펴기
   b.appendChild(h4);
   var sum = el("div", "msum", "입력 " + filled + "일 · " + mm + "월 계 " + (r.total || "-"));
   var wm = wkMine(name), wl = H.meta && H.meta.week;
@@ -9528,6 +9598,7 @@ function doSave(value, force, delForce) {
         if (r.past && r.cell && r.cell.grid) hpgPut(r.cell.grid);   // 📅 지난달 기억 값도 새로
         if (!r.past) {   // 📅 지난달 저장은 이번 달 표·미입력과 상관없음
           try { if (+date.slice(5, 7) === H.meta.grid.m) { var gr = H.meta.grid.rows[name]; gr.v[+date.slice(8, 10) - 1] = r.cur; } } catch (eg) {}   // 미리 받아둔 값도 갱신
+          try { renderTeamDay(); } catch (eTd) {}   // 👥 오늘 팀 입력도 바로
           if (H.meta) cset("hours", H.meta);
           renderMissing(r.missing);
         }
@@ -9591,10 +9662,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-09-16";
+var APP_VER = "2026-11-10-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-10-1", ["근무시간: 이번 달 입력 내역(달력)을 접었다 펼 수 있어요 (처음엔 접혀 있어요 · 제목을 누르면 펼쳐져요)", "근무시간: 팀원들이 오늘 몇 시간 입력했는지 한눈에 볼 수 있어요 (위쪽 '오늘 팀 입력' · 이름을 누르면 그 사람 달력)"]],
   ["2026-11-09-16", ["시작 화면: 웨이퍼 화면이 끝까지 다 나온 다음에 메인으로 넘어가요"]],
   ["2026-11-09-15", ["PC 시트에서 근무시간을 고쳐도 위에 초록 알림이 떠요 (새로고침 누르면 바로 반영)"]],
   ["2026-11-09-14", ["시작 화면: 새 웨이퍼 화면으로 바뀌었어요 (켤 때 흔들림 · 위쪽 색 차이도 고쳤어요)"]],
@@ -10775,6 +10847,7 @@ function qhSave(me, ymd, v) {
         if (r.past && r.cell && r.cell.grid) hpgPut(r.cell.grid);
         if (!r.past && H.meta) {
           try { if (+ymd.slice(5, 7) === H.meta.grid.m) H.meta.grid.rows[me].v[+ymd.slice(8, 10) - 1] = r.cur; } catch (eg) {}
+          try { renderTeamDay(); } catch (eTd) {}
           cset("hours", H.meta);
           if (r.missing) renderMissing(r.missing);
           if (r.week) { H.meta.week = r.week; renderWeek(r.week); }
