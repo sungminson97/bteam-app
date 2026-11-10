@@ -591,7 +591,7 @@ li:first-child{border-top:0}
 .wkd .dys div i{display:block;font-style:normal;color:var(--sub);font-size:11px;font-weight:500}
 .wkd .dys .lv{background:#fff4e0;border-color:#f59e0b;color:#b45309}
 .wkd .dys .hf{background:#fff4e0;border-color:#f59e0b}
-.wkd .dys .hf em{display:block;font-style:normal;font-size:10px;color:#b45309}
+.wkd .dys div em{display:block;font-style:normal;font-size:10px;font-weight:700;color:#b45309;line-height:1.3;white-space:nowrap}   /* 2026-11-10: '반차+4' 꼬리표는 항상 아래 줄 */
 .wkd .dys .we{color:var(--sub);font-weight:500}
 .wkd .dys .out{opacity:.45;font-weight:500}
 .wkd .dys .su i{color:var(--warn)}.wkd .dys .sa i{color:var(--accent)}
@@ -8808,11 +8808,10 @@ function openWeekDetail(r, i) {
         c.appendChild(document.createTextNode(v));
         if (sc && sc[0] < 8) { c.appendChild(el("em", null, (SHORT[sc[1]] || sc[1]) + "+" + sc[0])); cl += " hf"; }
       } else if (!v && sc) {   // 칸은 비었는데 schedule에 휴가
-        c.appendChild(document.createTextNode((SHORT[sc[1]] || sc[1]) + " " + sc[0]));
-        c.appendChild(el("em", null, "스케줄"));
+        c.appendChild(document.createTextNode(SHORT[sc[1]] || sc[1]));   // 2026-11-10: 이름만 (몇 시간 · schedule 여부는 달력에서)
         cl += " lv";
       } else if (wkLeaveTxt(v)) {
-        c.appendChild(document.createTextNode((SHORT[v] || v) + " " + wkLeaveTxt(v)));
+        c.appendChild(document.createTextNode(SHORT[v] || v));
         cl += " lv";
       } else { c.appendChild(document.createTextNode(v && !WEEK_MARK.test(v) ? v : "-")); cl += " we"; }
     }
@@ -8829,7 +8828,7 @@ function openWeekDetail(r, i) {
   else if (k.to < wkToday() ) { vd = "⚠️ " + w.limit + "시간 미달 · " + wkFmt(w.limit - h) + "시간 부족"; vc = "x"; }
   else vd = "⏳ 진행 중 · " + w.limit + "시간까지 " + wkFmt(w.limit - h) + "시간 남음";
   box.appendChild(el("div", "vd " + vc, vd));
-  box.appendChild(el("p", "sub", "연차·공가·대휴 8시간 / 반차 4시간 / 반반차 2시간을 휴가로 인정해요. 주황 칸 = 휴가가 들어간 날. '스케줄' = 근무시간 칸은 비어 있지만 schedule 시트에 적힌 휴가."));
+  box.appendChild(el("p", "sub", "연차·공가·대휴 8시간 / 반차 4시간 / 반반차 2시간을 휴가로 인정해요. 주황 칸 = 휴가가 들어간 날 (schedule 시트에만 적힌 휴가 포함). 자세한 내용은 [입력 내역 보기]에서 그 날을 누르면 보여요."));
 
   var ob = el("div", "ob");
   var b1 = el("button", null, "닫기"); b1.type = "button"; b1.onclick = closeWeekDetail;
@@ -9665,10 +9664,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-10-2";
+var APP_VER = "2026-11-10-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-10-3", ["주 52시간: 휴가 날은 '연차' · '오전반'처럼 이름만 보여요 (자세한 건 달력에서 그 날을 누르면 아래에 나와요)"]],
   ["2026-11-10-2", ["장비 검색: 장비를 누르면 가공업체 · 하네스업체도 보여요"]],
   ["2026-11-10-1", ["근무시간: 이번 달 입력 내역(달력)을 접었다 펼 수 있어요 (처음엔 접혀 있어요 · 제목을 누르면 펼쳐져요)", "근무시간: 팀원들이 오늘 몇 시간 입력했는지 한눈에 볼 수 있어요 (위쪽 '오늘 팀 입력' · 이름을 누르면 그 사람 달력)"]],
   ["2026-11-09-16", ["시작 화면: 웨이퍼 화면이 끝까지 다 나온 다음에 메인으로 넘어가요"]],
