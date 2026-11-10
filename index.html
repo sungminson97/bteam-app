@@ -8507,6 +8507,9 @@ function renderEquipDetail(box, r, stages, today, canBack) {
   cps.appendChild(el("span", null, r[4] ? "📍 " + r[4] : "📍 자리 정보 없음"));
   (r[6] || []).forEach(function (v) { cps.appendChild(el("span", null, "🧱 FRAME " + v[1])); });
   if (r[8]) { var vc = el("span", "vlink", "🏭 " + r[8] + " 현황 ›"); vc.onclick = function () { openVendor(r[8]); }; cps.appendChild(vc); }
+  var gv = Array.isArray(r[11]) ? r[11] : null;   // 🏭 2026-11-10 가공업체 · 하네스업체 (Backlog '가공업체' 칸 "해룡,피르")
+  if (gv && gv[0]) cps.appendChild(el("span", "gvc", "가공 " + gv[0]));
+  if (gv && gv[1]) cps.appendChild(el("span", "gvc", "하네스 " + gv[1]));
   eqUploads(r[0]).forEach(function (lb) { cps.appendChild(el("span", "up", "⬆ " + lb + " 업로드 필요")); });
   hx.appendChild(cps);
   var tl2 = el("div", "tl");
@@ -9662,10 +9665,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-10-1";
+var APP_VER = "2026-11-10-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-10-2", ["장비 검색: 장비를 누르면 가공업체 · 하네스업체도 보여요"]],
   ["2026-11-10-1", ["근무시간: 이번 달 입력 내역(달력)을 접었다 펼 수 있어요 (처음엔 접혀 있어요 · 제목을 누르면 펼쳐져요)", "근무시간: 팀원들이 오늘 몇 시간 입력했는지 한눈에 볼 수 있어요 (위쪽 '오늘 팀 입력' · 이름을 누르면 그 사람 달력)"]],
   ["2026-11-09-16", ["시작 화면: 웨이퍼 화면이 끝까지 다 나온 다음에 메인으로 넘어가요"]],
   ["2026-11-09-15", ["PC 시트에서 근무시간을 고쳐도 위에 초록 알림이 떠요 (새로고침 누르면 바로 반영)"]],
