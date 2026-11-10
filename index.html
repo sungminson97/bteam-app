@@ -1886,6 +1886,7 @@ html.spx:not(.xmas) #splash{--ink:#111a2b;--sub:#6b7689;--a1:#2f6fed;--a3:#12c6e
 html.spx:not(.xmas) #splash .bgx,html.spx:not(.xmas) #splash .scene,html.spx:not(.xmas) #splash .tx,html.spx:not(.xmas) #splash .pts,html.spx:not(.xmas) #splash .det,html.spx:not(.xmas) #splash .hud{display:none!important}
 html.spx:not(.xmas) #spx{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;font-family:inherit}
 html.spx.spx2:not(.xmas) #splash .ft,html.spx.spx1:not(.xmas) #splash .ft{display:none}
+html.spx.spx1:not(.xmas) #splash .aipill{bottom:calc(44px + env(safe-area-inset-bottom))}   /* 로봇 화면: 상태 표시를 제목 아래로 (2026-11-11) */
 html.spx:not(.xmas) #splash .spxcr{display:block;position:absolute;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));text-align:center;font-size:9px;font-weight:700;letter-spacing:.22em;color:var(--sub);opacity:0;animation:sxSoft .8s ease 2.4s forwards;pointer-events:none}
 /* ===================== 🎄 크리스마스 테마 (html.xmas · 12/1~25) ===================== */
 .xsnow,#xsnow,.xscene,.xbok,.xmc,#xgar{display:none}
@@ -2794,11 +2795,11 @@ var SPX = (function () {
    *  위에서 본 EFEM: 아래 FOUP(웨이퍼 통) → 가운데 로봇이 팔을 뻗어 웨이퍼를 집음 → 돌아서 위쪽 챔버로
    *  → 게이트가 열리고 웨이퍼를 넣음 → 챔버가 켜지며 NINEBELL 로고가 빛으로 나타남 → 제조1-B
    */
-  var A = { B: [195, 378], C: [195, 192], F: [195, 566], L: 100, RW: 38 };
+  var A = { B: [195, 352], C: [195, 176], F: [195, 500], L: 100, RW: 38 };   // 2026-11-11 위로 당김 (아래 상태 표시와 안 겹치게)
   function build3(svg, T, DK) {
     var c = DK ? { m1: "#3a4868", m2: "#1a2234", m3: "#0d1320", ln: "#4a5b80", arm1: "#2c3954", arm2: "#566890", hi: "#8fa6d8", fl: "#0b1120", wf1: "#3b4a6b", wf2: "#141c2e", die: "#22304a", foup: "#1b2436", foup2: "#2a3550", sh: "#000" }
                : { m1: "#ffffff", m2: "#dfe6f0", m3: "#b9c5d6", ln: "#c3cede", arm1: "#e8edf5", arm2: "#ffffff", hi: "#ffffff", fl: "#eef2f8", wf1: "#ffffff", wf2: "#cfd9e8", die: "#c3cfe2", foup: "#f7f9fc", foup2: "#dde4ee", sh: "#1d2b48" };
-    var Lg = logoBuild(DK, "svLg", 195 - 115, 650, 230);
+    var Lg = logoBuild(DK, "svLg", 195 - 115, 586, 230);
     var C = A.C, F = A.F, B = A.B;
     var h = '<defs>' + commonDefs(T, DK) + Lg.defs +
       '<radialGradient id="svBg" cx=".5" cy=".42" r=".7"><stop offset="0" stop-color="' + T.a1 + '" stop-opacity="' + (DK ? .2 : .09) + '"/><stop offset="1" stop-color="' + T.a1 + '" stop-opacity="0"/></radialGradient>' +
@@ -2817,10 +2818,10 @@ var SPX = (function () {
     // 배경
     h += '<g id="svBG"><rect width="390" height="844" fill="url(#svDot)"/><rect width="390" height="844" fill="url(#svBg)"/></g>';
     // 설비 바닥 (EFEM 테두리 · 로드포트 · 챔버) — 선이 그려지며 나타남
-    var fr = 'M 58 300 H 332 V 470 H 58 Z';
+    var fy0 = B[1] - 62, fy1 = B[1] + 78, fr = 'M 58 ' + fy0 + ' H 332 V ' + fy1 + ' H 58 Z';
     h += '<g id="svFr" fill="none" stroke="' + c.ln + '" stroke-width="1.4">' +
       '<path id="svFrP" d="' + fr + '" stroke-dasharray="900" stroke-dashoffset="900" rx="18"/>' +
-      '<path id="svFrK" d="M58 318 V300 H76 M314 300 H332 V318 M332 452 V470 H314 M76 470 H58 V452" stroke="' + T.a1 + '" stroke-width="2.2" stroke-linecap="round" opacity="0"/>' +
+      '<path id="svFrK" d="M58 ' + (fy0 + 18) + ' V' + fy0 + ' H76 M314 ' + fy0 + ' H332 V' + (fy0 + 18) + ' M332 ' + (fy1 - 18) + ' V' + fy1 + ' H314 M76 ' + fy1 + ' H58 V' + (fy1 - 18) + '" stroke="' + T.a1 + '" stroke-width="2.2" stroke-linecap="round" opacity="0"/>' +
       '</g>';
     // 챔버 (위)
     h += '<g id="svCham" opacity="0">' +
@@ -2979,8 +2980,8 @@ var SPX = (function () {
     }
     // 위 글자 + 단계 (LOAD → TRANSFER → PROCESS)
     var na = eo(lin(t, 150, 650));
-    hud += '<g opacity="' + f2(na) + '"><text x="195" y="44" text-anchor="middle" ' + MONO + ' font-size="10" font-weight="800" letter-spacing="3.2" fill="' + T.sub + '">EFEM · WAFER TRANSFER</text></g>';
-    var st = [["LOAD", 700, 1480], ["TRANSFER", 1480, 3000], ["PROCESS", 3000, 3800]], sx = [95, 195, 295], sy = 64;
+    hud += '<g opacity="' + f2(na) + '"><text x="195" y="38" text-anchor="middle" ' + MONO + ' font-size="10" font-weight="800" letter-spacing="3.2" fill="' + T.sub + '">EFEM · WAFER TRANSFER</text></g>';
+    var st = [["LOAD", 700, 1480], ["TRANSFER", 1480, 3000], ["PROCESS", 3000, 3800]], sx = [95, 195, 295], sy = 56;
     hud += '<g opacity="' + f2(na) + '"><line x1="' + sx[0] + '" y1="' + sy + '" x2="' + sx[2] + '" y2="' + sy + '" stroke="' + T.sub + '" stroke-opacity=".22" stroke-width="2" stroke-linecap="round"/>';
     var pg = 0; st.forEach(function (s, i) { var p = lin(t, s[1], s[2]); if (i < 2) pg += p * 100; });
     hud += '<line x1="' + sx[0] + '" y1="' + sy + '" x2="' + f1(sx[0] + Math.min(200, pg)) + '" y2="' + sy + '" stroke="' + T.a1 + '" stroke-width="2" stroke-linecap="round"/>';
@@ -2996,7 +2997,7 @@ var SPX = (function () {
     // 로고 (웨이퍼가 챔버에 들어가는 순간부터)
     logoDraw(S.svg, S.Lg, "svLg", T, t, 3050, 750);
     // 제목
-    S.o.innerHTML = titleSvg(T, t, 3450, 742, 30, "SMART MANUFACTURING");
+    S.o.innerHTML = titleSvg(T, t, 3450, 654, 30, "SMART MANUFACTURING");
   }
 
 
@@ -9836,10 +9837,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-1";
+var APP_VER = "2026-11-11-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-2", ["시작 화면: 로봇 화면에서 제목이 가려지던 것을 고쳤어요"]],
   ["2026-11-11-1", ["진행 장비 목록에 업체(시노드 등)도 같이 보여요"]],
   ["2026-11-10-8", ["시작 화면: 웨이퍼 대신 로봇이 웨이퍼를 챔버로 옮기는 새 화면이 나와요"]],
   ["2026-11-10-7", ["연차: 입사 1년 미만 근무자는 매월 연차 발생 안내와 다음 발생일이 표시됩니다"]],
