@@ -2508,11 +2508,21 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #mat .mtrec span{flex:none;font-size:12px;font-weight:800;color:var(--sub)}
 #mat .mtrec button,#mat .mtlist button{flex:none;height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
 #mat .mtlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#mat .mtlist button.ty{height:auto;min-height:46px;padding:8px 14px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+#mat .mtlist button b{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#mat .mtlist button small{font-size:11.5px;font-weight:700;color:var(--sub);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #mat .mtlist button{height:46px;text-align:left;padding:0 14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-shadow:var(--csh)}
 #mat .mtf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:var(--bg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 60%,transparent)}
 #mat .mtf button{height:38px;border:0;border-radius:10px;background:transparent;color:var(--sub);font:inherit;font-size:13px;font-weight:800;white-space:nowrap}
 #mat .mtf button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.06)}
 #mat .mtw{display:grid;gap:12px}
+#mat .mtty{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;padding:12px 14px;border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent)}
+#mat .mtty .k{font-size:11.5px;font-weight:900;letter-spacing:.08em;color:var(--sub)}
+#mat .mtty>b{font-size:14.5px;font-weight:900;color:var(--text)}
+#mat .mtty .tg{display:flex;gap:6px;flex-wrap:wrap}
+#mat .mtty .tg button{height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:800}
+#mat .mtty .tg button.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--card))}
+#mat .mta .mty{font-size:11.5px;font-weight:800;color:var(--accent);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #mat .mto{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 #mat .mto>button{padding:0 10px}
 #mat .mto .mfac{display:flex;gap:5px;margin-left:auto}
@@ -5773,20 +5783,32 @@ function ocrLabel(shot, v) {
  *  장비 고르기 → 그 장비 탭을 서버가 바로 읽어 줌 (2분 기억) · 업체별로 묶어서 발주 · 입고 · 3공장 · 1공장 수량
  *  행 = [납기예정일, 상위품목, 상위품목명, 거래처, 품목, 품목명, 규격명, 발주, 입고, 3공장, 1공장, 발주번호]
  */
-var MT = { list: null, ld: false, prj: "", data: {}, q: "", f: "all", s: "", o: "due", err: "", fac: "" };
+var MT = { list: null, ld: false, prj: "", data: {}, q: "", f: "all", s: "", o: "due", err: "", fac: "", tab: "" };
 function mtDk(s) { s = String(s || ""); var e = s.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+(\d{1,2})\s+(\d{4})/i); if (e) return e[3] + ("0" + ("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(e[1].slice(0, 1).toUpperCase() + e[1].slice(1, 3).toLowerCase()) / 3 + 1)).slice(-2) + ("0" + e[2]).slice(-2); var m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? m[1] + ("0" + m[2]).slice(-2) + ("0" + m[3]).slice(-2) : "99999999"; }
 function mtNum(x) { var n = parseFloat(String(x == null ? "" : x).replace(/,/g, "")); return isNaN(n) ? 0 : n; }
 function mtDue(s) { s = String(s || ""); var e = s.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+(\d{1,2})/i); if (e) return ("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(e[1].slice(0, 1).toUpperCase() + e[1].slice(1, 3).toLowerCase()) / 3 + 1) + "/" + (+e[2]); var m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? (+m[2]) + "/" + (+m[3]) : s; }
 function mtOut(r) { return /외주\s*조립/.test(r[6] || ""); }
+// 🏷 2026-11-10: 자재팀 탭 이름 → { n: 장비, t: TYPE } ("☆CJ07-132 EFEM, 12CH-S-L3 EFEM") · TYPE이 탭 이름에 없으면 장비 검색 목록(Backlog) TYPE
+function mtTabInfo(tab, prj) {
+  var s = String(tab || "").replace(/[☆★]/g, "").trim(), i = s.indexOf(","), n = i >= 0 ? s.slice(0, i).trim() : s, t = i >= 0 ? s.slice(i + 1).trim() : "";
+  if (!t) { try { var k = nfPrjKey(n), rr = (SR.idx && SR.idx.rows) || []; for (var j = 0; j < rr.length; j++) if (nfPrjKey(rr[j][0]) === k && rr[j][1]) { t = String(rr[j][1]); break; } } catch (e) {} }
+  return { n: n, t: t };
+}
+// 🏷 검색 목록용 TYPE: 서버 목록(탭 이름) → 없으면 장비 검색 목록(Backlog)에서 이름이 같은 장비들의 TYPE
+function mtTypeOf(p) {
+  var a = (MT.ty && MT.ty[p]) ? MT.ty[p].slice() : [];
+  if (!a.length) { try { var k = nfPrjKey(p), rr = (SR.idx && SR.idx.rows) || []; for (var j = 0; j < rr.length; j++) { var nk = nfPrjKey(rr[j][0]); if ((nk === k || nk.indexOf(k) === 0 && /^(EFEM|PROCESS)/.test(nk.slice(k.length))) && rr[j][1] && a.indexOf(rr[j][1]) < 0) a.push(String(rr[j][1])); } } catch (e) {} }
+  return a.join(" / ");
+}
 function mtFac(r, k) { return String(r[6] || "").indexOf(k) >= 0; }   // 🏭 2026-11-10 규격명 (3공장) · (1공장)
 function mtVen(v) { return String(v || "").replace(/\(주\)|㈜|주식회사|\s+/g, " ").replace(/\s+/g, " ").trim(); }
 function loadMatList(force) {
   if (MT.ld && !force) return Promise.resolve();
-  if (!MT.list) { try { var c = cget("matlist"); if (c && c.list) MT.list = c.list; } catch (e) {} }
+  if (!MT.list) { try { var c = cget("matlist"); if (c && c.list) { MT.list = c.list; MT.ty = c.ty || {}; } } catch (e) {} }
   MT.ld = true;
   return call("getMatList", []).then(function (r) {
     MT.ld = false; MT.lt = Date.now();
-    if (r && r.list) { MT.list = r.list; MT.err = r.list.length ? "" : (r.note || ""); try { cset("matlist", { list: r.list }); } catch (e) {} }
+    if (r && r.list) { MT.list = r.list; MT.ty = r.ty || MT.ty || {}; MT.err = r.list.length ? "" : (r.note || ""); try { cset("matlist", { list: r.list, ty: MT.ty }); } catch (e) {} }
     if (cur === 9 && !MT.prj) renderMat();
   }).catch(function (e) { MT.ld = false; MT.lt = Date.now(); MT.err = errText(e); if (cur === 9) renderMat(); return errText(e); });
 }
@@ -5808,7 +5830,7 @@ function loadMatTab(prj, force, hard) {
   }).catch(function (e) { if (d && d.rows) { d.ld = false; d.t = Date.now(); } else MT.data[prj] = { err: errText(e) }; if (cur === 9 && MT.prj === prj) renderMat(); return errText(e); });
 }
 function openMat(prj) {
-  MT.prj = prj; MT.f = "all"; MT.s = ""; try { MT.o = sget("matSort") || "due"; } catch (e) {}
+  MT.prj = prj; MT.f = "all"; MT.s = ""; MT.tab = ""; try { MT.o = sget("matSort") || "due"; } catch (e) {}
   try { var rc = JSON.parse(sget("matRecent") || "[]").filter(function (x) { return x !== prj; }); rc.unshift(prj); sset("matRecent", JSON.stringify(rc.slice(0, 6))); } catch (e) {}
   try { var mc = JSON.parse(sget("matCnt") || "{}"); mc[prj] = (mc[prj] || 0) + 1; sset("matCnt", JSON.stringify(mc)); } catch (e) {}   // 🧠 자주 여는 장비
   loadMatTab(prj, false); renderMat(); window.scrollTo(0, 0);
@@ -5910,7 +5932,7 @@ function renderMat() {
       var L = MT.list.filter(function (p) { return nfPrjKey(p).indexOf(k) >= 0; });
       if (!L.length) { lst.appendChild(el("div", "msg", "'" + MT.q + "' 장비가 없어요")); return; }
       L = L.map(function (p, i) { return [p, i, nfPrjKey(p).indexOf(k)]; }).sort(function (a, b) { return a[2] - b[2] || (MC[b[0]] || 0) - (MC[a[0]] || 0) || a[1] - b[1]; }).map(function (x) { return x[0]; });
-      L.slice(0, 40).forEach(function (p) { var b = el("button", null, p); b.type = "button"; b.onclick = function () { openMat(p); }; lst.appendChild(b); });
+      L.slice(0, 40).forEach(function (p) { var b = el("button", null), ty = mtTypeOf(p); b.type = "button"; b.appendChild(el("b", null, p)); if (ty) { b.className = "ty"; ty.split(" / ").forEach(function (t) { b.appendChild(el("small", null, t)); }); } b.onclick = function () { openMat(p); }; lst.appendChild(b); });   // 🏷 장비명 + TYPE
       if (L.length > 40) lst.appendChild(el("div", "hint", "외 " + (L.length - 40) + "대 · 더 쳐서 좁혀 주세요"));
     };
     inp.oninput = function () { MT.q = inp.value; draw(); };
@@ -5931,6 +5953,24 @@ function renderMat() {
   $("upd").textContent = (d.at ? d.at + " 기준" : "") + (d.ld ? " · 새로 확인 중…" : "");
   var R = d.rows, nOut = R.filter(mtOut).length, nWait = R.filter(function (r) { return mtNum(r[8]) < mtNum(r[7]); }).length;
   box.appendChild(heroX(MT.prj, R.length, "품목", [["입고 완료", R.length - nWait, "건"], ["미입고", nWait, "건", nWait > 0], ["외주조립", nOut, "건"]]));
+  // 🏷 TYPE (자재팀 탭) — 탭이 여러 개(EFEM · PROCESS 등)면 눌러서 그 TYPE 품목만
+  var TB = (d.tabs || []).map(function (t) { return mtTabInfo(t, MT.prj); }), hasIx = R.some(function (r) { return r[11] !== "" && r[11] != null; });
+  if (MT.tab !== "" && (!hasIx || !TB[+MT.tab])) MT.tab = "";
+  if (TB.length) {
+    var tw = el("div", "mtty");
+    tw.appendChild(el("span", "k", "TYPE"));
+    if (TB.length === 1 || !hasIx) tw.appendChild(el("b", null, TB.map(function (x) { return (TB.length > 1 ? x.n + " · " : "") + (x.t || "-"); }).join("  /  ")));
+    else {
+      var tbs = el("div", "tg");
+      [["", "전체"]].concat(TB.map(function (x, i) { return [String(i), (x.n.replace(new RegExp("^" + MT.prj.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*", "i"), "") || x.n) + (x.t ? " · " + x.t : "")]; })).forEach(function (o) {
+        var b = el("button", MT.tab === o[0] ? "on" : "", o[1]); b.type = "button";
+        b.onclick = function () { MT.tab = o[0]; [].forEach.call(tbs.children, function (c) { c.className = ""; }); b.className = "on"; draw(); };
+        tbs.appendChild(b);
+      });
+      tw.appendChild(tbs);
+    }
+    box.appendChild(tw);
+  }
   // 거르기 · 찾기
   var fb = el("div", "mtf");
   [["all", "전체"], ["wait", "미입고"], ["noout", "외주조립 빼고"], ["out", "외주조립만"]].forEach(function (o) {
@@ -5972,6 +6012,7 @@ function renderMat() {
       if (MT.f === "out" && !mtOut(r)) return false;
       if (MT.f === "noout" && mtOut(r)) return false;
       if (MT.fac && !mtFac(r, MT.fac)) return false;   // 🏭 3공장 · 1공장 불출만
+      if (MT.tab !== "" && String(r[11]) !== MT.tab) return false;   // 🏷 고른 TYPE(탭)만
       if (!ws.length) return true;
       var t = (r[4] + " " + r[5] + " " + r[3] + " " + r[6]).toUpperCase();
       return ws.every(function (w) { return t.indexOf(w) >= 0; });
@@ -6001,6 +6042,7 @@ function renderMat() {
       m.appendChild(el("b", null, mtVen(r[3]) || "업체 없음"));
       var due = mtDue(r[0]); if (due) m.appendChild(el("span", null, "납기 " + due));
       a.appendChild(m);
+      if (TB.length > 1 && hasIx && MT.tab === "" && TB[+r[11]]) { var ti0 = TB[+r[11]]; a.appendChild(el("div", "mty", "TYPE " + (ti0.t || ti0.n))); }   // 🏷 탭이 여러 개면 줄마다 TYPE (업체 줄 아래)
       it.appendChild(a);
       var q = el("div", "mtq");
       [r[7], r[8], r[9], r[10]].forEach(function (x, i) { q.appendChild(el("b", i === 1 && lack ? "lack" : (mtNum(x) ? "" : "z"), String(x === "" || x == null ? "-" : x))); });
@@ -9682,10 +9724,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-10-4";
+var APP_VER = "2026-11-10-5";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-10-5", ["입고: 장비를 찾을 때도 · 고른 뒤에도 TYPE이 보여요 (EFEM · PROCESS처럼 탭이 여러 개면 눌러서 그 TYPE 품목만)"]],
   ["2026-11-10-4", ["입고: 장비를 고르면 정렬 옆 [3공장] [1공장]으로 불출 품목만 걸러 볼 수 있어요 (자재팀 시트 규격명 기준 · 한 번 더 누르면 해제)"]],
   ["2026-11-10-3", ["주 52시간: 휴가 날은 '연차' · '오전반'처럼 이름만 보여요 (자세한 건 달력에서 그 날을 누르면 아래에 나와요)"]],
   ["2026-11-10-2", ["장비 검색: 장비를 누르면 가공업체 · 하네스업체도 보여요"]],
