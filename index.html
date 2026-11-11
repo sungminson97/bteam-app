@@ -10339,10 +10339,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-21";
+var APP_VER = "2026-11-11-22";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-22", ["업데이트 후 시작 화면에서 진행 문구와 게이지가 겹쳐 보이던 문제를 고쳤습니다"]],
   ["2026-11-11-21", ["업체 현황: Backlog 기준 시각을 목록 맨 아래에 작게 표시합니다"]],
   ["2026-11-11-19", ["앱을 켤 때 시작 화면에도 진행 게이지가 표시됩니다 (완료 표시를 확인하실 수 있게 조금 더 보여 줍니다)"]],
   ["2026-11-11-18", ["시작 화면 게이지: 준비가 끝나면 완료 표시를 조금 더 보여 줍니다"]],
@@ -12948,6 +12949,8 @@ function splashReplay(first) {
   var n = s.cloneNode(true);   // 복제해서 바꿔 끼우면 애니메이션이 처음부터 다시 재생됨
   n.className = ""; n.style.display = "";
   s.parentNode.replaceChild(n, s);
+  SPG.on = false; n._fin = 1;   // 켤 때 게이지는 멈추고 복제된 것도 지움 → 새 버전 게이지 하나만
+  [].forEach.call(n.querySelectorAll(".spgauge"), function (x) { x.parentNode.removeChild(x); });
   try { if (window.SPX) SPX.start(n); } catch (eS) {}   // 💿 새 시작 화면 처음부터 다시
   splStat("새 버전 최적화 중");
   // ⏳ 애니메이션 끝(SPL_MIN) + 최신 금일/명일을 다 받은 뒤에 닫힘 · 못 받으면 계속 시작화면 (최대 20초)
