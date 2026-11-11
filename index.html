@@ -8440,7 +8440,7 @@ function setTab(n) {
   else if (n === 8) { renderNc(); if (!NC.loaded) loadNc(false); }
   else if (n === 9) { $("upd").textContent = ""; renderMat(); }
   else if (n === 10) { renderDash(); dashLoad(false); }
-  else if (n === 12) { try { sset("pjUsed", "1"); } catch (eU) {} renderPj(); if (!PJ.ld && (!PJ.data || Date.now() - (PJ.data.t || 0) > 600000)) loadPj(false); }
+  else if (n === 12) { try { sset("pjUsed", "1"); } catch (eU) {} renderPj(); if (!PJ.ld && (!PJ.data || +(sget("pjAt") || 0) < Date.now() - 5 * 60000)) loadPj(false); }   // 받아 둔 걸 바로 보여 주고 · 5분 지났으면 뒤에서 새로 받음
   else if (n === 11) { renderLay(); loadEquipIndex(false).then(function () { if (cur === 11 && !SR.open) renderLay(); }); }
   else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
@@ -10364,10 +10364,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-27";
+var APP_VER = "2026-11-11-28";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-28", ["PJ 전환: 받아 둔 자료를 먼저 바로 보여 드리고 최신 자료는 뒤에서 받아 화면이 더 빨리 열립니다"]],
   ["2026-11-11-27", ["PJ 전환 제조 탭: '공여 장비 후속' 버튼을 누르면 바로 아래로 이동합니다", "화면을 많이 내리면 오른쪽 아래 '맨 위로' 버튼으로 바로 올라갈 수 있습니다"]],
   ["2026-11-11-26", ["PJ 전환 제조 탭: 공여 장비 후속을 처음엔 접어 두고 후속별 건수만 보여 드립니다 · 펼치면 한 장비를 두 줄로 짧게 보여 드립니다"]],
   ["2026-11-11-25", ["배치도: 제목 · 확대 버튼 표시를 깔끔하게 정리했습니다"]],
@@ -13150,8 +13151,13 @@ function pjItems(code) { return (PJ.data.items || []).filter(function (r) { retu
 
 try { var _ms = sget("pjms"); if (_ms) PJ.ms = _ms === "-" ? "" : _ms; } catch (e) {}
 /* 미리 받기: PJ 탭을 한 번이라도 연 폰 · 열람 계정은 시작 화면 닫힌 뒤 뒤에서 받아 둠 (10분 안에 받은 게 있으면 안 받음) */
+function pjCached() {   // 폰에 받아 둔 PJ 자료를 바로 꺼냄 (화면은 기다리지 않고 바로 그림)
+  if (!PJ.data) { try { var c = cget("pj"); if (c && c.items) PJ.data = c; } catch (e) {} }
+  return PJ.data;
+}
 function pjPrefetch() {
   if (!(sget("pjUsed") === "1" || (typeof isVip === "function" && isVip()))) return;
+  pjCached();   // 최근에 받았으면 서버엔 안 묻고 받아 둔 것만 꺼내 둠
   if (+(sget("pjAt") || 0) > Date.now() - 10 * 60000) return;
   loadPj(false);
 }
@@ -13199,7 +13205,7 @@ function pjCnt(code) {
 
 function renderPj() {
   var box = $("pj"); box.innerHTML = "";
-  var D = PJ.data;
+  var D = pjCached();
   if (!D) {
     box.appendChild(heroX("PJ 전환", null, "", [], ""));
     box.appendChild(el("div", "empty", PJ.err ? "불러오지 못했어요 · " + PJ.err : "불러오는 중…"));
