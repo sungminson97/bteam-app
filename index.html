@@ -1031,6 +1031,15 @@ html.vip .nfbtn{display:none!important}
 #gate #gvgo:disabled{opacity:.5}
 #gate #gvsub{height:50px;padding:0;border:1.5px solid var(--line);border-radius:16px;background:transparent;color:var(--text);font:inherit;font-size:15.5px;font-weight:800}
 #gate #gvsub:disabled{opacity:.5}
+#gate .gvst{display:none;align-items:center;justify-content:center;gap:8px;min-height:20px;font-size:13px;font-weight:700;color:var(--sub);text-align:center;line-height:1.5}
+#gate .gvst.on{display:flex}
+#gate .gvst i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+#gate .gvst.ing i{animation:gvPulse 1s ease-in-out infinite}
+#gate .gvst.ok{color:var(--ok)}
+#gate .gvst.ok i{background:var(--ok)}
+#gate .gvst.bad{color:var(--warn)}
+#gate .gvst.bad i{background:var(--warn)}
+@keyframes gvPulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
 #gate #gmsg.vw{white-space:pre-line;line-height:1.6}
 #gate #gguest{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:28px;width:100%}
 #gate .ggn{display:flex;align-items:center;gap:6px;min-width:0;box-sizing:border-box;height:64px;padding:0 18px;border-radius:18px;border:1.5px solid var(--obd);background:var(--ocard);box-shadow:0 12px 30px -22px rgba(16,32,64,.45);font-size:21px;font-weight:900;color:var(--text)}
@@ -3004,6 +3013,28 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #app .mepill.vo i,#app .mepill.vip i,#app .mepill.vo i::after,#app .mepill.vip i::after{background:#f59e0b}
 @media (prefers-reduced-motion:reduce){#app .mepill i::after{animation:none}}
 @media (max-width:389px){#app .mepill{max-width:84px;padding:0 4px 0 2px;font-size:12.5px}}
+
+/* 기기 목록: 처리 중 표시 */
+#dlov .em.ing{display:flex;align-items:center;gap:7px;color:var(--accent);font-weight:700}
+#dlov .em.ing::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:currentColor;animation:gvPulse 1s ease-in-out infinite}
+#dlov .em.ok{color:var(--ok);font-weight:700}
+#dlov .em.ing,#dlov .em.ok{font-size:12.5px}
+
+/* 업데이트 후 시작 화면 게이지 */
+#splash .spgauge{position:absolute;left:50%;top:auto;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(280px,74vw);display:grid;gap:7px;z-index:5;animation:spgIn .5s ease both}
+@keyframes spgIn{from{opacity:0;transform:translate(-50%,6px)}to{opacity:1;transform:translate(-50%,0)}}
+#splash .spgauge .gt{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+#splash .spgauge .l{font-size:12.5px;font-weight:800;color:#3b4658;letter-spacing:-.01em}
+#splash .spgauge b{font-size:13px;font-weight:900;color:#2f6fed;font-variant-numeric:tabular-nums}
+#splash .spgauge .gb{position:relative;height:6px;border-radius:99px;background:rgba(47,111,237,.13);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(47,111,237,.08)}
+#splash .spgauge .gb i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:99px;background:linear-gradient(90deg,#2f6fed,#12c6e8);transition:width .25s ease-out;overflow:hidden}
+#splash .spgauge .gb i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:spgSh 1.3s ease-in-out infinite}
+@keyframes spgSh{to{transform:translateX(100%)}}
+#splash .spgauge .gs{font-size:11.5px;font-weight:700;color:#7b8794;text-align:center;margin-top:2px}
+#splash .spgauge.ok b{color:#16a34a}
+#splash .spgauge.ok .gb i{background:linear-gradient(90deg,#16a34a,#22c55e)}
+#splash .spgauge.ok .gb i::after{animation:none}
+@media (prefers-color-scheme:dark){#splash .spgauge .l{color:#d6dde6}#splash .spgauge .gb{background:rgba(107,155,255,.16)}#splash .spgauge b{color:#6b9bff}#splash .spgauge .gs{color:#8b97a5}}
 </style>
 </head>
 <body>
@@ -3501,6 +3532,7 @@ SPX.start();
     <div id="gvip" style="display:none">
       <label class="ggn gvn"><input id="gvname" type="text" maxlength="6" autocomplete="off" placeholder="홍길동"></label>
       <button id="gvgo" type="button" class="go">확인</button>
+      <div id="gvst" class="gvst"></div>
       <button id="gvsub" type="button" class="sub" style="display:none"></button>
     </div>
     <div class="gbtns" id="gbtns">
@@ -3950,7 +3982,7 @@ function devId() {
 var SLOW_MS = 6000;   // 6초 이상이면 느림으로 기록
 var SPD = { last: null };
 // 📶 조회 요청은 연결이 끊기면 1번 자동 재시도 (저장 요청은 중복 저장 막으려고 재시도 안 함)
-var READ_FNS = { ping: 1, getDashboardAll: 1, getDashboardData: 1, getUploadStatus: 1, getHoursMeta: 1, getHoursCell: 1, getLeaveData: 1, getStatsData: 1, getEquipIndex: 1, getPjData: 1 };
+var READ_FNS = { ping: 1, getDashboardAll: 1, getDashboardData: 1, getUploadStatus: 1, getHoursMeta: 1, getHoursCell: 1, getLeaveData: 1, getStatsData: 1, getEquipIndex: 1, getPjData: 1, getPjLog: 1 };
 var CALL_TIMEOUT = 30000;   // 30초 넘게 응답 없으면 끊고 (조회면) 다시 시도
 
 // 📱 앱을 내렸다가 다시 열 때: 내려가 있는 동안 폰(특히 아이폰)이 연결을 끊어 버려서
@@ -4016,7 +4048,8 @@ function rawCall(pin, fn, args, editPin) {
       if (j && j.rn && fn === "getDashboardAll") remoteRenameLater(j.rn);   // 📱 개발자가 원격으로 이름 바꿈
       if (j && j.nag && fn === "getDashboardAll") pushNagLater(j.nag);       // 📣 관리자가 "알림 켜 주세요" 요청
       if (j && j.ping && fn === "getDashboardAll") devPingLater(j.ping);     // 🔔 개발자가 보낸 기기 확인 요청
-      if (j && (j.code === "BLOCKED" || j.code === "PENDING")) { if (pin) SEC.pin = pin; showSec(j); }    // 🔐 차단 / 승인 대기 (방금 넣은 PIN 기억: 아직 저장 전일 수 있음)
+      if (j && (j.code === "BLOCKED" || j.code === "PENDING")) { if (pin) SEC.pin = pin; showSec(j); }
+      if (j && j.code === "VIPNAME" && isVip() && nameDone()) vipBlocked();   // 열람 허용이 해제된 폰 → 차단 화면 (메인 안 보여 줌)    // 🔐 차단 / 승인 대기 (방금 넣은 PIN 기억: 아직 저장 전일 수 있음)
       return j;
     }, function (e) {
       if (prev && !SPD.last) SPD.last = prev;   // 이번에 못 보낸 지난 기록은 다음에 다시
@@ -4066,7 +4099,7 @@ function demoBar() {
 }
 
 /* ===================== 🤖 AI 속도 학습: 느렸던 화면을 스스로 찾아서 → 앱 켤 때 미리 불러옴 → 다음 시작 때 알려 줌 ===================== */
-var AISPD_TAB = { getHoursMeta: [3, "근무시간"], getInspData: [7, "수입검사"], getNcData: [8, "부적합"], getMatList: [9, "입고 불출"], getMatTab: [9, "입고 불출"], getStatsData: [5, "장비통계"], getLeaveData: [4, "연차 현황"] };
+var AISPD_TAB = { getHoursMeta: [3, "근무시간"], getInspData: [7, "수입검사"], getNcData: [8, "부적합"], getMatList: [9, "입고 불출"], getMatTab: [9, "입고 불출"], getStatsData: [5, "장비통계"], getLeaveData: [4, "연차 현황"], getPjData: [12, "PJ 전환"] };
 var AISPD = { pf: 0 };
 function aiSpdGet() { try { return JSON.parse(sget("aiSpd") || "{}") || {}; } catch (e) { return {}; } }
 function aiSpdSet(o) { try { sset("aiSpd", JSON.stringify(o)); } catch (e) {} }
@@ -4441,18 +4474,23 @@ $("gin").onkeydown = function (e) { if (e.key === "Enter") $("ggo").onclick(); }
 function isGuest() { return /^개발자\(/.test(myName() || ""); }
 /* 열람 계정: 열람 PIN → 본인 이름 → "OOO 프로님 환영합니다" + 처음 느릴 수 있다는 안내 → [확인] → 시작 화면 → 메인 */
 function isVip() { return sget("vip") === "1"; }
+function vipBlocked() {
+  showSec({ code: "BLOCKED", error: "🚫 열람 승인이 해제되었어요.\n사유: 열람 승인 해제 (문의: 손성민)", dev: devId() });
+  ["vip", "nameOK", "myName", "vipPend"].forEach(function (k) { try { sdel(k); } catch (e) {} });
+}
 var VIP_TITLE = { "김재환": "총괄팀장님", "김성현": "프로님" };
 function vipAsk(pin, pre) {
   setGate("enter");
   $("gin").style.display = "none"; $("gbtns").style.display = "none";
   var gi = $("gicon"); gi.innerHTML = ""; gi.style.display = "none";
-  var T = document.querySelector("#gate .gtitle"), m = $("gmsg"), box = $("gvip"), inp = $("gvname"), go = $("gvgo"), sub = $("gvsub"), nm = "";
+  var T = document.querySelector("#gate .gtitle"), m = $("gmsg"), box = $("gvip"), inp = $("gvname"), go = $("gvgo"), sub = $("gvsub"), stEl = $("gvst"), nm = "";
+  var st = function (t, k) { stEl.innerHTML = ""; stEl.className = "gvst" + (t ? " on " + (k || "") : ""); if (!t) return; stEl.appendChild(el("i")); stEl.appendChild(el("span", null, t)); };
   box.style.display = "grid";
   var view = function (title, msg, bad) { T.textContent = title; m.className = "vw" + (bad ? " bad" : ""); m.textContent = msg; };
   var btn2 = function (t, fn) { if (!t) { sub.style.display = "none"; sub.onclick = null; return; } sub.style.display = ""; sub.disabled = false; sub.textContent = t; sub.onclick = fn; };
   var busy = function (b, t) { b.disabled = true; b.textContent = t; };
   function askName(msg, bad) {
-    view("본인 이름을 적어 주세요", msg || "정자로 적어 주세요\n예) 홍길동", bad);
+    view("본인 이름을 적어 주세요", msg || "정자로 적어 주세요\n예) 홍길동", bad); st("");
     inp.parentNode.style.display = ""; inp.value = nm || sget("vipPend") || ""; go.textContent = "확인"; go.disabled = !inp.value.trim();
     btn2("");
     inp.oninput = function () { go.disabled = !inp.value.trim(); };
@@ -4474,25 +4512,36 @@ function vipAsk(pin, pre) {
     }).catch(function () { b.disabled = false; b.textContent = "다시 시도"; view(T.textContent, "서버에 연결할 수 없습니다.\n네트워크를 확인하고 다시 시도해 주세요.", true); });
   }
   function notListed() {
-    inp.parentNode.style.display = "none";
+    inp.parentNode.style.display = "none"; st("");
     view("명단에 없는 이름입니다", nm + "님은 아직 등록되어 있지 않습니다.\n손성민님께 승인을 요청하시면\n승인 후 바로 이용하실 수 있습니다.");
     go.disabled = false; go.textContent = "손성민님께 승인 요청";
     go.onclick = function () { request(go, false); };
     btn2("이름 다시 적기", function () { askName(); });
   }
-  function request(b, again) {
+  function request(b, again) {   // 1) 요청 저장 (빠름) → 바로 대기 화면 2) 손성민 폰으로 알림 (따로 · 진행 상황 표시)
     busy(b, "요청 보내는 중…");
     var kind = ""; try { kind = devInfo().kind || ""; } catch (e) {}
     rawCall(pin, "vipRequest", [nm, kind]).then(function (j) {
       var r = j && j.ok ? j.data : null;
-      if (!r || r.error) { b.disabled = false; b.textContent = again ? "요청 다시 보내기" : "손성민님께 승인 요청"; view(T.textContent, (r && r.error) || (j && j.error) || "요청을 보내지 못했습니다. 잠시 후 다시 시도해 주세요.", true); return; }
+      if (!r || r.error) { b.disabled = false; b.textContent = again ? "알림 다시 보내기" : "손성민님께 승인 요청"; view(T.textContent, (r && r.error) || (j && j.error) || "요청을 보내지 못했습니다. 잠시 후 다시 시도해 주세요.", true); return; }
+      if (r.allowed) { welcome(); return; }
       try { sset("vipPend", nm); } catch (e) {}
-      waiting(r.wait ? "방금 요청을 보냈습니다. 5분 뒤에 다시 보낼 수 있습니다." : "");
-    }).catch(function () { b.disabled = false; b.textContent = "다시 시도"; view(T.textContent, "서버에 연결할 수 없습니다.", true); });
+      waiting(); notify();
+    }).catch(function () { b.disabled = false; b.textContent = "다시 시도"; view(T.textContent, "서버에 연결할 수 없습니다.\n네트워크를 확인하고 다시 시도해 주세요.", true); });
   }
-  function waiting(note) {
+  function notify() {
+    st("손성민님 폰으로 알림 보내는 중", "ing"); sub.disabled = true;
+    rawCall(pin, "vipNotify", []).then(function (j) {
+      var r = j && j.ok ? j.data : null; sub.disabled = false;
+      if (r && r.allowed) { welcome(); return; }
+      if (!r || r.error) { st((r && r.error) || (j && j.error) || "알림을 보내지 못했습니다. 아래 버튼으로 다시 보내 주세요.", "bad"); return; }
+      if (r.wait) st((r.at ? r.at + "에 알림을 보냈습니다" : "방금 알림을 보냈습니다") + " · 5분 뒤 다시 보낼 수 있습니다", "ok");
+      else st("손성민님 폰으로 알림을 보냈습니다 · " + (r.at || ""), "ok");
+    }).catch(function () { sub.disabled = false; st("알림을 보내지 못했습니다. 아래 버튼으로 다시 보내 주세요.", "bad"); });
+  }
+  function waiting() {
     inp.parentNode.style.display = "none";
-    view("승인을 기다리고 있습니다", (note ? note + "\n\n" : "") + "손성민님께 " + nm + "님의 승인 요청을 보냈습니다.\n승인되면 아래 [승인 확인]을 눌러 주세요.");
+    view("승인을 기다리고 있습니다", nm + "님의 승인 요청이 접수되었습니다.\n승인되면 아래 [승인 확인]을 눌러 주세요.");
     go.disabled = false; go.textContent = "승인 확인";
     go.onclick = function () {
       busy(go, "확인 중…");
@@ -4503,10 +4552,10 @@ function vipAsk(pin, pre) {
         view("승인을 기다리고 있습니다", "아직 승인 전입니다.\n승인되면 다시 [승인 확인]을 눌러 주세요.");
       }).catch(function () { go.disabled = false; go.textContent = "승인 확인"; toast("연결 실패", true); });
     };
-    btn2("요청 다시 보내기", function () { request(sub, true); });
+    btn2("알림 다시 보내기", function () { notify(); });
   }
   function welcome() {
-    inp.parentNode.style.display = "none"; btn2("");
+    inp.parentNode.style.display = "none"; btn2(""); st("");
     view(nm + (VIP_TITLE[nm] ? " " + VIP_TITLE[nm] : "님") + " 환영합니다", "처음 한 번은 데이터를 받아오느라\n화면이 뜨기까지 시간이 조금 걸릴 수 있습니다.");
     go.disabled = false; go.textContent = "확인";
     go.onclick = function () {
@@ -4516,6 +4565,7 @@ function vipAsk(pin, pre) {
       unlock(pin, null);
       try { splashReplay(true); splStat("데이터 불러오는 중"); } catch (eS) {}
       setTimeout(function () { try { devRegister(true); } catch (eD) {} }, 3000);
+      setTimeout(function () { try { pjPrefetch(); } catch (eP) {} }, 2500);   // PJ 전환 미리 받기
     };
   }
   askName();
@@ -10292,10 +10342,13 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-13";
+var APP_VER = "2026-11-11-16";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-16", ["업데이트 후 시작 화면에 진행 게이지가 표시됩니다 (단계와 %로 얼마나 남았는지 보여 줍니다)"]],
+  ["2026-11-11-15", ["PJ 전환: 처음 받는 양을 절반으로 줄여 더 빨리 열립니다 (편집 로그는 그 화면을 열 때 받습니다)"]],
+  ["2026-11-11-14", ["앱 안정성을 개선했습니다"]],
   ["2026-11-11-13", ["위쪽 이름 표시를 더 깔끔하게 바꿨습니다"]],
   ["2026-11-11-12", ["위쪽 이름 표시를 앱 디자인에 맞게 다듬었습니다"]],
   ["2026-11-11-11", ["위쪽 오른쪽에 내 이름이 표시됩니다 (잠그기 버튼은 없어졌습니다)"]],
@@ -12180,13 +12233,21 @@ function dlRender() {
       a.appendChild(el("small", null, (x.ok ? "허용됨" : "승인 대기") + " · 기기-" + x.dev + (x.k ? " · " + x.k : "") + (x.at ? " · " + x.at : "")));
       rr.appendChild(a);
       var vb = el("button", x.ok ? "x" : "on", x.ok ? "해제" : "허용"); vb.type = "button";
-      var vm = el("div", "em");
+      var vm = el("div", "em vipm"); vm.dataset.dev = x.dev;
       vb.onclick = function () {
-        vb.disabled = true;
-        call("vipDecide", [DV.pin, x.dev, !x.ok]).then(function (r) {
-          if (r && r.error) { vm.textContent = r.error; vb.disabled = false; return; }
-          toast(x.ok ? x.n + "님 허용을 해제했어요" : x.n + "님을 허용했어요"); x.ok = !x.ok; dlRender();
-        }).catch(function (e) { vm.textContent = "실패: " + errText(e); vb.disabled = false; });
+        var on = !x.ok, t0 = Date.now();
+        vb.disabled = true; vb.textContent = on ? "허용 중…" : "해제 중…";
+        vm.className = "em vipm ing"; vm.textContent = "서버에 저장하는 중…";
+        var slow = setTimeout(function () { if (vm.className.indexOf("ing") >= 0) vm.textContent = "서버 응답을 기다리는 중… (서버가 바쁘면 10초쯤 걸려요)"; }, 4000);
+        call("vipDecide", [DV.pin, x.dev, on]).then(function (r) {
+          clearTimeout(slow);
+          if (r && r.error) { vm.className = "em vipm"; vm.textContent = r.error; vb.disabled = false; vb.textContent = on ? "허용" : "해제"; return; }
+          x.ok = on;
+          toast(on ? x.n + "님을 허용했어요 · 그 폰에서 [승인 확인]을 누르면 들어가요" : x.n + "님 허용을 해제했어요");
+          var sec = ((Date.now() - t0) / 1000).toFixed(1);
+          dlRender();
+          [].forEach.call($("dllist").querySelectorAll(".em.vipm"), function (e2) { if (e2.dataset.dev === x.dev) { e2.className = "em vipm ok"; e2.textContent = (on ? "허용 완료" : "해제 완료") + " · " + sec + "초"; } });
+        }).catch(function (e) { clearTimeout(slow); vm.className = "em vipm"; vm.textContent = "실패: " + errText(e); vb.disabled = false; vb.textContent = on ? "허용" : "해제"; });
       };
       rr.appendChild(vb); vs.appendChild(rr); vs.appendChild(vm);
     });
@@ -12411,13 +12472,18 @@ function dlCard(r, me, inGroup) {
     return c;
 }
 function dlDo(fn, args, msg, okText) {
-  msg.textContent = "";
+  var t0 = Date.now(), ab = document.activeElement && document.activeElement.tagName === "BUTTON" ? document.activeElement : null;
+  if (ab) { ab.dataset.t = ab.textContent; ab.textContent = "처리 중…"; }
+  msg.className = "em ing"; msg.textContent = "서버에 저장하는 중…";
+  var slow = setTimeout(function () { if (msg.className.indexOf("ing") >= 0) msg.textContent = "서버 응답을 기다리는 중… (서버가 바쁘면 10초쯤 걸려요)"; }, 4000);
   call(fn, args).then(function (r) {
-    if (r && r.error) { msg.textContent = r.error; dlRender(); return; }
-    toast("📱 " + okText);
+    clearTimeout(slow);
+    if (r && r.error) { msg.className = "em"; msg.textContent = r.error; dlRender(); return; }
+    msg.className = "em ok"; msg.textContent = "완료 · " + ((Date.now() - t0) / 1000).toFixed(1) + "초 · 목록 새로 불러오는 중…";
+    toast(okText);
     DL.keepExp = true;   // 펼쳐 둔 사람은 그대로
     openDevList();
-  }).catch(function (e) { msg.textContent = "실패: " + errText(e); });
+  }).catch(function (e) { clearTimeout(slow); msg.className = "em"; msg.textContent = "실패: " + errText(e); if (ab) { ab.disabled = false; ab.textContent = ab.dataset.t || ab.textContent; } });
 }
 function closeDevList() { $("dlov").className = "ov"; }
 $("dlno").onclick = closeDevList;
@@ -12844,21 +12910,41 @@ function splashReplay(first) {
   // ⏳ 애니메이션 끝(SPL_MIN) + 최신 금일/명일을 다 받은 뒤에 닫힘 · 못 받으면 계속 시작화면 (최대 20초)
   SPL.shut = true;   // 처음 시작 화면은 이미 끝난 상태 (가려졌다 돌아와도 다시 안 바꿔 끼움)
   var t0 = Date.now(), w = n.querySelector("#splwait");
-  if (w) w.className = "wt";
-  if (first && w) { w.textContent = "처음 한 번은 정보를 불러오느라\n조금 느릴 수 있어요. 잠시만 기다려 주세요"; w.className = "wt on fst"; }
+  if (w) { w.className = "wt"; w.style.display = "none"; }   // 안내는 게이지 아래 한 줄로
   if (!R.dash && Date.now() - LAST.t > 60000 && getPin()) { try { loadDash(false); } catch (e) {} }   // 받아 둔 게 1분 넘었으면 지금 새로 받음
+  // 📊 진행 게이지 (2026-11-11): 단계 이름 + % · 애니메이션 시간 + 데이터 받기에 맞춰 차오름
+  var gg = el("div", "spgauge"), gt = el("div", "gt"), gl = el("span", "l", "새 버전 적용 중"), gp = el("b", null, "0%");
+  gt.appendChild(gl); gt.appendChild(gp); gg.appendChild(gt);
+  var gb = el("div", "gb"), gf = el("i"); gb.appendChild(gf); gg.appendChild(gb);
+  var gs = el("div", "gs", first ? "처음 한 번은 정보를 불러오느라 조금 걸릴 수 있습니다" : "최신 정보로 맞추는 중입니다"); gg.appendChild(gs);
+  n.appendChild(gg);
+  var place = function () { try { var pl = n.querySelector(".aipill"); if (!pl) return; var r = pl.getBoundingClientRect(); if (r.height) { gg.style.top = Math.max(80, r.bottom - gg.offsetHeight + 4) + "px"; gg.style.bottom = "auto"; pl.style.visibility = "hidden"; } } catch (eP) {} };
+  place(); setTimeout(place, 120);
+  var shown = 0, haveToday = false;
+  try { var cdq = cget("dash"), nw = new Date(), tdy = (nw.getMonth() + 1) + "/" + nw.getDate(); haveToday = !!(cdq && cdq.d0 && String(cdq.d0.label || "").indexOf(tdy + "(") === 0); } catch (eH) {}
+  var setP = function (v, lab) {
+    shown = Math.max(shown, Math.min(100, v));
+    gf.style.width = shown + "%"; gp.textContent = Math.round(shown) + "%";
+    if (lab && gl.textContent !== lab) gl.textContent = lab;
+  };
   (function wait() {
-    var el2 = Date.now() - t0, fresh = !R.dash && LAST.t > 0 && Date.now() - LAST.t < 5 * 60000;
-    if (el2 > 2500 && !fresh && w && !first) w.className = "wt on";
+    var el2 = Date.now() - t0, need = splNeed(n), fresh = !R.dash && LAST.t > 0 && Date.now() - LAST.t < 5 * 60000;
     if (document.hidden) { t0 = Date.now() - Math.min(el2, 2400); setTimeout(wait, 200); return; }   // 가려져 있는 동안은 시간 안 셈
+    var a = Math.min(1, splEl(n, t0) / need);
+    var v = fresh ? 55 + 45 * a : 45 * a + 47 * (1 - Math.exp(-el2 / 5000));
+    setP(Math.min(fresh ? 100 : 96, v), shown < 25 ? "새 버전 적용 중" : !fresh && shown < 75 ? "오늘 생산 일정 불러오는 중" : shown < 96 ? "화면 준비 중" : "거의 다 됐어요");
     if (fresh) splStat("AI 분석 완료", true);
-    if ((splEl(n, t0) >= splNeed(n) && fresh) || el2 > 20000) {
-      n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450);
-      try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11][cur]] || "main")); tabInd(); } catch (eA) {}
-      if (!fresh) toast("⚠️ 최신 정보를 아직 못 받았어요\n잠시 후 새로고침해 주세요", true);
+    var done = splEl(n, t0) >= need && (fresh || (haveToday && el2 > need + 1500));   // 오늘 받아 둔 화면이 있으면 최신은 뒤에서
+    if (done || el2 > 20000) {
+      setP(100, "완료"); gg.classList.add("ok"); gs.textContent = fresh || haveToday ? "준비가 끝났습니다" : "최신 정보는 들어가서 마저 받습니다";
+      setTimeout(function () {
+        n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450);
+        try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11][cur]] || "main")); tabInd(); } catch (eA) {}
+        if (!fresh && !haveToday) toast("최신 정보를 아직 못 받았어요\n잠시 후 새로고침해 주세요", true);
+      }, 420);
       return;
     }
-    setTimeout(wait, 200);
+    setTimeout(wait, 120);
   })();
 }
 
@@ -12997,8 +13083,10 @@ function loadPj(force) {
   if (!PJ.data) { try { var c = cget("pj"); if (c && c.items) PJ.data = c; } catch (e) {} }
   PJ.ld = true; PJ.tried = true;
   if (cur === 12 && PJ.data) $("upd").textContent = (PJ.data.at ? PJ.data.at + " 기준 · " : "") + "새로 확인 중…";
+  var t0 = Date.now();
+  if (force && PJ.logD) loadPjLog(true);
   return call("getPjData", [{ force: !!force }]).then(function (r) {
-    PJ.ld = false;
+    PJ.ld = false; PJ.ms = Date.now() - t0;
     if (r && r.items) { PJ.data = r; PJ.err = r.warn || ""; try { cset("pj", r); sset("pjAt", String(Date.now())); } catch (e) {} }
     else PJ.err = (r && r.error) || "불러오기 실패";
     if (cur === 12 && !SR.open) renderPj();
@@ -13068,7 +13156,7 @@ function renderPj() {
   box.appendChild(seg);
   var w = el("div", "pjw"); w.style.display = "grid"; w.style.gap = "12px"; box.appendChild(w);
   if (PJ.sub === "map") pjMap(w); else if (PJ.sub === "st") pjStatus(w); else if (PJ.sub === "mfg") pjMfg(w); else pjLog(w);
-  w.appendChild(el("div", "pjnote", "생산관리팀 PJ 전환 현황 시트 기준이에요 (10분마다 반영 · 보기 전용). 입력 · 수정은 PJ 전환 웹앱에서 해 주세요."));
+  w.appendChild(el("div", "pjnote", "생산관리팀 PJ 전환 현황 시트 기준이에요 (10분마다 반영 · 보기 전용). 입력 · 수정은 PJ 전환 웹앱에서 해 주세요." + (PJ.ms ? " · 불러오기 " + (PJ.ms / 1000).toFixed(1) + "초" : "")));
 }
 function pjSearch(w, val, ph, fn) {
   var q = el("label", "iq");
@@ -13383,8 +13471,21 @@ function pjMfg(w) {
 }
 
 /* ④ 편집 로그 */
+function loadPjLog(force) {   // 편집 로그는 이 화면을 열 때만 받음 (처음 받는 양 줄이기)
+  if (PJ.lgLd) return Promise.resolve();
+  PJ.lgLd = true;
+  return call("getPjLog", [{ force: !!force }]).then(function (r) {
+    PJ.lgLd = false;
+    if (r && r.log) { PJ.logD = r; try { cset("pjlog", r); } catch (e) {} }
+    else PJ.lgErr = (r && r.error) || "불러오기 실패";
+    if (cur === 12 && PJ.sub === "log" && !SR.open) renderPj();
+  }).catch(function (e) { PJ.lgLd = false; PJ.lgErr = errText(e); if (cur === 12 && PJ.sub === "log") renderPj(); });
+}
 function pjLog(w) {
-  var L = PJ.data.log || [], fs = {};
+  if (!PJ.logD) { try { var cl = cget("pjlog"); if (cl && cl.log) PJ.logD = cl; } catch (e) {} }
+  if (!PJ.logD || (PJ.data.t && PJ.logD.t && PJ.logD.t < PJ.data.t - 60000 && !PJ.lgLd)) loadPjLog(false);
+  if (!PJ.logD) { w.appendChild(el("div", "empty", PJ.lgErr ? "불러오지 못했어요 · " + PJ.lgErr : "편집 로그 불러오는 중…")); return; }
+  var LD = PJ.logD, L = LD.log || [], fs = {};
   L.forEach(function (r) { if (r[6]) fs[r[6]] = (fs[r[6]] || 0) + 1; });
   pjChips(w, [["", "모든 항목", L.length]].concat(Object.keys(fs).sort(function (a, b) { return fs[b] - fs[a]; }).map(function (k) { return [k, k, fs[k]]; })), PJ.lg.f, function (v) { PJ.lg.f = v; PJ.lim = 60; renderPj(); });
   var list = el("div", "lg"), wrap = el("div"); wrap.style.display = "grid"; wrap.style.gap = "8px";
@@ -13394,7 +13495,7 @@ function pjLog(w) {
     wrap.innerHTML = ""; list.innerHTML = "";
     var ws = PJ.lg.q.toUpperCase().split(/\s+/).filter(Boolean);
     var R = L.filter(function (r) { if (PJ.lg.f && r[6] !== PJ.lg.f) return false; var t = r.join(" ").toUpperCase(); return ws.every(function (x) { return t.indexOf(x) >= 0; }); });
-    wrap.appendChild(el("div", "pjnote", "최근 수정 " + R.length + "건 (최신순 · 최근 " + L.length + "건까지" + (PJ.data.logN > L.length ? " · 전체 " + PJ.data.logN + "건" : "") + ")"));
+    wrap.appendChild(el("div", "pjnote", "최근 수정 " + R.length + "건 (최신순 · 최근 " + L.length + "건까지" + (LD.logN > L.length ? " · 전체 " + LD.logN + "건" : "") + ")"));
     if (!R.length) { wrap.appendChild(el("div", "empty", "해당하는 기록이 없어요")); return; }
     R.slice(0, PJ.lim).forEach(function (r) {
       var d = el("div"), a = el("div", "a");
