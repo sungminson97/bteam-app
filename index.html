@@ -2999,7 +2999,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #dash .dal b{font-size:14px;font-weight:900;color:var(--warn);font-variant-numeric:tabular-nums}
 #dash .dt{margin-top:4px}
 /* 업체 현황: Backlog 기준 시각 */
-.vstamp{display:flex;align-items:center;justify-content:center;gap:8px;margin:-2px auto 2px;font-size:11.5px;font-weight:800;color:var(--sub)}
+.vstamp{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px auto 4px;font-size:11.5px;font-weight:800;color:var(--sub)}
 .vstamp .k{padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--card);letter-spacing:.06em;font-size:10.5px;font-weight:900;color:var(--text)}
 .vstamp .t{font-variant-numeric:tabular-nums}
 
@@ -8947,10 +8947,8 @@ function venGroups(idx, today) {
   });
   return Object.keys(by).map(function (v) { return by[v]; });
 }
-function venStamp(idx) {   // Backlog 데이터 기준 시각
-  var d = el("div", "vstamp"); d.appendChild(el("span", "k", "Backlog Data"));
-  d.appendChild(el("span", "t", (idx.built || "--:--") + " 기준"));
-  return d;
+function venStamp(idx) {   // Backlog 데이터 기준 시각 (예전 안내 줄 모양)
+  return el("div", "hint", "Backlog Data · " + (idx.built || "--:--") + " 기준");
 }
 function renderVendor(box, idx, today) {
   if (!idx.rows.length || idx.rows[0].length < 9) { box.appendChild(el("div", "msg", SR.loading ? "업체 정보 받는 중…" : "서버(DashboardApp.gs)를 새 버전으로 배포해 주세요.")); return; }
@@ -8959,7 +8957,6 @@ function renderVendor(box, idx, today) {
     gs.sort(function (a, b) { return (b.ing.length - a.ing.length) || (b.out.length - a.out.length) || (a.v < b.v ? -1 : 1); });
     var ti = 0, tom = 0, to = 0; gs.forEach(function (g) { ti += g.ing.length; tom += g.om; to += g.out.length; });
     box.appendChild(heroX("업체 현황", gs.length, "곳", [["진행 중", ti, "대"], [m + "월 출하", tom, "대"], ["올해 출하", to, "대"]]));
-    box.appendChild(venStamp(idx));
     if (!gs.length) { box.appendChild(el("div", "msg", "Backlog 담당자 칸에 업체가 적힌 장비가 없어요.")); return; }
     var list = el("div", "sres vlist");
     gs.forEach(function (g) {
@@ -8971,6 +8968,7 @@ function renderVendor(box, idx, today) {
       list.appendChild(it);
     });
     box.appendChild(list);
+    box.appendChild(venStamp(idx));   // 기준 시각은 맨 아래
     return;
   }
   // 🏭 한 업체
@@ -8979,7 +8977,6 @@ function renderVendor(box, idx, today) {
   bk.onclick = function () { SR.ven = ""; renderSearch(); window.scrollTo(0, 0); };
   box.appendChild(bk);
   box.appendChild(heroX(g.v, null, null, [["진행 중", g.ing.length, "대"], [m + "월 출하", g.om, "대"], ["올해 출하", g.out.length, "대"]]));
-  box.appendChild(venStamp(idx));
   var st = idx.stages;
   var sec = function (title, arr, line) {
     if (!arr.length) return;
@@ -9002,11 +8999,11 @@ function renderVendor(box, idx, today) {
   g.ing.sort(function (a, b) { var x = a.k.nxI >= 0 ? a.r[5][a.k.nxI] : "9999", y2 = b.k.nxI >= 0 ? b.r[5][b.k.nxI] : "9999"; return ((b.r[7] || 0) - (a.r[7] || 0)) || (x < y2 ? -1 : x > y2 ? 1 : 0); });
   g.pre.sort(function (a, b) { var x = a.k.nxI >= 0 ? a.r[5][a.k.nxI] : "9999", y2 = b.k.nxI >= 0 ? b.r[5][b.k.nxI] : "9999"; return x < y2 ? -1 : x > y2 ? 1 : 0; });
   g.out.sort(function (a, b) { return -byD(a, b, "sd"); });
-  sec("🔧 진행 중", g.ing, function (k) { return "지금 " + st[k.nowI][1] + (k.sd ? " · 출하 " + mdw(k.sd) : ""); });
-  sec("⏳ 시작 전", g.pre, function (k, r) { return k.nxI >= 0 ? st[k.nxI][1] + " " + mdw(r[5][k.nxI]) : "일정 없음"; });
-  sec("🚚 출하 완료 (올해)", g.out, function (k) { return "출하 " + mdw(k.sd); });
+  sec("진행 중", g.ing, function (k) { return "지금 " + st[k.nowI][1] + (k.sd ? " · 출하 " + mdw(k.sd) : ""); });
+  sec("시작 전", g.pre, function (k, r) { return k.nxI >= 0 ? st[k.nxI][1] + " " + mdw(r[5][k.nxI]) : "일정 없음"; });
+  sec("출하 완료 (올해)", g.out, function (k) { return "출하 " + mdw(k.sd); });
   if (!g.ing.length && !g.pre.length && !g.out.length) box.appendChild(el("div", "msg", "이 업체 장비가 없어요."));
-  box.appendChild(el("div", "hint", "Backlog 날짜 기준 · 출하일이 지났으면 출하 완료로 봐요 · 장비를 누르면 상세 일정"));
+  box.appendChild(venStamp(idx));   // 기준 시각은 맨 아래
 }
 
 /* ---------- 필터로 보기 · 2026-11-09 (고현우 팀장님 요청에서 시작) ----------
@@ -10342,10 +10339,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-18";
+var APP_VER = "2026-11-11-21";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-21", ["업체 현황: Backlog 기준 시각을 목록 맨 아래에 작게 표시합니다"]],
+  ["2026-11-11-19", ["앱을 켤 때 시작 화면에도 진행 게이지가 표시됩니다 (완료 표시를 확인하실 수 있게 조금 더 보여 줍니다)"]],
   ["2026-11-11-18", ["시작 화면 게이지: 준비가 끝나면 완료 표시를 조금 더 보여 줍니다"]],
   ["2026-11-11-17", ["PJ 전환: 출하 빠른 순 정렬이 납기 순으로 바뀌던 문제를 고쳤습니다"]],
   ["2026-11-11-16", ["업데이트 후 시작 화면에 진행 게이지가 표시됩니다 (단계와 %로 얼마나 남았는지 보여 줍니다)"]],
@@ -12882,6 +12881,47 @@ function splNeed(node) {
   return v;
 }
 function splStat(t, ok) { try { var e = document.getElementById("aist"); if (!e) return; e.textContent = t; e.parentNode.className = "aipill" + (ok ? " ok" : ""); } catch (e) {} }
+/* 📊 시작 화면 게이지 (평소 시작 · 2026-11-11) */
+var SPG = { on: false, data: false, t0: 0, shown: 0 };
+function spgEl() { return document.querySelector("#splash .spgauge"); }
+function spgStart() {
+  var n = document.getElementById("splash"); if (!n || n.style.display === "none") return;
+  if (spgEl()) return;
+  var gg = el("div", "spgauge"), gt = el("div", "gt");
+  gt.appendChild(el("span", "l", "시스템 시작 중")); gt.appendChild(el("b", null, "0%")); gg.appendChild(gt);
+  var gb = el("div", "gb"); gb.appendChild(el("i")); gg.appendChild(gb);
+  gg.appendChild(el("div", "gs", "오늘의 생산 일정을 준비하고 있습니다"));
+  n.appendChild(gg);
+  try { var wt = document.getElementById("splwait"); if (wt) wt.style.display = "none"; } catch (eW) {}
+  SPG.on = true; SPG.t0 = Date.now(); SPG.shown = 0;
+  var place = function () {
+    var g = spgEl(), pl = document.querySelector("#splash .aipill"); if (!g || !pl) return;
+    var r = pl.getBoundingClientRect(); if (!r.height) return;
+    g.style.top = Math.max(80, r.bottom - g.offsetHeight + 4) + "px"; g.style.bottom = "auto"; pl.style.visibility = "hidden";
+  };
+  place(); setTimeout(place, 150); setTimeout(place, 600);
+  (function tick() {
+    if (!SPG.on) return;
+    var g = spgEl(); if (!g) { setTimeout(tick, 150); return; }
+    var n2 = document.getElementById("splash"), el2 = Date.now() - SPG.t0, need = splNeed(n2);
+    var a = Math.min(1, SPL.vt ? splEl(n2, SPL.vt) / need : el2 / need);
+    var v = SPG.data ? 55 + 45 * a : 45 * a + 47 * (1 - Math.exp(-el2 / 4500));
+    spgSet(Math.min(SPG.data ? 99 : 96, v), SPG.shown < 25 ? "시스템 시작 중" : !SPG.data && SPG.shown < 75 ? "오늘 생산 일정 불러오는 중" : SPG.shown < 96 ? "화면 준비 중" : "거의 다 됐어요");
+    setTimeout(tick, 120);
+  })();
+}
+function spgSet(v, lab) {
+  var g = spgEl(); if (!g) return;
+  SPG.shown = Math.max(SPG.shown, Math.min(100, v));
+  g.querySelector(".gb i").style.width = SPG.shown + "%"; g.querySelector("b").textContent = Math.round(SPG.shown) + "%";
+  var l = g.querySelector(".l"); if (lab && l.textContent !== lab) l.textContent = lab;
+}
+function spgFinish() {
+  SPG.on = false; SPG.shown = 0; spgSet(100, "완료");
+  var g = spgEl(); if (!g) return false;
+  g.classList.add("ok"); g.querySelector(".gs").textContent = "준비가 끝났습니다";
+  return true;
+}
 function splashHide(now) {
   if (SPL.done) return;
   SPL.done = true;
@@ -12892,6 +12932,7 @@ function splashHide(now) {
   (function wait() {
     var n = document.getElementById("splash");
     if (document.hidden || !SPL.vt || splEl(n, SPL.vt) < splNeed(n)) { setTimeout(wait, 100); return; }
+    if (SPG.on && !n._fin) { n._fin = 1; if (spgFinish()) { setTimeout(wait, 1800); return; } }   // 📊 100% · 완료를 보여 준 뒤 닫힘
     SPL.shut = true;
     n.className = "out";
     setTimeout(aiReport, 700); setTimeout(aiPrefetch, 2500);   // 🤖 AI 속도 리포트 · 학습한 화면 미리 불러오기
@@ -12943,7 +12984,7 @@ function splashReplay(first) {
         n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450);
         try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11][cur]] || "main")); tabInd(); } catch (eA) {}
         if (!fresh && !haveToday) toast("최신 정보를 아직 못 받았어요\n잠시 후 새로고침해 주세요", true);
-      }, 1300);   // 100% · 완료를 눈으로 볼 수 있게 1.3초
+      }, 1800);   // 100% · 완료를 눈으로 볼 수 있게
       return;
     }
     setTimeout(wait, 120);
@@ -12988,13 +13029,14 @@ function boot() {
   }).catch(function () { return null; });
   splStat("AI 시스템 부팅 중");
   setTimeout(function () { if (!SPL.done) splStat("오늘의 생산 일정 분석 중"); }, 650);
+  try { spgStart(); pre.then(function () { SPG.data = true; }); } catch (eG) {}   // 📊 게이지
   unlock(p, pre);
   if (ONB.on) splashHide(true);
   pre.then(function () { splStat("AI 분석 완료", true); splashHide(); });   // 🎬 최신 금일/명일이 그려진 뒤 시작 화면 닫기
   // ⚡ 오늘 받아 둔 금일 화면이 폰에 있으면 → 최신을 기다리지 않고 애니메이션(4.4초) 끝나면 바로 앱으로 · 최신은 뒤에서 바로 바뀜
   try {
     var cdq = cget("dash"), nw = new Date(), tdy = (nw.getMonth() + 1) + "/" + nw.getDate();
-    if (cdq && cdq.d0 && String(cdq.d0.label || "").indexOf(tdy + "(") === 0) { setTimeout(function () { if (!SPL.done) splStat("AI 분석 완료", true); }, 3300); splashHide(); }   // 4.4초 애니메이션 끝나면 바로 (최신은 뒤에서)
+    if (cdq && cdq.d0 && String(cdq.d0.label || "").indexOf(tdy + "(") === 0) { SPG.data = true; setTimeout(function () { if (!SPL.done) splStat("AI 분석 완료", true); }, 3300); splashHide(); }   // 4.4초 애니메이션 끝나면 바로 (최신은 뒤에서)
   } catch (eQ) {}
   // ⏱ 서버 응답 + 폰↔구글 왕복이 4초를 넘는 경우가 많아서(서버 3초 + 연결 1~3초) 최대 8초까지 기다림
   //    2.5초가 지나면 시작 화면 아래에 "최신 정보 받는 중…" 표시 (멈춘 것처럼 안 보이게)
