@@ -4503,7 +4503,7 @@ function vipBlocked() {
   showSec({ code: "BLOCKED", error: "🚫 열람 승인이 해제되었어요.\n사유: 열람 승인 해제 (문의: 손성민)", dev: devId() });
   ["vip", "nameOK", "myName", "vipPend"].forEach(function (k) { try { sdel(k); } catch (e) {} });
 }
-var VIP_TITLE = { "김재환": "총괄팀장님", "김성현": "프로님" };
+var VIP_TITLE = { "최동원": "대표님", "김재환": "총괄팀장님", "김성현": "프로님" };   // 서버(VipApp.gs VIP_TITLES)가 주는 호칭이 있으면 그걸 씀
 function vipAsk(pin, pre) {
   setGate("enter");
   $("gin").style.display = "none"; $("gbtns").style.display = "none";
@@ -4532,7 +4532,7 @@ function vipAsk(pin, pre) {
     rawCall(pin, "vipCheck", [nm]).then(function (j) {
       var r = j && j.ok ? j.data : null;
       if (!r || r.error) { b.disabled = false; b.textContent = "다시 시도"; view(T.textContent, (r && r.error) || (j && j.error) || "서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.", true); return; }
-      if (r.allowed) { welcome(); return; }
+      if (r.allowed) { if (r.title) VIP_TITLE[nm] = r.title; welcome(); return; }
       if (r.pending) waiting(); else notListed();
     }).catch(function () { b.disabled = false; b.textContent = "다시 시도"; view(T.textContent, "서버에 연결할 수 없습니다.\n네트워크를 확인하고 다시 시도해 주세요.", true); });
   }
@@ -4558,7 +4558,7 @@ function vipAsk(pin, pre) {
     st("손성민님 폰으로 알림 보내는 중", "ing"); sub.disabled = true;
     rawCall(pin, "vipNotify", []).then(function (j) {
       var r = j && j.ok ? j.data : null; sub.disabled = false;
-      if (r && r.allowed) { welcome(); return; }
+      if (r && r.allowed) { if (r.title) VIP_TITLE[nm] = r.title; welcome(); return; }
       if (!r || r.error) { st((r && r.error) || (j && j.error) || "알림을 보내지 못했습니다. 아래 버튼으로 다시 보내 주세요.", "bad"); return; }
       if (r.wait) st((r.at ? r.at + "에 알림을 보냈습니다" : "방금 알림을 보냈습니다") + " · 5분 뒤 다시 보낼 수 있습니다", "ok");
       else st("손성민님 폰으로 알림을 보냈습니다 · " + (r.at || ""), "ok");
@@ -4572,7 +4572,7 @@ function vipAsk(pin, pre) {
       busy(go, "확인 중…");
       rawCall(pin, "vipCheck", [nm]).then(function (j) {
         var r = j && j.ok ? j.data : null;
-        if (r && r.allowed) { welcome(); return; }
+        if (r && r.allowed) { if (r.title) VIP_TITLE[nm] = r.title; welcome(); return; }
         go.disabled = false; go.textContent = "승인 확인";
         view("승인을 기다리고 있습니다", "아직 승인 전입니다.\n승인되면 다시 [승인 확인]을 눌러 주세요.");
       }).catch(function () { go.disabled = false; go.textContent = "승인 확인"; toast("연결 실패", true); });
@@ -4581,7 +4581,7 @@ function vipAsk(pin, pre) {
   }
   function welcome() {
     inp.parentNode.style.display = "none"; btn2(""); st("");
-    view(nm + (VIP_TITLE[nm] ? " " + VIP_TITLE[nm] : "님") + " 환영합니다", "처음 한 번은 데이터를 받아오느라\n화면이 뜨기까지 시간이 조금 걸릴 수 있습니다.");
+    view(VIP_TITLE[nm] === "대표님" ? "대표님 환영합니다" : nm + (VIP_TITLE[nm] ? " " + VIP_TITLE[nm] : "님") + " 환영합니다", "처음 한 번은 데이터를 받아오느라\n화면이 뜨기까지 시간이 조금 걸릴 수 있습니다.");
     go.disabled = false; go.textContent = "확인";
     go.onclick = function () {
       go.onclick = null;
@@ -10364,10 +10364,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-28";
+var APP_VER = "2026-11-11-29";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-29", ["열람 화면 안내 문구를 정리했습니다"]],
   ["2026-11-11-28", ["PJ 전환: 받아 둔 자료를 먼저 바로 보여 드리고 최신 자료는 뒤에서 받아 화면이 더 빨리 열립니다"]],
   ["2026-11-11-27", ["PJ 전환 제조 탭: '공여 장비 후속' 버튼을 누르면 바로 아래로 이동합니다", "화면을 많이 내리면 오른쪽 아래 '맨 위로' 버튼으로 바로 올라갈 수 있습니다"]],
   ["2026-11-11-26", ["PJ 전환 제조 탭: 공여 장비 후속을 처음엔 접어 두고 후속별 건수만 보여 드립니다 · 펼치면 한 장비를 두 줄로 짧게 보여 드립니다"]],
