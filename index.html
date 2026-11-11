@@ -2972,6 +2972,12 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #pj .pjsort .k{font-size:12px;font-weight:900;color:var(--sub);margin-right:2px}
 #pj .pjsort button{height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:800}
 #pj .pjsort button.on{border-color:var(--text);background:var(--text);color:var(--card)}
+#pj .pjfo.flash{animation:pjfo 1.4s ease}
+@keyframes pjfo{0%,35%{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 55%,transparent)}100%{box-shadow:var(--csh)}}
+#pj .pjsort .pjjump{margin-left:auto;border-color:color-mix(in srgb,var(--accent) 40%,var(--line));background:color-mix(in srgb,var(--accent) 10%,var(--card));color:var(--accent)}
+#totop{position:fixed;right:16px;bottom:calc(112px + env(safe-area-inset-bottom));z-index:14;height:38px;padding:0 15px;border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 10px 24px -12px rgba(15,23,42,.45);color:var(--text);font:inherit;font-size:12.5px;font-weight:800;opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .2s,transform .2s}
+#totop.on{opacity:1;transform:none;pointer-events:auto}
+body.kb #totop{display:none}
 #pj .pjsort .ld{font-size:11.5px;font-weight:700;color:var(--sub)}
 #pj .tag.shp{background:color-mix(in srgb,var(--text) 9%,transparent);color:var(--text)}
 #pj .tag.shp.s{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#b45309}
@@ -10358,10 +10364,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-26";
+var APP_VER = "2026-11-11-27";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-27", ["PJ 전환 제조 탭: '공여 장비 후속' 버튼을 누르면 바로 아래로 이동합니다", "화면을 많이 내리면 오른쪽 아래 '맨 위로' 버튼으로 바로 올라갈 수 있습니다"]],
   ["2026-11-11-26", ["PJ 전환 제조 탭: 공여 장비 후속을 처음엔 접어 두고 후속별 건수만 보여 드립니다 · 펼치면 한 장비를 두 줄로 짧게 보여 드립니다"]],
   ["2026-11-11-25", ["배치도: 제목 · 확대 버튼 표시를 깔끔하게 정리했습니다"]],
   ["2026-11-11-24", ["배치도: 한 자리에 장비가 2대 있으면 2대로 세어 동탄 전체 장비 대수를 따로 보여 드립니다"]],
@@ -13226,7 +13233,7 @@ function renderPj() {
   box.appendChild(seg);
   var w = el("div", "pjw"); w.style.display = "grid"; w.style.gap = "12px"; box.appendChild(w);
   if (PJ.sub === "map") pjMap(w); else if (PJ.sub === "st") pjStatus(w); else if (PJ.sub === "mfg") pjMfg(w); else pjLog(w);
-  w.appendChild(el("div", "pjnote", "생산관리팀 PJ 전환 현황 시트 기준이에요 (10분마다 반영 · 보기 전용). 입력 · 수정은 PJ 전환 웹앱에서 해 주세요." + (PJ.lms ? " · 불러오기 " + (PJ.lms / 1000).toFixed(1) + "초" : "")));
+  w.appendChild(el("div", "pjnote", "생산관리팀 PJ 전환 자료 기준입니다 (10분마다 반영 · 보기 전용). 입력 · 수정은 PJ 전환 웹앱에서 해 주세요."));
 }
 function pjSearch(w, val, ph, fn) {
   var q = el("label", "iq");
@@ -13475,6 +13482,15 @@ function pjItem(r, showR) {
 function pjMfg(w) {
   var D = PJ.data;
   pjSortChips(w);
+  if ((D.follow || []).length) {   // 공여 장비 후속으로 바로 내려가기
+    var jb = el("button", "pjjump", "공여 장비 후속 " + D.follow.length); jb.type = "button";
+    jb.onclick = function () {
+      if (!PJ.foOpen) { PJ.foOpen = true; renderPj(); }
+      setTimeout(function () { var t = document.querySelector("#pj .pjfo"); if (!t) return; var hd = document.querySelector("header, .top, #top"), off = (hd ? hd.getBoundingClientRect().height : 70) + 12;
+        window.scrollTo({ top: t.getBoundingClientRect().top + window.pageYOffset - off, behavior: "smooth" }); t.classList.remove("flash"); void t.offsetWidth; t.classList.add("flash"); }, 30);
+    };
+    var srt = w.querySelector(".pjsort"); (srt || w).appendChild(jb);
+  }
   pjSortP(D.projects || []).forEach(function (o) {
     var p = o.p;
     var its = pjItems(p.c), open = function (r) { return !pjDone(r); };
@@ -13640,6 +13656,19 @@ function pjEqChips(cps, name) {
   });
 }
 
+
+/* 맨 위로: 화면을 많이 내리면 오른쪽 아래에 '맨 위로' (모든 탭 공통) */
+(function () {
+  var b = null, tk = 0;
+  var chk = function () {
+    tk = 0;
+    if (!b) { b = document.createElement("button"); b.id = "totop"; b.type = "button"; b.textContent = "맨 위로"; b.onclick = function () { window.scrollTo({ top: 0, behavior: "smooth" }); }; document.body.appendChild(b); }
+    var app = document.getElementById("app"), sp = document.getElementById("splash");
+    var on = window.pageYOffset > Math.max(900, window.innerHeight * 1.5) && app && app.style.display !== "none" && !(sp && sp.style.display !== "none" && !/out/.test(sp.className));
+    b.classList.toggle("on", !!on);
+  };
+  window.addEventListener("scroll", function () { if (!tk) tk = requestAnimationFrame(chk); }, { passive: true });
+})();
 </script>
 </body>
 </html>
