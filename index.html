@@ -2714,19 +2714,10 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #pj .iq svg{width:18px;height:18px;color:var(--sub);flex:none}
 #pj .iq input,#pj .iq select{flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:16px;font-weight:700;outline:0}
 #pj .pjnote{font-size:12px;line-height:1.5;color:var(--sub);word-break:keep-all;padding:0 4px}
-#pj .pjchips{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 4px;scrollbar-width:none}
-#pj .pjchips::-webkit-scrollbar{display:none}
 #pj .pjchips button{flex:none;height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:800;white-space:nowrap}
 #pj .pjchips button.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--card))}
 #pj .pjchips button i{font-style:normal;margin-left:4px;opacity:.75}
 #pj .pjchips button.late.on,#pj .pjchips button.late{color:var(--warn)}
-#pj .pjcase{display:grid;gap:10px}
-#pj .pjch{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:center;padding:4px 4px 0}
-#pj .pjch .no{grid-row:1/3;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:17px;font-weight:900;color:#fff;background:var(--accent)}
-#pj .pjch.m5 .no{background:var(--warn)}
-#pj .pjch b{font-size:15.5px;font-weight:900;letter-spacing:-.01em;word-break:keep-all}
-#pj .pjch b em{font-style:normal;font-size:12px;font-weight:700;color:var(--sub);margin-left:6px}
-#pj .pjch small{font-size:12px;line-height:1.45;color:var(--sub);word-break:keep-all}
 #pj .pjc{display:grid;gap:10px;padding:14px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh);text-align:left;font:inherit;color:var(--text);width:100%;box-sizing:border-box}
 #pj button.pjc:active{transform:scale(.99)}
 #pj .pjc.m5{border-color:color-mix(in srgb,var(--warn) 40%,var(--line))}
@@ -2757,17 +2748,11 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #pj .pjit{display:grid;gap:6px;padding:13px 14px;border-radius:16px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh)}
 #pj .pjit.late{border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}
 #pj .pjit .t1{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-#pj .pjit .pn{font-size:15px;font-weight:900;letter-spacing:-.01em;word-break:break-all}
-#pj .pjit .nm{font-size:13px;font-weight:700;color:var(--text)}
 #pj .pjit .rv{font-size:12px;font-weight:800;color:var(--accent)}
-#pj .pjit .kv{display:grid;grid-template-columns:minmax(0,1.7fr) repeat(3,minmax(0,1fr));gap:4px;margin-top:2px}
 #pj .pjit .kv div{padding:6px 7px;border-radius:9px;background:var(--bg);min-width:0}
 #pj .pjit .kv span{display:block;font-size:10.5px;font-weight:800;color:var(--sub)}
 #pj .pjit .kv b{display:block;font-size:12.5px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #pj .pjit .kv b.w{color:var(--warn)}
-#pj .pjit .kv div:first-child b{white-space:normal;word-break:break-all;font-size:12px}
-#pj .pjit .ds{font-size:12px;line-height:1.5;color:var(--sub);word-break:keep-all}
-#pj .pjit .ds b{color:var(--text);font-weight:800}
 #pj .pjit .by{font-size:11px;font-weight:700;color:var(--sub);text-align:right}
 #pj .mf{display:grid;gap:10px;padding:14px 15px;border-radius:18px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh)}
 #pj .mf .st4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
@@ -2784,7 +2769,6 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #pj .mf .gl .r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 10px;border-radius:10px;background:var(--bg);font-size:12.5px}
 #pj .mf .gl .r b{display:block;font-weight:800;word-break:break-all}
 #pj .mf .gl .r small{display:block;color:var(--sub);font-weight:700}
-#pj .mf .gl .r em{font-style:normal;font-size:11.5px;font-weight:800;color:var(--sub);white-space:nowrap;text-align:right}
 #pj .mf .gl .r em.w{color:var(--warn)}
 #pj .mf .gl .r em.ok{color:var(--ok)}
 #pj .lg{display:grid;gap:0;border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh)}
@@ -2838,6 +2822,65 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #pj .pjd>.pjsame+.pjg,#pj .pjd>.pjg+.pjsame{border-top:0}
 #pj .pjg .dn.n3 .db{font-size:11.5px;padding:8px 4px}
 #pj .pjg .dn.n3{gap:6px}
+#pj .pjchips{display:flex;flex-wrap:wrap;gap:6px}
+#pj .stp{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:800;white-space:nowrap;background:color-mix(in srgb,var(--sub) 14%,transparent);color:var(--sub)}
+#pj .stp.ing{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#b45309}
+#pj .stp.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+@media (prefers-color-scheme:dark){#pj .stp.ing{color:#fbbf24}}
+/* 관계도: 유형별 접기 · 펼치기 */
+#pj .pjcase{display:grid;gap:10px}
+#pj .pjch{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;padding:14px 14px 14px 12px;border-radius:18px;border:1px solid var(--cbd,var(--line));background:var(--card);box-shadow:var(--csh);font:inherit;color:var(--text);text-align:left}
+#pj .pjch:active{transform:scale(.99)}
+#pj .pjch .no{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:23px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:#fff;background:linear-gradient(140deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#8b5cf6));box-shadow:0 6px 14px -6px color-mix(in srgb,var(--accent) 70%,transparent),inset 0 1px 0 rgba(255,255,255,.25)}
+#pj .pjcase.m5 .pjch .no{background:linear-gradient(140deg,var(--warn),color-mix(in srgb,var(--warn) 60%,#f97316));box-shadow:0 6px 14px -6px color-mix(in srgb,var(--warn) 70%,transparent),inset 0 1px 0 rgba(255,255,255,.25)}
+#pj .pjch .tx{display:grid;gap:4px;min-width:0}
+#pj .pjch .tx b{font-size:15.5px;font-weight:900;letter-spacing:-.01em;line-height:1.3;word-break:keep-all}
+#pj .pjch .tx small{font-size:12px;line-height:1.45;color:var(--sub);word-break:keep-all;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#pj .pjcase.open .pjch .tx small{display:block}
+#pj .pjch .sm{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+#pj .pjch .sm span{font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--bg);color:var(--sub)}
+#pj .pjch .tg2{flex:none;font-size:12px;font-weight:800;color:var(--accent);padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--accent) 9%,transparent);white-space:nowrap}
+#pj .pjcase.open .pjch .tg2{color:var(--sub);background:var(--bg)}
+#pj .pjd .memo{padding:12px}
+/* 진행 현황: 프로젝트 고르기 */
+#pj .pjpick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#pj .pjpick button{display:grid;gap:4px;align-content:start;padding:11px 12px 12px;border-radius:14px;border:1.5px solid var(--cbd,var(--line));background:var(--card);box-shadow:var(--csh);font:inherit;color:var(--text);text-align:left;min-width:0}
+#pj .pjpick button.all{grid-column:1/-1}
+#pj .pjpick button b{font-size:13.5px;font-weight:900;line-height:1.3;letter-spacing:-.01em;word-break:keep-all;overflow-wrap:anywhere}
+#pj .pjpick button small{font-size:11.5px;font-weight:700;color:var(--sub)}
+#pj .pjpick button .bar{height:4px;margin-top:3px}
+#pj .pjpick button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--card))}
+#pj .pjpick button.on b{color:var(--accent)}
+/* 진행 현황: 품목 카드 */
+#pj .pjit{gap:8px;padding:14px 15px}
+#pj .pjit .hd2{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+#pj .pjit .nm{font-size:16.5px;font-weight:900;letter-spacing:-.01em;line-height:1.3;word-break:keep-all;overflow-wrap:anywhere}
+#pj .pjit .q{flex:none;font-size:12px;font-weight:900;padding:3px 9px;border-radius:8px;background:var(--bg);color:var(--text)}
+#pj .pjit .pn{margin-top:-4px;font-size:12.5px;font-weight:700;color:var(--sub);letter-spacing:.01em;word-break:break-all}
+#pj .pjit .po{display:flex;align-items:baseline;gap:8px;padding:8px 10px;border-radius:10px;background:var(--bg)}
+#pj .pjit .po span{flex:none;font-size:11px;font-weight:800;color:var(--sub)}
+#pj .pjit .po b{font-size:13px;font-weight:800;letter-spacing:.02em;word-break:break-all}
+#pj .pjit .kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:0}
+#pj .pjit .ds{display:grid;gap:5px;padding:2px 2px 0}
+#pj .pjit .ds>div{display:grid;grid-template-columns:62px minmax(0,1fr);gap:8px;font-size:12.5px;line-height:1.45}
+#pj .pjit .ds span{font-weight:800;color:var(--sub)}
+#pj .pjit .ds b{font-weight:700;color:var(--text);word-break:keep-all;overflow-wrap:anywhere}
+#pj .pjit .nt{display:flex;gap:8px;padding:9px 11px;border-radius:10px;border:1px dashed color-mix(in srgb,var(--sub) 35%,transparent);font-size:12.5px;font-weight:700;line-height:1.45;color:var(--text);word-break:keep-all}
+#pj .pjit .nt span{flex:none;font-weight:900;color:var(--sub)}
+/* 제조 */
+#pj .mf .mt{font-size:16.5px;font-weight:900;letter-spacing:-.01em;line-height:1.3;word-break:keep-all;overflow-wrap:anywhere}
+#pj .mf .mtg{display:flex;flex-wrap:wrap;gap:5px;margin-top:-4px}
+#pj .mf .mgv{display:flex;flex-wrap:wrap;align-items:center;gap:5px}
+#pj .mf .mgv .k{font-size:11.5px;font-weight:900;color:var(--sub);margin-right:2px}
+#pj .mf .mgv .dv{font-size:12px;font-weight:800;padding:4px 9px;border-radius:8px;border:1px solid var(--line);background:var(--card)}
+#pj .mf .gl .r{grid-template-columns:minmax(0,1fr) auto;padding:9px 11px;gap:10px}
+#pj .mf .gl .r b{font-size:13px}
+#pj .mf .gl .r small{font-size:11.5px;margin-top:1px;word-break:break-all}
+#pj .mf .gl .rt{display:grid;justify-items:end;gap:3px}
+#pj .mf .gl .rt em{font-style:normal;font-size:11px;font-weight:800;color:var(--sub);white-space:nowrap}
+#pj .mf .gl .rt em.w{color:var(--warn)}
+#pj .mf .gl .rt em.ok{color:var(--ok)}
+#pj .pjit .rcv{font-size:12px;font-weight:800;color:var(--accent);margin-top:-2px}
 </style>
 </head>
 <body>
@@ -9982,10 +10025,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-5";
+var APP_VER = "2026-11-11-6";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-6", ["PJ 전환: 관계도 유형을 눌러서 펼치고 접을 수 있습니다", "PJ 전환 진행 현황: 프로젝트를 한눈에 고를 수 있고, 품명이 크게 · 참고는 맨 아래에 표시됩니다", "PJ 전환 제조: 장비명이 잘리지 않게 바뀌고, 품목마다 상태(대기 · 진행중 · 완료)가 표시됩니다"]],
   ["2026-11-11-5", ["PJ 전환: 관계도가 공여 장비 → 수신 장비 → 후속 흐름 그림으로 바뀌었습니다 (메모는 해당 장비 옆에 표시)"]],
   ["2026-11-11-4", ["더보기에 PJ 전환 탭이 추가되었습니다 · 관계도 · 진행 현황 · 제조 · 편집 로그를 확인할 수 있습니다", "장비 검색: PJ 전환 대상 장비는 상세 화면에 PJ 전환 표시가 나옵니다 (누르면 해당 내용으로 이동)"]],
   ["2026-11-11-3", ["입고: 품목마다 상위품목(예: HJ92-249-EFEM-011)과 구매발주번호가 보여요 · 상위품목으로도 찾을 수 있어요"]],
@@ -12572,7 +12616,7 @@ boot();
  *  생산관리팀 PJ 전환 웹앱의 시트를 서버가 읽어 둔 것(10분마다)을 받아 보여 줌 · 보기 전용 (입력은 원래 웹앱에서)
  *  관계도 · 진행 현황 · 제조 · 편집 로그 / 장비 상세에 'PJ 전환' 표시
  */
-var PJ = { data: null, ld: false, err: "", tried: false, sub: "map", mq: "", f: { p: "", k: "", st: "", q: "" }, lg: { f: "", q: "" }, lim: 60 };
+var PJ = { data: null, ld: false, err: "", tried: false, sub: "map", mq: "", f: { p: "", k: "", st: "", q: "" }, lg: { f: "", q: "" }, lim: 60, open: {} };
 var PJ_CASES = [
   ["m1", "①", "로봇만 출하하던 장비가 타 장비 프레임 사용", "공여 프레임에서 바뀌거나 새로 필요한 파트는 추가발주 · 빠지는 기존 파트는 폐기 · 공여 장비는 후속으로 로봇만 출하 (수신 장비 원재료로 대체)", "프레임 변환"],
   ["m2", "②", "대체 장비 사용", "사양이 다른 파트는 이미 발주한 자재를 선입고 · 발주 없는 파트만 추가발주 · End-Effector 관련은 자재창고 불출 · 떼어낸 공여 파트는 공여 프로젝트로 회수 · 공여 장비는 수신 장비 원재료로 대체 생산", "프레임 · 장비 통째 사용"],
@@ -12582,6 +12626,8 @@ var PJ_CASES = [
 ];
 /* 관계도 메모 위치 → 어느 상자 메모인지 (원래 웹앱 관계도의 상자 · 화살표 글자 자리, 폭 1650 기준) */
 var PJ_ANCH = {"m1":[["r","MISC-12CH HIZ-N-Z #8 PROCESS",630,303,347,148],["r","MISC-12CH HIZ-N-Z #8 EFEM",650,531,307,117],["d","ZJ90-124 EFEM",75,13,168,55],["r","MISC-12CH HIZ-N-Z #9",680,49,247,117],["d","HJ92-280 PROCESS",54,147,211,55],["f","MISC-12CH HIZ-N-Z #9",1198,64,376,86],["d","HJ92-279 PROCESS",54,350,211,55],["d","ZB47-135 EFEM",74,562,172,55],["f","MISC-12CH HIZ-N-Z #8 PROCESS",1281,334,211,86],["f","MISC-12CH HIZ-N-Z #8 EFEM",1135,546,503,86],["d","ZJ90-123 EFEM",75,749,168,55],["r","MISC-12CH HIZ #8",702,785,204,117],["d","ZJ90-123 PROCESS",56,884,207,55],["f","MISC-12CH HIZ #8",1246,801,281,86],["d","MISC-12CH HIZ-S-N #1 EFEM",13,1049,294,55],["r","MISC-12CH HIZ-S EFEM #1",662,1018,284,117],["f","MISC-12CH HIZ-S EFEM #1",1239,1034,294,86],["d","ZJ90-124 EFEM",391,25,114,31],["d","HJ92-280 PROCESS",372,159,153,31],["f","MISC-12CH HIZ-N-Z #9",1057,92,38,31],["d","HJ92-279 PROCESS",372,362,153,31],["d","ZB47-135 EFEM",346,558,204,62],["f","MISC-12CH HIZ-N-Z #8 PROCESS",1057,362,38,31],["f","MISC-12CH HIZ-N-Z #8 EFEM",1057,574,38,31],["d","ZJ90-123 EFEM",391,761,114,31],["d","ZJ90-123 PROCESS",372,896,153,31],["f","MISC-12CH HIZ #8",1057,828,38,31],["d","MISC-12CH HIZ-S-N #1 EFEM",391,1061,114,31],["f","MISC-12CH HIZ-S EFEM #1",1057,1061,38,31]],"m2":[["d","TF01-035 EFEM",36,15,194,63],["r","CK71-165 EFEM",672,21,254,134],["d","ZJ90-125 EFEM",37,169,193,63],["f","CK71-165 EFEM",1183,38,388,99],["d","HJ92-239 EFEM",35,323,197,63],["r","MISC-8CH BS #8",614,442,371,134],["d","ZJ90-130 EFEM",37,477,193,63],["d","ZJ90-130 PROCESS",15,632,238,63],["f","MISC-8CH BS #8",1120,460,516,99],["d","HJ92-250",68,786,131,63],["r","MISC-8CH BS #6",679,750,241,134],["f","MISC-8CH BS #6",1181,768,393,99],["d","TF01-035 EFEM",367,28,131,36],["d","ZJ90-125 EFEM",298,165,270,71],["f","CK71-165 EFEM",1030,70,44,36],["d","HJ92-239 EFEM",367,337,131,36],["d","ZJ90-130 EFEM",378,491,109,36],["d","ZJ90-130 PROCESS",356,645,154,36],["f","MISC-8CH BS #8",1030,491,44,36],["d","HJ92-250",339,800,189,36],["f","MISC-8CH BS #6",1030,800,44,36]],"m3":[["d","TF01-036 EFEM",19,164,250,81],["r","CK71-161 EFEM",566,141,266,127],["d","ZJ90-132 EFEM",20,530,249,81],["r","CK71-166 EFEM",566,507,266,127],["f","CK71-161 EFEM",1069,19,563,127],["f","CK71-161 EFEM",1092,263,516,127],["f","CK71-166 EFEM",1069,507,563,127],["d","TF01-036 EFEM",328,181,179,46],["d","ZJ90-132 EFEM",328,548,179,46],["f","CK71-161 EFEM",922,59,56,46],["f","CK71-161 EFEM",891,304,119,46],["f","CK71-166 EFEM",922,548,56,46]],"m4":[["d","CX85-138",66,48,195,94],["r","MISC-12CH BS PROCESS #10",580,48,529,94],["d","MISC-ST250 #4",22,332,283,94],["r","MISC-ST250 #13",686,332,316,94],["d","CW49-143",60,616,205,94],["r","MISC-ROBOT #12",676,616,335,94],["d","CW49-147",60,900,205,94],["r","MISC-ROBOT #11",676,900,335,94],["f","MISC-12CH BS PROCESS #10",1310,22,318,147],["f","MISC-ST250 #13",1310,306,318,147],["f","MISC-ROBOT #12",1310,590,318,147],["f","MISC-ROBOT #11",1310,874,318,147],["d","CX85-138",373,69,139,53],["d","MISC-ST250 #4",373,353,139,53],["d","CW49-143",383,637,119,53],["d","CW49-147",383,921,119,53],["f","MISC-12CH BS PROCESS #10",1177,69,65,53],["f","MISC-ST250 #13",1177,353,65,53],["f","MISC-ROBOT #12",1177,637,65,53],["f","MISC-ROBOT #11",1177,921,65,53]],"m5":[["d","HJ92-238 EFEM + NR63-014 PROCESS",111,20,594,134],["r","SJ22-003",1326,20,206,134],["d","MISC-12CH HIZ-S-N #2 EFEM + ZJ90-131 PROCESS",20,278,776,134],["r","MISC-12CH HIZ-N-Z #10",1227,278,403,134],["d","CX85-150 EFEM + SJ35-017 PROCESS",116,535,584,134],["r","MISC-ST250 #11",1285,535,287,134],["d","CC04-168",255,793,305,134],["r","CC04-178 PROCESS",1258,793,341,134],["d","CC04-155",240,1051,335,134],["r","MISC-12CH #23",1291,1051,275,134],["d","HJ92-238 EFEM + NR63-014 PROCESS",915,63,192,48],["d","MISC-12CH HIZ-S-N #2 EFEM + ZJ90-131 PROCESS",857,320,308,48],["d","CX85-150 EFEM + SJ35-017 PROCESS",898,578,227,48],["d","CC04-168",926,836,169,48],["d","CC04-155",948,1094,126,48]]};
+var PJ_SHORTN = { m1: "프레임 변환", m2: "대체 장비", m3: "ROBOT ASSY 교환", m4: "완전 스왑", m5: "스왑 불가" };
+function pjStp(st) { st = st || "대기"; return el("span", "stp " + (st === "완료" ? "ok" : st === "진행중" ? "ing" : "wait"), st); }
 var PJ_IN = ["추가발주", "선입고"], PJ_SER = ["추가발주", "선입고", "창고불출"];
 function pjToday() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
 function pjMd(s) { var m = String(s || "").match(/^\d{4}-(\d{2})-(\d{2})$/); return m ? +m[1] + "/" + +m[2] : String(s || ""); }
@@ -12684,7 +12730,6 @@ function pjChips(w, list, val, fn) {
     c.appendChild(b);
   });
   w.appendChild(c);
-  var on = c.querySelector(".on"); if (on) setTimeout(function () { try { c.scrollLeft = on.offsetLeft - 40; } catch (e) {} }, 0);
   return c;
 }
 
@@ -12799,10 +12844,18 @@ function pjMap(w) {
     lst.innerHTML = ""; var any = false;
     PJ_CASES.forEach(function (cs) {
       var M = pjMemos(cs[0]), used = [], L = G[cs[0]];
-      var sec = el("div", "pjcase"), h = el("div", "pjch " + cs[0]);
-      h.appendChild(el("span", "no", cs[1]));
-      var hb = el("b", null, cs[2]); if (cs[4]) hb.appendChild(el("em", null, cs[4])); h.appendChild(hb);
-      h.appendChild(el("small", null, cs[3]));
+      var sec = el("div", "pjcase" + (cs[0] === "m5" ? " m5" : "")), num = PJ_CASES.indexOf(cs) + 1;
+      var h = el("button", "pjch"); h.type = "button";
+      h.appendChild(el("span", "no", String(num)));
+      var ht = el("div", "tx"); ht.appendChild(el("b", null, cs[2]));
+      ht.appendChild(el("small", null, cs[3]));
+      var nR = L.length, nM = (PJ.data.notes || []).filter(function (n) { return n.c === cs[0]; }).length;
+      var sm2 = el("div", "sm"); sm2.appendChild(el("span", null, (cs[0] === "m5" ? "대상 " : "수신 ") + nR + "건")); if (nM) sm2.appendChild(el("span", null, "메모 " + nM));
+      ht.appendChild(sm2); h.appendChild(ht);
+      var isOpen = !!key || !!PJ.open[cs[0]];
+      h.appendChild(el("span", "tg2", isOpen ? "접기" : "펼치기"));
+      if (isOpen) sec.classList.add("open");
+      h.onclick = function () { if (key) return; PJ.open[cs[0]] = !PJ.open[cs[0]]; paint(); if (PJ.open[cs[0]]) { var y = sec.getBoundingClientRect().top + window.pageYOffset - 80; if (y < window.pageYOffset) window.scrollTo(0, y); } };
       sec.appendChild(h);
       var dg = el("div", "pjd"), shown = 0, done = {};
       var base = function (x) { return x.sw ? "" : pjNorm(String(x.r).split("_")[0].replace(/\s*(EFEM|PROCESS)\s*$/i, "")).trim(); };
@@ -12820,9 +12873,9 @@ function pjMap(w) {
       if (key && !shown) return;
       any = true;
       if (!L.length) dg.appendChild(el("div", "pjnote", "해당 프로젝트 없음"));
-      sec.appendChild(dg);
       var rest = (PJ.data.notes || []).filter(function (n) { return n.c === cs[0] && used.indexOf(n) < 0; });
-      if (rest.length && !key) { var me = el("div", "memo"); rest.forEach(function (n) { me.appendChild(el("div", null, n.t)); }); sec.appendChild(me); }
+      if (rest.length && !key) { var me = el("div", "memo"); rest.forEach(function (n) { me.appendChild(el("div", null, n.t)); }); dg.appendChild(me); }
+      if (isOpen) sec.appendChild(dg);
       lst.appendChild(sec);
     });
     if (key && !any) lst.appendChild(el("div", "empty", "'" + q + "' 장비가 PJ 전환에 없어요"));
@@ -12833,8 +12886,19 @@ function pjMap(w) {
 /* ② 진행 현황 */
 function pjStatus(w) {
   var D = PJ.data, all = (D.items || []).filter(function (r) { return r.k !== "스왑불가"; });
-  var pc = [["", "전체", all.length]].concat((D.projects || []).map(function (p) { return [p.c, pjShort(p.r) === p.r ? p.r : p.r, pjItems(p.c).length]; }).filter(function (o) { return o[2]; }));
-  pjChips(w, pc, PJ.f.p, function (v) { PJ.f.p = v; PJ.lim = 60; renderPj(); });
+  var pg = el("div", "pjpick");   // 프로젝트 고르기 (옆으로 밀지 않고 한눈에)
+  var pb = function (code, name, its, site) {
+    var b = el("button", PJ.f.p === code ? "on" : ""); b.type = "button";
+    b.appendChild(el("b", null, name));
+    var dn = its.filter(pjDone).length, lt = its.filter(pjLate).length;
+    var m = el("small", null, its.length + "건 · 완료 " + dn + (lt ? " · 납기 지남 " + lt : "") + (site && site !== "동탄" ? " · " + site : "")); b.appendChild(m);
+    var br = el("div", "bar"), bi = el("i"); bi.style.width = (its.length ? Math.round(dn / its.length * 100) : 0) + "%"; br.appendChild(bi); b.appendChild(br);
+    b.onclick = function () { PJ.f.p = PJ.f.p === code && code ? "" : code; PJ.f.k = ""; PJ.f.st = ""; PJ.lim = 60; renderPj(); };
+    return b;
+  };
+  var ab = pb("", "전체 프로젝트", all); ab.classList.add("all"); pg.appendChild(ab);
+  (D.projects || []).forEach(function (p) { var its = pjItems(p.c); if (its.length) pg.appendChild(pb(p.c, String(p.r).split("_")[0], its, p.s)); });
+  w.appendChild(pg);
   var inP = all.filter(function (r) { return !PJ.f.p || r.c === PJ.f.p; }), ks = {};
   inP.forEach(function (r) { ks[r.k] = (ks[r.k] || 0) + 1; });
   pjChips(w, [["", "모든 구분", inP.length]].concat(Object.keys(ks).map(function (k) { return [k, k, ks[k]]; })), PJ.f.k, function (v) { PJ.f.k = v; PJ.lim = 60; renderPj(); });
@@ -12853,7 +12917,7 @@ function pjStatus(w) {
       return ws.every(function (x) { return t.indexOf(x) >= 0; });
     });
     if (!L.length) { list.appendChild(el("div", "empty", "해당하는 품목이 없어요")); return; }
-    list.appendChild(el("div", "pjnote", L.length + "건" + (PJ.f.p ? "" : " · 위에서 프로젝트를 고르면 그 프로젝트만")));
+    list.appendChild(el("div", "pjnote", L.length + "건"));
     L.slice(0, PJ.lim).forEach(function (r) { list.appendChild(pjItem(r, !PJ.f.p)); });
     if (L.length > PJ.lim) { var mb = el("button", "more", "더 보기 (" + (L.length - PJ.lim) + "건)"); mb.type = "button"; mb.onclick = function () { PJ.lim += 100; paint(); }; list.appendChild(mb); }
   }
@@ -12863,21 +12927,25 @@ function pjItem(r, showR) {
   var lt = pjLate(r), d = el("div", "pjit" + (lt ? " late" : ""));
   var t1 = el("div", "t1");
   t1.appendChild(el("span", "tag a", r.k));
-  t1.appendChild(el("span", "tag " + (pjDone(r) ? "ok" : r.st === "진행중" ? "ing" : ""), r.st || "대기"));
+  t1.appendChild(pjStp(r.st));
   if (lt) t1.appendChild(el("span", "tag w", "납기 지남"));
   if (r.bom === "O") t1.appendChild(el("span", "tag", "BOM 등록" + (r.bp ? " · " + r.bp : "")));
   d.appendChild(t1);
-  if (showR) d.appendChild(el("div", "rv", r.r));
-  d.appendChild(el("div", "pn", r.pn || "(품번 없음)"));
-  d.appendChild(el("div", "nm", [r.nm, r.q ? r.q + "EA" : ""].filter(Boolean).join(" · ")));
+  var hd = el("div", "hd2"); hd.appendChild(el("div", "nm", r.nm || r.pn || "(품명 없음)"));
+  if (r.q) hd.appendChild(el("span", "q", r.q + "EA"));
+  d.appendChild(hd);
+  if (r.pn && r.nm) d.appendChild(el("div", "pn", r.pn));
+  if (showR) d.appendChild(el("div", "rcv", String(r.r).split("_")[0]));
+  if (r.po) { var po = el("div", "po"); po.appendChild(el("span", null, "발주번호")); po.appendChild(el("b", null, r.po)); d.appendChild(po); }
   var kv = el("div", "kv");
-  [["발주번호", r.po], ["요청일", pjMd(r.rq)], ["납기", pjMd(r.du), lt], ["입고·처리", pjMd(r.dd)]].forEach(function (k) {
+  [["요청일", pjMd(r.rq)], ["납기", pjMd(r.du), lt], ["입고 · 처리", pjMd(r.dd)]].forEach(function (k) {
     var x = el("div"); x.appendChild(el("span", null, k[0])); x.appendChild(el("b", k[2] ? "w" : null, k[1] || "-")); kv.appendChild(x);
   });
   d.appendChild(kv);
   var ds = [];
-  if (r.ac) ds.push(["조치", r.ac]); if (r.rel) ds.push(["관련 품번", r.rel]); if (r.dn) ds.push(["공여", pjShort(r.dn)]); if (r.nt) ds.push(["참고", r.nt]); if (r.mm) ds.push(["메모", r.mm]);
-  if (ds.length) { var dd = el("div", "ds"); ds.forEach(function (x, i) { if (i) dd.appendChild(document.createTextNode(" · ")); dd.appendChild(el("b", null, x[0] + " ")); dd.appendChild(document.createTextNode(x[1])); }); d.appendChild(dd); }
+  if (r.ac) ds.push(["조치", r.ac]); if (r.rel) ds.push(["관련 품번", r.rel]); if (r.dn) ds.push(["공여", pjShort(r.dn)]); if (r.mm) ds.push(["메모", r.mm]);
+  if (ds.length) { var dd = el("div", "ds"); ds.forEach(function (x) { var rw = el("div"); rw.appendChild(el("span", null, x[0])); rw.appendChild(el("b", null, x[1])); dd.appendChild(rw); }); d.appendChild(dd); }
+  if (r.nt) { var nt = el("div", "nt"); nt.appendChild(el("span", null, "참고")); nt.appendChild(document.createTextNode(r.nt)); d.appendChild(nt); }
   if (r.at || r.by) d.appendChild(el("div", "by", "수정 " + [r.by, r.at].filter(Boolean).join(" · ")));
   return d;
 }
@@ -12891,12 +12959,17 @@ function pjMfg(w) {
     var wOut = its.filter(function (r) { return r.k === "창고불출" && open(r); });
     var oth = its.filter(function (r) { return PJ_IN.indexOf(r.k) < 0 && r.k !== "창고불출" && open(r); });
     var dn = its.filter(function (r) { return !open(r) || (PJ_IN.indexOf(r.k) >= 0 && r.dd); }), lt = its.filter(pjLate);
-    var c = el("div", "mf"), hd = el("div", "hd"); hd.style.display = "flex"; hd.style.justifyContent = "space-between"; hd.style.gap = "8px";
-    var hb = el("b", null, p.r); hb.style.fontSize = "15.5px"; hb.style.fontWeight = "900"; hd.appendChild(hb);
-    var tg = el("div"); tg.style.display = "flex"; tg.style.gap = "4px"; tg.style.flex = "none";
-    if (p.s) tg.appendChild(el("span", "tag a", p.s)); tg.appendChild(el("span", "tag", p.t + " " + ((PJ_CASES.filter(function (x) { return x[1] === p.t; })[0] || [])[2] || "")));
-    hd.appendChild(tg); c.appendChild(hd);
-    c.appendChild(el("div", "pjnote", "공여: " + (p.d || "-")));
+    var c = el("div", "mf"), csx = PJ_CASES.filter(function (x) { return x[1] === p.t; })[0];
+    c.appendChild(el("div", "mt", String(p.r).split("_")[0]));
+    var tg = el("div", "mtg");
+    if (p.s) tg.appendChild(el("span", "tag a", p.s));
+    if (csx) tg.appendChild(el("span", "tag", (PJ_CASES.indexOf(csx) + 1) + " · " + PJ_SHORTN[csx[0]]));
+    c.appendChild(tg);
+    if (p.d) {
+      var gv = el("div", "mgv"); gv.appendChild(el("span", "k", "공여"));
+      p.d.replace(/\([^)]*\)/g, function (m) { return m.replace(/\+/g, "\u0001"); }).split(/\s*\+\s*/).forEach(function (s0) { var sh = pjShort(s0.replace(/\u0001/g, "+")); if (sh) gv.appendChild(el("span", "dv", sh)); });
+      c.appendChild(gv);
+    }
     var st = el("div", "st4");
     [["입고 대기", wIn.length], ["불출 대기", wOut.length], ["회수 · 폐기", oth.length], ["납기 지남", lt.length, 1]].forEach(function (k) {
       var x = el("div", k[1] ? (k[2] ? "w" : "") : "z"); x.appendChild(el("span", null, k[0])); x.appendChild(el("b", null, String(k[1]))); st.appendChild(x);
@@ -12908,14 +12981,14 @@ function pjMfg(w) {
       var grp = function (t, L, em) {
         if (!L.length) return; gl.appendChild(el("div", "gt", t + " " + L.length));
         L.forEach(function (r) {
-          var x = el("div", "r"), a = el("div"); a.appendChild(el("b", null, r.pn || "-")); a.appendChild(el("small", null, [r.k, r.nm, r.q ? r.q + "EA" : ""].filter(Boolean).join(" · "))); x.appendChild(a);
-          var e = em(r); x.appendChild(el("em", e[1] || null, e[0])); gl.appendChild(x);
+          var x = el("div", "r"), a = el("div"); a.appendChild(el("b", null, r.nm || r.pn || "-")); a.appendChild(el("small", null, [r.pn, r.k, r.q ? r.q + "EA" : ""].filter(Boolean).join(" · "))); x.appendChild(a);
+          var e = em(r), rt = el("div", "rt"); rt.appendChild(pjStp(r.st)); if (e[0]) rt.appendChild(el("em", e[1] || null, e[0])); x.appendChild(rt); gl.appendChild(x);
         });
       };
       grp("입고 대기", wIn, function (r) { return [r.du ? "납기 " + pjMd(r.du) : r.po ? "발주 완료" : "발주 전", pjLate(r) ? "w" : ""]; });
-      grp("불출 대기", wOut, function (r) { return [r.st || "대기"]; });
-      grp("회수 · 폐기 · 현물수정", oth, function (r) { return [r.st || "대기"]; });
-      grp("입고 · 처리 완료", dn, function (r) { return [r.dd ? pjMd(r.dd) + " 완료" : "완료", "ok"]; });
+      grp("불출 대기", wOut, function (r) { return [r.du ? "납기 " + pjMd(r.du) : "", pjLate(r) ? "w" : ""]; });
+      grp("회수 · 폐기 · 현물수정", oth, function (r) { return [r.du ? "납기 " + pjMd(r.du) : "", pjLate(r) ? "w" : ""]; });
+      grp("입고 · 처리 완료", dn, function (r) { return [r.dd ? pjMd(r.dd) + " 처리" : "", "ok"]; });
       dt.appendChild(gl); c.appendChild(dt);
     } else c.appendChild(el("div", "pjnote", "자재 변동 없음"));
     w.appendChild(c);
@@ -12923,12 +12996,12 @@ function pjMfg(w) {
   // 공여 장비 후속
   var F = D.follow || [];
   if (F.length) {
-    var c2 = el("div", "mf"), h2 = el("b", null, "공여 장비 후속 · " + F.length); h2.style.fontSize = "15.5px"; h2.style.fontWeight = "900"; c2.appendChild(h2);
+    var c2 = el("div", "mf"); c2.appendChild(el("div", "mt", "공여 장비 후속 · " + F.length));
     c2.appendChild(el("div", "pjnote", "부품 · 프레임 · 장비를 내준 장비가 앞으로 어떻게 만들어지고 출하되는지예요"));
     var gl2 = el("div", "gl");
     F.forEach(function (f) {
-      var x = el("div", "r"), a = el("div"); a.appendChild(el("b", null, pjShort(f.d) + " · " + (f.gv || ""))); a.appendChild(el("small", null, "받은 곳 " + f.r + (f.m ? " · " + f.m : ""))); x.appendChild(a);
-      x.appendChild(el("em", "w", (f.b ? f.b + " → " : "") + (f.a || ""))); gl2.appendChild(x);
+      var x = el("div", "r"), a = el("div"); a.appendChild(el("b", null, pjShort(f.d))); a.appendChild(el("small", null, (f.gv || "") + " → " + String(f.r).split("_")[0])); x.appendChild(a);
+      var rt = el("div", "rt"); rt.appendChild(el("span", "stp ing", f.a || "-")); if (f.b) rt.appendChild(el("em", null, "원래 " + f.b)); x.appendChild(rt); gl2.appendChild(x);
     });
     c2.appendChild(gl2); w.appendChild(c2);
   }
