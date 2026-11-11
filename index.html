@@ -2885,24 +2885,24 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #pj .pjit .nt{display:flex;gap:8px;padding:9px 11px;border-radius:10px;border:1px dashed color-mix(in srgb,var(--sub) 35%,transparent);font-size:12.5px;font-weight:700;line-height:1.45;color:var(--text);word-break:keep-all}
 #pj .pjit .nt span{flex:none;font-weight:900;color:var(--sub)}
 /* 제조 */
-#pj .pjfo .fg{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg)}
-#pj .pjfo .fh{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;align-items:center;padding:10px 12px;background:color-mix(in srgb,var(--accent) 8%,var(--card));border-bottom:1px solid var(--line)}
-#pj .pjfo .fh .lb{grid-column:1/-1;font-size:10.5px;font-weight:800;color:var(--sub)}
-#pj .pjfo .fh b{font-size:14.5px;font-weight:900;word-break:keep-all;overflow-wrap:anywhere}
-#pj .pjfo .fh .shp{font-size:11px;font-weight:800;padding:3px 8px;border-radius:99px;background:color-mix(in srgb,var(--sub) 13%,transparent);color:var(--sub);white-space:nowrap}
+#pj .pjfo .foh{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:0;font:inherit;color:inherit}
+#pj .pjfo .fsum{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+#pj .pjfo .tg2{flex:none;font-size:12px;font-weight:800;color:var(--accent);padding:6px 11px;border-radius:99px;background:color-mix(in srgb,var(--accent) 10%,transparent)}
+#pj .pjfo .fg{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--card)}
+#pj .pjfo .fh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 11px;background:color-mix(in srgb,var(--accent) 8%,var(--card));border-bottom:1px solid var(--line)}
+#pj .pjfo .fh b{font-size:13.5px;font-weight:900;word-break:keep-all;overflow-wrap:anywhere}
+#pj .pjfo .fh .shp{flex:none;font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:99px;background:color-mix(in srgb,var(--sub) 13%,transparent);color:var(--sub);white-space:nowrap}
 #pj .pjfo .fh .shp.s{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#b45309}
-#pj .pjfo .fr{padding:10px 12px;background:var(--card)}
+#pj .pjfo .fr{padding:7px 11px}
 #pj .pjfo .fr+.fr{border-top:1px solid var(--line)}
 #pj .pjfo .ft{display:flex;align-items:center;justify-content:space-between;gap:8px}
-#pj .pjfo .ft b{font-size:14px;font-weight:900;word-break:keep-all;overflow-wrap:anywhere}
-#pj .pjfo .fa{flex:none;font-size:11.5px;font-weight:800;padding:4px 9px;border-radius:99px;background:color-mix(in srgb,#7c5cff 14%,transparent);color:#6d4ee8}
+#pj .pjfo .ft b{font-size:13px;font-weight:900;word-break:keep-all;overflow-wrap:anywhere}
+#pj .pjfo .fa{flex:none;font-size:11px;font-weight:800;padding:3px 8px;border-radius:99px;background:color-mix(in srgb,#7c5cff 14%,transparent);color:#6d4ee8;white-space:nowrap}
 #pj .pjfo .fa.sh{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
-#pj .pjfo .fkv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin-top:8px;font-size:12.5px;line-height:1.45}
-#pj .pjfo .fkv .k{color:var(--sub);font-weight:700;white-space:nowrap}
-#pj .pjfo .fkv .v{font-weight:700;word-break:keep-all;overflow-wrap:anywhere}
-#pj .pjfo .fkv .v s{color:var(--sub);font-weight:600}
-#pj .pjfo .fkv .v i{font-style:normal;color:var(--sub);margin:0 5px}
-#pj .pjfo .fkv .v b{font-weight:900}
+#pj .pjfo .fd{display:flex;flex-wrap:wrap;gap:2px 10px;margin-top:3px;font-size:11.5px;line-height:1.45;color:var(--sub);font-weight:700}
+#pj .pjfo .fd .fgv{color:var(--text)}
+#pj .pjfo .fd s{font-weight:600}
+#pj .pjfo .fd .mm{flex-basis:100%}
 @media (prefers-color-scheme:dark){#pj .pjfo .fa{color:#a993ff}#pj .pjfo .fh .shp.s{color:#fbbf24}}
 #pj .mf .mt{font-size:16.5px;font-weight:900;letter-spacing:-.01em;line-height:1.3;word-break:keep-all;overflow-wrap:anywhere}
 #pj .mf .mtg{display:flex;flex-wrap:wrap;gap:5px;margin-top:-4px}
@@ -10358,10 +10358,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-25";
+var APP_VER = "2026-11-11-26";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-26", ["PJ 전환 제조 탭: 공여 장비 후속을 처음엔 접어 두고 후속별 건수만 보여 드립니다 · 펼치면 한 장비를 두 줄로 짧게 보여 드립니다"]],
   ["2026-11-11-25", ["배치도: 제목 · 확대 버튼 표시를 깔끔하게 정리했습니다"]],
   ["2026-11-11-24", ["배치도: 한 자리에 장비가 2대 있으면 2대로 세어 동탄 전체 장비 대수를 따로 보여 드립니다"]],
   ["2026-11-11-23", ["PJ 전환 제조 탭: 공여 장비 후속을 받은 프로젝트별로 묶어 내준 것 · 계획 변경 · 원재료를 보기 쉽게 정리했습니다"]],
@@ -13528,18 +13529,23 @@ function pjMfg(w) {
   // 공여 장비 후속
   var F = D.follow || [];
   if (F.length) {
-    var c2 = el("div", "mf pjfo"); c2.appendChild(el("div", "mt", "공여 장비 후속 · " + F.length));
-    c2.appendChild(el("div", "pjnote", "부품 · 프레임 · 장비를 내준 장비가 앞으로 어떻게 만들어지고 출하되는지 받은 프로젝트별로 보여 드립니다"));
-    // 받은 프로젝트별로 묶음 (출하 빠른 순 · 프로젝트 목록에 없는 건 뒤에)
+    var c2 = el("div", "mf pjfo" + (PJ.foOpen ? " on" : ""));
+    var hb = el("button", "foh"); hb.type = "button";
+    var ht = el("div"); ht.appendChild(el("div", "mt", "공여 장비 후속 · " + F.length));
+    var cnt = {}; F.forEach(function (f) { var k = f.a || "-"; cnt[k] = (cnt[k] || 0) + 1; });
+    var sm = el("div", "fsum"); Object.keys(cnt).forEach(function (k) { sm.appendChild(el("span", "fa" + (/출하/.test(k) ? " sh" : ""), k + " " + cnt[k])); });
+    ht.appendChild(sm); hb.appendChild(ht);
+    hb.appendChild(el("span", "tg2", PJ.foOpen ? "접기" : "펼치기"));
+    hb.onclick = function () { PJ.foOpen = !PJ.foOpen; renderPj(); };
+    c2.appendChild(hb);
+    // 받은 프로젝트별로 묶음 (출하 빠른 순) · 한 장비 = 두 줄
     var G2 = [], at = {};
-    var put = function (f) { var k = pjNorm(String(f.r).split("_")[0]); if (!at[k]) { at[k] = { r: String(f.r).split("_")[0], L: [] }; G2.push(at[k]); } at[k].L.push(f); };
-    var ord = pjSortP(D.projects || []).map(function (o) { return { k: pjNorm(String(o.p.r).split("_")[0]), sh: o.sh }; });
-    F.forEach(put);
-    var rank = function (g) { var k = pjNorm(g.r), i = -1; ord.forEach(function (o, j) { if (i < 0 && o.k === k) i = j; }); return i < 0 ? 999 : i; };
+    F.forEach(function (f) { var k = pjNorm(String(f.r).split("_")[0]); if (!at[k]) { at[k] = { r: String(f.r).split("_")[0], L: [] }; G2.push(at[k]); } at[k].L.push(f); });
+    var ord = pjSortP(D.projects || []).map(function (o) { return pjNorm(String(o.p.r).split("_")[0]); });
+    var rank = function (g) { var i = ord.indexOf(pjNorm(g.r)); return i < 0 ? 999 : i; };
     G2.sort(function (a, b) { return rank(a) - rank(b); });
-    G2.forEach(function (g) {
+    if (PJ.foOpen) G2.forEach(function (g) {
       var box = el("div", "fg"), hd = el("div", "fh");
-      hd.appendChild(el("span", "lb", "받은 프로젝트"));
       hd.appendChild(el("b", null, g.r));
       var sh = pjShip(g.r); hd.appendChild(el("span", "shp" + (sh && pjDday(sh) <= 14 ? " s" : "") + (sh ? "" : " no"), pjShipTxt(sh)));
       box.appendChild(hd);
@@ -13548,12 +13554,12 @@ function pjMfg(w) {
         t.appendChild(el("b", null, pjShort(f.d)));
         t.appendChild(el("span", "fa" + (/출하/.test(f.a || "") ? " sh" : ""), f.a || "-"));
         x.appendChild(t);
-        var kv = el("div", "fkv");
-        var row = function (k, v) { if (!v) return; kv.appendChild(el("span", "k", k)); var d = el("div", "v"); if (typeof v === "string") d.textContent = v; else d.appendChild(v); kv.appendChild(d); };
-        row("내준 것", f.gv);
-        if (f.b || f.a) { var ch = el("span"); if (f.b) { ch.appendChild(el("s", null, f.b)); ch.appendChild(el("i", null, "→")); } ch.appendChild(el("b", null, f.a || "-")); row("계획 변경", ch); }
-        row("원재료", f.m);
-        x.appendChild(kv); box.appendChild(x);
+        var d = el("div", "fd");
+        if (f.gv) d.appendChild(el("span", "fgv", f.gv));
+        if (f.b) { var ch = el("span", "fch"); ch.appendChild(document.createTextNode("원래 ")); ch.appendChild(el("s", null, f.b)); d.appendChild(ch); }
+        var mat = String(f.m || "");
+        if (mat && !/^수신 장비 원재료로 대체$/.test(mat) && mat.indexOf(g.r + " 원재료로") !== 0) d.appendChild(el("span", "mm", mat));   // 받은 프로젝트 원재료로 대체(기본)는 생략
+        x.appendChild(d); box.appendChild(x);
       });
       c2.appendChild(box);
     });
