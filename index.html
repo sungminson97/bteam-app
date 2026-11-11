@@ -2707,7 +2707,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 @keyframes chgIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 /* 📦 PJ 전환 (2026-11-11) */
 #pj{display:none;gap:12px;grid-template-columns:minmax(0,1fr);padding:12px 16px calc(120px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
-#pj .pjseg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:var(--bg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 60%,transparent);position:sticky;top:var(--pjtop,0px);z-index:3}
+#pj .pjseg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:var(--bg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 60%,transparent)}
 #pj .pjseg button{height:40px;border:0;border-radius:10px;background:transparent;color:var(--sub);font:inherit;font-size:13.5px;font-weight:800;white-space:nowrap}
 #pj .pjseg button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.06)}
 #pj .iq{display:flex;align-items:center;gap:8px;padding:0 14px;height:48px;border-radius:16px;background:var(--card);border:1px solid var(--cbd,var(--line));box-shadow:var(--csh)}
@@ -2882,11 +2882,11 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #pj .mf .gl .rt em.ok{color:var(--ok)}
 #pj .pjit .rcv{font-size:12px;font-weight:800;color:var(--accent);margin-top:-2px}
 /* 상태 막대 */
-#pj .sbar{display:flex;height:8px;border-radius:99px;overflow:hidden;background:color-mix(in srgb,var(--sub) 16%,transparent)}
-#pj .sbar i{display:block;height:100%}
-#pj .sbar i.ok{background:var(--ok)}
-#pj .sbar i.ing{background:#f59e0b}
-#pj .sbar i.wait{background:color-mix(in srgb,var(--sub) 38%,transparent)}
+#pj .pjsb{display:flex;height:8px;border-radius:99px;overflow:hidden;background:color-mix(in srgb,var(--sub) 16%,transparent)}
+#pj .pjsb i{display:block;height:100%}
+#pj .pjsb i.ok{background:var(--ok)}
+#pj .pjsb i.ing{background:#f59e0b}
+#pj .pjsb i.wait{background:color-mix(in srgb,var(--sub) 38%,transparent)}
 #pj .pjhx{display:grid;gap:7px;margin-top:14px;padding:12px 13px;border-radius:16px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28)}
 #pj .pjhx .t{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;font-weight:800}
 #pj .pjhx .t b{font-size:20px;font-weight:900;letter-spacing:-.02em}
@@ -2923,6 +2923,27 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #pj .pjhx .t,#pj .pjhx .t span,#pj .pjhx .t b,#pj .pjhx .lg2,#pj .pjhx .nx{color:#fff;opacity:1}
 #pj .pjhx .t span{opacity:.9}
 #pj .pjhx .t span{padding:0;background:none;border:0;font-size:12.5px;font-weight:800}
+#pj .mf .st4 button{border:0;font:inherit;color:inherit;cursor:pointer;padding:8px 6px;border-radius:11px;background:var(--bg);text-align:center}
+#pj .mf .st4 button:active{transform:scale(.96)}
+#pj .mf .st4 button::after{content:"보기";display:block;margin-top:1px;font-size:10px;font-weight:800;color:var(--sub);opacity:.8}
+#pj .mf .gl .gt{scroll-margin-top:90px}
+#pj .mf .gl .flash{animation:pjfl 1.4s ease}
+@keyframes pjfl{0%,40%{background:color-mix(in srgb,var(--accent) 16%,transparent);border-radius:8px}100%{background:transparent}}
+#pj .mf .gl .r.flash{animation:pjfr 1.4s ease}
+@keyframes pjfr{0%,40%{box-shadow:0 0 0 2px var(--warn)}100%{box-shadow:none}}
+#pj .cpr em{display:block;line-height:1}
+#pj .pjsort{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+#pj .pjsort .k{font-size:12px;font-weight:900;color:var(--sub);margin-right:2px}
+#pj .pjsort button{height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--sub);font:inherit;font-size:12.5px;font-weight:800}
+#pj .pjsort button.on{border-color:var(--text);background:var(--text);color:var(--card)}
+#pj .pjsort .ld{font-size:11.5px;font-weight:700;color:var(--sub)}
+#pj .tag.shp{background:color-mix(in srgb,var(--text) 9%,transparent);color:var(--text)}
+#pj .tag.shp.s{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#b45309}
+#pj .tag.shp.no{color:var(--sub)}
+#pj .pjpick .shp{justify-self:start;font-size:11px;font-weight:900;padding:2px 7px;border-radius:6px;background:color-mix(in srgb,var(--text) 8%,transparent);color:var(--text)}
+#pj .pjpick .shp.s{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#b45309}
+#pj .pjpick button.all .shp{display:none}
+@media (prefers-color-scheme:dark){#pj .tag.shp.s,#pj .pjpick .shp.s{color:#fbbf24}}
 </style>
 </head>
 <body>
@@ -10067,10 +10088,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-6";
+var APP_VER = "2026-11-11-8";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-8", ["PJ 전환 제조 · 진행 현황: 출하 빠른 순으로 정렬되고 출하일(D-day)이 표시됩니다 (납기 빠른 순 · 기본 순으로도 바꿀 수 있습니다)"]],
+  ["2026-11-11-7", ["PJ 전환 제조: 입고 대기 · 불출 대기 · 회수 · 폐기 · 납기 지남 숫자를 누르면 해당 품목으로 바로 이동합니다"]],
   ["2026-11-11-6", ["PJ 전환: 맨 위에 전체 진행률(완료 · 진행중 · 대기)과 가장 가까운 납기가 표시됩니다", "PJ 전환: 관계도 유형을 눌러서 펼치고 접을 수 있습니다", "PJ 전환 진행 현황: 프로젝트를 한눈에 고를 수 있고, 품명이 크게 · 참고는 맨 아래에 · 납기는 D-day로 표시됩니다", "PJ 전환 제조: 장비명이 잘리지 않게 바뀌고, 품목마다 상태(대기 · 진행중 · 완료)가 표시됩니다"]],
   ["2026-11-11-5", ["PJ 전환: 관계도가 공여 장비 → 수신 장비 → 후속 흐름 그림으로 바뀌었습니다 (메모는 해당 장비 옆에 표시)"]],
   ["2026-11-11-4", ["더보기에 PJ 전환 탭이 추가되었습니다 · 관계도 · 진행 현황 · 제조 · 편집 로그를 확인할 수 있습니다", "장비 검색: PJ 전환 대상 장비는 상세 화면에 PJ 전환 표시가 나옵니다 (누르면 해당 내용으로 이동)"]],
@@ -12658,7 +12681,7 @@ boot();
  *  생산관리팀 PJ 전환 웹앱의 시트를 서버가 읽어 둔 것(10분마다)을 받아 보여 줌 · 보기 전용 (입력은 원래 웹앱에서)
  *  관계도 · 진행 현황 · 제조 · 편집 로그 / 장비 상세에 'PJ 전환' 표시
  */
-var PJ = { data: null, ld: false, err: "", tried: false, sub: "map", mq: "", f: { p: "", k: "", st: "", q: "" }, lg: { f: "", q: "" }, lim: 60, open: {} };
+var PJ = { data: null, ld: false, err: "", tried: false, sub: "map", mq: "", f: { p: "", k: "", st: "", q: "" }, lg: { f: "", q: "" }, lim: 60, open: {}, ms: "ship" };
 var PJ_CASES = [
   ["m1", "①", "로봇만 출하하던 장비가 타 장비 프레임 사용", "공여 프레임에서 바뀌거나 새로 필요한 파트는 추가발주 · 빠지는 기존 파트는 폐기 · 공여 장비는 후속으로 로봇만 출하 (수신 장비 원재료로 대체)", "프레임 변환"],
   ["m2", "②", "대체 장비 사용", "사양이 다른 파트는 이미 발주한 자재를 선입고 · 발주 없는 파트만 추가발주 · End-Effector 관련은 자재창고 불출 · 떼어낸 공여 파트는 공여 프로젝트로 회수 · 공여 장비는 수신 장비 원재료로 대체 생산", "프레임 · 장비 통째 사용"],
@@ -12676,9 +12699,35 @@ function pjMd(s) { var m = String(s || "").match(/^\d{4}-(\d{2})-(\d{2})$/); ret
 function pjDone(r) { return r.st === "완료"; }
 function pjDday(s) { if (!s || !/^\d{4}-\d\d-\d\d$/.test(s)) return null; var a = new Date(s + "T00:00:00"), b = new Date(pjToday() + "T00:00:00"); return Math.round((a - b) / 86400000); }
 function pjDtxt(n) { return n == null ? "" : n === 0 ? "D-day" : n > 0 ? "D-" + n : "D+" + (-n); }
+/* 출하일: B팀 장비 일정(Backlog)에서 같은 장비를 찾아 출하 날짜 (EFEM · PROCESS 따로 있으면 그 TYPE · 여러 개면 가장 빠른 날) */
+function pjShip(name) {
+  var X = SR.idx; if (!X || !X.rows) return "";
+  var si = -1; (X.stages || []).forEach(function (s0, i) { if (s0[0] === "ship") si = i; }); if (si < 0) return "";
+  var base = String(name || "").split("_")[0].trim(), key = pjKey(base), ty = (base.match(/(EFEM|PROCESS)\s*$/i) || [])[1];
+  var hits = X.rows.filter(function (r) { return pjHas(r[0], key); });
+  if (ty) { var h2 = hits.filter(function (r) { return new RegExp(ty, "i").test(r[0] + " " + (r[1] || "")); }); if (h2.length) hits = h2; }
+  return hits.map(function (r) { return r[5] && r[5][si]; }).filter(Boolean).sort()[0] || "";
+}
+function pjShipTxt(d) { if (!d) return "출하일 없음"; var n = pjDday(d); return n != null && n < 0 ? "출하 " + pjMd(d) + " 지남" : "출하 " + pjMd(d) + " · " + pjDtxt(n); }
+function pjFirstDue(its) { return its.filter(function (r) { return r.du && !pjDone(r); }).map(function (r) { return r.du; }).sort()[0] || ""; }
+function pjSortP(list) {   // 프로젝트 순서: 출하 빠른 순(기본) · 납기 빠른 순 · 원래 순
+  var k = PJ.ms, L = list.map(function (p, i) { return { p: p, i: i, sh: pjShip(p.r), du: pjFirstDue(pjItems(p.c)) }; });
+  if (k) L.sort(function (a, b) { var x = (k === "ship" ? a.sh : a.du) || "9999", y = (k === "ship" ? b.sh : b.du) || "9999"; return x < y ? -1 : x > y ? 1 : a.i - b.i; });
+  return L;
+}
+function pjSortChips(w) {
+  var c = el("div", "pjsort"); c.appendChild(el("span", "k", "순서"));
+  [["ship", "출하 빠른 순"], ["due", "납기 빠른 순"], ["", "기본 순"]].forEach(function (o) {
+    var b = el("button", PJ.ms === o[0] ? "on" : "", o[1]); b.type = "button";
+    b.onclick = function () { PJ.ms = o[0]; try { sset("pjms", o[0] || "-"); } catch (e) {} renderPj(); };
+    c.appendChild(b);
+  });
+  w.appendChild(c);
+  if (PJ.ms === "ship" && !(SR.idx && SR.idx.rows)) c.appendChild(el("span", "ld", "출하일 불러오는 중…"));
+}
 function pjBar(L) {   // 상태별 막대 (완료 · 진행중 · 대기)
   var n = L.length || 1, ok = L.filter(pjDone).length, ing = L.filter(function (r) { return r.st === "진행중"; }).length;
-  var b = el("div", "sbar");
+  var b = el("div", "pjsb");
   [["ok", ok], ["ing", ing], ["wait", L.length - ok - ing]].forEach(function (x) { if (!x[1]) return; var i = el("i", x[0]); i.style.width = (x[1] / n * 100) + "%"; b.appendChild(i); });
   return b;
 }
@@ -12699,6 +12748,7 @@ function pjShort(s) {   // 'ZJ90-124_12CH HIZ-L3 EFEM' → 'ZJ90-124 EFEM' · 'H
 }
 function pjItems(code) { return (PJ.data.items || []).filter(function (r) { return r.c === code && r.k !== "스왑불가"; }); }
 
+try { var _ms = sget("pjms"); if (_ms) PJ.ms = _ms === "-" ? "" : _ms; } catch (e) {}
 function loadPj(force) {
   if (PJ.ld) return Promise.resolve();
   if (!PJ.data) { try { var c = cget("pj"); if (c && c.items) PJ.data = c; } catch (e) {} }
@@ -12748,6 +12798,7 @@ function renderPj() {
     if (!PJ.ld && !PJ.err) loadPj(false);
     return;
   }
+  if (!PJ.eqAsk && (PJ.sub === "mfg" || PJ.sub === "st")) { PJ.eqAsk = true; try { loadEquipIndex(false).then(function () { if (cur === 12 && !SR.open && (PJ.sub === "mfg" || PJ.sub === "st")) renderPj(); }); } catch (eE) {} }
   var all = (D.items || []).filter(function (r) { return r.k !== "스왑불가"; }), late = all.filter(pjLate).length, done = all.filter(pjDone).length;
   box.appendChild(heroX("PJ 전환", (D.projects || []).length, "개 프로젝트",
     [["품목", all.length, "건"], ["진행중", all.filter(function (r) { return r.st === "진행중"; }).length, "건"], ["납기 지남", late, "건", late > 0]],
@@ -12962,7 +13013,8 @@ function pjStatus(w) {
     return b;
   };
   var ab = pb("", "전체 프로젝트", all); ab.classList.add("all"); pg.appendChild(ab);
-  (D.projects || []).forEach(function (p) { var its = pjItems(p.c); if (its.length) pg.appendChild(pb(p.c, String(p.r).split("_")[0], its, p.s)); });
+  pjSortP(D.projects || []).forEach(function (o) { var p = o.p, its = pjItems(p.c); if (its.length) { var b = pb(p.c, String(p.r).split("_")[0], its, p.s); b.insertBefore(el("span", "shp" + (o.sh && pjDday(o.sh) <= 14 ? " s" : ""), pjShipTxt(o.sh)), b.children[1]); pg.appendChild(b); } });
+  pjSortChips(w);
   w.appendChild(pg);
   var inP = all.filter(function (r) { return !PJ.f.p || r.c === PJ.f.p; }), ks = {};
   inP.forEach(function (r) { ks[r.k] = (ks[r.k] || 0) + 1; });
@@ -13021,7 +13073,9 @@ function pjItem(r, showR) {
 /* ③ 제조 (프로젝트별 입고 · 불출 · 처리 여부) */
 function pjMfg(w) {
   var D = PJ.data;
-  (D.projects || []).slice().sort(function (a, b) { return (a.s === "동탄" ? 0 : 1) - (b.s === "동탄" ? 0 : 1); }).forEach(function (p) {
+  pjSortChips(w);
+  pjSortP(D.projects || []).forEach(function (o) {
+    var p = o.p;
     var its = pjItems(p.c), open = function (r) { return !pjDone(r); };
     var wIn = its.filter(function (r) { return PJ_IN.indexOf(r.k) >= 0 && open(r) && !r.dd; });
     var wOut = its.filter(function (r) { return r.k === "창고불출" && open(r); });
@@ -13030,6 +13084,7 @@ function pjMfg(w) {
     var c = el("div", "mf"), csx = PJ_CASES.filter(function (x) { return x[1] === p.t; })[0];
     c.appendChild(el("div", "mt", String(p.r).split("_")[0]));
     var tg = el("div", "mtg");
+    tg.appendChild(el("span", "tag shp" + (o.sh && pjDday(o.sh) <= 14 ? " s" : "") + (o.sh ? "" : " no"), pjShipTxt(o.sh)));
     if (p.s) tg.appendChild(el("span", "tag a", p.s));
     if (csx) tg.appendChild(el("span", "tag", (PJ_CASES.indexOf(csx) + 1) + " · " + PJ_SHORTN[csx[0]]));
     c.appendChild(tg);
@@ -13039,25 +13094,33 @@ function pjMfg(w) {
       p.d.replace(/\([^)]*\)/g, function (m) { return m.replace(/\+/g, "\u0001"); }).split(/\s*\+\s*/).forEach(function (s0) { var sh = pjShort(s0.replace(/\u0001/g, "+")); if (sh) gv.appendChild(el("span", "dv", sh)); });
       c.appendChild(gv);
     }
-    var st = el("div", "st4");
-    [["입고 대기", wIn.length, "a"], ["불출 대기", wOut.length, "y"], ["회수 · 폐기", oth.length, "g"], ["납기 지남", lt.length, "w"]].forEach(function (k) {
-      var x = el("div", k[1] ? k[2] : "z"); x.appendChild(el("span", null, k[0])); x.appendChild(el("b", null, String(k[1]))); st.appendChild(x);
+    var st = el("div", "st4"), dt = null, gl = null;
+    var goTo = function (g) {   // 숫자 칸을 누르면 품목 목록을 펼치고 그 묶음으로 내려감
+      if (!dt) return; dt.open = true;
+      var t = gl.querySelector(g === "late" ? ".r.late" : '[data-g="' + g + '"]'); if (!t) return;
+      var top = document.querySelector("header, .top, #top"), off = (top ? top.getBoundingClientRect().height : 70) + 16;
+      window.scrollTo({ top: t.getBoundingClientRect().top + window.pageYOffset - off, behavior: "smooth" });
+      t.classList.remove("flash"); void t.offsetWidth; t.classList.add("flash");
+    };
+    [["입고 대기", wIn.length, "a", "in"], ["불출 대기", wOut.length, "y", "out"], ["회수 · 폐기", oth.length, "g", "oth"], ["납기 지남", lt.length, "w", "late"]].forEach(function (k) {
+      var x = el(k[1] ? "button" : "div", k[1] ? k[2] : "z"); if (k[1]) { x.type = "button"; x.onclick = function () { goTo(k[3]); }; }
+      x.appendChild(el("span", null, k[0])); x.appendChild(el("b", null, String(k[1]))); st.appendChild(x);
     });
     c.appendChild(st);
     if (its.length) {
-      var dt = el("details"), sm = el("summary", null, "품목 " + its.length + "건 보기 (완료 " + dn.length + ")"); dt.appendChild(sm);
-      var gl = el("div", "gl");
-      var grp = function (t, L, em) {
-        if (!L.length) return; gl.appendChild(el("div", "gt", t + " " + L.length));
+      dt = el("details"); var sm = el("summary", null, "품목 " + its.length + "건 보기 (완료 " + dn.length + ")"); dt.appendChild(sm);
+      gl = el("div", "gl");
+      var grp = function (t, L, em, g) {
+        if (!L.length) return; var gt = el("div", "gt", t + " " + L.length); gt.setAttribute("data-g", g); gl.appendChild(gt);
         L.forEach(function (r) {
-          var x = el("div", "r"), a = el("div"); a.appendChild(el("b", null, r.nm || r.pn || "-")); a.appendChild(el("small", null, [r.pn, r.k, r.q ? r.q + "EA" : ""].filter(Boolean).join(" · "))); x.appendChild(a);
+          var x = el("div", "r" + (pjLate(r) ? " late" : "")), a = el("div"); a.appendChild(el("b", null, r.nm || r.pn || "-")); a.appendChild(el("small", null, [r.pn, r.k, r.q ? r.q + "EA" : ""].filter(Boolean).join(" · "))); x.appendChild(a);
           var e = em(r), rt = el("div", "rt"); rt.appendChild(pjStp(r.st)); if (e[0]) rt.appendChild(el("em", e[1] || null, e[0])); x.appendChild(rt); gl.appendChild(x);
         });
       };
-      grp("입고 대기", wIn, function (r) { return [r.du ? "납기 " + pjMd(r.du) : r.po ? "발주 완료" : "발주 전", pjLate(r) ? "w" : ""]; });
-      grp("불출 대기", wOut, function (r) { return [r.du ? "납기 " + pjMd(r.du) : "", pjLate(r) ? "w" : ""]; });
-      grp("회수 · 폐기 · 현물수정", oth, function (r) { return [r.du ? "납기 " + pjMd(r.du) : "", pjLate(r) ? "w" : ""]; });
-      grp("입고 · 처리 완료", dn, function (r) { return [r.dd ? pjMd(r.dd) + " 처리" : "", "ok"]; });
+      grp("입고 대기", wIn, function (r) { return [r.du ? "납기 " + pjMd(r.du) : r.po ? "발주 완료" : "발주 전", pjLate(r) ? "w" : ""]; }, "in");
+      grp("불출 대기", wOut, function (r) { return [r.du ? "납기 " + pjMd(r.du) : "", pjLate(r) ? "w" : ""]; }, "out");
+      grp("회수 · 폐기 · 현물수정", oth, function (r) { return [r.du ? "납기 " + pjMd(r.du) : "", pjLate(r) ? "w" : ""]; }, "oth");
+      grp("입고 · 처리 완료", dn, function (r) { return [r.dd ? pjMd(r.dd) + " 처리" : "", "ok"]; }, "done");
       dt.appendChild(gl); c.appendChild(dt);
     } else c.appendChild(el("div", "pjnote", "자재 변동 없음"));
     w.appendChild(c);
