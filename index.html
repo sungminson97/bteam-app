@@ -1024,6 +1024,14 @@ html:not(.xmas) #splash .aipill{display:inline-flex;position:absolute;left:50%;b
 #gate .gbtns .go,#gate #gretry{height:56px;padding:0;border:0;border-radius:16px;background:var(--accent);color:#fff;font-size:17px;font-weight:800;letter-spacing:-.02em;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 14px 28px -14px var(--accent)}
 #gate #gretry{margin-top:28px}
 /* 🛠 개발자 게스트 이름 칸: 개발자 ( ____ ) */
+html.vip .nfbtn{display:none!important}
+#gate #gvip{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:24px;width:100%}
+#gate .gvn input{text-align:center}
+#gate #gvgo{height:56px;padding:0;border:0;border-radius:16px;background:var(--accent);color:#fff;font:inherit;font-size:17px;font-weight:800;box-shadow:0 14px 28px -14px var(--accent)}
+#gate #gvgo:disabled{opacity:.5}
+#gate #gvsub{height:50px;padding:0;border:1.5px solid var(--line);border-radius:16px;background:transparent;color:var(--text);font:inherit;font-size:15.5px;font-weight:800}
+#gate #gvsub:disabled{opacity:.5}
+#gate #gmsg.vw{white-space:pre-line;line-height:1.6}
 #gate #gguest{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:28px;width:100%}
 #gate .ggn{display:flex;align-items:center;gap:6px;min-width:0;box-sizing:border-box;height:64px;padding:0 18px;border-radius:18px;border:1.5px solid var(--obd);background:var(--ocard);box-shadow:0 12px 30px -22px rgba(16,32,64,.45);font-size:21px;font-weight:900;color:var(--text)}
 #gate .ggn:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent)}
@@ -2944,6 +2952,58 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #pj .pjpick .shp.s{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#b45309}
 #pj .pjpick button.all .shp{display:none}
 @media (prefers-color-scheme:dark){#pj .tag.shp.s,#pj .pjpick .shp.s{color:#fbbf24}}
+
+/* 대시보드 (2026-11-11 · 이모지 없이 · 생산 / 품질 / 팀) */
+#dash .dg{gap:10px}
+#dash .dsec{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin:10px 4px 0;font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--sub)}
+#dash .dsec::after{content:"";flex:1;height:1px;background:var(--line)}
+#dash .dk{padding:15px 16px 14px;border-radius:20px;gap:8px}
+#dash .dh{font-size:12.5px;font-weight:800;color:var(--sub);letter-spacing:.01em}
+#dash .db b{font-size:30px;font-variant-numeric:tabular-nums}
+#dash .db small{font-size:13.5px}
+#dash .dr{gap:0;margin-top:2px;border-top:1px solid color-mix(in srgb,var(--line) 80%,transparent)}
+#dash .dr div{padding:6px 0;border-bottom:1px dashed color-mix(in srgb,var(--line) 85%,transparent);font-size:12.5px}
+#dash .dr div:last-child{border-bottom:0;padding-bottom:0}
+#dash .dr div b{font-variant-numeric:tabular-nums}
+#dash .dr div.r b{color:var(--warn);background:color-mix(in srgb,var(--warn) 11%,transparent);padding:0 7px;border-radius:6px}
+#dash .dk.r{border-color:color-mix(in srgb,var(--warn) 30%,var(--line))}
+#dash .dk.r::before{content:"";position:absolute;left:16px;right:16px;top:0;height:3px;border-radius:0 0 4px 4px;background:var(--warn)}
+#dash .bl>div{gap:10px}
+#dash .bl i{height:7px}
+#dash .bl i>u{background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#8b5cf6))}
+#dash .mb{height:72px;gap:6px}
+#dash .mb small{white-space:nowrap}
+#dash .mb u{max-width:26px;border-radius:6px 6px 3px 3px;opacity:.28}
+#dash .mb>div.on u{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 60%,#8b5cf6),var(--accent));opacity:1}
+#dash .mb>div.on small{color:var(--accent)}
+#dash .hx .ch{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.38);box-shadow:none}
+#dash .dk.att{gap:10px;background:linear-gradient(180deg,color-mix(in srgb,var(--warn) 6%,var(--card)),var(--card));border-color:color-mix(in srgb,var(--warn) 28%,var(--line))}
+#dash .dk.att.clear{background:var(--card);border-color:var(--cbd,var(--line))}
+#dash .dah{display:flex;align-items:center;justify-content:space-between}
+#dash .dah b{font-size:14.5px;font-weight:900}
+#dash .dah span{font-size:12px;font-weight:900;padding:3px 9px;border-radius:999px;background:var(--warn);color:#fff}
+#dash .dk.att.clear .dah span{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+#dash .dal{display:grid;gap:6px}
+#dash .dal button{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:11px 13px;border-radius:13px;border:1px solid var(--line);background:var(--card);font:inherit;color:var(--text);text-align:left}
+#dash .dal button:active{transform:scale(.985)}
+#dash .dal span{font-size:13.5px;font-weight:800}
+#dash .dal b{font-size:14px;font-weight:900;color:var(--warn);font-variant-numeric:tabular-nums}
+#dash .dt{margin-top:4px}
+/* 업체 현황: Backlog 기준 시각 */
+.vstamp{display:flex;align-items:center;justify-content:center;gap:8px;margin:-2px auto 2px;font-size:11.5px;font-weight:800;color:var(--sub)}
+.vstamp .k{padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--card);letter-spacing:.06em;font-size:10.5px;font-weight:900;color:var(--text)}
+.vstamp .t{font-variant-numeric:tabular-nums}
+
+/* 위쪽 이름 표시 */
+#app .mepill{display:inline-flex;align-items:center;gap:7px;height:34px;max-width:96px;padding:0 6px 0 4px;border-radius:10px;border:0;background:transparent;color:var(--text);box-shadow:none;font:inherit;font-size:13px;font-weight:800;letter-spacing:-.01em;flex:none;transition:transform .12s}
+#app .mepill:active{transform:scale(.95)}
+#app .mepill i{position:relative;flex:none;width:7px;height:7px;border-radius:50%;background:var(--ok)}
+#app .mepill i::after{content:"";position:absolute;inset:-3px;border-radius:50%;background:var(--ok);opacity:.25;animation:mePulse 2.4s ease-out infinite}
+@keyframes mePulse{0%{transform:scale(.6);opacity:.35}70%,100%{transform:scale(1.5);opacity:0}}
+#app .mepill span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#app .mepill.vo i,#app .mepill.vip i,#app .mepill.vo i::after,#app .mepill.vip i::after{background:#f59e0b}
+@media (prefers-reduced-motion:reduce){#app .mepill i::after{animation:none}}
+@media (max-width:389px){#app .mepill{max-width:84px;padding:0 4px 0 2px;font-size:12.5px}}
 </style>
 </head>
 <body>
@@ -3438,6 +3498,11 @@ SPX.start();
       <label class="ggn"><span>개발자 (</span><input id="ggname" type="text" maxlength="10" autocomplete="off" placeholder="이름"><span>)</span></label>
       <button id="gggo" type="button" class="go">시작하기</button>
     </div>
+    <div id="gvip" style="display:none">
+      <label class="ggn gvn"><input id="gvname" type="text" maxlength="6" autocomplete="off" placeholder="홍길동"></label>
+      <button id="gvgo" type="button" class="go">확인</button>
+      <button id="gvsub" type="button" class="sub" style="display:none"></button>
+    </div>
     <div class="gbtns" id="gbtns">
       <button id="gno" type="button">닫기</button>
       <button id="ggo" type="button" class="go">확인</button>
@@ -3456,8 +3521,8 @@ SPX.start();
       <h1><span id="ttlbtn">제조1-B<small id="ver"></small></span> <span id="upd"></span><span id="testtag"></span></h1>
     </div>
     <div class="hb">
+      <button class="mepill" id="mepill" type="button" style="display:none"><i></i><span id="mename"></span></button>
       <button class="ref" id="srchbtn" type="button" aria-label="장비 검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button>
-      <button class="ref" id="lockbtn" type="button" aria-label="잠그기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></button>
       <button class="ref" id="ref" type="button" aria-label="새로고침"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v4.5h-4.5"/></svg><span>새로고침</span></button>
     </div>
   </div>
@@ -4017,6 +4082,7 @@ function aiSpdRec(fn, ms) {
 }
 // 앱 켜고 첫 화면이 뜬 뒤: 학습된 화면을 뒤에서 미리 불러 둠 (그 화면을 열면 기다리지 않음)
 function aiPrefetch() {
+  try { pjPrefetch(); } catch (ePf) {}
   if (viewOnly()) return;
   var o = aiSpdGet(), jobs = [];
   Object.keys(o).forEach(function (k) {
@@ -4096,6 +4162,7 @@ var EP = { res: null, rej: null, busy: false };
 function updLock() { $("hlock").style.display = sget("editPin") ? "none" : "block"; }
 
 function askEdit(msg) {
+  if (isVip()) { toast("보기 전용 계정이라 수정할 수 없습니다", true); return Promise.reject(new Error("보기 전용 계정이라 수정할 수 없습니다.")); }
   return new Promise(function (res, rej) {
     EP.res = res; EP.rej = rej;
     $("epmsg").textContent = msg || "저장하려면 편집 PIN이 필요해요.";
@@ -4182,7 +4249,7 @@ function setGate(mode, msg, bad) {
   m.textContent = msg || "";
   m.className = bad ? "bad" : "";
   $("gin").style.display = mode === "enter" ? "block" : "none";
-  $("gguest").style.display = "none";
+  $("gguest").style.display = "none"; $("gvip").style.display = "none";
   $("gbtns").style.display = mode === "enter" ? "grid" : "none";
   var rt = $("gretry");
   rt.style.display = (mode === "denied" || mode === "error") ? "block" : "none";
@@ -4308,6 +4375,17 @@ function verify(pin, typed) {
       setGate("enter", "보기 전용은 휴대폰 앱에서만 볼 수 있어요.", true);
       return;
     }
+    if (!j.ok && j.code === "VIPNAME") {   // 열람 PIN인데 이 폰 이름이 명단에 없음
+      if (typed) { sdel("editPin"); sdel("viewOnly"); vipAsk(pin, null); return; }
+      sdel("appPin"); sdel("vip");
+      setGate("enter", "명단에서 확인되지 않아 이용하실 수 없습니다.\n손성민님께 문의해 주세요.", true); $("gmsg").style.whiteSpace = "pre-line";
+      return;
+    }
+    if (j.ok && j.data && j.data.level === "vip") {   // 열람 계정 (총괄팀장 · 생산관리 등): 데이터는 팀과 같게 · 수정은 못 함
+      sdel("editPin"); sdel("viewOnly");
+      if (typed && !(isVip() && nameDone())) { vipAsk(pin, pre); return; }
+      sset("vip", "1"); unlock(pin, pre); return;
+    }
     if (j.ok && j.data && j.data.level === "dev") {   // 🛠 개발자 PIN → 개발자(이름) 게스트 (이 폰엔 게스트 열쇠만 저장)
       if (!typed || !j.data.gt) { setGate("enter", "개발자 PIN은 이 화면에서 직접 넣어 주세요.", true); return; }
       guestAsk(j.data.gt, pre);
@@ -4317,6 +4395,7 @@ function verify(pin, typed) {
       // 잠금 화면에서 편집 PIN을 넣었으면 편집 권한도 같이 기억
       if (j.data && j.data.level === "edit") sset("editPin", pin);
       else if (typed) sdel("editPin");
+      if (typed) sdel("vip");
       // 👀 보기 PIN으로 처음 들어오면 이름 안 고르고 보기 전용 (편집 PIN이면 해제)
       if (j.data && j.data.level === "view") { if (!nameDone()) sset("viewOnly", "1"); }
       else if (j.data && j.data.level === "edit") sdel("viewOnly");
@@ -4360,6 +4439,87 @@ $("ggo").onclick = function () {
 $("gin").onkeydown = function (e) { if (e.key === "Enter") $("ggo").onclick(); };
 // 🛠 개발자 게스트: 개발자 PIN을 넣으면 → "개발자님 환영합니다" + 이름 칸 개발자(____) → 실제 데이터 전부 (저장은 편집 PIN 필요)
 function isGuest() { return /^개발자\(/.test(myName() || ""); }
+/* 열람 계정: 열람 PIN → 본인 이름 → "OOO 프로님 환영합니다" + 처음 느릴 수 있다는 안내 → [확인] → 시작 화면 → 메인 */
+function isVip() { return sget("vip") === "1"; }
+var VIP_TITLE = { "김재환": "총괄팀장님", "김성현": "프로님" };
+function vipAsk(pin, pre) {
+  setGate("enter");
+  $("gin").style.display = "none"; $("gbtns").style.display = "none";
+  var gi = $("gicon"); gi.innerHTML = ""; gi.style.display = "none";
+  var T = document.querySelector("#gate .gtitle"), m = $("gmsg"), box = $("gvip"), inp = $("gvname"), go = $("gvgo"), sub = $("gvsub"), nm = "";
+  box.style.display = "grid";
+  var view = function (title, msg, bad) { T.textContent = title; m.className = "vw" + (bad ? " bad" : ""); m.textContent = msg; };
+  var btn2 = function (t, fn) { if (!t) { sub.style.display = "none"; sub.onclick = null; return; } sub.style.display = ""; sub.disabled = false; sub.textContent = t; sub.onclick = fn; };
+  var busy = function (b, t) { b.disabled = true; b.textContent = t; };
+  function askName(msg, bad) {
+    view("본인 이름을 적어 주세요", msg || "정자로 적어 주세요\n예) 홍길동", bad);
+    inp.parentNode.style.display = ""; inp.value = nm || sget("vipPend") || ""; go.textContent = "확인"; go.disabled = !inp.value.trim();
+    btn2("");
+    inp.oninput = function () { go.disabled = !inp.value.trim(); };
+    inp.onkeydown = function (e) { if (e.key === "Enter" && !go.disabled) go.onclick(); };
+    go.onclick = function () {
+      var v = inp.value.replace(/\s+/g, "").trim();
+      if (!/^[가-힣]{2,5}$/.test(v)) { view("본인 이름을 적어 주세요", "이름을 한글로 정확히 적어 주세요\n예) 홍길동", true); return; }
+      nm = v; check(go, "확인 중…");
+    };
+    setTimeout(function () { try { inp.focus(); } catch (e) {} }, 150);
+  }
+  function check(b, t) {   // 명단 확인 (서버)
+    busy(b, t);
+    rawCall(pin, "vipCheck", [nm]).then(function (j) {
+      var r = j && j.ok ? j.data : null;
+      if (!r || r.error) { b.disabled = false; b.textContent = "다시 시도"; view(T.textContent, (r && r.error) || (j && j.error) || "서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.", true); return; }
+      if (r.allowed) { welcome(); return; }
+      if (r.pending) waiting(); else notListed();
+    }).catch(function () { b.disabled = false; b.textContent = "다시 시도"; view(T.textContent, "서버에 연결할 수 없습니다.\n네트워크를 확인하고 다시 시도해 주세요.", true); });
+  }
+  function notListed() {
+    inp.parentNode.style.display = "none";
+    view("명단에 없는 이름입니다", nm + "님은 아직 등록되어 있지 않습니다.\n손성민님께 승인을 요청하시면\n승인 후 바로 이용하실 수 있습니다.");
+    go.disabled = false; go.textContent = "손성민님께 승인 요청";
+    go.onclick = function () { request(go, false); };
+    btn2("이름 다시 적기", function () { askName(); });
+  }
+  function request(b, again) {
+    busy(b, "요청 보내는 중…");
+    var kind = ""; try { kind = devInfo().kind || ""; } catch (e) {}
+    rawCall(pin, "vipRequest", [nm, kind]).then(function (j) {
+      var r = j && j.ok ? j.data : null;
+      if (!r || r.error) { b.disabled = false; b.textContent = again ? "요청 다시 보내기" : "손성민님께 승인 요청"; view(T.textContent, (r && r.error) || (j && j.error) || "요청을 보내지 못했습니다. 잠시 후 다시 시도해 주세요.", true); return; }
+      try { sset("vipPend", nm); } catch (e) {}
+      waiting(r.wait ? "방금 요청을 보냈습니다. 5분 뒤에 다시 보낼 수 있습니다." : "");
+    }).catch(function () { b.disabled = false; b.textContent = "다시 시도"; view(T.textContent, "서버에 연결할 수 없습니다.", true); });
+  }
+  function waiting(note) {
+    inp.parentNode.style.display = "none";
+    view("승인을 기다리고 있습니다", (note ? note + "\n\n" : "") + "손성민님께 " + nm + "님의 승인 요청을 보냈습니다.\n승인되면 아래 [승인 확인]을 눌러 주세요.");
+    go.disabled = false; go.textContent = "승인 확인";
+    go.onclick = function () {
+      busy(go, "확인 중…");
+      rawCall(pin, "vipCheck", [nm]).then(function (j) {
+        var r = j && j.ok ? j.data : null;
+        if (r && r.allowed) { welcome(); return; }
+        go.disabled = false; go.textContent = "승인 확인";
+        view("승인을 기다리고 있습니다", "아직 승인 전입니다.\n승인되면 다시 [승인 확인]을 눌러 주세요.");
+      }).catch(function () { go.disabled = false; go.textContent = "승인 확인"; toast("연결 실패", true); });
+    };
+    btn2("요청 다시 보내기", function () { request(sub, true); });
+  }
+  function welcome() {
+    inp.parentNode.style.display = "none"; btn2("");
+    view(nm + (VIP_TITLE[nm] ? " " + VIP_TITLE[nm] : "님") + " 환영합니다", "처음 한 번은 데이터를 받아오느라\n화면이 뜨기까지 시간이 조금 걸릴 수 있습니다.");
+    go.disabled = false; go.textContent = "확인";
+    go.onclick = function () {
+      go.onclick = null;
+      sset("myName", nm); sset("nameOK", "1"); sset("vip", "1"); sdel("viewOnly"); sdel("editPin"); sdel("devReg"); sdel("vipPend");
+      box.style.display = "none"; gi.style.display = "";
+      unlock(pin, null);
+      try { splashReplay(true); splStat("데이터 불러오는 중"); } catch (eS) {}
+      setTimeout(function () { try { devRegister(true); } catch (eD) {} }, 3000);
+    };
+  }
+  askName();
+}
 function guestAsk(gt, pre) {
   setGate("enter");
   $("gin").style.display = "none"; $("gbtns").style.display = "none";
@@ -4391,7 +4551,16 @@ $("gretry").onclick = function () {
   var p = getPin();
   if (p) verify(p, false); else setGate("enter", "PIN을 입력해 주세요.");
 };
-$("lockbtn").onclick = function () { lockApp("잠겼어요. PIN을 입력해 주세요."); };
+// 위쪽 이름 표시 (잠그기 버튼 자리 · 2026-11-11)
+function meSync() {
+  var p = $("mepill"); if (!p) return;
+  var n = myName(), vo = viewOnly(), vip = typeof isVip === "function" && isVip();
+  if (!n && !vo) { p.style.display = "none"; return; }
+  p.style.display = "";
+  $("mename").textContent = n ? n.replace(/^개발자\((.+)\)$/, "$1") : "보기 전용";
+  p.className = "mepill" + (vo && !n ? " vo" : "") + (vip ? " vip" : "");
+}
+$("mepill").onclick = function () { var n = myName(); toast(n ? n + (isVip() ? "님 · 보기 전용 계정으로 사용 중입니다" : "님으로 사용 중입니다") : "보기 전용으로 사용 중입니다"); };
 
 /* ---------- 금일/명일 ---------- */
 // 자리 표시: (본사)/(동탄)은 검정, 자리 번호는 빨강
@@ -5522,6 +5691,7 @@ function ncFix(r, prj) {
   var seen = {}; r.here = H.filter(function (x) { var k = nfPnKey(x[0]); if (seen[k]) return false; seen[k] = 1; return true; }).slice(0, 15);
 }
 function nfOpen(prj) {
+  if (isVip()) { toast("열람 계정은 부적합 처리 요청을 작성할 수 없습니다", true); return; }
   NC.form = true; NC.eq = "";
   if (!NC.f) NC.f = nfLoad();
   if (prj) { NC.f = nfNew(); NC.f.proj = prj; nfSave(); }
@@ -7981,12 +8151,32 @@ function dashSoon() {   // 여러 개가 거의 동시에 도착하면 한 번�
   clearTimeout(DB.tm);
   DB.tm = setTimeout(function () { if (cur === 10 && !SR.open) renderDash(); }, 120);
 }
+// 오늘 확인할 것: 손이 가야 하는 것만 모아서 (누르면 그 화면)
+function dashAttn(g, eq0) {
+  var L = [];
+  if (eq0) { var u = eq0.filter(function (e) { return e.u; }).length; if (u) L.push(["긴급 장비", u + "대", 0]); }
+  var ut = U.data && !U.data.error ? U.data.total : 0; if (ut) L.push(["업로드 필요", ut + "대", 2]);
+  if (NC.data && !NC.data.error && NC.data.late) L.push(["부적합 재납일 지남", NC.data.late + "건", 8]);
+  if (IN.data && !IN.data.error) { var iu = 0; (IN.data.list || []).forEach(function (x) { iu += x.u || 0; }); if (iu) L.push(["수입검사 긴급 대기", iu + "건", 7]); }
+  if (!viewOnly()) { var pm = prevMissing(); if (pm && pm.names && pm.names.length) L.push([pm.label + " 근무시간 미입력", pm.names.length + "명", 3]); }
+  var c = el("div", "dk att w" + (L.length ? "" : " clear"));
+  var h = el("div", "dah"); h.appendChild(el("b", null, "오늘 확인할 것")); h.appendChild(el("span", null, L.length ? L.length + "건" : "없음")); c.appendChild(h);
+  if (!L.length) { c.appendChild(el("div", "dz", "지금 바로 처리할 항목이 없습니다")); g.appendChild(c); return; }
+  var ls = el("div", "dal");
+  L.forEach(function (x) {
+    var b = el("button", null); b.type = "button";
+    b.appendChild(el("span", null, x[0])); b.appendChild(el("b", null, x[1]));
+    b.onclick = function () { dashGo(x[2]); };
+    ls.appendChild(b);
+  });
+  c.appendChild(ls); g.appendChild(c);
+}
 function dashGo(n, fn) { if (fn) fn(); setTab(n); window.scrollTo(0, 0); }
 function dkCard(o) {
   var c = el(o.tab != null && !o.lock ? "button" : "div", "dk" + (o.w ? " w" : "") + (o.w3 ? " w3" : "") + (o.wm ? " wm" : "") + (o.r ? " r" : "") + (o.ok ? " ok" : ""));
   if (c.tagName === "BUTTON") { c.type = "button"; c.onclick = function () { dashGo(o.tab, o.pre); }; }
   c.appendChild(el("div", "dh", o.t));
-  if (o.lock) { c.appendChild(el("div", "lk", "🔒 팀원 전용이에요")); return c; }
+  if (o.lock) { c.appendChild(el("div", "lk", "팀원 전용입니다")); return c; }
   if (o.msg) { c.appendChild(el("div", "dz" + (o.err ? " e" : ""), o.msg)); return c; }
   if (o.big != null) {
     var b = el("div", "db"); b.appendChild(el("b", null, String(o.big)));
@@ -8015,7 +8205,7 @@ function dkBars(list, max) {
 }
 function dkState(data, loading) {   // 아직 없음 → 문구
   if (data && !data.error) return null;
-  if (data && data.error && !loading) return { msg: "⚠️ " + String(data.error).split("\n")[0], err: 1 };
+  if (data && data.error && !loading) return { msg: "" + String(data.error).split("\n")[0], err: 1 };
   return { msg: "불러오는 중…" };
 }
 function renderDash() {
@@ -8026,26 +8216,28 @@ function renderDash() {
   var now = new Date(), hm = ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2);
   $("upd").textContent = "모든 화면 모아보기 · " + hm + (DB.ld ? " · 갱신 중…" : " 기준");
 
-  // 🌟 맨 위
+  // 맨 위
   var tiles = [["내일 진행", eq1 ? eq1.length : "-", "대"], ["오늘 연차", L && L.d0 ? L.d0.length : "-", "명"]];
   var ut = U.data && !U.data.error ? U.data.total : null;
   tiles.push(["업로드 필요", ut == null ? "-" : ut, "대", ut > 0]);
-  box.appendChild(heroX("📊 팀 대시보드", eq0 ? eq0.length : "-", "대 진행 중", tiles, d0 && d0.label ? "오늘 " + d0.label : ""));
+  box.appendChild(heroX("팀 대시보드", eq0 ? eq0.length : "-", "대 진행 중", tiles, d0 && d0.label ? d0.label : ""));
   var g = el("div", "dg"); box.appendChild(g);
+  dashAttn(g, eq0);
+  g.appendChild(el("div", "dsec", "생산"));
 
-  // 🏭 오늘 공정별
+  // 오늘 공정별
   (function () {
-    if (!d0) { g.appendChild(dkCard(Object.assign({ t: "🏭 오늘 공정", tab: 0, w: 1 }, dkState(store[0], R.dash) || { msg: "불러오는 중…" }))); return; }
+    if (!d0) { g.appendChild(dkCard(Object.assign({ t: "오늘 공정", tab: 0, w: 1 }, dkState(store[0], R.dash) || { msg: "불러오는 중…" }))); return; }
     var st = d0.stages.map(function (s) { return [s.label, s.items.length]; }).filter(function (x) { return x[1] > 0; });
     var mx = Math.max.apply(null, st.map(function (x) { return x[1]; }).concat([1]));
     var urg = eq0.filter(function (e) { return e.u; }).length, soon = eq0.filter(function (e) { return e.due && e.due.dd <= 2; }).length;
-    g.appendChild(dkCard({ t: "🏭 오늘 공정별 진행", tab: 0, w: 1, big: eq0.length, unit: "대", sub: "내일 " + (eq1 ? eq1.length : "-") + "대",
+    g.appendChild(dkCard({ t: "오늘 공정별 진행", tab: 0, w: 1, big: eq0.length, unit: "대", sub: "내일 " + (eq1 ? eq1.length : "-") + "대",
       rows: [["긴급", urg + "대", urg > 0], ["다음 공정 2일 안", soon + "대", false]],
       body: [st.length ? dkBars(st, mx) : el("div", "dz", "오늘 잡힌 공정이 없어요")] }));
   })();
 
-  // 🚚 입고 · 출하 (2주)
-  [["in", "🚚 2주 입고", store.sched], ["out", "📦 2주 출하", store.ship]].forEach(function (k) {
+  // 입고 · 출하 (2주)
+  [["in", "2주 입고", store.sched], ["out", "2주 출하", store.ship]].forEach(function (k) {
     var s = k[2];
     if (!s || s.error || !s.days) { g.appendChild(dkCard(Object.assign({ t: k[1], tab: 6 }, dkState(s, R.dash) || { msg: "불러오는 중…" }))); return; }
     var r = schedListRange(s), c = schedCount(schedDaysIn(s, r[0], r[1])), t = schedCount(schedDaysIn(s, schedToday(s), schedToday(s)));
@@ -8055,10 +8247,10 @@ function renderDash() {
     g.appendChild(dkCard({ t: k[1], tab: 6, pre: function () { if (SC.kind !== k[0]) { SC.kind = k[0]; SC.sel = null; sset("schedKind", k[0]); } }, big: c.total, unit: "대", rows: rows }));
   });
 
-  // 📈 이번 달 출하 (장비통계)
+  // 이번 달 출하 (장비통계)
   (function () {
     var d = ST.data, sx = dkState(d, R.stats);
-    if (sx) { g.appendChild(dkCard(Object.assign({ t: "📈 이번 달 출하", tab: 5 }, sx))); return; }
+    if (sx) { g.appendChild(dkCard(Object.assign({ t: "이번 달 출하", tab: 5 }, sx))); return; }
     var ms = (d.months || []).filter(function (m) { return m.m <= d.current; }), cm = ms.filter(function (m) { return m.m === d.current; })[0] || {};
     var dn = (cm.aCnt || 0) + (cm.bCnt || 0), pl = d.info && d.info.planned != null ? d.info.planned : null;
     var last = ms.slice(-6), mx = Math.max.apply(null, last.map(function (m) { return (m.aCnt || 0) + (m.bCnt || 0); }).concat([1]));
@@ -8068,41 +8260,43 @@ function renderDash() {
       x.appendChild(el("em", null, String(n))); var u = el("u"); u.style.height = Math.max(3, n / mx * 34) + "px"; x.appendChild(u);
       x.appendChild(el("small", null, parseInt(m.m.slice(5), 10) + "월")); mb.appendChild(x);
     });
-    g.appendChild(dkCard({ t: "📈 " + parseInt(d.current.slice(5), 10) + "월 출하", tab: 5, big: dn, unit: pl != null ? "/ " + pl + "대" : "대",
+    g.appendChild(dkCard({ t: "" + parseInt(d.current.slice(5), 10) + "월 출하", tab: 5, w: 1, big: dn, unit: pl != null ? "/ " + pl + "대" : "대",
       rows: [["A팀", (cm.aPts == null ? "-" : (+cm.aPts).toFixed(1)) + "점"], ["B팀", (cm.bPts == null ? "-" : (+cm.bPts).toFixed(1)) + "점"]], body: [mb] }));
   })();
 
-  // 📤 업로드
-  (function () {
-    var d = U.data, sx = dkState(d, R.up);
-    if (sx) { g.appendChild(dkCard(Object.assign({ t: "📤 업로드", tab: 2 }, sx))); return; }
-    var who = 0, noOp = 0, noSite = 0;
-    (d.people || []).forEach(function (p) { if (p.name !== "(작업자 미입력)") who++; p.items.forEach(function (it) { if (it.noOp || p.name === "(작업자 미입력)") noOp++; if (!it.site) noSite++; }); });
-    g.appendChild(dkCard({ t: "📤 업로드 필요", tab: 2, big: d.total, unit: "대", r: d.total > 0, ok: !d.total,
-      rows: [["담당자", who + "명"], ["작업자 미입력", noOp + "대", noOp > 0], ["SITE 빈칸", noSite + "대", noSite > 0]] }));
-  })();
-
-  // ⚠️ 부적합
+  g.appendChild(el("div", "dsec", "품질"));
+  // 부적합
   (function () {
     var d = NC.data, sx = dkState(d, R.nc);
-    if (sx) { g.appendChild(dkCard(Object.assign({ t: "⚠️ 부적합", tab: 8 }, sx))); return; }
+    if (sx) { g.appendChild(dkCard(Object.assign({ t: "부적합", tab: 8 }, sx))); return; }
     var pe = d.list.filter(function (x) { return x.c != null ? x.c : x.p > 0; }).length;
-    g.appendChild(dkCard({ t: "⚠️ 부적합 미처리", tab: 8, big: d.pend, unit: "건", r: d.late > 0, ok: !d.pend,
+    g.appendChild(dkCard({ t: "부적합 미처리", tab: 8, big: d.pend, unit: "건", r: d.late > 0, ok: !d.pend,
       rows: [["재납일 지남", d.late + "건", d.late > 0], ["업체반출", d.out + "건"], ["대기 장비", pe + "대"]] }));
   })();
 
-  // 🔍 수입검사 (성남 · 동탄)
+  // 수입검사 (성남 · 동탄)
   (function () {
     var d = IN.data, sx = dkState(d, R.insp);
-    if (sx) { g.appendChild(dkCard(Object.assign({ t: "🔍 수입검사", tab: 7 }, sx))); return; }
+    if (sx) { g.appendChild(dkCard(Object.assign({ t: "수입검사", tab: 7 }, sx))); return; }
     var t = { p: 0, u: 0, g: 0 }, ss = { 성남: 0, 동탄: 0 }, has = false;
     d.list.forEach(function (x) { t.p += x.p || 0; t.u += x.u || 0; t.g += x.g || 0; if (x.ss) { has = true; for (var k in ss) if (x.ss[k]) ss[k] += x.ss[k].p || 0; } });
     var rows = has ? [["성남 · 동탄 대기", ss.성남 + " · " + ss.동탄]] : [];
     rows.push(["긴급 대기", t.u + "건", t.u > 0]); rows.push(["NG", t.g + "건", t.g > 0]);
-    g.appendChild(dkCard({ t: "🔍 수입검사 대기", tab: 7, big: t.p, unit: "건", ok: !t.p, rows: rows, pre: function () { IN.eq = ""; } }));
+    g.appendChild(dkCard({ t: "수입검사 대기", tab: 7, big: t.p, unit: "건", ok: !t.p, rows: rows, pre: function () { IN.eq = ""; } }));
   })();
 
-  // 🏖️ 연차
+  g.appendChild(el("div", "dsec", "팀"));
+  // 업로드
+  (function () {
+    var d = U.data, sx = dkState(d, R.up);
+    if (sx) { g.appendChild(dkCard(Object.assign({ t: "업로드", tab: 2 }, sx))); return; }
+    var who = 0, noOp = 0, noSite = 0;
+    (d.people || []).forEach(function (p) { if (p.name !== "(작업자 미입력)") who++; p.items.forEach(function (it) { if (it.noOp || p.name === "(작업자 미입력)") noOp++; if (!it.site) noSite++; }); });
+    g.appendChild(dkCard({ t: "업로드 필요", tab: 2, big: d.total, unit: "대", r: d.total > 0, ok: !d.total,
+      rows: [["담당자", who + "명"], ["작업자 미입력", noOp + "대", noOp > 0], ["SITE 빈칸", noSite + "대", noSite > 0]] }));
+  })();
+
+  // 연차
   (function () {
     var d = LV.data, rows = [];
     if (d && !d.error && d.people) {
@@ -8110,26 +8304,26 @@ function renderDash() {
       rows = [["팀 남은 연차", fnum(tr) + "일"], ["2일 이하", tl + "명", tl > 0]];
     }
     var nm = function (a) { return a.map(function (x) { return x.n + (x.k && x.k !== "연차" ? "(" + x.k + ")" : ""); }).join(", "); };
-    if (!L && !rows.length) { g.appendChild(dkCard(Object.assign({ t: "🏖️ 연차", tab: 4 }, dkState(d, R.leave) || { msg: "불러오는 중…" }))); return; }
+    if (!L && !rows.length) { g.appendChild(dkCard(Object.assign({ t: "연차", tab: 4 }, dkState(d, R.leave) || { msg: "불러오는 중…" }))); return; }
     var body = [];
     if (L) { body.push(el("div", "dn" + (L.d0.length ? "" : " s"), "오늘: " + (L.d0.length ? nm(L.d0) : "없음"))); body.push(el("div", "dn s", "내일: " + (L.d1.length ? nm(L.d1) : "없음"))); }
-    g.appendChild(dkCard({ t: "🏖️ 오늘 연차", tab: 4, wm: 1, big: L ? L.d0.length : "-", unit: "명", rows: rows, body: body }));
+    g.appendChild(dkCard({ t: "오늘 연차", tab: 4, big: L ? L.d0.length : "-", unit: "명", rows: rows, body: body }));
   })();
 
-  // ⏰ 근무시간 (이번 주 · 지난 근무일 미입력)
+  // 근무시간 (이번 주 · 지난 근무일 미입력)
   (function () {
-    if (viewOnly()) {   // 👀 보기 전용: 예시 막대를 흐리게 (실제 이름 · 시간은 화면에 안 들어감)
-      var c = dkCard({ t: "⏰ 근무시간 · 이번 주", tab: 3, w: 1, w3: 1 }), z = el("div", "vbz");
+    if (viewOnly()) {   // 보기 전용: 예시 막대를 흐리게 (실제 이름 · 시간은 화면에 안 들어감)
+      var c = dkCard({ t: "근무시간 · 이번 주", tab: 3, w: 1, w3: 1 }), z = el("div", "vbz");
       var db = el("div", "db"); db.appendChild(el("b", null, "0")); db.appendChild(el("small", null, "명")); z.appendChild(db);
       z.appendChild(dkBars([["팀원A", 44, false, "44h"], ["팀원B", 40, false, "40h"], ["팀원C", 36, false, "36h"], ["팀원D", 30, false, "30h"]], 52));
       c.classList.add("vblur"); c.appendChild(z); c.appendChild(el("div", "vbm", "보기 전용에서는 볼 수 없어요"));
       g.appendChild(c); return;
     }
     var m = H.meta, pm = prevMissing();
-    if (!m) { g.appendChild(dkCard({ t: "⏰ 근무시간", tab: 3, w: 1, w3: 1, msg: "불러오는 중…" })); return; }
+    if (!m) { g.appendChild(dkCard({ t: "근무시간", tab: 3, w: 1, w3: 1, msg: "불러오는 중…" })); return; }
     var w = m.week, body = [], lim = (w && w.limit) || 52;
     if (pm && pm.names.length) body.push(el("div", "dn", "미입력: " + pm.names.join(", ")));
-    else if (pm) body.push(el("div", "dn s", "✔ " + pm.label + " 모두 입력했어요"));
+    else if (pm) body.push(el("div", "dn s", "" + pm.label + " 모두 입력했어요"));
     var near = 0;
     if (w && w.rows && w.cur != null) {
       var rs = w.rows.map(function (x) { return [x.n, +(x.h && x.h[w.cur]) || 0]; }).filter(function (x) { return x[1] > 0; }).sort(function (a, b) { return b[1] - a[1]; });
@@ -8137,11 +8331,11 @@ function renderDash() {
       if (rs.length) body.push(dkBars(rs.map(function (x) { return [x[0], x[1], x[1] >= lim - 4, fnum(x[1]) + "h"]; }), lim));
       else body.push(el("div", "dz", "이번 주 입력된 시간이 아직 없어요"));
     }
-    g.appendChild(dkCard({ t: "⏰ 근무시간 · 이번 주 (" + lim + "시간 기준)", tab: 3, w: 1, w3: 1, r: !!(pm && pm.names.length),
+    g.appendChild(dkCard({ t: "근무시간 · 이번 주 (" + lim + "시간 기준)", tab: 3, w: 1, w3: 1, r: !!(pm && pm.names.length),
       big: pm ? pm.names.length : "-", unit: "명", sub: pm ? pm.label + " 미입력" : "", rows: [[(lim - 4) + "시간 넘은 사람", near + "명", near > 0]], body: body }));
   })();
 
-  box.appendChild(el("div", "dt", "카드를 누르면 그 화면으로 가요 · 새로고침은 전체 최신으로"));
+  box.appendChild(el("div", "dt", "카드를 누르면 해당 화면으로 이동합니다"));
 }
 
 
@@ -8149,6 +8343,7 @@ function renderDash() {
 var TEAM_TABS = [];   // 👀 보기 전용도 수입검사 · 부적합 · 입고 불출 모두 실제 값 (예시 띠 안 뜸 · 2026-11-07)
 function setTab(n) {
   ANI.t = Date.now(); ANI.done = {};
+  try { meSync(); } catch (eM) {}
   try { pushBar(); } catch (ePb) {}
   if (SR.open) closeSearch(true);
   cur = n;
@@ -8170,7 +8365,7 @@ function setTab(n) {
   else if (n === 8) { renderNc(); if (!NC.loaded) loadNc(false); }
   else if (n === 9) { $("upd").textContent = ""; renderMat(); }
   else if (n === 10) { renderDash(); dashLoad(false); }
-  else if (n === 12) { renderPj(); if (!PJ.ld && (!PJ.data || Date.now() - (PJ.data.t || 0) > 600000)) loadPj(false); }
+  else if (n === 12) { try { sset("pjUsed", "1"); } catch (eU) {} renderPj(); if (!PJ.ld && (!PJ.data || Date.now() - (PJ.data.t || 0) > 600000)) loadPj(false); }
   else if (n === 11) { renderLay(); loadEquipIndex(false).then(function () { if (cur === 11 && !SR.open) renderLay(); }); }
   else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
@@ -8181,7 +8376,7 @@ function setTab(n) {
   demoBar();
 }
 // ⋯ 더보기: 입출하 일정 · 장비통계 · 연차 현황 (지금 보고 있으면 더보기 버튼이 그 이름으로 바뀜)
-var MORE = [[10, "대시보드"], [11, "배치도"], [12, "PJ 전환"], [6, "입출하 일정"], [5, "장비통계"], [4, "연차 현황"], [7, "수입검사"], [8, "부적합"], [9, "입고 불출"]];
+var MORE = [[10, "대시보드"], [5, "장비통계"], [11, "배치도"], [12, "PJ 전환"], [6, "입출하 일정"], [7, "수입검사"], [9, "입고 불출"], [8, "부적합"], ["ven", "업체 현황"], [4, "연차 현황"]];
 function moreSync() {
   var b = $("tmore"); if (!b) return;
   var hit = MORE.filter(function (m) { return m[0] === cur; })[0];
@@ -8234,17 +8429,20 @@ function maybeAnim(id, n) {
 function openMore() {
   var g = $("moreg"); g.innerHTML = "";
   MORE.forEach(function (m) {
+    if (m[0] === "ven") { g.appendChild(venBtn()); return; }   // 업체 현황 (탭 아님 · 장비 검색 화면에 띄움)
     var bt = el("button", cur === m[0] ? "on" : ""); bt.type = "button";
     var ic = el("i"); ic.innerHTML = $("t" + m[0]).querySelector("svg").outerHTML; bt.appendChild(ic);
     bt.appendChild(document.createTextNode(m[1]));
     bt.onclick = function () { $("moreov").className = "ov"; ovLock(false); setTab(m[0]); window.scrollTo(0, 0); };
     g.appendChild(bt);
   });
-  var vb2 = el("button", SR.open && SR.ven != null ? "on" : ""); vb2.type = "button";   // 🏭 업체 현황 (탭 아님 · 장비 검색 화면에 띄움)
-  var vi = el("i"); vi.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V10l5 3V10l5 3V6l8 4v11z"/><path d="M7 17h2M12 17h2M17 17h1"/></svg>';
-  vb2.appendChild(vi); vb2.appendChild(document.createTextNode("업체 현황"));
-  vb2.onclick = function () { $("moreov").className = "ov"; ovLock(false); openVendor(""); };
-  g.appendChild(vb2);
+  function venBtn() {
+    var vb2 = el("button", SR.open && SR.ven != null ? "on" : ""); vb2.type = "button";
+    var vi = el("i"); vi.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V10l5 3V10l5 3V6l8 4v11z"/><path d="M7 17h2M12 17h2M17 17h1"/></svg>';
+    vb2.appendChild(vi); vb2.appendChild(document.createTextNode("업체 현황"));
+    vb2.onclick = function () { $("moreov").className = "ov"; ovLock(false); openVendor(""); };
+    return vb2;
+  }
   $("moreov").className = "ov on";
 }
 $("tmore").onclick = openMore;
@@ -8699,25 +8897,30 @@ function venGroups(idx, today) {
   });
   return Object.keys(by).map(function (v) { return by[v]; });
 }
+function venStamp(idx) {   // Backlog 데이터 기준 시각
+  var d = el("div", "vstamp"); d.appendChild(el("span", "k", "Backlog Data"));
+  d.appendChild(el("span", "t", (idx.built || "--:--") + " 기준"));
+  return d;
+}
 function renderVendor(box, idx, today) {
   if (!idx.rows.length || idx.rows[0].length < 9) { box.appendChild(el("div", "msg", SR.loading ? "업체 정보 받는 중…" : "서버(DashboardApp.gs)를 새 버전으로 배포해 주세요.")); return; }
   var gs = venGroups(idx, today), m = +today.slice(5, 7);
   if (SR.ven === "") {   // 📋 업체 목록
     gs.sort(function (a, b) { return (b.ing.length - a.ing.length) || (b.out.length - a.out.length) || (a.v < b.v ? -1 : 1); });
     var ti = 0, tom = 0, to = 0; gs.forEach(function (g) { ti += g.ing.length; tom += g.om; to += g.out.length; });
-    box.appendChild(heroX("🏭 업체 현황", gs.length, "곳", [["진행 중", ti, "대"], [m + "월 출하", tom, "대"], ["올해 출하", to, "대"]]));
+    box.appendChild(heroX("업체 현황", gs.length, "곳", [["진행 중", ti, "대"], [m + "월 출하", tom, "대"], ["올해 출하", to, "대"]]));
+    box.appendChild(venStamp(idx));
     if (!gs.length) { box.appendChild(el("div", "msg", "Backlog 담당자 칸에 업체가 적힌 장비가 없어요.")); return; }
     var list = el("div", "sres vlist");
     gs.forEach(function (g) {
       var it = el("div", "it vit");
-      it.appendChild(el("span", "nm", "🏭 " + g.v));
+      it.appendChild(el("span", "nm", g.v));
       it.appendChild(el("span", "nx", "진행 " + g.ing.length + "대"));
       it.appendChild(el("span", "ty", (g.pre.length ? "시작 전 " + g.pre.length + "대 · " : "") + m + "월 출하 " + g.om + "대 · 올해 출하 " + g.out.length + "대"));
       it.onclick = function () { SR.ven = g.v; renderSearch(); window.scrollTo(0, 0); };
       list.appendChild(it);
     });
     box.appendChild(list);
-    box.appendChild(el("div", "hint", "Backlog '제조1팀 담당자' 칸의 업체 기준 (예: 동오정밀,손성민 → 동오정밀) · 출하는 올해 것만 · " + (idx.built || "") + " 기준"));
     return;
   }
   // 🏭 한 업체
@@ -8725,7 +8928,8 @@ function renderVendor(box, idx, today) {
   var bk = el("button", "sback", "← 업체 목록"); bk.type = "button";
   bk.onclick = function () { SR.ven = ""; renderSearch(); window.scrollTo(0, 0); };
   box.appendChild(bk);
-  box.appendChild(heroX("🏭 " + g.v, null, null, [["진행 중", g.ing.length, "대"], [m + "월 출하", g.om, "대"], ["올해 출하", g.out.length, "대"]]));
+  box.appendChild(heroX(g.v, null, null, [["진행 중", g.ing.length, "대"], [m + "월 출하", g.om, "대"], ["올해 출하", g.out.length, "대"]]));
+  box.appendChild(venStamp(idx));
   var st = idx.stages;
   var sec = function (title, arr, line) {
     if (!arr.length) return;
@@ -8738,7 +8942,7 @@ function renderVendor(box, idx, today) {
       if (who) nm.appendChild(el("span", "ow", who));
       it.appendChild(nm);
       it.appendChild(el("span", "nx", line(x.k, r)));
-      it.appendChild(el("span", "ty", r[1] + (r[4] ? " · 📍" + r[4] : "")));
+      it.appendChild(el("span", "ty", r[1] + (r[4] ? " · " + r[4] : "")));
       it.onclick = function () { SR.venBack = SR.ven; SR.ven = null; SR.want = r[0]; $("sq").value = r[0]; renderSearch(); window.scrollTo(0, 0); };
       list.appendChild(it);
     });
@@ -10088,10 +10292,15 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-8";
+var APP_VER = "2026-11-11-13";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-11-13", ["위쪽 이름 표시를 더 깔끔하게 바꿨습니다"]],
+  ["2026-11-11-12", ["위쪽 이름 표시를 앱 디자인에 맞게 다듬었습니다"]],
+  ["2026-11-11-11", ["위쪽 오른쪽에 내 이름이 표시됩니다 (잠그기 버튼은 없어졌습니다)"]],
+  ["2026-11-11-10", ["대시보드를 새로 정리했습니다 · 맨 위 [오늘 확인할 것]에 바로 처리할 항목만 모아 보여 주고, 생산 · 품질 · 팀으로 나눠 보기 쉽게 바꿨습니다", "더보기 순서: 대시보드 · 장비통계 · 배치도 · PJ 전환 · 입출하 일정 · 수입검사 · 입고 불출 · 부적합 · 업체 현황 · 연차 현황", "업체 현황: 기준 시각을 Backlog Data 기준으로 깔끔하게 표시합니다"]],
+  ["2026-11-11-9", ["PJ 전환: 한 번 열어 본 폰은 앱을 켤 때 미리 받아 두어 탭이 바로 열립니다"]],
   ["2026-11-11-8", ["PJ 전환 제조 · 진행 현황: 출하 빠른 순으로 정렬되고 출하일(D-day)이 표시됩니다 (납기 빠른 순 · 기본 순으로도 바꿀 수 있습니다)"]],
   ["2026-11-11-7", ["PJ 전환 제조: 입고 대기 · 불출 대기 · 회수 · 폐기 · 납기 지남 숫자를 누르면 해당 품목으로 바로 이동합니다"]],
   ["2026-11-11-6", ["PJ 전환: 맨 위에 전체 진행률(완료 · 진행중 · 대기)과 가장 가까운 납기가 표시됩니다", "PJ 전환: 관계도 유형을 눌러서 펼치고 접을 수 있습니다", "PJ 전환 진행 현황: 프로젝트를 한눈에 고를 수 있고, 품명이 크게 · 참고는 맨 아래에 · 납기는 D-day로 표시됩니다", "PJ 전환 제조: 장비명이 잘리지 않게 바뀌고, 품목마다 상태(대기 · 진행중 · 완료)가 표시됩니다"]],
@@ -10711,8 +10920,11 @@ function viewOnly() { return sget("viewOnly") === "1" && !nameDone(); }
 // 👀 보기 전용: 근무시간은 탭만 보이고 내용은 안 보여 줌 (서버에도 요청 안 함 · 서버도 막음)
 function hoursLock() { var on = viewOnly(), h = $("hours"); if (h) h.classList.toggle("vlock", on); if (on) { H.meta = null; H.loaded = false; } return on; }
 function vBadge() {
+  try { meSync(); } catch (eM) {}
   var t = $("testtag"); if (!t) return;
   var b = $("vbadge");
+  try { document.documentElement.classList.toggle("vip", isVip()); } catch (eV) {}
+  if (isVip()) { if (!b) { b = el("span", "testtag vb", "보기 전용"); b.id = "vbadge"; t.appendChild(b); } return; }
   if (!viewOnly()) { if (b) b.parentNode.removeChild(b); return; }
   if (b) return;
   b = el("span", "testtag vb", "👀 보기 전용"); b.id = "vbadge";
@@ -11120,7 +11332,7 @@ function pushInit() {
 
 // 알림 안 켠 사람에게 앱 열 때 자동으로 창 띄우기 ("나중에" 누르면 그날은 안 띄움)
 function pushAutoAsk() {
-  if (!ONESIGNAL_APP_ID || pushOn() || viewOnly() || isGuest()) return;   // 👀 보기 전용 · 🛠 개발자 게스트는 알림 권유 안 함
+  if (!ONESIGNAL_APP_ID || pushOn() || viewOnly() || isGuest() || isVip()) return;   // 👀 보기 전용 · 🛠 개발자 게스트는 알림 권유 안 함
   if (!nameDone()) { setTimeout(pushAutoAsk, 3000); return; }   // 이름 먼저
   if ($("app").style.display === "none") { setTimeout(pushAutoAsk, 2000); return; }   // PIN 화면이면 기다림
   if (sget("pushLater") === ymdLocal()) return;
@@ -11369,7 +11581,7 @@ function qhSave(me, ymd, v) {
 function pushBar() {
   var b = $("pushbar");
   if (!b) return;
-  if (!ONESIGNAL_APP_ID || pushOn() || viewOnly() || isGuest() || $("app").style.display === "none") { b.style.display = "none"; return; }
+  if (!ONESIGNAL_APP_ID || pushOn() || viewOnly() || isGuest() || isVip() || $("app").style.display === "none") { b.style.display = "none"; return; }
   var den = pushDenied();
   b.innerHTML = "";
   b.appendChild(el("span", "t", den ? "🔕 알림이 차단돼 있어요" : "🔕 알림이 꺼져 있어요"));
@@ -11930,6 +12142,7 @@ function devListPrefetch() {
 }
 function openDevList() {
   var keep = DL.keepExp; DL.keepExp = false;
+  try { call("vipList", [DV.pin]).then(function (r) { if (r && !r.error) { DL.vip = r; if (/\bon\b/.test($("dlov").className)) dlRender(); } }).catch(function () {}); } catch (eV) {}
   $("dlov").className = "ov on";
   if (!keep) { DL.open = ""; DL.pick = ""; DL.forget = ""; DL.bnOpen = false; DL.exp = {}; DL.block = ""; DL.whyEd = ""; }
   var c = DLC.data || cget("devl");
@@ -11955,6 +12168,30 @@ function dlRender() {
   gb.onclick = function () { gb.disabled = true; dlDo("secGate", [DV.pin, !DL.gate], gmsg, DL.gate ? "승인제를 껐어요" : "승인제를 켰어요 · 지금 폰들은 전부 승인"); };
   gr.appendChild(gb); gs.appendChild(gr); gs.appendChild(gmsg);
   L.appendChild(gs);
+  if (DL.vip) {   // 열람 계정 (열람 PIN · 명단에 없는 이름은 여기서 허용)
+    var vs = el("div", "dlsec"), vh = el("div", "r"), vl = el("div");
+    vl.appendChild(el("b", null, "열람 계정"));
+    vl.appendChild(el("small", null, "바로 들어오는 이름: " + (DL.vip.names || []).join(", ") + " · 그 외 이름은 요청이 오면 여기서 허용"));
+    vh.appendChild(vl); vs.appendChild(vh);
+    var VR = DL.vip.req || [];
+    if (!VR.length) vs.appendChild(el("small", null, "들어온 요청이 없어요"));
+    VR.forEach(function (x) {
+      var rr = el("div", "r"), a = el("div"); a.appendChild(el("b", null, x.n));
+      a.appendChild(el("small", null, (x.ok ? "허용됨" : "승인 대기") + " · 기기-" + x.dev + (x.k ? " · " + x.k : "") + (x.at ? " · " + x.at : "")));
+      rr.appendChild(a);
+      var vb = el("button", x.ok ? "x" : "on", x.ok ? "해제" : "허용"); vb.type = "button";
+      var vm = el("div", "em");
+      vb.onclick = function () {
+        vb.disabled = true;
+        call("vipDecide", [DV.pin, x.dev, !x.ok]).then(function (r) {
+          if (r && r.error) { vm.textContent = r.error; vb.disabled = false; return; }
+          toast(x.ok ? x.n + "님 허용을 해제했어요" : x.n + "님을 허용했어요"); x.ok = !x.ok; dlRender();
+        }).catch(function (e) { vm.textContent = "실패: " + errText(e); vb.disabled = false; });
+      };
+      rr.appendChild(vb); vs.appendChild(rr); vs.appendChild(vm);
+    });
+    L.appendChild(vs);
+  }
   if (!DL.rows.length) { L.appendChild(el("span", "hint", "아직 등록된 폰이 없어요. 업데이트 후 앱을 연 폰부터 나와요.")); return; }
   var me = devId();
   // 📍 지금 쓰는 기기 (이 폰)
@@ -12749,6 +12986,12 @@ function pjShort(s) {   // 'ZJ90-124_12CH HIZ-L3 EFEM' → 'ZJ90-124 EFEM' · 'H
 function pjItems(code) { return (PJ.data.items || []).filter(function (r) { return r.c === code && r.k !== "스왑불가"; }); }
 
 try { var _ms = sget("pjms"); if (_ms) PJ.ms = _ms === "-" ? "" : _ms; } catch (e) {}
+/* 미리 받기: PJ 탭을 한 번이라도 연 폰 · 열람 계정은 시작 화면 닫힌 뒤 뒤에서 받아 둠 (10분 안에 받은 게 있으면 안 받음) */
+function pjPrefetch() {
+  if (!(sget("pjUsed") === "1" || (typeof isVip === "function" && isVip()))) return;
+  if (+(sget("pjAt") || 0) > Date.now() - 10 * 60000) return;
+  loadPj(false);
+}
 function loadPj(force) {
   if (PJ.ld) return Promise.resolve();
   if (!PJ.data) { try { var c = cget("pj"); if (c && c.items) PJ.data = c; } catch (e) {} }
@@ -12756,7 +12999,7 @@ function loadPj(force) {
   if (cur === 12 && PJ.data) $("upd").textContent = (PJ.data.at ? PJ.data.at + " 기준 · " : "") + "새로 확인 중…";
   return call("getPjData", [{ force: !!force }]).then(function (r) {
     PJ.ld = false;
-    if (r && r.items) { PJ.data = r; PJ.err = r.warn || ""; try { cset("pj", r); } catch (e) {} }
+    if (r && r.items) { PJ.data = r; PJ.err = r.warn || ""; try { cset("pj", r); sset("pjAt", String(Date.now())); } catch (e) {} }
     else PJ.err = (r && r.error) || "불러오기 실패";
     if (cur === 12 && !SR.open) renderPj();
     if (SR.open) try { renderSearch(); } catch (e2) {}
