@@ -3064,6 +3064,38 @@ body.kb #totop{display:none}
 #splash .spgauge.ok .gb i{background:linear-gradient(90deg,#16a34a,#22c55e)}
 #splash .spgauge.ok .gb i::after{animation:none}
 @media (prefers-color-scheme:dark){#splash .spgauge .l{color:#d6dde6}#splash .spgauge .gb{background:rgba(107,155,255,.16)}#splash .spgauge b{color:#6b9bff}#splash .spgauge .gs{color:#8b97a5}}
+
+/* 📋 2026-11-12 입고 불출 · 수입검사 상태 색 (자재팀 현황판 참고 · 휴대폰용) */
+.zsf{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 1px}
+.zsf::-webkit-scrollbar{display:none}
+.zsf button{flex:none;display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 13px;border-radius:999px;border:1px solid var(--cbd,var(--line));background:var(--card);color:var(--sub);font:inherit;font-size:13.5px;font-weight:800;white-space:nowrap}
+.zsf button b{font-weight:900;color:var(--text)}
+.zsf button.w b{color:var(--warn)}
+.zsf button.on{background:var(--text);border-color:var(--text);color:var(--card)}
+.zsf button.on b{color:var(--card)}
+.zsx{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.zoz{display:flex;gap:5px}
+.zoz button{height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--sub);font:inherit;font-size:12px;font-weight:800}
+.zoz button.on{border-color:#7c3aed;color:#7c3aed;background:color-mix(in srgb,#8b5cf6 9%,var(--card))}
+.zlg{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;font-size:11px;font-weight:800;color:var(--sub)}
+.zlg span{display:inline-flex;align-items:center;gap:4px}
+.zlg span::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--zc)}
+.z-part{--zc:#e08a00}.z-done{--zc:#16a34a}.z-over{--zc:#ea580c}.z-o3{--zc:#0d9488}.z-o1{--zc:#2563eb}.z-urg{--zc:var(--warn)}.z-wait{--zc:var(--accent)}.z-ng{--zc:#dc2626}.z-ok{--zc:#16a34a}
+.zst{flex:none;font-style:normal;font-size:10.5px;font-weight:900;padding:2px 7px;border-radius:6px;color:var(--zc);background:color-mix(in srgb,var(--zc) 13%,var(--card));white-space:nowrap}
+#mat .mti.z-part,#mat .mti.z-done,#mat .mti.z-over,#mat .mti.z-o3,#mat .mti.z-o1{box-shadow:inset 4px 0 0 var(--zc);background:color-mix(in srgb,var(--zc) 6%,var(--card))}
+.zil{display:grid;gap:10px}
+#insp .ir.zi{gap:5px;border-left:4px solid var(--zc)}
+#insp .ir.zi.z-ok{border-left-color:color-mix(in srgb,var(--zc) 55%,var(--line))}
+#insp .ir.zi.z-ng,#insp .ir.zi.z-urg{background-color:color-mix(in srgb,var(--zc) 5%,var(--card))}
+#insp .ir.zi .t{align-items:center}
+#insp .nfbtn.sm{display:flex;align-items:center;justify-content:center;width:100%;height:44px;border-radius:14px;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));background:color-mix(in srgb,var(--accent) 6%,var(--card));color:var(--accent);font:inherit;font-size:14px;font-weight:900}
+.zpn{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.zpn b{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;font-weight:800;word-break:break-all}
+.zm{font-size:12.5px;font-weight:700;color:var(--text);opacity:.85}
+.zm2{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;font-weight:700;color:var(--text);padding-top:6px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+.zm2 i{font-style:normal;font-weight:700;color:var(--sub);margin-right:4px}
+.zm2 .ng{color:var(--warn)}
+.zcnt{font-size:13px;font-weight:900;padding:0 4px}
 </style>
 </head>
 <body>
@@ -5461,7 +5493,7 @@ function renderUpload(d) {
  * 첫 화면: 요약 + 장비 목록 (검사 대기 많은 순) · 장비명 입력하면 바로 걸러짐
  * 장비를 누르면 그 장비의 검사 목록 (대기 → 긴급 먼저 → 최근 요청 순)
  */
-var IN = { loaded: false, data: null, q: "", eq: "", rows: {}, all: false };
+var IN = { loaded: false, data: null, q: "", eq: "", rows: {}, all: false, f: "all", s: "" };
 function loadInsp(force) {
   IN.loaded = true; R.insp = true;
   if (!IN.data) { try { IN.data = cget("insp"); } catch (e) {} }
@@ -5512,7 +5544,7 @@ function renderInsp() {
   // 🔎 장비명 입력
   var q = el("label", "iq");
   q.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
-  var inp = el("input"); inp.type = "search"; inp.placeholder = "장비명(프로젝트) 입력 · 예: ECP324"; inp.value = IN.q;
+  var inp = el("input"); inp.type = "search"; inp.placeholder = "장비명 입력 · 예: ECP324 · / 로 여러 장비"; inp.value = IN.q;
   inp.setAttribute("autocomplete", "off"); inp.setAttribute("autocapitalize", "characters");
   q.appendChild(inp);
   var cl = el("button", null, "✕"); cl.type = "button"; cl.style.display = IN.q ? "" : "none";
@@ -5538,15 +5570,16 @@ function renderInsp() {
   }
   function draw() {
     list.innerHTML = "";
-    var k = inspKey(IN.q), items = inspSorted(LV.filter(function (x) { return k ? inspKey(x.e).indexOf(k) >= 0 : x.p > 0; }));   // 검색 안 하면 검사 대기 있는 장비만
+    var ks = String(IN.q || "").split("/").map(inspKey).filter(Boolean), k = ks.length === 1 ? ks[0] : ks.join("/");
+    var items = inspSorted(LV.filter(function (x) { return ks.length ? ks.some(function (k1) { return inspKey(x.e).indexOf(k1) >= 0; }) : x.p > 0; }));   // 검색 안 하면 검사 대기 있는 장비만 · / = 여러 장비
     if (!items.length) {
       var other = k && IN.site !== "all" && d.list.some(function (x) { return inspKey(x.e).indexOf(k) >= 0; });
-      list.appendChild(el("div", "msg", k ? "'" + IN.q + "' 장비의 " + (IN.site === "all" ? "" : IN.site + " ") + "수입검사가 없어요." + (other ? "\n다른 사업장에는 있어요 · 위에서 '전체'를 눌러 보세요" : "") : "검사 대기 중인 " + (IN.site === "all" ? "B팀" : IN.site) + " 장비가 없어요 👍"));
+      list.appendChild(el("div", "msg", k ? "'" + IN.q + "' 장비의 " + (IN.site === "all" ? "" : IN.site + " ") + "수입검사가 없어요." + (other ? "\n다른 사업장에는 있어요 · 위에서 '전체'를 눌러 보세요" : "") : "검사 대기 중인 " + (IN.site === "all" ? "B팀" : IN.site) + " 장비가 없어요"));
       list.lastChild.style.whiteSpace = "pre-line";
-      if (k && items.length === 0) inspPre(k);
+      if (ks.length === 1 && items.length === 0) inspPre(k);
       return;
     }
-    if (k) inspPre(k);   // ⚡ 검색으로 좁혀지면 그 장비 검사 목록 미리 받기
+    if (ks.length === 1) inspPre(k);   // ⚡ 검색으로 좁혀지면 그 장비 검사 목록 미리 받기
     var lim = k || IN.all ? items.length : 30;
     items.slice(0, lim).forEach(function (x) {
       var b = el("button", "ie"); b.type = "button";
@@ -5573,7 +5606,7 @@ function renderInsp() {
   box.lastChild.style.whiteSpace = "pre-line";
 }
 function inspOpen(eq) {
-  IN.eq = eq; IN.showDone = false; window.scrollTo(0, 0);
+  IN.eq = eq; IN.showDone = false; IN.f = "all"; IN.s = ""; window.scrollTo(0, 0);
   inspLoadAll(eq);   // ⚡ 열자마자 완료 포함 전체를 뒤에서 받아 둠 → '검사 완료 보기' 누르면 바로
   renderInsp();
 }
@@ -5624,51 +5657,77 @@ function inspDetail(box) {
   box.appendChild(heroX(eq, sum.p, "건 대기", [["전체", sum.n, "건"], ["긴급 대기", sum.u, "건", sum.u > 0], ["NG", sum.g, "건", sum.g > 0]], st ? "수입검사 · " + st : "수입검사"));
   if (st) {
     var other = inspSum(eq).n - sum.n;
-    if (other > 0) { var ob = el("button", "more", "🏭 " + st + "만 보는 중 · 다른 사업장 " + other + "건 더 보기"); ob.type = "button"; ob.onclick = function () { IN.site = "all"; sset("inspSite", "all"); renderInsp(); }; box.appendChild(ob); }
+    if (other > 0) { var ob = el("button", "more", st + "만 보는 중 · 다른 사업장 " + other + "건 더 보기"); ob.type = "button"; ob.onclick = function () { IN.site = "all"; sset("inspSite", "all"); renderInsp(); }; box.appendChild(ob); }
   }
-  var nfi = el("button", "nfbtn sm", "📝 이 장비로 부적합 처리 요청"); nfi.type = "button"; nfi.onclick = function () { nfOpen(eq); }; box.appendChild(nfi);
+  var nfi = el("button", "nfbtn sm", "이 장비로 부적합 처리 요청"); nfi.type = "button"; nfi.onclick = function () { nfOpen(eq); }; box.appendChild(nfi);
   var nDone = sum.n - sum.p;
+  // 📋 2026-11-12 상태 버튼 (전체 · 검사 대기 · 긴급 · NG · 완료) + 찾기 (/ = 여러 조건) — 완료 포함 목록을 받은 뒤에
+  var ALL = Array.isArray(all) ? all : null, zs = function (x) { return !x[14] ? (x[2] ? "urg" : "wait") : /NG/i.test(x[13] || "") || x[15] ? "ng" : "ok"; };
+  if (ALL && sum.n) {
+    var C = { all: ALL.length, wait: 0, urg: 0, ng: 0, ok: 0 }; ALL.forEach(function (x) { var k2 = zs(x); C[k2]++; if (k2 === "urg") C.wait++; });
+    if (!C[IN.f] && IN.f !== "all") IN.f = "all";
+    var fb = el("div", "zsf");
+    [["all", "전체"], ["wait", "검사 대기"], ["urg", "긴급"], ["ng", "NG"], ["ok", "완료"]].forEach(function (o) {
+      if (o[0] !== "all" && !C[o[0]]) return;
+      var b = el("button", (IN.f === o[0] ? "on" : "") + ((o[0] === "urg" || o[0] === "ng") ? " w" : "")); b.type = "button";
+      b.appendChild(document.createTextNode(o[1])); b.appendChild(el("b", null, String(C[o[0]])));
+      b.onclick = function () { IN.f = o[0]; renderInsp(); };
+      fb.appendChild(b);
+    });
+    box.appendChild(fb);
+    if (ALL.length > 6) {
+      var q3 = el("label", "iq"); q3.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+      var si3 = el("input"); si3.type = "search"; si3.placeholder = "PART NO. · 품명 · 업체 찾기 (/ 로 여러 조건)"; si3.value = IN.s; si3.setAttribute("autocomplete", "off"); q3.appendChild(si3); box.appendChild(q3);
+      var tmI; si3.oninput = function () { IN.s = si3.value; clearTimeout(tmI); tmI = setTimeout(function () { paintI(); }, 150); };
+    }
+  }
+  var lw = el("div", "zil"); box.appendChild(lw);
+  function card(x) {
+    // [곳, 요청일, 긴급, 의뢰자, 프로젝트, TYPE, PART NO., Part Desc., 수량, 업체, 품목, 검사자, 검수완료일, Result, 완료, 재검사, NG수량]
+    var k2 = zs(x), c = el("div", "ir zi z-" + k2);
+    var t = el("div", "t");
+    t.appendChild(el("b", null, x[7] || "-"));
+    t.appendChild(el("em", "zst z-" + k2, k2 === "urg" ? "긴급 대기" : k2 === "wait" ? "검사 대기" : k2 === "ng" ? (x[15] || "NG") : (x[13] && !/^OK$/i.test(x[13]) ? x[13] : "완료")));
+    c.appendChild(t);
+    var pn = el("div", "zpn"); pn.appendChild(el("b", null, x[6] || "-")); if (x[0]) pn.appendChild(el("span", "bd st" + (x[0] === "동탄" ? " dt" : ""), x[0])); c.appendChild(pn);
+    var m1 = [x[9], x[8] ? x[8] + " EA" : "", x[10], x[5]].filter(Boolean); if (x[4] && inspKey(x[4]) !== inspKey(IN.eq)) m1.push(x[4]);
+    c.appendChild(el("div", "zm", m1.join(" · ")));
+    var m2 = el("div", "zm2");
+    [["요청", inspDate(x[1])], ["의뢰", x[3]], ["검사", x[11]], ["완료", x[12] ? inspDate(x[12]) : ""]].concat(x[16] ? [["NG", x[16] + " EA"]] : []).forEach(function (p) { if (!p[1]) return; var sp = el("span"); sp.appendChild(el("i", null, p[0])); sp.appendChild(document.createTextNode(p[1])); if (p[0] === "NG") sp.className = "ng"; m2.appendChild(sp); });
+    c.appendChild(m2);
+    return c;
+  }
   function sec(title, list) {
     if (!list.length) return;
-    var h = el("div", "ih"); h.appendChild(el("h4", null, title + " " + list.length + "건")); box.appendChild(h);
-    list.forEach(function (x) {
-      // [곳, 요청일, 긴급, 의뢰자, 프로젝트, TYPE, PART NO., Part Desc., 수량, 업체, 품목, 검사자, 검수완료일, Result, 완료]
-      var c = el("div", "ir" + (!x[14] ? (x[2] ? " urg" : " wait") : ""));
-      var t = el("div", "t");
-      t.appendChild(el("b", null, x[7] || "-"));
-      if (x[0]) t.appendChild(el("span", "bd st" + (x[0] === "동탄" ? " dt" : ""), x[0]));   // 🏭 성남 / 동탄
-      if (x[2]) t.appendChild(el("span", "bd u", "긴급"));
-      if (x[13]) t.appendChild(el("span", "bd " + (/NG/i.test(x[13]) ? "ng" : /OK/i.test(x[13]) ? "ok" : "s"), x[13]));
-      if (x[15]) t.appendChild(el("span", "bd u", x[15]));   // 🔁 재검사 (예: 재검필요)
-      t.appendChild(el("span", "bd " + (x[14] ? "ok" : "p"), x[14] ? "검사 완료" : "검사 대기"));
-      c.appendChild(t);
-      var dl = el("dl");
-      // 긴 값은 한 줄 통째로 (이름표 붙여서)
-      [["PART NO.", x[6] || "-"], ["TYPE", x[5] || "-"]].concat(x[4] && inspKey(x[4]) !== inspKey(eq) ? [["프로젝트", x[4]]] : []).forEach(function (p) {
-        dl.appendChild(el("dt", null, p[0])); dl.appendChild(el("dd", "w", p[1]));
-      });
-      [["검사요청일", inspDate(x[1])], ["의뢰자", x[3] || "-"], ["요청수량", (x[8] || "-") + " EA"], ["품목", x[10] || "-"], ["업체", x[9] || "-"], ["검사자", x[11] || "-"], ["검수완료일", x[12] ? inspDate(x[12]) : "-"], ["사업장", x[0]]]
-        .concat(x[15] || x[16] ? [["NG 수량", x[16] ? x[16] + " EA" : "-"], ["재검사", x[15] || "-"]] : []).forEach(function (p) {
-        dl.appendChild(el("dt", null, p[0])); dl.appendChild(el("dd", null, p[1]));
-      });
-      c.appendChild(dl);
-      box.appendChild(c);
-    });
+    var h = el("div", "ih"); h.appendChild(el("h4", null, title + " " + list.length + "건")); lw.appendChild(h);
+    list.forEach(function (x) { lw.appendChild(card(x)); });
   }
-  if (sum.p) {
-    if (waitRows) sec("⏳ 검사 대기", waitRows);
-    else box.appendChild(el("div", "msg", "불러오는 중…"));
+  function paintI() {
+    lw.innerHTML = "";
+    var Q = zq(IN.s), okF = function (x) { var k2 = zs(x); if (IN.f === "wait" && !(k2 === "wait" || k2 === "urg")) return false; if (IN.f !== "all" && IN.f !== "wait" && k2 !== IN.f) return false; return zhit(Q, [x[6], x[7], x[9], x[10], x[5], x[4], x[3], x[11]].join(" ")); };
+    if (ALL && (IN.f !== "all" || Q.length)) {   // 거르거나 찾는 중 → 한 목록으로
+      var L = ALL.filter(okF).sort(function (a, b) { var o = { urg: 0, wait: 1, ng: 2, ok: 3 }; return (o[zs(a)] - o[zs(b)]) || (a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0); });
+      if (!L.length) { lw.appendChild(el("div", "msg", "해당하는 검사가 없어요")); return; }
+      lw.appendChild(el("div", "zcnt", L.length + "건"));
+      L.forEach(function (x) { lw.appendChild(card(x)); });
+      return;
+    }
+    if (sum.p) {
+      if (waitRows) sec("검사 대기", waitRows.slice().sort(function (a, b) { return (b[2] ? 1 : 0) - (a[2] ? 1 : 0) || (a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0); }));
+      else lw.appendChild(el("div", "msg", "불러오는 중…"));
+    }
+    // 완료: 접어 두고 누르면 그때 받음 (검사 대기 없는 장비는 바로 펼침)
+    if (nDone > 0) {
+      if (!IN.showDone && sum.p) {
+        var sb = el("button", "more", "검사 완료 " + nDone + "건 보기"); sb.type = "button";
+        sb.onclick = function () { IN.showDone = true; inspLoadAll(eq); renderInsp(); };
+        lw.appendChild(sb);
+      } else if (Array.isArray(all)) sec("검사 완료", all.filter(function (x) { return x[14]; }));
+      else if (all && all.err) lw.appendChild(el("div", "warn", "불러오기 실패: " + all.err));
+      else lw.appendChild(el("div", "msg", "검사 완료 목록 불러오는 중…"));
+    }
   }
-  // ✅ 완료: 접어 두고 누르면 그때 받음 (검사 대기 없는 장비는 바로 펼침)
-  if (nDone > 0) {
-    if (!IN.showDone && sum.p) {
-      var sb = el("button", "more", "✅ 검사 완료 " + nDone + "건 보기"); sb.type = "button";
-      sb.onclick = function () { IN.showDone = true; inspLoadAll(eq); renderInsp(); };
-      box.appendChild(sb);
-    } else if (Array.isArray(all)) sec("✅ 검사 완료", all.filter(function (x) { return x[14]; }));
-    else if (all && all.err) box.appendChild(el("div", "warn", "불러오기 실패: " + all.err));
-    else box.appendChild(el("div", "msg", "검사 완료 목록 불러오는 중…"));
-  }
+  paintI();
   if (!sum.n) box.appendChild(el("div", "msg", "검사 기록이 없어요."));
 }
 
@@ -6369,11 +6428,26 @@ function ocrLabel(shot, v) {
  *  장비 고르기 → 그 장비 탭을 서버가 바로 읽어 줌 (2분 기억) · 업체별로 묶어서 발주 · 입고 · 3공장 · 1공장 수량
  *  행 = [납기예정일, 상위품목, 상위품목명, 거래처, 품목, 품목명, 규격명, 발주, 입고, 3공장, 1공장, 발주번호]
  */
-var MT = { list: null, ld: false, prj: "", data: {}, q: "", f: "all", s: "", o: "due", err: "", fac: "", tab: "" };
+var MT = { list: null, ld: false, prj: "", data: {}, q: "", f: "all", s: "", o: "due", err: "", fac: "", tab: "", oz: "" };
 function mtDk(s) { s = String(s || ""); var e = s.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+(\d{1,2})\s+(\d{4})/i); if (e) return e[3] + ("0" + ("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(e[1].slice(0, 1).toUpperCase() + e[1].slice(1, 3).toLowerCase()) / 3 + 1)).slice(-2) + ("0" + e[2]).slice(-2); var m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? m[1] + ("0" + m[2]).slice(-2) + ("0" + m[3]).slice(-2) : "99999999"; }
 function mtNum(x) { var n = parseFloat(String(x == null ? "" : x).replace(/,/g, "")); return isNaN(n) ? 0 : n; }
 function mtDue(s) { s = String(s || ""); var e = s.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+(\d{1,2})/i); if (e) return ("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(e[1].slice(0, 1).toUpperCase() + e[1].slice(1, 3).toLowerCase()) / 3 + 1) + "/" + (+e[2]); var m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? (+m[2]) + "/" + (+m[3]) : s; }
 function mtOut(r) { return /외주\s*조립/.test(r[6] || ""); }
+/* 📋 2026-11-12 입고 · 불출 상태 (자재팀 현황판 색 구분 참고) — 미입고 · 부분입고 · 입고완료 · 초과입고 · 3공장/1공장 불출완료 */
+var MTS = { wait: "미입고", part: "부분입고", done: "입고완료", over: "초과입고", o3: "3공장 불출완료", o1: "1공장 불출완료" };
+function mtStat(r) {
+  var o = mtNum(r[7]), i = mtNum(r[8]), f3 = mtNum(r[9]), f1 = mtNum(r[10]);
+  if (o > 0 && f1 >= o) return "o1";
+  if (o > 0 && f3 >= o) return "o3";
+  if (o > 0 && f1 + f3 >= o) return f1 >= f3 ? "o1" : "o3";
+  if (o > 0 && i > o) return "over";
+  if (o > 0 && i >= o) return "done";
+  if (i > 0) return "part";
+  return "wait";
+}
+// 찾기: 띄어쓰기 = 모두 포함 · / = 여러 조건 중 하나 (예: 공용/제조2)
+function zq(q) { return String(q || "").toUpperCase().split("/").map(function (g) { return g.trim().split(/\s+/).filter(Boolean); }).filter(function (g) { return g.length; }); }
+function zhit(Q, t) { if (!Q.length) return true; t = String(t || "").toUpperCase(); return Q.some(function (g) { return g.every(function (w) { return t.indexOf(w) >= 0; }); }); }
 // 🏷 2026-11-10: 자재팀 탭 이름 → { n: 장비, t: TYPE } ("☆CJ07-132 EFEM, 12CH-S-L3 EFEM") · TYPE이 탭 이름에 없으면 장비 검색 목록(Backlog) TYPE
 function mtTabInfo(tab, prj) {
   var s = String(tab || "").replace(/[☆★]/g, "").trim(), i = s.indexOf(","), n = i >= 0 ? s.slice(0, i).trim() : s, t = i >= 0 ? s.slice(i + 1).trim() : "";
@@ -6420,7 +6494,7 @@ function loadMatTab(prj, force, hard) {
   }).catch(function (e) { if (d && d.rows) { d.ld = false; d.t = Date.now(); } else MT.data[prj] = { err: errText(e) }; if (cur === 9 && MT.prj === prj) renderMat(); return errText(e); });
 }
 function openMat(prj, ty) {
-  MT.prj = prj; MT.f = "all"; MT.s = ""; MT.tab = ""; MT.tabT = ty || ""; try { MT.o = sget("matSort") || "due"; } catch (e) {}
+  MT.prj = prj; MT.f = "all"; MT.oz = ""; MT.s = ""; MT.tab = ""; MT.tabT = ty || ""; try { MT.o = sget("matSort") || "due"; } catch (e) {}
   try { var rc = JSON.parse(sget("matRecent") || "[]").filter(function (x) { return x !== prj; }); rc.unshift(prj); sset("matRecent", JSON.stringify(rc.slice(0, 6))); } catch (e) {}
   try { var mc = JSON.parse(sget("matCnt") || "{}"); mc[prj] = (mc[prj] || 0) + 1; sset("matCnt", JSON.stringify(mc)); } catch (e) {}   // 🧠 자주 여는 장비
   loadMatTab(prj, false); renderMat(); window.scrollTo(0, 0);
@@ -6465,12 +6539,12 @@ function renderMat() {
       var d = MT.data[p], c = d && d.rows ? d : cget("mt_" + p);
       if (!c || !c.rows) return null;
       var R = c.rows, w = R.filter(function (r) { return mtNum(r[8]) < mtNum(r[7]); }).length;
-      return { t: (w ? "미입고 " + w + "건" : "전부 입고 ✓") + " · " + R.length + "품목", w: w, at: c.at || "" };
+      return { t: (w ? "미입고 " + w + "건" : "전부 입고") + " · " + R.length + "품목", w: w, at: c.at || "" };
     };
     var card = function (p, tag, sub) {
       var b = el("button", "mtc"); b.type = "button";
       var t = el("div", "mtct"), en = mtEntries(p); t.appendChild(el("b", null, en.length === 1 ? en[0][0] : p)); if (tag) t.appendChild(el("i", null, tag));
-      var dd = MT.data[p]; if (dd && dd.rows && dd.t && Date.now() - dd.t < 15 * 60000) t.appendChild(el("i", "fast", "⚡ 바로"));   // 🧠 미리 받아 둠
+      var dd = MT.data[p]; if (dd && dd.rows && dd.t && Date.now() - dd.t < 15 * 60000) t.appendChild(el("i", "fast", "바로"));   // 🧠 미리 받아 둠
       b.appendChild(t);
       var s = sum(p);
       if (sub) b.appendChild(el("span", null, sub));
@@ -6492,10 +6566,10 @@ function renderMat() {
         var d = x[0]; if (!d || !d.stages) return;
         d.stages.forEach(function (st) { (st.items || []).forEach(function (it) { var p = inList(it.n); if (!p || seen[p]) return; seen[p] = 1; sch.push([p, x[1], st.label]); }); });
       });
-      sec2("📅 오늘 · 내일 일정 장비", "금일 · 명일 화면 기준", sch.slice(0, 8));
+      sec2("오늘 · 내일 일정 장비", "금일 · 명일 화면 기준", sch.slice(0, 8));
       var rc = []; try { rc = JSON.parse(sget("matRecent") || "[]"); } catch (e) {}
       var rl = rc.filter(function (p) { return !seen[p]; }).map(function (p) { seen[p] = 1; return [p, "", ""]; });
-      sec2("🕘 최근 본 장비", "", rl.slice(0, 6));
+      sec2("최근 본 장비", "", rl.slice(0, 6));
       var fq = Object.keys(MC).filter(function (p) { return MC[p] >= 3 && !seen[p] && MT.list.indexOf(p) >= 0; }).sort(function (a, b) { return MC[b] - MC[a]; }).slice(0, 4).map(function (p) { return [p, "", ""]; });
       sec2("⭐ 자주 여는 장비", "", fq);
       // 🧠 AI 미리 읽기: 오늘·내일 일정 · 최근 · 자주 여는 장비 중 3대를 뒤에서 미리 받아 둠 → 누르면 바로 뜸
@@ -6564,16 +6638,22 @@ function renderMat() {
     box.appendChild(tw);
   }
   // 거르기 · 찾기
-  var fb = el("div", "mtf");
-  [["all", "전체"], ["wait", "미입고"], ["noout", "외주조립 빼고"], ["out", "외주조립만"]].forEach(function (o) {
-    var b = el("button", MT.f === o[0] ? "on" : "", o[1]); b.type = "button";
-    b.onclick = function () { MT.f = o[0]; [].forEach.call(fb.children, function (c) { c.className = ""; }); b.className = "on"; draw(); };
+  // 📋 2026-11-12 상태별 거르기 (숫자 같이) · 외주조립은 아래 줄로
+  var SC = { all: R.length, wait: 0, part: 0, done: 0, rel: 0, over: 0 };
+  R.forEach(function (r) { var st = mtStat(r); if (st === "wait" || st === "part") SC.wait++; if (st === "part") SC.part++; if (st !== "wait" && st !== "part") SC.done++; if (st === "o1" || st === "o3") SC.rel++; if (st === "over") SC.over++; });
+  if (MT.f === "out" || MT.f === "noout") { MT.oz = MT.f === "out" ? "only" : "no"; MT.f = "all"; }
+  if (MT.f === "over" && !SC.over) MT.f = "all";
+  var fb = el("div", "zsf");
+  [["all", "전체"], ["wait", "미입고"], ["part", "부분입고"], ["done", "입고완료"], ["rel", "불출완료"]].concat(SC.over ? [["over", "초과입고"]] : []).forEach(function (o) {
+    var b = el("button", (MT.f === o[0] ? "on" : "") + (o[0] === "wait" && SC.wait ? " w" : "")); b.type = "button";
+    b.appendChild(document.createTextNode(o[1])); b.appendChild(el("b", null, String(SC[o[0]])));
+    b.onclick = function () { MT.f = o[0]; [].forEach.call(fb.children, function (c) { c.classList.remove("on"); }); b.classList.add("on"); draw(); };
     fb.appendChild(b);
   });
   box.appendChild(fb);
   var q2 = el("label", "iq");
   q2.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
-  var si = el("input"); si.type = "search"; si.placeholder = "품목 · 품목명 · 업체 · 상위품목 찾기"; si.value = MT.s; si.setAttribute("autocomplete", "off");
+  var si = el("input"); si.type = "search"; si.placeholder = "품목 · 품목명 · 업체 찾기 (/ 로 여러 조건)"; si.value = MT.s; si.setAttribute("autocomplete", "off");
   q2.appendChild(si); box.appendChild(q2);
   var ob = el("div", "mto"); ob.appendChild(el("span", null, "정렬"));
   [["due", "납기순"], ["ven", "업체순"], ["pn", "품목순"]].forEach(function (o) {
@@ -6595,19 +6675,32 @@ function renderMat() {
     ob.appendChild(fw);
   }
   box.appendChild(ob);
+  // 외주조립 · 색 안내
+  var nOz = R.filter(mtOut).length, zx = el("div", "zsx");
+  if (nOz) {
+    var oz = el("div", "zoz");
+    [["no", "외주조립 빼고"], ["only", "외주조립만 " + nOz]].forEach(function (o) { var b = el("button", MT.oz === o[0] ? "on" : "", o[1]); b.type = "button"; b.onclick = function () { MT.oz = MT.oz === o[0] ? "" : o[0]; [].forEach.call(oz.children, function (c) { c.className = ""; }); if (MT.oz) b.className = "on"; draw(); }; oz.appendChild(b); });
+    zx.appendChild(oz);
+  }
+  var lg = el("div", "zlg"); ["part", "done", "o3", "o1"].forEach(function (k) { lg.appendChild(el("span", "z-" + k, MTS[k].replace(" 불출완료", " 불출"))); }); zx.appendChild(lg);
+  box.appendChild(zx);
   var wrap = el("div", "mtw"); box.appendChild(wrap);
   var draw = function () {
     wrap.innerHTML = "";
-    var ws = MT.s.toUpperCase().split(/\s+/).filter(Boolean);
+    var ws = zq(MT.s);
     var L = R.filter(function (r) {
-      if (MT.f === "wait" && !(mtNum(r[8]) < mtNum(r[7]))) return false;
-      if (MT.f === "out" && !mtOut(r)) return false;
-      if (MT.f === "noout" && mtOut(r)) return false;
+      var st = mtStat(r);
+      if (MT.f === "wait" && !(st === "wait" || st === "part")) return false;
+      if (MT.f === "part" && st !== "part") return false;
+      if (MT.f === "done" && (st === "wait" || st === "part")) return false;
+      if (MT.f === "rel" && !(st === "o1" || st === "o3")) return false;
+      if (MT.f === "over" && st !== "over") return false;
+      if (MT.oz === "no" && mtOut(r)) return false;
+      if (MT.oz === "only" && !mtOut(r)) return false;
       if (MT.fac && !mtFac(r, MT.fac)) return false;   // 🏭 3공장 · 1공장 불출만
       if (MT.tab !== "" && String(r[11]) !== MT.tab) return false;   // 🏷 고른 TYPE(탭)만
       if (!ws.length) return true;
-      var t = (r[4] + " " + r[5] + " " + r[3] + " " + r[6] + " " + (r[12] || "") + " " + (r[13] || "")).toUpperCase();   // 발주번호 · 상위품목으로도 찾기
-      return ws.every(function (w) { return t.indexOf(w) >= 0; });
+      return zhit(ws, r[4] + " " + r[5] + " " + r[3] + " " + r[6] + " " + (r[12] || "") + " " + (r[13] || ""));   // 발주번호 · 상위품목으로도 찾기 · / = 여러 조건
     });
     if (!L.length) { wrap.appendChild(el("div", "msg", "해당하는 품목이 없어요")); return; }
     // 📋 한 장에 줄 맞춰서 (업체는 줄 안에) · 정렬: 납기 / 업체 / 품목
@@ -6624,9 +6717,9 @@ function renderMat() {
     L.forEach(function (r) {
       if (shown++ >= 400) return;
       var lack = mtNum(r[8]) < mtNum(r[7]);
-      var it = el("div", "mti" + (lack ? " wait" : ""));
+      var st = mtStat(r), it = el("div", "mti z-" + st + (lack ? " wait" : ""));
       var a = el("div", "mta");
-      var t1 = el("div", "mtt"); t1.appendChild(el("b", null, r[4])); if (mtOut(r)) t1.appendChild(el("i", null, "외주조립")); a.appendChild(t1);
+      var t1 = el("div", "mtt"); t1.appendChild(el("b", null, r[4])); if (mtOut(r)) t1.appendChild(el("i", null, "외주조립")); if (st !== "wait") t1.appendChild(el("em", "zst z-" + st, MTS[st])); a.appendChild(t1);
       if (r[5]) a.appendChild(el("div", "mtn", r[5]));
       var sp = mtOut(r) ? "" : String(r[6] || "").trim(); if (!/[0-9A-Za-z가-힣]/.test(sp)) sp = "";
       if (sp) a.appendChild(el("div", "mtp", sp));
@@ -10368,10 +10461,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-12-1";
+var APP_VER = "2026-11-12-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-12-2", ["입고 불출: 품목을 미입고 · 부분입고 · 입고완료 · 불출완료로 나눠 보고, 상태별 색으로 구분할 수 있습니다", "수입검사: 장비 안에서 검사 대기 · 긴급 · NG · 완료로 나눠 보고, 품번 · 업체로 찾을 수 있습니다", "찾기 칸에 / 를 넣으면 여러 조건으로 찾을 수 있습니다 (예: 공용/제조2)"]],
   ["2026-11-12-1", ["PJ 전환 제조 탭: 공여 장비 후속에서 장비 번호로 찾을 수 있습니다 (받은 장비 · 내준 장비 모두)"]],
   ["2026-11-11-29", ["열람 화면 안내 문구를 정리했습니다"]],
   ["2026-11-11-28", ["PJ 전환: 받아 둔 자료를 먼저 바로 보여 드리고 최신 자료는 뒤에서 받아 화면이 더 빨리 열립니다"]],
