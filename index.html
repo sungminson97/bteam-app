@@ -4279,7 +4279,16 @@ function devId() {
 // editPin: 저장 함수일 때만 보냄 (조회 요청엔 편집 PIN을 안 실어 보냄)
 // ⏱ 속도기록: 왕복이 SLOW_MS 이상 걸렸거나 실패한 요청만 다음 요청 때 서버에 알려줌 → "앱_속도기록"
 var SLOW_MS = 6000;   // 6초 이상이면 느림으로 기록
-var SPD = { last: null };
+var SPD = { q: [] };   // ⏱ 2026-11-12: 느린 기록을 최대 5개까지 모아 두고 요청마다 1개씩 알려줌 (몰릴 때 빠지지 않게)
+function spdAdd(o) { SPD.q.push(o); if (SPD.q.length > 5) SPD.q.shift(); }
+// ⏱ 앱이 내려가 있던 시간 (체감 시간에서 뺌 · 폰을 꺼 둔 몇 시간이 '느림'으로 잡히던 문제)
+var HID = { at: 0, sum: 0 };
+function hidNow() { return HID.sum + (HID.at ? Date.now() - HID.at : 0); }
+document.addEventListener("visibilitychange", function () { if (document.hidden) { if (!HID.at) HID.at = Date.now(); } else if (HID.at) { HID.sum += Date.now() - HID.at; HID.at = 0; } });
+window.addEventListener("pagehide", function () { if (!HID.at) HID.at = Date.now(); });
+window.addEventListener("pageshow", function () { if (HID.at) { HID.sum += Date.now() - HID.at; HID.at = 0; } });
+// 🚦 지금 서버에 가 있는 요청 수 (뒤에서 미리 불러오기는 이게 0일 때만 보냄)
+var ACT = 0;
 // 📶 조회 요청은 연결이 끊기면 1번 자동 재시도 (저장 요청은 중복 저장 막으려고 재시도 안 함)
 var READ_FNS = { ping: 1, getDashboardAll: 1, getDashboardData: 1, getUploadStatus: 1, getHoursMeta: 1, getHoursCell: 1, getLeaveData: 1, getStatsData: 1, getEquipIndex: 1, getPjData: 1, getPjLog: 1, getFtData: 1 };
 var CALL_TIMEOUT = 30000;   // 30초 넘게 응답 없으면 끊고 (조회면) 다시 시도
@@ -4319,8 +4328,11 @@ function useLog(kind, sec, how) {
   try { var q = useQ(); q.push([Date.now(), kind, Math.round(sec || 0), String(how || "").slice(0, 40)]); sset("useQ", JSON.stringify(q.slice(-60))); } catch (e) {}
 }
 function rawCall(pin, fn, args, editPin) {
-  var rid = Math.random().toString(36).slice(2, 10), t0 = Date.now(), prev = SPD.last;
-  SPD.last = null;
+  var rid = Math.random().toString(36).slice(2, 10), t0 = Date.now(), h0 = hidNow(), prev = SPD.q.shift() || null;
+  ACT++;
+  var actDone = false, actEnd = function () { if (!actDone) { actDone = true; ACT = Math.max(0, ACT - 1); } };
+  // 실제로 화면을 보며 기다린 시간 = 걸린 시간 - 그 사이 앱이 내려가 있던 시간 (3분 넘으면 폰이 멈춰 있던 것 → 기록 안 함)
+  var waitMs = function () { var w = Date.now() - t0 - (hidNow() - h0); return w > 180000 ? -1 : Math.max(0, w); };
   var useN = 0, use = null;
   if (myName() && !IS_TEST) { use = useQ(); useN = use.length; if (!useN) use = null; }
   var a0 = (fn === "getDashboardAll" || fn === "getEquipIndex") ? [args && args[0] === true] : [];
@@ -4338,8 +4350,9 @@ function rawCall(pin, fn, args, editPin) {
       return new Promise(function (res) { setTimeout(res, 1500); }).then(function () { return fetchJson(body, true, to); });   // 잠깐 끊긴 경우만 한 번 더
     })
     .then(function (j) {
-      var ms = Date.now() - t0;
-      if (ms >= SLOW_MS) SPD.last = { rid: rid, ms: ms, fn: fn, args: a0, at: t0 };
+      actEnd();
+      var ms = waitMs();
+      if (ms >= SLOW_MS) spdAdd({ rid: rid, ms: ms, fn: fn, args: a0, at: t0 });
       if (j && j.ok) {
         if (useN) { try { sset("useQ", JSON.stringify(useQ().slice(useN))); } catch (eU) {} }   // 보낸 만큼만 지움
         if (fn === "getDashboardAll") { var dU = ymdLocal(); if (sget("useDay") !== dU) { sset("useDay", dU); useLog("open"); } }   // 그날 처음 연 사람
@@ -4351,10 +4364,35 @@ function rawCall(pin, fn, args, editPin) {
       if (j && j.code === "VIPNAME" && isVip() && nameDone()) vipBlocked();   // 열람 허용이 해제된 폰 → 차단 화면 (메인 안 보여 줌)    // 🔐 차단 / 승인 대기 (방금 넣은 PIN 기억: 아직 저장 전일 수 있음)
       return j;
     }, function (e) {
-      if (prev && !SPD.last) SPD.last = prev;   // 이번에 못 보낸 지난 기록은 다음에 다시
-      else SPD.last = { rid: rid, ms: Date.now() - t0, fn: fn, args: a0, at: t0, fail: "응답 없음 (네트워크/서버 연결 실패)" };
+      actEnd();
+      if (prev) { SPD.q.unshift(prev); if (SPD.q.length > 5) SPD.q.pop(); }   // 이번에 못 보낸 지난 기록은 다음에 다시
+      var ms = waitMs();
+      if (ms >= 0 && !(e && /resume/.test(e.message || ""))) spdAdd({ rid: rid, ms: ms, fn: fn, args: a0, at: t0, fail: "응답 없음 (네트워크/서버 연결 실패)" });   // 앱을 다시 열어서 끊은 건 실패가 아님
       throw e;
     });
+}
+
+/* 🚦 뒤에서 미리 불러오기 줄 세우기 (2026-11-12 속도 분석)
+ *  앱을 켤 때 · 다시 열 때 미리 불러오기 · 기기 등록 · 변경 확인이 한꺼번에 나가서 서버(시트)에서 서로 기다리던 문제
+ *  → 지금 보는 화면 요청이 먼저 · 뒤에서 할 일은 서버에 가 있는 요청이 없을 때 하나씩 (같은 일은 한 번만 · 최대 25초 기다리면 그냥 보냄) */
+var BGQ = { list: [], t: 0, wait: 0 };
+function idle(job, key) {
+  if (key && BGQ.list.some(function (x) { return x.k === key; })) return;
+  BGQ.list.push({ f: job, k: key || "" });
+  bgPump();
+}
+function bgPump() {
+  if (BGQ.t || !BGQ.list.length) return;
+  BGQ.t = setTimeout(function () {
+    BGQ.t = 0;
+    if (!BGQ.list.length) return;
+    if (document.hidden) { BGQ.t = setTimeout(function () { BGQ.t = 0; bgPump(); }, 1000); return; }   // 앱이 내려가 있으면 다시 열 때까지 보류
+    if (ACT > 0 && BGQ.wait < 25000) { BGQ.wait += 400; bgPump(); return; }
+    BGQ.wait = 0;
+    var x = BGQ.list.shift();
+    try { x.f(); } catch (e) {}
+    bgPump();
+  }, BGQ.wait ? 400 : 300);
 }
 
 // ⚡ 같은 조회가 아직 진행 중이면 새로 보내지 않고 그 결과를 같이 씀 (탭 왔다 갔다·새로고침 연타 때 서버에 요청이 쌓이지 않게)
@@ -4686,7 +4724,7 @@ function unlock(pin, pre) {
       toast("⚠️ " + ((pj && pj.error) || "서버에 연결할 수 없어요. 네트워크를 확인해 주세요."), true);
     });
   } else loadDash();
-  loadUpload();
+  if (cur === 2) loadUpload(); else idle(function () { if (!U.loaded) loadUpload(); }, "up");   // 🚦 금일/명일 먼저 · 업로드 현황은 그다음 (배지는 지난 값으로 먼저 보임)
 }
 
 function verify(pin, typed) {
@@ -5164,8 +5202,8 @@ var LAST = { t: 0, d: "" };
 var QPF = { done: false };
 function qPrefetch() {
   if ($("app").style.display === "none") return;
-  try { if (cget("insp") && !IN.loaded && cur !== 7) loadInsp(false); } catch (e) {}
-  try { if (cget("nc") && !NC.loaded && cur !== 8) setTimeout(function () { if (!NC.loaded && cur !== 8) loadNc(false); }, 800); } catch (e2) {}
+  try { if (cget("insp") && !IN.loaded && cur !== 7) idle(function () { if (!IN.loaded && cur !== 7) loadInsp(false); }, "insp"); } catch (e) {}
+  try { if (cget("nc") && !NC.loaded && cur !== 8) idle(function () { if (!NC.loaded && cur !== 8) loadNc(false); }, "nc"); } catch (e2) {}
 }
 function applyDash(r) {
   LAST.t = Date.now(); LAST.d = ymdLocal();
@@ -5180,7 +5218,7 @@ function applyDash(r) {
   schedBadge();
   if (!r.d0.error && !r.d1.error) cset("dash", r);
   if (cur < 2) render();
-  if (!QPF.done) { QPF.done = true; setTimeout(qPrefetch, 4000); }   // ⚡ 수입검사·부적합 뒤에서 미리
+  if (!QPF.done) { QPF.done = true; setTimeout(function () { idle(qPrefetch, "qpf"); }, 4000); }   // ⚡ 수입검사·부적합 뒤에서 미리
   if (cur === 6) renderSched();
 }
 
@@ -8781,7 +8819,7 @@ function setTab(n) {
   else if (n === 11) { renderLay(); loadEquipIndex(false).then(function () { if (cur === 11 && !SR.open) renderLay(); }); }
   else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
-  else if (n === 3) { $("upd").textContent = ""; hmFold(true); try { $("hteam").open = false; } catch (eT) {} if (!hoursLock()) { updLock(); if (!H.loaded) loadHoursMeta(); else hAutoRefresh(); } }
+  else if (n === 3) { $("upd").textContent = ""; hmFold(true); try { $("hteam").open = false; } catch (eT) {} if (!hoursLock()) { updLock(); if (!H.loaded) loadHoursMeta(); else idle(hAutoRefresh, "hauto"); } }
   else if (n === 4) { renderLeave(LV.data); if (!LV.loaded) loadLeave(); }
   else { renderStats(ST.data); if (!ST.loaded) loadStats(); }
   moreSync();
@@ -10038,7 +10076,7 @@ function loadHoursMeta(silent) {
       cset("hours", m);
       if (!(H.meta && sameData(H.meta, m))) applyMeta(m, false);   // 같으면 다시 안 그림 (깜빡임 없음)
       else H.meta = m;
-      setTimeout(hpPrefetch, 1500);   // 📅 지난달 미리 받아 두기 (뒤에서 · 10분에 한 번)
+      setTimeout(function () { idle(hpPrefetch, "hp"); }, 1500);   // 📅 지난달 미리 받아 두기 (뒤에서 · 10분에 한 번 · 다른 요청 없을 때)
       if (t !== H.token) return "";   // 그 사이 이름/날짜를 바꿨으면 그쪽 결과를 씀
       if (c && c.name === $("hname").value && c.ymd === $("hdate").value) applyCell(c);
       else refreshCell();
@@ -10322,7 +10360,10 @@ function refreshCell() {
   var q = gridCell(name, date);
   if (q) { applyCell(q); H.curSched = ""; box.appendChild(el("span", "stale", "🔄 최신 확인 중…")); }
   else { box.textContent = "현재 값 확인 중…"; monLoading(name); }
-  call("getHoursCell", [name, date])
+  // 🚦 2026-11-12: 받아 둔 값으로 이미 그렸으면 0.4초 기다렸다가 마지막으로 고른 것만 서버에 확인 (날짜를 연달아 누를 때 요청이 쌓이지 않게)
+  (q ? new Promise(function (res) { setTimeout(res, 400); }) : Promise.resolve()).then(function () {
+  if (t !== H.token) return;
+  return call("getHoursCell", [name, date])
     .then(function (r) {
       if (r && r.grid) hpgPut(r.grid);   // 📅 지난달 전원 값 기억
       if (t !== H.token) return;
@@ -10333,6 +10374,7 @@ function refreshCell() {
       box.textContent = "";
       showHErr(errText(e));
     });
+  });
 }
 
 // 연차·반차·공가를 고르면 사유 칸 표시 (schedule 시트에 "이름 연차 (사유)"로 기록)
@@ -10702,10 +10744,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-12-8";
+var APP_VER = "2026-11-12-9";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-12-9", ["AI가 최근 2주간 앱 속도 기록을 분석해 느려지던 원인을 찾아 개선했습니다", "앱을 켤 때 · 다시 열 때 여러 요청이 한꺼번에 몰리지 않도록 순서를 정리해 지금 보는 화면이 먼저 열립니다", "퇴근 시간대처럼 사용이 몰릴 때도 덜 느려지도록 근무시간 자동 새로고침 간격을 조정했습니다", "근무시간 화면에서 이름 · 날짜를 연달아 바꿔도 바로 반응합니다", "느린 화면 기록이 더 정확해져, 매주 AI 분석으로 계속 개선됩니다"]],
   ["2026-11-12-8", ["FT 구동 기록을 부분별로 지울 수 있습니다 · 잘못 넣은 입력 한 건만 지우면 그만큼 누적에서 빠집니다", "DRY만 · FULL CYCLE만 따로 지울 수도 있습니다"]],
   ["2026-11-12-7", ["FT 탭에 작업자별 실적이 추가되었습니다 · 팀원별로 올해 출하한 장비 대수와 진행 중인 장비 대수를 순위로 확인할 수 있습니다", "이름을 누르면 진행 중인 장비와 출하한 장비를 월별로 볼 수 있습니다"]],
   ["2026-11-12-6", ["FT 구동 시간은 이번에 더 돌린 시간만 입력하면 됩니다 · 지금 누적에 자동으로 더해집니다 (예: FULL CYCLE 4h 입력 → 1h + 4h = 5h)", "누적 값을 잘못 넣었을 때는 누적 시간 고치기에서 바로 고칠 수 있습니다", "DRY · FULL CYCLE을 각각 24h 기준으로 따로 보여 드려 얼마나 돌았는지 바로 보입니다", "최근 기록을 DRY 12h / FULL CYCLE 5h / 합계 17h → 31h 남음 처럼 보기 쉽게 바꿨습니다", "동탄 대시보드에서 입력한 값이 FT 화면에 바로 반영됩니다"]],
@@ -11199,11 +11242,11 @@ function refreshIfStale() {
   if (!dayChanged && Date.now() - LAST.t < 10 * 60000) return;
   LAST.t = Date.now();   // 연속 호출 방지
   loadDash(false);
-  loadUpload();
+  if (cur === 2) loadUpload(); else idle(loadUpload, "up");   // 🚦 금일/명일 먼저 · 업로드 현황은 그다음
   // 나머지 탭은 다음에 들어갈 때 새로 불러오게, 지금 보고 있는 탭은 바로
   LV.loaded = false; ST.loaded = false; IN.loaded = false; NC.loaded = false;
   if (dayChanged) { H.loaded = false; $("hdate").value = ""; }
-  if (cur === 7) loadInsp(false); else if (cur === 8) loadNc(false); else setTimeout(qPrefetch, 4000);   // 수입검사·부적합도 최신으로
+  if (cur === 7) loadInsp(false); else if (cur === 8) loadNc(false); else setTimeout(function () { idle(qPrefetch, "qpf"); }, 4000);   // 수입검사·부적합도 최신으로 (뒤에서 하나씩)
   if (cur === 4) loadLeave(false);
   else if (cur === 5) loadStats(false);
   else if (cur === 3 && !H.busy && !hoursLock() && Date.now() - (H.metaAt || 0) > 60000) loadHoursMeta(true);   // 방금 자동 새로고침했으면 또 안 부름
@@ -11241,7 +11284,7 @@ function chgCheck() {
     if (eq || hc) chgShow(eq, hc);
   }, function () {});
 }
-setInterval(chgCheck, 180000);
+setInterval(function () { idle(chgCheck, "chg"); }, 180000);
 $("chggo").onclick = function () {
   var b = this; b.disabled = true;
   var hc = CHG.hc, ps = [];
@@ -11269,13 +11312,13 @@ function hSig() { try { return JSON.stringify(H.meta && H.meta.grid && H.meta.gr
 function hAutoRefresh() {
   if (cur !== 3 || document.hidden || H.busy || !H.loaded || hoursLock()) return;
   if (String($("hval").value || "").trim() || H.confirm) return;
-  if (Date.now() - (H.metaAt || 0) < 60000) return;
+  if (Date.now() - (H.metaAt || 0) < 120000) return;
   var sig = hSig();
   var p = loadHoursMeta(true);
   if (p && p.then) p.then(function () { var s2 = hSig(); if (sig && s2 && s2 !== sig) toast("🔄 근무시간이 바뀌어서 새로 반영했어요"); });
 }
-setInterval(hAutoRefresh, 180000);
-function onResume() { try { chgCheck(); } catch (eC) {} checkUpdate(); try { relCheck(); } catch (eR) {} try { hAutoRefresh(); } catch (eH) {} refreshIfStale(); try { adminUI(); } catch (e) {} try { pushBar(); } catch (e2) {} }
+setInterval(function () { idle(hAutoRefresh, "hauto"); }, 300000);   // 🚦 2026-11-12: 3분 → 5분 · 다른 요청 없을 때 (시트에서 고친 건 3분마다 변경 확인으로 바로 알려 줌)
+function onResume() { checkUpdate(); try { relCheck(); } catch (eR) {} refreshIfStale(); idle(chgCheck, "chg"); idle(hAutoRefresh, "hauto"); try { adminUI(); } catch (e) {} try { pushBar(); } catch (e2) {} }
 document.addEventListener("visibilitychange", function () { if (!document.hidden) onResume(); });
 window.addEventListener("pageshow", function (e) { if (e.persisted) onResume(); });
 window.addEventListener("focus", onResume);
@@ -11891,7 +11934,7 @@ function qhCheck() {
   if ($("app").style.display === "none" || (SPL && !SPL.shut)) { if (QH.tries++ < 30) setTimeout(qhCheck, 1000); return; }
   if (document.querySelector(".ov.on,.airep")) { if (QH.tries++ < 30) setTimeout(qhCheck, 1500); return; }   // 다른 창 먼저 닫히면
   // 📅 빈 날이 며칠이면 하나씩 차례로 (달력 기준이라 이번 켤 때 근무시간 정보를 한 번 새로 받아 옴)
-  if (!H.loaded && !QH.fetched) { QH.fetched = true; loadHoursMeta(true).then(function () { setTimeout(qhCheck, 200); }, function () { setTimeout(qhCheck, 200); }); if (!deep) return; }
+  if (!H.loaded && !QH.fetched) { QH.fetched = true; var qhGo = function () { loadHoursMeta(true).then(function () { setTimeout(qhCheck, 200); }, function () { setTimeout(qhCheck, 200); }); }; if (deep) qhGo(); else idle(qhGo, "qh"); if (!deep) return; }   // 🚦 알림에서 연 게 아니면 다른 요청 끝난 뒤에
   var gaps = qhGaps(me);
   var ymd = deep || (pm && pm.names.indexOf(me) >= 0 ? pm.ymd : "") || gaps[0] || "";
   if (!ymd) {
@@ -13314,7 +13357,7 @@ function splashHide(now) {
     if (SPG.on && !n._fin) { n._fin = 1; if (spgFinish()) { setTimeout(wait, 1800); return; } }   // 📊 100% · 완료를 보여 준 뒤 닫힘
     SPL.shut = true;
     n.className = "out";
-    setTimeout(aiReport, 700); setTimeout(aiPrefetch, 2500);   // 🤖 AI 속도 리포트 · 학습한 화면 미리 불러오기
+    setTimeout(aiReport, 700); setTimeout(function () { idle(aiPrefetch, "ai"); }, 2500);   // 🤖 AI 속도 리포트 · 학습한 화면 미리 불러오기
     setTimeout(qhCheck, 1300);   // ⏰ 근무시간 미입력이면 바로 저장 창
     try { setTimeout(function () { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11][cur]] || "main")); tabInd(); }, 120); } catch (eA) {}
     setTimeout(function () { n.style.display = "none"; }, 450);   // 지우지 않고 숨김 (업데이트 후 다시 보여줄 때 씀)
@@ -13396,7 +13439,7 @@ function boot() {
   try { pushInit(); } catch (ep) {}
   try { adminUI(); } catch (ea) {}   // 🔑 관리자 모드면 제목 빨강
   setTimeout(nameAsk, 300);   // 👤 이름 고르기가 제일 먼저
-  setTimeout(function () { if (nameDone()) devRegister(); }, 6000);   // 📱 기기 목록 등록 (버전 바뀔 때 한 번, 화면 로딩 끝난 뒤)
+  setTimeout(function () { idle(function () { if (nameDone()) devRegister(); }, "dev"); }, 6000);   // 📱 기기 목록 등록 (버전 바뀔 때 한 번, 화면 로딩 끝난 뒤)
   ONB.on = !nameDone();   // 🧭 처음 시작이면 시작 화면은 맨 끝(⑤)에 보여줌
   if (lockLeft() > 0) { showLocked(); splashHide(ONB.on); return; }
   var p = getPin();
