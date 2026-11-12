@@ -10596,11 +10596,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-12-4";
+var APP_VER = "2026-11-12-5";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
-  ["2026-11-12-4", ["FT 화면이 바로 열리고 저장도 바로 됩니다", "FT에는 동탄 장비만 표시됩니다 (동탄 대시보드와 같은 장비 목록)", "FT 화면을 보고 있으면 동탄 대시보드에서 입력한 값이 20초 안에 반영됩니다"]],
+  ["2026-11-12-5", ["FT 화면을 보고 있으면 동탄 대시보드에서 입력한 값이 10초 안에 반영됩니다"]],
+  ["2026-11-12-4", ["FT 화면이 바로 열리고 저장도 바로 됩니다", "FT에는 동탄 장비만 표시됩니다 (동탄 대시보드와 같은 장비 목록)"]],
   ["2026-11-12-3", ["더보기에 FT (Final Test) 탭이 추가되었습니다 · 동탄 장비별 DRY · FULL CYCLE 구동 시간을 기록하고 48h 진행 현황을 한눈에 확인할 수 있습니다", "FT 기록은 동탄 대시보드와 같은 기록입니다 · 어느 쪽에서 입력해도 양쪽에 바로 반영됩니다", "48h를 채우지 못했지만 긴급으로 진행하는 장비는 사유와 함께 '조건부 OK'로 기록할 수 있습니다", "더보기 순서: 대시보드 · 장비통계 · 배치도 · PJ 전환 · 입출하 일정 · 수입검사 · 입고 불출 · 부적합 · FT · 업체 현황 · 연차 현황"]],
   ["2026-11-12-2", ["입고 불출: 품목을 미입고 · 부분입고 · 입고완료 · 불출완료로 나눠 보고, 상태별 색으로 구분할 수 있습니다", "수입검사: 장비 안에서 검사 대기 · 긴급 · NG · 완료로 나눠 보고, 품번 · 업체로 찾을 수 있습니다", "찾기 칸에 / 를 넣으면 여러 조건으로 찾을 수 있습니다 (예: 공용/제조2)"]],
   ["2026-11-12-1", ["PJ 전환 제조 탭: 공여 장비 후속에서 장비 번호로 찾을 수 있습니다 (받은 장비 · 내준 장비 모두)"]],
@@ -13424,7 +13425,7 @@ function ftSb(fn, body) {
           function (e) { clearTimeout(tm); throw new Error(e && e.name === "AbortError" ? "응답이 늦습니다. 잠시 후 다시 시도해 주세요." : "인터넷 연결을 확인해 주세요."); });
 }
 function ftDirect() { return ftHash(getPin()).then(function (h) { return h ? ftSb("bt_ft_read", { pin_h: h }).then(function (j) { return j && j.ok ? j : null; }, function () { return null; }) : null; }); }
-var FT = { data: null, ld: null, err: "", at: 0, sel: "", q: "", all: false, f: "", lim: 30, d: "", fu: "", c: false, why: "", busy: false, pend: false };
+var FT = { sig: "", data: null, ld: null, err: "", at: 0, sel: "", q: "", all: false, f: "", lim: 30, d: "", fu: "", c: false, why: "", busy: false, pend: false };
 var FT_NEED = 48;
 function ftCached() { if (!FT.data) { try { var c = cget("ft2"); if (c && c.runs && c.eq) FT.data = c; } catch (e) {} } return FT.data; }
 function ftCan() { return !viewOnly() && !isVip(); }
@@ -13464,8 +13465,15 @@ function loadFt(force) {
   });
   return FT.ld;
 }
-// 화면을 보고 있는 동안 20초마다 조용히 확인 (대시보드에서 입력한 값이 바로 보이게 · 한 번에 0.1초 안 · 입력 중이면 끝난 뒤 반영)
-setInterval(function () { if (cur === 13 && !document.hidden && !SR.open && !FT.busy && Date.now() - FT.at > 19000) loadFt(false); }, 5000);
+// 화면을 보고 있는 동안 10초마다 '바뀜 확인 값'만 물어봄 (약 100바이트 · 대시보드와 같은 값) → 바뀌었을 때만 새로 받음 · 입력 중이면 끝난 뒤 반영
+setInterval(function () {
+  if (cur !== 13 || document.hidden || SR.open || FT.busy || FT.ld) return;
+  ftSb("dt_sig", {}).then(function (sg) {
+    var k = String(sg || "").split("|")[0];
+    if ((k && FT.sig && FT.sig !== k) || Date.now() - FT.at > 60000) loadFt(false);
+    if (k) FT.sig = k;
+  }, function () { if (Date.now() - FT.at > 30000) loadFt(false); });
+}, 10000);
 document.addEventListener("visibilitychange", function () { if (!document.hidden && cur === 13 && Date.now() - FT.at > 5000) loadFt(false); });
 
 function ftSelect(name, quiet) {
