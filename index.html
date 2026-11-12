@@ -2887,6 +2887,10 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 /* 제조 */
 #pj .pjfo .foh{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:0;font:inherit;color:inherit}
 #pj .pjfo .fsum{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+#pj .pjfo .iq{height:44px;box-shadow:none;border-radius:13px;background:var(--bg);border:1px solid var(--line)}
+#pj .pjfo .fl{display:grid;gap:10px}
+#pj .pjfo .fcn{font-size:12px;font-weight:800;color:var(--sub)}
+#pj .pjfo .ft b.hit,#pj .pjfo .fh b.hit{color:var(--accent)}
 #pj .pjfo .tg2{flex:none;font-size:12px;font-weight:800;color:var(--accent);padding:6px 11px;border-radius:99px;background:color-mix(in srgb,var(--accent) 10%,transparent)}
 #pj .pjfo .fg{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--card)}
 #pj .pjfo .fh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 11px;background:color-mix(in srgb,var(--accent) 8%,var(--card));border-bottom:1px solid var(--line)}
@@ -10364,10 +10368,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-11-29";
+var APP_VER = "2026-11-12-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-12-1", ["PJ 전환 제조 탭: 공여 장비 후속에서 장비 번호로 찾을 수 있습니다 (받은 장비 · 내준 장비 모두)"]],
   ["2026-11-11-29", ["열람 화면 안내 문구를 정리했습니다"]],
   ["2026-11-11-28", ["PJ 전환: 받아 둔 자료를 먼저 바로 보여 드리고 최신 자료는 뒤에서 받아 화면이 더 빨리 열립니다"]],
   ["2026-11-11-27", ["PJ 전환 제조 탭: '공여 장비 후속' 버튼을 누르면 바로 아래로 이동합니다", "화면을 많이 내리면 오른쪽 아래 '맨 위로' 버튼으로 바로 올라갈 수 있습니다"]],
@@ -13083,7 +13088,7 @@ boot();
  *  생산관리팀 PJ 전환 웹앱의 시트를 서버가 읽어 둔 것(10분마다)을 받아 보여 줌 · 보기 전용 (입력은 원래 웹앱에서)
  *  관계도 · 진행 현황 · 제조 · 편집 로그 / 장비 상세에 'PJ 전환' 표시
  */
-var PJ = { data: null, ld: false, err: "", tried: false, sub: "map", mq: "", f: { p: "", k: "", st: "", q: "" }, lg: { f: "", q: "" }, lim: 60, open: {}, ms: "ship" };
+var PJ = { data: null, ld: false, err: "", tried: false, sub: "map", mq: "", fq: "", f: { p: "", k: "", st: "", q: "" }, lg: { f: "", q: "" }, lim: 60, open: {}, ms: "ship" };
 var PJ_CASES = [
   ["m1", "①", "로봇만 출하하던 장비가 타 장비 프레임 사용", "공여 프레임에서 바뀌거나 새로 필요한 파트는 추가발주 · 빠지는 기존 파트는 폐기 · 공여 장비는 후속으로 로봇만 출하 (수신 장비 원재료로 대체)", "프레임 변환"],
   ["m2", "②", "대체 장비 사용", "사양이 다른 파트는 이미 발주한 자재를 선입고 · 발주 없는 파트만 추가발주 · End-Effector 관련은 자재창고 불출 · 떼어낸 공여 파트는 공여 프로젝트로 회수 · 공여 장비는 수신 장비 원재료로 대체 생산", "프레임 · 장비 통째 사용"],
@@ -13567,14 +13572,22 @@ function pjMfg(w) {
     var ord = pjSortP(D.projects || []).map(function (o) { return pjNorm(String(o.p.r).split("_")[0]); });
     var rank = function (g) { var i = ord.indexOf(pjNorm(g.r)); return i < 0 ? 999 : i; };
     G2.sort(function (a, b) { return rank(a) - rank(b); });
-    if (PJ.foOpen) G2.forEach(function (g) {
+    var fl = el("div", "fl"), key = "", hitT = function (t) { return !!key && pjNorm(t).indexOf(key) >= 0; };
+    if (PJ.foOpen) { pjSearch(c2, PJ.fq, "장비 번호로 찾기 (예: HJ92-279)", function (v) { PJ.fq = v; paintF(); }); c2.appendChild(fl); }
+    function paintF() {   // 공여 장비 후속 안에서만 찾기 (받은 장비 · 내준 장비 번호)
+      fl.innerHTML = ""; key = PJ.fq.trim() ? pjNorm(PJ.fq).trim() : "";
+      var n = 0;
+      G2.forEach(function (g) {
+        var L = !key || hitT(g.r) ? g.L : g.L.filter(function (f) { return hitT(f.d); });
+        if (!L.length) return;
+        n += L.length;
       var box = el("div", "fg"), hd = el("div", "fh");
-      hd.appendChild(el("b", null, g.r));
+      hd.appendChild(el("b", hitT(g.r) ? "hit" : null, g.r));
       var sh = pjShip(g.r); hd.appendChild(el("span", "shp" + (sh && pjDday(sh) <= 14 ? " s" : "") + (sh ? "" : " no"), pjShipTxt(sh)));
       box.appendChild(hd);
-      g.L.forEach(function (f) {
+      L.forEach(function (f) {
         var x = el("div", "fr"), t = el("div", "ft");
-        t.appendChild(el("b", null, pjShort(f.d)));
+        t.appendChild(el("b", hitT(f.d) ? "hit" : null, pjShort(f.d)));
         t.appendChild(el("span", "fa" + (/출하/.test(f.a || "") ? " sh" : ""), f.a || "-"));
         x.appendChild(t);
         var d = el("div", "fd");
@@ -13584,8 +13597,11 @@ function pjMfg(w) {
         if (mat && !/^수신 장비 원재료로 대체$/.test(mat) && mat.indexOf(g.r + " 원재료로") !== 0) d.appendChild(el("span", "mm", mat));   // 받은 프로젝트 원재료로 대체(기본)는 생략
         x.appendChild(d); box.appendChild(x);
       });
-      c2.appendChild(box);
-    });
+      fl.appendChild(box);
+      });
+      if (key) fl.insertBefore(el("div", n ? "fcn" : "empty", n ? n + "건" : "'" + PJ.fq.trim() + "' 장비가 공여 장비 후속에 없어요"), fl.firstChild);
+    }
+    if (PJ.foOpen) paintF();
     w.appendChild(c2);
   }
 }
