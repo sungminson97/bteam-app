@@ -1517,7 +1517,7 @@ body.kb #tabbar{transform:translateY(110%)}
 /* 📱 아래 탭: 떠 있는 둥근 바 (금일 · 명일 · 업로드 · 근무시간 · 더보기) */
 #tabbar.tabs{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr);gap:4px;padding:7px;border:0;border-radius:30px;background:color-mix(in srgb,var(--card) 94%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent),0 16px 36px -12px rgba(16,32,64,.32);-webkit-backdrop-filter:saturate(1.8) blur(22px);backdrop-filter:saturate(1.8) blur(22px)}
 @media (prefers-color-scheme:dark){#tabbar.tabs{box-shadow:0 0 0 1px rgba(255,255,255,.07),0 16px 36px -12px rgba(0,0,0,.9)}}
-#tabbar #t6,#tabbar #t5,#tabbar #t4,#tabbar #t7,#tabbar #t8,#tabbar #t9,#tabbar #t10,#tabbar #t11,#tabbar #t12{display:none}
+#tabbar #t6,#tabbar #t5,#tabbar #t4,#tabbar #t7,#tabbar #t8,#tabbar #t9,#tabbar #t10,#tabbar #t11,#tabbar #t12,#tabbar #t13{display:none}
 /* 📊 대시보드 (폰 2칸 · PC 3칸) */
 #dash{display:none;gap:12px;padding:12px 16px calc(120px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
 #dash .dg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -2723,6 +2723,136 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 @keyframes chgP{0%{box-shadow:0 0 0 0 rgba(31,157,85,.5)}70%{box-shadow:0 0 0 8px rgba(31,157,85,0)}100%{box-shadow:0 0 0 0 rgba(31,157,85,0)}}
 @keyframes chgIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 /* 📦 PJ 전환 (2026-11-11) */
+/* 🧪 FT (Final Test) 탭 · 2026-11-12 */
+#ft{display:none;gap:12px;grid-template-columns:minmax(0,1fr);padding:12px 16px calc(120px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto;--fd:#2f6fed;--ff:#8a6bff;--fok:#16a34a;--fam:#d97706;--fcd:#c2410c}
+@media (prefers-color-scheme:dark){#ft{--fd:#6b9bff;--ff:#a78bfa;--fok:#4ade80;--fam:#fbbf24;--fcd:#fb923c}}
+#ft .hx .zms{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;font-weight:700;opacity:.92}
+#ft .hx .zms i{flex:none;width:6px;height:6px;border-radius:50%;background:#fff;opacity:.85}
+#ft .zc{position:relative;background:var(--card);border-radius:22px;padding:16px;box-shadow:var(--csh);min-width:0}
+#ft .zh{display:flex;align-items:center;gap:8px;margin:0 0 12px}
+#ft .zh h3{margin:0;font-size:16.5px;font-weight:900;letter-spacing:-.02em}
+#ft .zh small{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--sub);padding:4px 9px;border-radius:999px;background:var(--bg);white-space:nowrap}
+#ft .iq{display:flex;align-items:center;gap:8px;padding:0 14px;height:50px;border-radius:15px;background:var(--bg);border:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+#ft .iq svg{width:18px;height:18px;color:var(--sub);flex:none}
+#ft .iq input{flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:16px;font-weight:700;outline:0}
+#ft .iq button{flex:none;border:0;background:var(--card);color:var(--sub);width:28px;height:28px;border-radius:50%;font:inherit;font-size:13px;font-weight:900}
+#ft .zl{display:grid;gap:2px;margin-top:10px}
+#ft .zl .zlh{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 6px;font-size:12px;font-weight:800;color:var(--sub)}
+#ft .zl .zlh button{border:0;background:transparent;color:var(--accent);font:inherit;font-size:12px;font-weight:800;padding:0}
+#ft .zr{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:transparent;color:var(--text);font:inherit;padding:11px 10px;border-radius:14px}
+#ft .zr:active{background:var(--bg)}
+#ft .zr .zx{flex:1;min-width:0}
+#ft .zr b{display:block;font-size:15px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ft .zr span.zss{display:block;margin-top:2px;font-size:12px;font-weight:600;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ft .zr mark{background:color-mix(in srgb,var(--accent) 16%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+#ft .ze{padding:18px 8px;text-align:center;font-size:13px;font-weight:700;color:var(--sub);line-height:1.5;word-break:keep-all}
+#ft .zt{flex:none;display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:800;white-space:nowrap;background:var(--bg);color:var(--sub)}
+#ft .zt.ying{background:color-mix(in srgb,var(--fd) 12%,transparent);color:var(--fd)}
+#ft .zt.yok{background:color-mix(in srgb,var(--fok) 13%,transparent);color:var(--fok)}
+#ft .zt.ycd{background:color-mix(in srgb,var(--fcd) 13%,transparent);color:var(--fcd)}
+#ft .zt.yout{background:color-mix(in srgb,var(--sub) 14%,transparent);color:var(--sub)}
+#ft .zt.yurg{background:color-mix(in srgb,var(--warn) 12%,transparent);color:var(--warn)}
+/* 고른 장비 */
+#ft .zs{display:flex;align-items:flex-start;gap:10px;padding:13px 14px;border-radius:16px;background:var(--bg)}
+#ft .zs .zx{flex:1;min-width:0}
+#ft .zs b{display:block;font-size:17px;font-weight:900;letter-spacing:-.02em;word-break:break-all}
+#ft .zs span{display:block;margin-top:3px;font-size:12.5px;font-weight:600;color:var(--sub);line-height:1.4;word-break:keep-all}
+#ft .zs button{flex:none;height:32px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:12.5px;font-weight:800}
+/* 48h 게이지 */
+#ft .zg{margin-top:16px}
+#ft .zg .zgn{display:flex;align-items:baseline;gap:6px}
+#ft .zg .zgn b{font-size:34px;font-weight:900;letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1}
+#ft .zg .zgn small{font-size:14px;font-weight:800;color:var(--sub)}
+#ft .zg .zgn em{margin-left:auto;font-style:normal;font-size:13px;font-weight:900;padding:5px 11px;border-radius:999px;background:color-mix(in srgb,var(--fd) 12%,transparent);color:var(--fd);white-space:nowrap}
+#ft .zg .zgn em.yok{background:color-mix(in srgb,var(--fok) 14%,transparent);color:var(--fok)}
+#ft .zg .zgn em.ycd{background:color-mix(in srgb,var(--fcd) 14%,transparent);color:var(--fcd)}
+#ft .zb{position:relative;display:flex;height:12px;margin-top:12px;border-radius:999px;background:color-mix(in srgb,var(--line) 75%,transparent);overflow:hidden}
+#ft .zb i{display:block;height:100%;transition:width .45s var(--ease,ease)}
+#ft .zb i.yd{background:var(--fd)}
+#ft .zb i.yf{background:var(--ff)}
+#ft .zb.yok i.yd,#ft .zb.yok i.yf{background:var(--fok)}
+#ft .zb.yok i.yf{opacity:.72}
+#ft .zb.ysm{height:8px;margin-top:10px}
+#ft .zlg{display:flex;align-items:center;gap:14px;margin-top:8px;font-size:12px;font-weight:700;color:var(--sub)}
+#ft .zlg span{display:inline-flex;align-items:center;gap:5px}
+#ft .zlg span i{width:8px;height:8px;border-radius:3px;background:var(--fd)}
+#ft .zlg span.yf i{background:var(--ff)}
+#ft .zlg em{margin-left:auto;font-style:normal}
+/* 입력 */
+#ft .zi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+#ft .zi label{display:block;padding:11px 12px 12px;border-radius:16px;background:var(--bg);border:1.5px solid transparent;transition:border-color .2s}
+#ft .zi label:focus-within{border-color:var(--accent);background:var(--card)}
+#ft .zi label>span{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:900;letter-spacing:.02em;color:var(--sub)}
+#ft .zi label>span i{width:8px;height:8px;border-radius:3px;background:var(--fd)}
+#ft .zi label.yf>span i{background:var(--ff)}
+#ft .zi .zv{display:flex;align-items:baseline;gap:3px;margin-top:6px}
+#ft .zi input{min-width:.8em;max-width:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:26px;font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums;outline:0;padding:0}
+#ft .zi input::placeholder{color:color-mix(in srgb,var(--sub) 55%,transparent)}
+#ft .zi .zv small{font-size:15px;font-weight:800;color:var(--sub)}
+#ft .zi .zst{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}
+#ft .zi .zst button{width:100%;height:32px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+#ft .zi .zst button:active{transform:scale(.96)}
+#ft .zi .zw{display:block;font-style:normal;margin-top:7px;font-size:11.5px;font-weight:700;color:var(--sub);min-height:15px}
+/* 48h 미달 진행 */
+#ft .zcd{margin-top:12px;padding:12px 14px;border-radius:16px;border:1px solid color-mix(in srgb,var(--fcd) 30%,var(--line));background:color-mix(in srgb,var(--fcd) 5%,var(--card))}
+#ft .zcd[hidden]{display:none!important}
+#ft .zcd .zsw{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800}
+#ft .zcd .zsw p{flex:1;margin:0;line-height:1.35}
+#ft .zcd .zsw p small{display:block;margin-top:2px;font-size:12px;font-weight:600;color:var(--sub)}
+#ft .ztg{position:relative;flex:none;width:48px;height:28px;border-radius:999px;border:0;background:color-mix(in srgb,var(--sub) 35%,transparent);transition:background .2s}
+#ft .ztg::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .25s var(--spring,ease)}
+#ft .ztg.yon{background:var(--fcd)}
+#ft .ztg.yon::after{transform:translateX(20px)}
+#ft .zcd input{display:block;width:100%;box-sizing:border-box;margin-top:10px;height:44px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:15px;font-weight:700;outline:0}
+#ft .zcd input:focus{border-color:var(--fcd)}
+#ft .zcd input[hidden]{display:none}
+/* 저장 */
+#ft .zsv{display:block;width:100%;height:52px;margin-top:14px;border:0;border-radius:16px;background:var(--grd);box-shadow:var(--grdsh);color:#fff;font:inherit;font-size:16px;font-weight:900;letter-spacing:-.01em}
+#ft .zsv:disabled{background:color-mix(in srgb,var(--sub) 22%,transparent);box-shadow:none;color:color-mix(in srgb,var(--text) 45%,transparent)}
+#ft .zm{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12px;font-weight:700;color:var(--sub)}
+#ft .zm span{flex:1;min-width:0}
+#ft .zdl{flex:none;border:0;background:transparent;color:var(--warn);font:inherit;font-size:12.5px;font-weight:800;padding:6px 0}
+#ft .zhs{margin-top:14px;padding-top:12px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+#ft .zhs h5{margin:0 0 8px;font-size:12.5px;font-weight:900;color:var(--sub)}
+#ft .zhs div{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;padding:7px 0;font-size:12.5px;line-height:1.4}
+#ft .zhs div+div{border-top:1px dashed color-mix(in srgb,var(--line) 80%,transparent)}
+#ft .zhs time{grid-row:span 2;font-weight:800;color:var(--sub);font-variant-numeric:tabular-nums;white-space:nowrap}
+#ft .zhs b{font-weight:700;word-break:keep-all}
+#ft .zhs b.yc{color:var(--fcd)}#ft .zhs b.yd{color:var(--warn)}
+#ft .zhs small{font-size:11.5px;color:var(--sub);font-weight:700}
+/* ROBOT 구동 현황 */
+#ft .zsc{display:flex;align-items:baseline;gap:8px;margin:10px 4px -2px}
+#ft .zsc h4{margin:0;font-size:17px;font-weight:900;letter-spacing:-.02em}
+#ft .zsc span{font-size:12px;font-weight:700;color:var(--sub)}
+#ft .zch{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+#ft .zch::-webkit-scrollbar{display:none}
+#ft .zch button{flex:none;height:36px;padding:0 14px;border-radius:999px;border:0;background:var(--card);color:var(--sub);box-shadow:var(--csh);font:inherit;font-size:13px;font-weight:800;white-space:nowrap}
+#ft .zch button i{font-style:normal;margin-left:5px;color:var(--text);font-variant-numeric:tabular-nums}
+#ft .zch button.yon{background:var(--text);color:var(--card)}
+#ft .zch button.yon i{color:var(--card)}
+#ft .zrc{position:relative;display:block;width:100%;text-align:left;border:0;font:inherit;color:var(--text);background:var(--card);border-radius:20px;padding:14px 16px 13px 18px;box-shadow:var(--csh);overflow:hidden}
+#ft .zrc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--fd)}
+#ft .zrc.yok::before{background:var(--fok)}#ft .zrc.ycd::before{background:var(--fcd)}#ft .zrc.yout::before{background:color-mix(in srgb,var(--sub) 50%,transparent)}
+#ft .zrc:active{transform:scale(.99)}
+#ft .zrc .zq1{display:flex;align-items:flex-start;gap:8px}
+#ft .zrc .zq1 b{flex:1;min-width:0;font-size:15.5px;font-weight:900;letter-spacing:-.015em;word-break:break-all}
+#ft .zrc .zq1 .zt+.zt{margin-left:-2px}
+#ft .zrc .zq2{margin-top:3px;font-size:12px;font-weight:600;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ft .zrc .zq3{display:flex;align-items:baseline;gap:10px;margin-top:9px;font-size:12.5px;font-weight:700;color:var(--sub);font-variant-numeric:tabular-nums}
+#ft .zrc .zq3 b{color:var(--text);font-weight:900}
+#ft .zrc .zq3 .ztt{margin-left:auto;font-size:15px;color:var(--text);font-weight:900}
+#ft .zrc .zq3 .ztt small{font-size:12px;color:var(--sub);font-weight:800;margin-left:1px}
+#ft .zrc .zq4{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:11.5px;font-weight:700;color:var(--sub)}
+#ft .zrc .zq4 span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ft .zrc .zq4 em{font-style:normal;font-weight:900;color:var(--fd);white-space:nowrap}
+#ft .zrc.yok .zq4 em{color:var(--fok)}#ft .zrc.ycd .zq4 em{color:var(--fcd)}#ft .zrc.yout .zq4 em{color:var(--sub)}
+#ft .zrc .zwy{margin-top:8px;padding:7px 10px;border-radius:10px;background:color-mix(in srgb,var(--fcd) 8%,transparent);color:var(--fcd);font-size:12px;font-weight:700;line-height:1.4;word-break:keep-all}
+#ft .zrc.ysel{box-shadow:inset 0 0 0 2px var(--accent),var(--csh)}
+#ft .zrl{display:grid;gap:10px}
+#ft .zmo{height:44px;border-radius:14px;border:1px dashed var(--line);background:transparent;color:var(--sub);font:inherit;font-size:13px;font-weight:800}
+#ft .zn{font-size:12px;line-height:1.55;color:var(--sub);word-break:keep-all;padding:2px 4px}
+#ft .zer{padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--warn) 9%,var(--card));color:var(--warn);font-size:13px;font-weight:700;line-height:1.45;word-break:keep-all}
+
 #pj{display:none;gap:12px;grid-template-columns:minmax(0,1fr);padding:12px 16px calc(120px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
 #pj .pjseg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:var(--bg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 60%,transparent)}
 #pj .pjseg button{height:40px;border:0;border-radius:10px;background:transparent;color:var(--sub);font:inherit;font-size:13.5px;font-weight:800;white-space:nowrap}
@@ -3645,6 +3775,7 @@ SPX.start();
   <div class="tab" id="t10"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M21 20H3"/></svg><em>대시보드</em><span></span></div>
   <div class="tab" id="t11"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 8v4M12 8v4M16 8v4M10 15v2M14 15v2"/></svg><em>배치도</em><span></span></div>
   <div class="tab" id="t12"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h11"/><path d="M12 4l3 3-3 3"/><path d="M20 17H9"/><path d="M12 14l-3 3 3 3"/><circle cx="19" cy="7" r="1.6"/><circle cx="5" cy="17" r="1.6"/></svg><em>PJ 전환</em><span></span></div>
+  <div class="tab" id="t13"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5-6 5 12 2.5-6H21"/></svg><em>FT</em><span></span></div>
 </nav>
 <main id="main"><div class="msg">불러오는 중…</div></main>
 
@@ -3722,6 +3853,7 @@ SPX.start();
 <section id="dash"></section>
 <section id="lay"></section>
 <section id="pj"></section>
+<section id="ft"></section>
 
 <!-- 업로드 완료 확인창 -->
 <div class="ov" id="cfov">
@@ -4043,7 +4175,7 @@ function devId() {
 var SLOW_MS = 6000;   // 6초 이상이면 느림으로 기록
 var SPD = { last: null };
 // 📶 조회 요청은 연결이 끊기면 1번 자동 재시도 (저장 요청은 중복 저장 막으려고 재시도 안 함)
-var READ_FNS = { ping: 1, getDashboardAll: 1, getDashboardData: 1, getUploadStatus: 1, getHoursMeta: 1, getHoursCell: 1, getLeaveData: 1, getStatsData: 1, getEquipIndex: 1, getPjData: 1, getPjLog: 1 };
+var READ_FNS = { ping: 1, getDashboardAll: 1, getDashboardData: 1, getUploadStatus: 1, getHoursMeta: 1, getHoursCell: 1, getLeaveData: 1, getStatsData: 1, getEquipIndex: 1, getPjData: 1, getPjLog: 1, getFtData: 1 };
 var CALL_TIMEOUT = 30000;   // 30초 넘게 응답 없으면 끊고 (조회면) 다시 시도
 
 // 📱 앱을 내렸다가 다시 열 때: 내려가 있는 동안 폰(특히 아이폰)이 연결을 끊어 버려서
@@ -8519,7 +8651,7 @@ function setTab(n) {
   try { pushBar(); } catch (ePb) {}
   if (SR.open) closeSearch(true);
   cur = n;
-  for (var i = 0; i < 13; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
+  for (var i = 0; i < 14; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
   $("main").style.display = n < 2 ? "grid" : "none";
   $("upload").style.display = n === 2 ? "grid" : "none";
   $("hours").style.display = n === 3 ? "grid" : "none";
@@ -8532,12 +8664,14 @@ function setTab(n) {
   $("dash").style.display = n === 10 ? "grid" : "none";
   $("lay").style.display = n === 11 ? "grid" : "none";
   $("pj").style.display = n === 12 ? "grid" : "none";
+  $("ft").style.display = n === 13 ? "grid" : "none";
   if (n < 2) render();
   else if (n === 7) { renderInsp(); if (!IN.loaded) loadInsp(false); }
   else if (n === 8) { renderNc(); if (!NC.loaded) loadNc(false); }
   else if (n === 9) { $("upd").textContent = ""; renderMat(); }
   else if (n === 10) { renderDash(); dashLoad(false); }
   else if (n === 12) { try { sset("pjUsed", "1"); } catch (eU) {} renderPj(); if (!PJ.ld && (!PJ.data || +(sget("pjAt") || 0) < Date.now() - 5 * 60000)) loadPj(false); }   // 받아 둔 걸 바로 보여 주고 · 5분 지났으면 뒤에서 새로 받음
+  else if (n === 13) { renderFt(); if (!FT.ld && (!FT.data || Date.now() - FT.at > 30000)) loadFt(false); loadEquipIndex(false).then(function () { if (cur === 13 && !SR.open) renderFt(true); }); }   // 🧪 FT: 받아 둔 기록을 바로 보여 주고 뒤에서 새로 받음
   else if (n === 11) { renderLay(); loadEquipIndex(false).then(function () { if (cur === 11 && !SR.open) renderLay(); }); }
   else if (n === 6) renderSched();
   else if (n === 2) { renderUpload(U.data); if (!U.loaded) loadUpload(); }
@@ -8548,7 +8682,7 @@ function setTab(n) {
   demoBar();
 }
 // ⋯ 더보기: 입출하 일정 · 장비통계 · 연차 현황 (지금 보고 있으면 더보기 버튼이 그 이름으로 바뀜)
-var MORE = [[10, "대시보드"], [5, "장비통계"], [11, "배치도"], [12, "PJ 전환"], [6, "입출하 일정"], [7, "수입검사"], [9, "입고 불출"], [8, "부적합"], ["ven", "업체 현황"], [4, "연차 현황"]];
+var MORE = [[10, "대시보드"], [5, "장비통계"], [11, "배치도"], [12, "PJ 전환"], [6, "입출하 일정"], [7, "수입검사"], [9, "입고 불출"], [8, "부적합"], [13, "FT (Final Test)"], ["ven", "업체 현황"], [4, "연차 현황"]];
 function moreSync() {
   var b = $("tmore"); if (!b) return;
   var hit = MORE.filter(function (m) { return m[0] === cur; })[0];
@@ -8619,7 +8753,7 @@ function openMore() {
 }
 $("tmore").onclick = openMore;
 (function () {
-  var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3], ["renderInsp", "insp", 7], ["renderNc", "nc", 8], ["renderMat", "mat", 9], ["renderDash", "dash", 10], ["renderPj", "pj", 12]];
+  var W = [["renderUpload", "upload", 2], ["renderSched", "sched", 6], ["renderStats", "stats", 5], ["renderLeave", "leave", 4], ["hoursHero", "hours", 3], ["renderInsp", "insp", 7], ["renderNc", "nc", 8], ["renderMat", "mat", 9], ["renderDash", "dash", 10], ["renderPj", "pj", 12], ["renderFt", "ft", 13]];
   W.forEach(function (w) {
     var f = window[w[0]]; if (typeof f !== "function") return;
     window[w[0]] = function () { var r = f.apply(this, arguments); try { if (!maybeAnim(w[1], w[2])) $(w[1]).classList.remove("ani"); } catch (e) {} return r; };   // 새 데이터로 다시 그린 거면 안 움직임 (두 번 움직이는 것 방지)
@@ -9360,6 +9494,7 @@ $("ref").onclick = function () {
   else if (cur === 10) { p = dashLoad(true); renderDash(); }
   else if (cur === 11) { p = loadEquipIndex(true).then(function (x) { if (cur === 11 && !SR.open) renderLay(); return x; }); }
   else if (cur === 12) { p = loadPj(true); renderPj(); }
+  else if (cur === 13) { p = Promise.all([loadFt(true), loadEquipIndex(true)]).then(function (a) { if (cur === 13 && !SR.open) renderFt(true); return a[0] || ""; }); renderFt(true); }
   else { p = loadDash(true); if (cur === 6) renderSched(); }
 
   REF = true;
@@ -10461,10 +10596,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-12-2";
+var APP_VER = "2026-11-12-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-12-3", ["더보기에 FT (Final Test) 탭이 추가되었습니다 · 장비별 DRY · FULL CYCLE 구동 시간을 기록하고 48h 진행 현황을 한눈에 확인할 수 있습니다", "FT 기록은 동탄 대시보드와 같은 기록입니다 · 어느 쪽에서 입력해도 양쪽에 똑같이 반영됩니다", "48h를 채우지 못했지만 긴급으로 진행하는 장비는 사유와 함께 '조건부 OK'로 기록할 수 있습니다", "더보기 순서: 대시보드 · 장비통계 · 배치도 · PJ 전환 · 입출하 일정 · 수입검사 · 입고 불출 · 부적합 · FT · 업체 현황 · 연차 현황"]],
   ["2026-11-12-2", ["입고 불출: 품목을 미입고 · 부분입고 · 입고완료 · 불출완료로 나눠 보고, 상태별 색으로 구분할 수 있습니다", "수입검사: 장비 안에서 검사 대기 · 긴급 · NG · 완료로 나눠 보고, 품번 · 업체로 찾을 수 있습니다", "찾기 칸에 / 를 넣으면 여러 조건으로 찾을 수 있습니다 (예: 공용/제조2)"]],
   ["2026-11-12-1", ["PJ 전환 제조 탭: 공여 장비 후속에서 장비 번호로 찾을 수 있습니다 (받은 장비 · 내준 장비 모두)"]],
   ["2026-11-11-29", ["열람 화면 안내 문구를 정리했습니다"]],
@@ -13261,6 +13397,303 @@ function pjPrefetch() {
   if (+(sget("pjAt") || 0) > Date.now() - 10 * 60000) return;
   loadPj(false);
 }
+/* ===================== 🧪 FT (Final Test) · 2026-11-12 =====================
+ * 동탄 대시보드 FT와 같은 기록 (저장소 하나) → B앱에서 저장하면 대시보드에, 대시보드에서 저장하면 여기에 그대로
+ * 서버: FtApp.gs (getFtData · saveFt · delFt) · 저장 · 삭제는 편집 PIN
+ * OK 기준: DRY + FULL CYCLE 합계 48시간 (대시보드와 같음) · 48h 미달이어도 긴급 진행이면 '조건부 OK'
+ * 기록할 장비: 1차 검수 날짜가 오늘이거나 지난 장비 중 출하 전 (대시보드와 같은 기준)
+ * runs: [장비, DRY, FULL, 입력자, 입력 시각, 조건부, 사유, 정한 사람, 정한 시각] · logs: [장비, t/c/d, 내용, 입력자, 시각]
+ */
+var FT = { data: null, ld: null, err: "", at: 0, sel: "", q: "", all: false, f: "", lim: 30, d: "", fu: "", c: false, why: "", busy: false, pend: false };
+var FT_NEED = 48;
+function ftCached() { if (!FT.data) { try { var c = cget("ft"); if (c && c.runs) FT.data = c; } catch (e) {} } return FT.data; }
+function ftCan() { return !viewOnly() && !isVip(); }
+function ftR1(v) { return Math.round((+v || 0) * 10) / 10; }
+function ftH(v) { return ftR1(v) + "h"; }
+function ftKey(s) { return String(s == null ? "" : s).replace(/\s+/g, " ").trim().toUpperCase(); }
+function ftToday() { return (SR.idx && SR.idx.today) || ymdLocal(); }
+function ftEqMap() { var m = {}; ((SR.idx && SR.idx.rows) || []).forEach(function (r) { m[ftKey(r[0])] = r; }); return m; }
+function ftRun(name) { var k = ftKey(name), L = (FT.data && FT.data.runs) || []; for (var i = 0; i < L.length; i++) if (ftKey(L[i][0]) === k) return L[i]; return null; }
+function ftSt(r) {
+  var d = r ? ftR1(r[1]) : 0, f = r ? ftR1(r[2]) : 0, t = ftR1(d + f), full = !!r && t >= FT_NEED, cd = !!r && !full && !!r[5];
+  return { d: d, f: f, t: t, full: full, cd: cd, ok: full || cd, k: !r ? "none" : full ? "ok" : cd ? "cd" : "ing" };
+}
+function ftShipped(row, T) { var s = row && row[5] && row[5][10]; return !!(s && s <= T); }
+function ftEligible(row, T) { var q = row && row[5] && row[5][6]; return !!(q && q <= T) && !ftShipped(row, T); }
+function ftSub(row) { return row ? [row[1], row[2]].filter(Boolean).join(" · ") : ""; }
+function ftDt(s) { s = String(s || ""); return s.length >= 10 ? (+s.slice(5, 7)) + "/" + (+s.slice(8, 10)) + s.slice(10) : s; }
+function ftNum(s) { s = String(s == null ? "" : s).trim(); if (!s) return 0; return /^\d{1,3}(\.\d?)?$/.test(s) ? ftR1(parseFloat(s)) : null; }
+function ftTag(k, txt) { return el("span", "zt " + k, txt); }
+
+function loadFt(force) {
+  if (FT.ld) return FT.ld;
+  ftCached();
+  if (cur === 13 && FT.data) $("upd").textContent = (FT.data.at ? FT.data.at + " 기준 · " : "") + "새로 확인 중…";
+  FT.ld = call("getFtData", [!!force]).then(function (r) {
+    FT.ld = null;
+    if (r && r.runs) { FT.data = r; FT.err = ""; FT.at = Date.now(); try { cset("ft", r); } catch (e) {} }
+    else FT.err = "불러오지 못했습니다";
+    if (cur === 13 && !SR.open) renderFt(true);
+    return FT.err;
+  }).catch(function (e) {
+    FT.ld = null;
+    var m = errText(e); FT.err = /알 수 없는/.test(m) ? "서버(Api.gs · FtApp.gs)를 새 버전으로 배포해 주세요." : m;
+    if (cur === 13 && !SR.open) renderFt(true);
+    return FT.err;
+  });
+  return FT.ld;
+}
+// 화면을 보고 있는 동안 1분마다 조용히 확인 (대시보드에서 입력한 값이 바로 보이게 · 입력 중이면 끝난 뒤 반영)
+setInterval(function () { if (cur === 13 && !document.hidden && !SR.open && !FT.busy && Date.now() - FT.at > 55000) loadFt(false); }, 15000);
+document.addEventListener("visibilitychange", function () { if (!document.hidden && cur === 13 && Date.now() - FT.at > 30000) loadFt(false); });
+
+function ftSelect(name, quiet) {
+  FT.sel = name || ""; FT.q = ""; FT.all = false;
+  var r = FT.sel ? ftRun(FT.sel) : null, s = ftSt(r);
+  FT.d = r ? String(s.d) : ""; FT.fu = r ? String(s.f) : ""; FT.c = !!(r && r[5]); FT.why = r ? String(r[6] || "") : "";
+  if (quiet) return;
+  renderFt();
+  setTimeout(function () { var f = $("ftform"); if (f) { var y = f.getBoundingClientRect().top + window.pageYOffset - 76; if (Math.abs(window.pageYOffset - y) > 40) window.scrollTo({ top: y, behavior: "smooth" }); } }, 30);
+}
+
+function renderFt(soft) {
+  var box = $("ft"), ae = document.activeElement;
+  if (soft && ae && box.contains(ae) && ae.tagName === "INPUT" && ae.type !== "search") { FT.pend = true; return; }   // 입력 중엔 다시 그리지 않음
+  FT.pend = false;
+  var D = ftCached(), T = ftToday(), M = ftEqMap(), idxOk = !!(SR.idx && SR.idx.rows), sy = window.pageYOffset;
+  box.innerHTML = "";
+  if (!D) {
+    box.appendChild(heroX("FT · Final Test", null, "", [], ""));
+    box.appendChild(FT.err ? el("div", "zer", "불러오지 못했습니다 · " + FT.err) : el("div", "zc ze", "불러오는 중…"));
+    if (!FT.ld && !FT.err) loadFt(false);
+    return;
+  }
+  $("upd").textContent = (D.at ? D.at + " 기준" : "") + (FT.ld ? " · 새로 확인 중…" : "") + (FT.err ? " · " + FT.err : "");
+  var L = (D.runs || []).map(function (r) { var row = M[ftKey(r[0])] || null; return { n: r[0], r: r, row: row, s: ftSt(r), out: ftShipped(row, T) }; });
+  var ing = L.filter(function (x) { return !x.out && !x.s.ok; }), okL = L.filter(function (x) { return !x.out && x.s.ok; }), out = L.filter(function (x) { return x.out; });
+  var has = {}; L.forEach(function (x) { has[ftKey(x.n)] = 1; });
+  var elig = idxOk ? SR.idx.rows.filter(function (r) { return ftEligible(r, T); }) : [];
+  var wait = elig.filter(function (r) { return !has[ftKey(r[0])]; });
+  var cdN = okL.filter(function (x) { return x.s.cd; }).length;
+  var hx = heroX("FT · Final Test", ing.length, "대 진행 중", [["OK", okL.length - cdN, "대"], ["조건부 OK", cdN, "대"], ["기록 대기", idxOk ? wait.length : "-", idxOk ? "대" : ""]], "");
+  var ms = el("div", "zms"); ms.appendChild(el("i")); ms.appendChild(document.createTextNode("DRY + FULL CYCLE 합계 " + FT_NEED + "시간 이상이면 OK")); hx.appendChild(ms);
+  box.appendChild(hx);
+  if (FT.err) box.appendChild(el("div", "zer", "최신 기록을 받지 못해 마지막으로 받은 기록을 보여 드립니다 · " + FT.err));
+  if (ftCan()) box.appendChild(ftForm(M, T, elig, idxOk));
+  ftList(box, L, ing, okL, out);
+  box.appendChild(el("div", "zn", ftCan()
+    ? "동탄 대시보드 FT와 같은 기록입니다. 어느 쪽에서 입력해도 양쪽에 똑같이 반영됩니다. 기록할 수 있는 장비는 1차 검수 이후 · 출하 전 장비입니다."
+    : "동탄 대시보드 FT와 같은 기록입니다. 보기 전용에서는 기록할 수 없습니다."));
+  if (soft) window.scrollTo(0, sy);
+}
+
+/* ---- 구동 시간 기록 ---- */
+function ftForm(M, T, elig, idxOk) {
+  var c = el("div", "zc"); c.id = "ftform";
+  var h = el("div", "zh"); h.appendChild(el("h3", null, "구동 시간 기록")); h.appendChild(el("small", null, "대시보드와 같은 기록")); c.appendChild(h);
+  if (!FT.sel) { ftPick(c, M, T, elig, idxOk); return c; }
+  var row = M[ftKey(FT.sel)] || null, r = ftRun(FT.sel), s0 = ftSt(r);
+  var sl = el("div", "zs"), tt = el("div", "zx"); tt.appendChild(el("b", null, FT.sel));
+  var sub = ftSub(row); if (sub) tt.appendChild(el("span", null, sub));
+  sl.appendChild(tt);
+  var chg = el("button", null, "다른 장비"); chg.type = "button";
+  chg.onclick = function () { if (ftDirty() && !confirm("입력한 값이 아직 저장되지 않았습니다. 다른 장비를 고를까요?")) return; ftSelect(""); };
+  sl.appendChild(chg); c.appendChild(sl);
+
+  var g = el("div", "zg");
+  g.innerHTML = '<div class="zgn"><b id="ftT">0</b><small>h / ' + FT_NEED + 'h</small><em id="ftS"></em></div><div class="zb" id="ftB"><i class="yd"></i><i class="yf"></i></div><div class="zlg"><span><i></i>DRY</span><span class="yf"><i></i>FULL CYCLE</span><em id="ftL"></em></div>';
+  c.appendChild(g);
+
+  var fin = el("div", "zi");
+  [["d", "DRY", "ftD", 1], ["fu", "FULL CYCLE", "ftF", 2]].forEach(function (x) {
+    var lb = el("label", x[0] === "fu" ? "yf" : "");
+    lb.innerHTML = '<span><i></i>' + x[1] + '</span><div class="zv"><input id="' + x[2] + '" type="text" inputmode="decimal" placeholder="0" autocomplete="off" enterkeyhint="done"><small>h</small></div><div class="zst"><button type="button" data-v="-1">−1h</button><button type="button" data-v="1">+1h</button></div><em class="zw"></em>';
+    var inp = lb.querySelector("input"); inp.value = FT[x[0]];
+    var fit = function () { inp.style.width = (Math.max(1, inp.value.length) * 0.64 + 0.15) + "em"; };   // h가 숫자 바로 옆에 붙게
+    fit();
+    inp.oninput = function () { var v = inp.value.replace(/[^\d.]/g, "").replace(/(\..*)\./g, "$1"); if (v !== inp.value) inp.value = v; FT[x[0]] = v; fit(); ftPrev(); };
+    inp.onkeydown = function (e) { if (e.key === "Enter") inp.blur(); };
+    [].forEach.call(lb.querySelectorAll(".zst button"), function (b) {
+      b.onclick = function (e) { e.preventDefault(); var n = ftNum(FT[x[0]]); if (n == null) n = 0; n = Math.max(0, Math.min(200, ftR1(n + (+b.getAttribute("data-v"))))); FT[x[0]] = String(n); inp.value = FT[x[0]]; fit(); ftPrev(); };
+    });
+    lb.querySelector(".zw").setAttribute("data-k", x[3]);
+    fin.appendChild(lb);
+  });
+  c.appendChild(fin);
+
+  var cd = el("div", "zcd"); cd.id = "ftC";
+  var sw = el("div", "zsw"), p = el("p"); p.appendChild(document.createTextNode("48h 미달 진행 (긴급)")); p.appendChild(el("small", null, "48시간을 채우지 못했지만 진행하면 '조건부 OK'로 표시됩니다"));
+  var tg = el("button", "ztg" + (FT.c ? " yon" : "")); tg.type = "button"; tg.setAttribute("aria-label", "48h 미달 진행"); tg.setAttribute("aria-pressed", FT.c ? "true" : "false");
+  sw.appendChild(p); sw.appendChild(tg); cd.appendChild(sw);
+  var why = el("input"); why.type = "text"; why.maxLength = 60; why.placeholder = "사유 (예: 고객 요청으로 긴급 출하)"; why.value = FT.why; why.hidden = !FT.c;
+  why.oninput = function () { FT.why = why.value; ftPrev(); };
+  tg.onclick = function () { FT.c = !FT.c; tg.className = "ztg" + (FT.c ? " yon" : ""); tg.setAttribute("aria-pressed", FT.c ? "true" : "false"); why.hidden = !FT.c; ftPrev(); if (FT.c) setTimeout(function () { why.focus(); }, 30); };
+  cd.appendChild(why); c.appendChild(cd);
+
+  var sv = el("button", "zsv", "저장"); sv.type = "button"; sv.id = "ftSv"; sv.onclick = ftSave; c.appendChild(sv);
+  if (r) {
+    var mt = el("div", "zm"); mt.appendChild(el("span", null, "마지막 기록 " + ftDt(r[4]) + (r[3] ? " · " + r[3] : "")));
+    var dl = el("button", "zdl", "구동 기록 삭제"); dl.type = "button"; dl.id = "ftDel"; dl.onclick = ftDel; mt.appendChild(dl);
+    c.appendChild(mt);
+  }
+  var LG = ((FT.data && FT.data.logs) || []).filter(function (x) { return ftKey(x[0]) === ftKey(FT.sel); }).slice(0, 6);
+  if (LG.length) {
+    var hs = el("div", "zhs"); hs.appendChild(el("h5", null, "최근 기록"));
+    LG.forEach(function (x) {
+      var d = el("div"); d.appendChild(el("time", null, ftDt(x[4]).replace(/ .*/, "")));
+      d.appendChild(el("b", x[1] === "c" ? "yc" : x[1] === "d" ? "yd" : "", x[2]));
+      d.appendChild(el("small", null, (ftDt(x[4]).split(" ")[1] || "") + (x[3] ? " · " + x[3] : "")));
+      hs.appendChild(d);
+    });
+    c.appendChild(hs);
+  }
+  setTimeout(ftPrev, 0);
+  return c;
+}
+function ftDirty() {
+  if (!FT.sel) return false;
+  var r = ftRun(FT.sel), s0 = ftSt(r), d = ftNum(FT.d), f = ftNum(FT.fu);
+  if (d == null || f == null) return true;
+  var t = ftR1(d + f), cn = t < FT_NEED && FT.c, wy = cn ? String(FT.why || "").replace(/\s+/g, " ").trim() : "";
+  if (!r) return FT.d !== "" || FT.fu !== "";
+  return d !== s0.d || f !== s0.f || (t < FT_NEED && (cn !== !!r[5] || (cn && wy !== String(r[6] || ""))));
+}
+function ftPrev() {
+  if (!$("ftT")) return;
+  var r = ftRun(FT.sel), s0 = ftSt(r), d = ftNum(FT.d), f = ftNum(FT.fu), bad = d == null || f == null || d > 200 || f > 200;
+  var dd = d || 0, ff = f || 0, t = ftR1(dd + ff), base = Math.max(FT_NEED, t);
+  $("ftT").textContent = String(t);
+  var S = $("ftS"), cn = t < FT_NEED && FT.c;
+  if (bad) { S.className = ""; S.textContent = "숫자를 확인해 주세요"; }
+  else if (t >= FT_NEED) { S.className = "yok"; S.textContent = "48h 달성 · OK"; }
+  else if (cn) { S.className = "ycd"; S.textContent = "조건부 OK · " + ftH(FT_NEED - t) + " 미달"; }
+  else { S.className = ""; S.textContent = ftH(FT_NEED - t) + " 남음"; }
+  var B = $("ftB"); B.className = "zb" + (t >= FT_NEED ? " yok" : "");
+  B.children[0].style.width = (dd / base * 100) + "%"; B.children[1].style.width = (ff / base * 100) + "%";
+  $("ftL").textContent = t > FT_NEED ? ftH(t - FT_NEED) + " 초과" : "48h 기준";
+  [].forEach.call(document.querySelectorAll("#ftform .zw"), function (w) {
+    var k = w.getAttribute("data-k"), now = k === "1" ? d : f, was = k === "1" ? s0.d : s0.f;
+    w.textContent = r && now !== was ? "저장된 값 " + ftH(was) : "";
+  });
+  var C = $("ftC"); if (C) C.hidden = !(t < FT_NEED && (t > 0 || (r && r[5])));
+  var sv = $("ftSv"); if (sv && !FT.busy) { var dir = ftDirty(); sv.disabled = bad || !dir; sv.textContent = !dir && r ? "저장된 값과 같습니다" : "저장"; }
+}
+function ftSave() {
+  if (FT.busy || !FT.sel) return;
+  var d = ftNum(FT.d), f = ftNum(FT.fu);
+  if (d == null || f == null) { toast("구동 시간은 숫자로 입력해 주세요 (소수점 한 자리까지)", true); return; }
+  if (d > 200 || f > 200) { toast("구동 시간은 0 ~ 200시간 사이로 입력해 주세요", true); return; }
+  var t = ftR1(d + f), r = ftRun(FT.sel), cond = t < FT_NEED ? !!FT.c : null, why = String(FT.why || "").replace(/\s+/g, " ").trim().slice(0, 60);
+  if (cond && !why) { toast("48h 미달 진행 사유를 입력해 주세요", true); var wi = document.querySelector("#ftC input"); if (wi) wi.focus(); return; }
+  var eq = FT.sel, sv = $("ftSv");
+  FT.busy = true; if (sv) { sv.disabled = true; sv.textContent = "저장 중…"; }
+  callEdit("saveFt", [{ eq: eq, dry: d, full: f, cond: cond, why: why, prev: r ? [r[1], r[2], r[5]] : null }]).then(function (res) {
+    FT.busy = false;
+    if (res && res.runs) { FT.data = res; FT.at = Date.now(); FT.err = ""; try { cset("ft", res); } catch (e) {} }
+    ftSelect(eq, true); renderFt();
+    toast(t >= FT_NEED ? "저장했습니다 · 48h 달성 (OK)" : cond ? "저장했습니다 · 조건부 OK" : "저장했습니다 · " + ftH(FT_NEED - t) + " 남음");
+  }).catch(function (e) {
+    FT.busy = false; ftPrev();
+    if (!/취소/.test(e.message || "")) toast("저장하지 못했습니다 · " + errText(e), true);
+  });
+}
+function ftDel() {
+  var eq = FT.sel, r = ftRun(eq); if (!r || FT.busy) return;
+  if (!confirm(eq + "\nDRY " + ftH(r[1]) + " · FULL CYCLE " + ftH(r[2]) + (r[5] ? " · 조건부 OK" : "") + "\n\n이 구동 기록을 삭제할까요? 동탄 대시보드에서도 함께 삭제되고 '미입력'으로 돌아갑니다.")) return;
+  var b = $("ftDel"); FT.busy = true; if (b) { b.disabled = true; b.textContent = "삭제 중…"; }
+  callEdit("delFt", [{ eq: eq, prev: [r[1], r[2], r[5]] }]).then(function (res) {
+    FT.busy = false;
+    if (res && res.runs) { FT.data = res; FT.at = Date.now(); try { cset("ft", res); } catch (e) {} }
+    ftSelect(eq, true); renderFt(); toast(eq + " 구동 기록을 삭제했습니다");
+  }).catch(function (e) {
+    FT.busy = false; if (b) { b.disabled = false; b.textContent = "구동 기록 삭제"; }
+    if (!/취소/.test(e.message || "")) toast("삭제하지 못했습니다 · " + errText(e), true);
+  });
+}
+
+/* ---- 장비 고르기 ---- */
+function ftPick(c, M, T, elig, idxOk) {
+  var q = el("label", "iq");
+  q.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+  var inp = el("input"); inp.type = "search"; inp.placeholder = "장비 번호로 찾기 (예: CJ07-132)"; inp.value = FT.q; inp.setAttribute("autocomplete", "off"); inp.setAttribute("enterkeyhint", "search");
+  var x = el("button", null, "✕"); x.type = "button"; x.setAttribute("aria-label", "지우기"); x.style.display = FT.q ? "" : "none";
+  q.appendChild(inp); q.appendChild(x); c.appendChild(q);
+  var lst = el("div", "zl"); c.appendChild(lst);
+  inp.oninput = function () { FT.q = inp.value; x.style.display = FT.q ? "" : "none"; paint(); };
+  x.onclick = function (e) { e.preventDefault(); FT.q = ""; inp.value = ""; x.style.display = "none"; paint(); inp.focus(); };
+  // 고를 수 있는 장비 = 1차 검수 이후 · 출하 전 + (목록 밖이어도) 출하 전 기록이 있는 장비
+  var pool = elig.map(function (r) { return { n: r[0], row: r }; }), seen = {};
+  pool.forEach(function (p) { seen[ftKey(p.n)] = 1; });
+  ((FT.data && FT.data.runs) || []).forEach(function (r) { var row = M[ftKey(r[0])] || null; if (!seen[ftKey(r[0])] && !ftShipped(row, T)) { pool.push({ n: r[0], row: row }); seen[ftKey(r[0])] = 1; } });
+  pool.forEach(function (p) { p.r = ftRun(p.n); p.s = ftSt(p.r); p.o = p.s.k === "ing" ? 0 : p.s.k === "none" ? 1 : 2; p.h = ftKey([p.n, p.row ? p.row[1] : "", p.row ? p.row[2] : ""].join(" ")).replace(/\s/g, ""); });
+  pool.sort(function (a, b) { return a.o - b.o || (a.o === 0 ? a.s.t - b.s.t : 0) || a.n.localeCompare(b.n); });
+  function paint() {
+    lst.innerHTML = "";
+    if (!idxOk && !pool.length) { lst.appendChild(el("div", "ze", SR.err ? "장비 목록을 불러오지 못했습니다 · " + SR.err : "장비 목록을 불러오는 중…")); return; }
+    var k = ftKey(FT.q).replace(/\s/g, ""), L = k ? pool.filter(function (p) { return p.h.indexOf(k) >= 0; }) : pool;
+    var hd = el("div", "zlh");
+    hd.appendChild(el("span", null, k ? "찾은 장비 " + L.length + "대" : "1차 검수 이후 · 출하 전 " + pool.length + "대"));
+    var lim = k ? 30 : FT.all ? 999 : 6;
+    if (!k && L.length > 6) { var mb = el("button", null, FT.all ? "접기" : "전체 보기"); mb.type = "button"; mb.onclick = function (e) { e.preventDefault(); FT.all = !FT.all; paint(); }; hd.appendChild(mb); }
+    lst.appendChild(hd);
+    if (!L.length) { lst.appendChild(el("div", "ze", k ? "'" + FT.q.trim() + "'에 해당하는 장비가 없습니다.\n기록은 1차 검수 이후 · 출하 전 장비만 할 수 있습니다." : "1차 검수를 마친 장비가 없습니다")); return; }
+    L.slice(0, lim).forEach(function (p) {
+      var b = el("button", "zr"); b.type = "button";
+      var t = el("div", "zx"), nb = el("b"), raw = FT.q.trim(), i = raw ? p.n.toUpperCase().indexOf(raw.toUpperCase()) : -1;
+      if (i >= 0) { nb.appendChild(document.createTextNode(p.n.slice(0, i))); nb.appendChild(el("mark", null, p.n.slice(i, i + raw.length))); nb.appendChild(document.createTextNode(p.n.slice(i + raw.length))); } else nb.textContent = p.n;
+      t.appendChild(nb); var sb = ftSub(p.row); if (sb) t.appendChild(el("span", "zss", sb));
+      b.appendChild(t);
+      b.appendChild(p.s.k === "none" ? ftTag("", "미입력") : p.s.k === "ing" ? ftTag("ying", ftH(p.s.t) + " · " + ftH(FT_NEED - p.s.t) + " 남음") : p.s.cd ? ftTag("ycd", "조건부 OK") : ftTag("yok", "OK · " + ftH(p.s.t)));
+      b.onclick = function () { ftSelect(p.n); };
+      lst.appendChild(b);
+    });
+    if (k && L.length > lim) lst.appendChild(el("div", "ze", "더 있습니다 · 번호를 조금 더 입력해 주세요"));
+  }
+  paint();
+}
+
+/* ---- ROBOT 구동 현황 (구동 시간을 입력한 장비) ---- */
+function ftList(box, L, ing, okL, out) {
+  var sec = el("div", "zsc"); sec.appendChild(el("h4", null, "ROBOT 구동 현황")); sec.appendChild(el("span", null, "입력한 장비 " + L.length + "대")); box.appendChild(sec);
+  if (!FT.f) FT.f = ing.length ? "ing" : "all";
+  var ch = el("div", "zch");
+  [["ing", "48h 진행 중", ing.length], ["ok", "OK", okL.length], ["out", "출하", out.length], ["all", "전체", L.length]].forEach(function (o) {
+    var b = el("button", FT.f === o[0] ? "yon" : ""); b.type = "button"; b.appendChild(document.createTextNode(o[1])); b.appendChild(el("i", null, String(o[2])));
+    b.onclick = function () { FT.f = o[0]; FT.lim = 30; renderFt(); };
+    ch.appendChild(b);
+  });
+  box.appendChild(ch);
+  var list = (FT.f === "ing" ? ing : FT.f === "ok" ? okL : FT.f === "out" ? out : L).slice();
+  list.sort(function (a, b) { return (a.out - b.out) || (a.s.ok - b.s.ok) || String(b.r[4]).localeCompare(String(a.r[4])) || a.n.localeCompare(b.n); });
+  var rl = el("div", "zrl"); box.appendChild(rl);
+  if (!list.length) { rl.appendChild(el("div", "zc ze", L.length ? "해당하는 장비가 없습니다" : "아직 구동 시간을 입력한 장비가 없습니다")); return; }
+  list.slice(0, FT.lim).forEach(function (x) {
+    var s = x.s, k = x.out ? "yout" : s.cd ? "ycd" : s.full ? "yok" : "ying";
+    var c = el("button", "zrc " + k + (ftCan() && ftKey(FT.sel) === ftKey(x.n) ? " ysel" : "")); c.type = "button";
+    var r1 = el("div", "zq1"); r1.appendChild(el("b", null, x.n));
+    if (x.row && x.row[7] && !x.out) r1.appendChild(ftTag("yurg", "긴급"));
+    r1.appendChild(x.out ? ftTag("yout", "출하") : s.cd ? ftTag("ycd", "조건부 OK") : s.full ? ftTag("yok", "OK") : ftTag("ying", "진행"));
+    c.appendChild(r1);
+    c.appendChild(el("div", "zq2", ftSub(x.row) || "장비 정보 없음"));
+    var base = Math.max(FT_NEED, s.t), bar = el("div", "zb ysm" + (s.full ? " yok" : ""));
+    var i1 = el("i", "yd"), i2 = el("i", "yf"); i1.style.width = (s.d / base * 100) + "%"; i2.style.width = (s.f / base * 100) + "%"; bar.appendChild(i1); bar.appendChild(i2); c.appendChild(bar);
+    var r3 = el("div", "zq3");
+    var a = el("span"); a.appendChild(document.createTextNode("DRY ")); a.appendChild(el("b", null, ftH(s.d))); r3.appendChild(a);
+    var bb = el("span"); bb.appendChild(document.createTextNode("FULL CYCLE ")); bb.appendChild(el("b", null, ftH(s.f))); r3.appendChild(bb);
+    var tt = el("span", "ztt", String(s.t)); tt.appendChild(el("small", null, "h")); r3.appendChild(tt);
+    c.appendChild(r3);
+    if (s.cd) c.appendChild(el("div", "zwy", "사유: " + (x.r[6] || "-") + (x.r[7] ? " · " + x.r[7] : "") + (x.r[8] ? " · " + ftDt(x.r[8]).replace(/ .*/, "") : "")));
+    var r4 = el("div", "zq4"); r4.appendChild(el("span", null, ftDt(x.r[4]) + (x.r[3] ? " · " + x.r[3] : "")));
+    r4.appendChild(el("em", null, x.out ? "출하 완료" : s.full ? "48h 달성" : s.cd ? ftH(FT_NEED - s.t) + " 미달" : ftH(FT_NEED - s.t) + " 남음"));
+    c.appendChild(r4);
+    c.onclick = function () { if (!ftCan()) return; if (x.out) { toast("출하된 장비는 기록할 수 없습니다"); return; } if (ftDirty() && ftKey(FT.sel) !== ftKey(x.n) && !confirm("입력한 값이 아직 저장되지 않았습니다. 이 장비로 바꿀까요?")) return; ftSelect(x.n); };
+    rl.appendChild(c);
+  });
+  if (list.length > FT.lim) { var m = el("button", "zmo", "더 보기 (" + (list.length - FT.lim) + "대)"); m.type = "button"; m.onclick = function () { FT.lim += 30; renderFt(); }; rl.appendChild(m); }
+}
+// 입력이 끝나면(칸에서 나가면) 미뤄 둔 새 기록 반영
+document.addEventListener("focusout", function (e) { if (FT.pend && cur === 13 && $("ft").contains(e.target)) setTimeout(function () { var ae = document.activeElement; if (FT.pend && !(ae && $("ft").contains(ae) && ae.tagName === "INPUT")) renderFt(true); }, 200); });
+
 function loadPj(force) {
   if (PJ.ld) return Promise.resolve();
   if (!PJ.data) { try { var c = cget("pj"); if (c && c.items) PJ.data = c; } catch (e) {} }
