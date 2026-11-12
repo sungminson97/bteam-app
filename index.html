@@ -2770,6 +2770,16 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #ft .zb i{display:block;height:100%;transition:width .45s var(--ease,ease)}
 #ft .zb i.yd{background:var(--fd)}
 #ft .zb i.yf{background:var(--ff)}
+#ft .zb i.ya{background:repeating-linear-gradient(135deg,var(--ff) 0 5px,color-mix(in srgb,var(--ff) 55%,transparent) 5px 10px)}
+#ft .zb.yok i.ya{background:repeating-linear-gradient(135deg,var(--fok) 0 5px,color-mix(in srgb,var(--fok) 55%,transparent) 5px 10px)}
+/* 추가 입력 · 누적 고치기 */
+#ft .zmd{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:12px;padding:4px;border-radius:14px;background:var(--bg)}
+#ft .zmd button{height:38px;border:0;border-radius:10px;background:transparent;color:var(--sub);font:inherit;font-size:13px;font-weight:800;white-space:nowrap}
+#ft .zmd button.yon{background:var(--card);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.06)}
+#ft .zcur{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-top:10px;padding:11px 13px;border-radius:14px;border:1px dashed color-mix(in srgb,var(--line) 90%,var(--sub));font-size:12.5px;font-weight:700;color:var(--sub);font-variant-numeric:tabular-nums}
+#ft .zcur b{color:var(--text);font-weight:900}
+#ft .zcur .zcl{color:var(--text);font-weight:900}
+#ft .zcur .zcw{flex-basis:100%;font-size:11.5px}
 #ft .zb.yok i.yd,#ft .zb.yok i.yf{background:var(--fok)}
 #ft .zb.yok i.yf{opacity:.72}
 #ft .zb.ysm{height:8px;margin-top:10px}
@@ -2852,6 +2862,102 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #ft .zmo{height:44px;border-radius:14px;border:1px dashed var(--line);background:transparent;color:var(--sub);font:inherit;font-size:13px;font-weight:800}
 #ft .zn{font-size:12px;line-height:1.55;color:var(--sub);word-break:keep-all;padding:2px 4px}
 #ft .zer{padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--warn) 9%,var(--card));color:var(--warn);font-size:13px;font-weight:700;line-height:1.45;word-break:keep-all}
+
+/* DRY · FULL CYCLE 따로 보기 (각 24h) */
+#ft .zrw{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"k v e" "b b b";align-items:baseline;gap:6px 8px;margin-top:12px;--zc:var(--fd)}
+#ft .zrw.yf{--zc:var(--ff)}
+#ft .zrw .zk{grid-area:k;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:900;color:var(--sub)}
+#ft .zrw .zk i{width:8px;height:8px;border-radius:3px;background:var(--zc)}
+#ft .zrw>b{grid-area:v;justify-self:end;font-size:22px;font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+#ft .zrw>em{grid-area:e;font-style:normal;font-size:12.5px;font-weight:900;color:var(--zc);min-width:0}
+#ft .zrw .zb2{grid-area:b}
+#ft .zrw.yok>b{color:var(--fok)}
+#ft .zb2{display:flex;height:10px;border-radius:999px;background:color-mix(in srgb,var(--line) 75%,transparent);overflow:hidden}
+#ft .zb2 i{display:block;height:100%;background:var(--zc,var(--fd));transition:width .4s var(--ease,ease)}
+#ft .zb2 i.ya{background:repeating-linear-gradient(135deg,var(--zc,var(--fd)) 0 5px,color-mix(in srgb,var(--zc,var(--fd)) 50%,transparent) 5px 10px)}
+#ft .yok .zb2 i{background:var(--fok)}
+#ft .ztot{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:1px dashed color-mix(in srgb,var(--line) 90%,transparent);font-size:13px;font-weight:800;color:var(--sub);font-variant-numeric:tabular-nums}
+#ft .ztot b{color:var(--text);font-size:15px;font-weight:900}
+#ft .ztot em{margin-left:auto;font-style:normal;font-size:12.5px;font-weight:900;padding:5px 11px;border-radius:999px;background:color-mix(in srgb,var(--fd) 12%,transparent);color:var(--fd);white-space:nowrap}
+#ft .ztot em.yok{background:color-mix(in srgb,var(--fok) 14%,transparent);color:var(--fok)}
+#ft .ztot em.ycd{background:color-mix(in srgb,var(--fcd) 14%,transparent);color:var(--fcd)}
+#ft .zrc .zq3{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+#ft .zcl2{--zc:var(--fd);min-width:0}
+#ft .zcl2.yf{--zc:var(--ff)}
+#ft .zch2{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-bottom:6px;font-size:12px;font-weight:800;color:var(--sub)}
+#ft .zch2 b{color:var(--text);font-size:15px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+#ft .zch2 b small{font-size:11px;color:var(--sub);font-weight:800}
+#ft .zcl2.yok .zch2 b{color:var(--fok)}
+#ft .zcl2 .zb2{height:7px}
+
+/* 작업자별 FT 실적 */
+#ft .zvs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:16px;background:var(--card);box-shadow:var(--csh)}
+#ft .zvs button{height:42px;border:0;border-radius:12px;background:transparent;color:var(--sub);font:inherit;font-size:14px;font-weight:900}
+#ft .zvs button.yon{background:var(--grd);color:#fff;box-shadow:var(--grdsh)}
+#ft .zmd button i{font-style:normal;font-size:12px;font-weight:800;opacity:.75;margin-left:2px;font-variant-numeric:tabular-nums}
+#ft .zplg{display:flex;gap:14px;justify-content:flex-end;margin:12px 2px 2px;font-size:11.5px;font-weight:800;color:var(--sub)}
+#ft .zplg span{display:inline-flex;align-items:center;gap:5px}
+#ft .zplg i{width:10px;height:8px;border-radius:3px;background:var(--fd)}
+#ft .zplg .yg i{background:repeating-linear-gradient(135deg,var(--ff) 0 3px,color-mix(in srgb,var(--ff) 45%,transparent) 3px 6px)}
+#ft .zp{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:transparent;color:var(--text);font:inherit;padding:13px 6px;border-radius:14px}
+#ft .zp+.zp,#ft .zpd+.zp{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+#ft .zp.yon{background:color-mix(in srgb,var(--accent) 6%,transparent);border-top-color:transparent}
+#ft .zp:active{background:var(--bg)}
+#ft .zp.yz{opacity:.55}
+#ft .zpr{width:28px;height:28px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;background:var(--bg);color:var(--sub);font-variant-numeric:tabular-nums}
+#ft .zpr.r1{background:linear-gradient(135deg,#f5c542,#e0a100);color:#fff}
+#ft .zpr.r2{background:linear-gradient(135deg,#c9d1db,#97a3b1);color:#fff}
+#ft .zpr.r3{background:linear-gradient(135deg,#e2a77a,#b8743f);color:#fff}
+#ft .zpm{min-width:0;display:grid;gap:4px}
+#ft .zpn{display:flex;align-items:center;gap:6px}
+#ft .zpn b{font-size:15.5px;font-weight:900;letter-spacing:-.02em}
+#ft .zpn em{font-style:normal;font-size:10.5px;font-weight:800;padding:2px 6px;border-radius:6px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
+#ft .zps{font-size:11.5px;font-weight:700;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ft .zpb{display:flex;height:7px;border-radius:999px;background:color-mix(in srgb,var(--line) 75%,transparent);overflow:hidden;margin-top:2px}
+#ft .zpb i{display:block;height:100%;transition:width .5s var(--ease,ease)}
+#ft .zpb i.s{background:var(--fd)}
+#ft .zpb i.g{background:repeating-linear-gradient(135deg,var(--ff) 0 4px,color-mix(in srgb,var(--ff) 45%,transparent) 4px 8px)}
+#ft .zpv{display:grid;justify-items:end;gap:3px;min-width:58px}
+#ft .zpv b{font-size:21px;font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+#ft .zpv b small{font-size:12px;font-weight:800;color:var(--sub);margin-left:1px}
+#ft .zpg{font-size:11.5px;font-weight:900;color:var(--ff);white-space:nowrap}
+#ft .zpg.y0{color:color-mix(in srgb,var(--sub) 70%,transparent);font-weight:700}
+#ft .zpd{margin:0 0 6px;padding:4px 12px 10px;border-radius:0 0 14px 14px;background:color-mix(in srgb,var(--accent) 4%,transparent)}
+#ft .zpsec+.zpsec{margin-top:6px;border-top:1px dashed color-mix(in srgb,var(--line) 90%,transparent)}
+#ft .zpsh{display:flex;align-items:baseline;gap:6px;padding:10px 2px 4px}
+#ft .zpsh b{font-size:13px;font-weight:900}
+#ft .zpsh span{font-size:12px;font-weight:800;color:var(--sub)}
+#ft .zpe{padding:6px 2px 4px;font-size:12px;font-weight:700;color:var(--sub)}
+#ft .zpi{display:flex;align-items:center;gap:10px;padding:8px 2px}
+#ft .zpi+.zpi{border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+#ft .zpim{flex:1;min-width:0}
+#ft .zpim b{display:block;font-size:13.5px;font-weight:800;word-break:break-all}
+#ft .zpim span{display:block;margin-top:1px;font-size:11.5px;font-weight:600;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ft .zpd2{flex:none;font-size:12px;font-weight:800;color:var(--sub);font-variant-numeric:tabular-nums}
+#ft .zpmh{display:grid;grid-template-columns:36px 34px minmax(0,1fr) auto;align-items:center;gap:8px;width:100%;margin-top:6px;padding:9px 10px;border:0;border-radius:11px;background:var(--card);color:var(--text);font:inherit;text-align:left;box-shadow:0 1px 2px rgba(16,24,40,.05)}
+#ft .zpmh b{font-size:13px;font-weight:900}
+#ft .zpmh>span:not(.zpmb){font-size:12px;font-weight:800;color:var(--fd);font-variant-numeric:tabular-nums}
+#ft .zpmb{height:5px;border-radius:999px;background:color-mix(in srgb,var(--line) 75%,transparent);overflow:hidden}
+#ft .zpmb i{display:block;height:100%;background:var(--fd);border-radius:999px}
+#ft .zpmh em{font-style:normal;font-size:11px;font-weight:800;color:var(--sub)}
+
+/* 기록 지우기 */
+#ft .zxb{margin-top:12px;padding:12px 13px;border-radius:16px;border:1px dashed color-mix(in srgb,var(--line) 90%,var(--sub))}
+#ft .zxh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+#ft .zxh b{font-size:13.5px;font-weight:900}
+#ft .zxh small{font-size:11.5px;font-weight:700;color:var(--sub)}
+#ft .zxe{padding:6px 0 4px;font-size:12px;font-weight:600;color:var(--sub);line-height:1.5}
+#ft .zxi{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+#ft .zxh+.zxi{border-top:0}
+#ft .zxm{flex:1;min-width:0}
+#ft .zxm b{display:block;font-size:13.5px;font-weight:900;font-variant-numeric:tabular-nums}
+#ft .zxm b .yd{color:var(--fd)} #ft .zxm b .yf{color:var(--ff)}
+#ft .zxm>span{display:block;margin-top:1px;font-size:11.5px;font-weight:700;color:var(--sub)}
+#ft .zxi button,#ft .zxbs button{flex:none;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--sub);font:inherit;font-size:12px;font-weight:800;white-space:nowrap}
+#ft .zxi button:active,#ft .zxbs button:active{color:var(--warn);border-color:var(--warn)}
+#ft .zxi button:disabled,#ft .zxbs button:disabled{opacity:.5}
+#ft .zxbs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding-top:10px;border-top:1px dashed color-mix(in srgb,var(--line) 90%,transparent)}
+#ft .zxbs button.yall{color:var(--warn)}
 
 #pj{display:none;gap:12px;grid-template-columns:minmax(0,1fr);padding:12px 16px calc(120px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
 #pj .pjseg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;background:var(--bg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 60%,transparent)}
@@ -10596,10 +10702,13 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-12-5";
+var APP_VER = "2026-11-12-8";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-12-8", ["FT 구동 기록을 부분별로 지울 수 있습니다 · 잘못 넣은 입력 한 건만 지우면 그만큼 누적에서 빠집니다", "DRY만 · FULL CYCLE만 따로 지울 수도 있습니다"]],
+  ["2026-11-12-7", ["FT 탭에 작업자별 실적이 추가되었습니다 · 팀원별로 올해 출하한 장비 대수와 진행 중인 장비 대수를 순위로 확인할 수 있습니다", "이름을 누르면 진행 중인 장비와 출하한 장비를 월별로 볼 수 있습니다"]],
+  ["2026-11-12-6", ["FT 구동 시간은 이번에 더 돌린 시간만 입력하면 됩니다 · 지금 누적에 자동으로 더해집니다 (예: FULL CYCLE 4h 입력 → 1h + 4h = 5h)", "누적 값을 잘못 넣었을 때는 누적 시간 고치기에서 바로 고칠 수 있습니다", "DRY · FULL CYCLE을 각각 24h 기준으로 따로 보여 드려 얼마나 돌았는지 바로 보입니다", "최근 기록을 DRY 12h / FULL CYCLE 5h / 합계 17h → 31h 남음 처럼 보기 쉽게 바꿨습니다", "동탄 대시보드에서 입력한 값이 FT 화면에 바로 반영됩니다"]],
   ["2026-11-12-5", ["FT 화면을 보고 있으면 동탄 대시보드에서 입력한 값이 10초 안에 반영됩니다"]],
   ["2026-11-12-4", ["FT 화면이 바로 열리고 저장도 바로 됩니다", "FT에는 동탄 장비만 표시됩니다 (동탄 대시보드와 같은 장비 목록)"]],
   ["2026-11-12-3", ["더보기에 FT (Final Test) 탭이 추가되었습니다 · 동탄 장비별 DRY · FULL CYCLE 구동 시간을 기록하고 48h 진행 현황을 한눈에 확인할 수 있습니다", "FT 기록은 동탄 대시보드와 같은 기록입니다 · 어느 쪽에서 입력해도 양쪽에 바로 반영됩니다", "48h를 채우지 못했지만 긴급으로 진행하는 장비는 사유와 함께 '조건부 OK'로 기록할 수 있습니다", "더보기 순서: 대시보드 · 장비통계 · 배치도 · PJ 전환 · 입출하 일정 · 수입검사 · 입고 불출 · 부적합 · FT · 업체 현황 · 연차 현황"]],
@@ -13425,7 +13534,7 @@ function ftSb(fn, body) {
           function (e) { clearTimeout(tm); throw new Error(e && e.name === "AbortError" ? "응답이 늦습니다. 잠시 후 다시 시도해 주세요." : "인터넷 연결을 확인해 주세요."); });
 }
 function ftDirect() { return ftHash(getPin()).then(function (h) { return h ? ftSb("bt_ft_read", { pin_h: h }).then(function (j) { return j && j.ok ? j : null; }, function () { return null; }) : null; }); }
-var FT = { sig: "", data: null, ld: null, err: "", at: 0, sel: "", q: "", all: false, f: "", lim: 30, d: "", fu: "", c: false, why: "", busy: false, pend: false };
+var FT = { v: "run", m: "add", sig: "", data: null, ld: null, err: "", at: 0, sel: "", q: "", all: false, f: "", lim: 30, d: "", fu: "", c: false, why: "", busy: false, pend: false };
 var FT_NEED = 48;
 function ftCached() { if (!FT.data) { try { var c = cget("ft2"); if (c && c.runs && c.eq) FT.data = c; } catch (e) {} } return FT.data; }
 function ftCan() { return !viewOnly() && !isVip(); }
@@ -13445,6 +13554,12 @@ function ftEligible(row, T) { return !!row && +row[4] < 10 && (ftQ1Done(row) || 
 function ftSub(row) { return row ? [row[1], [row[2], row[3]].filter(Boolean).join(" · ")].filter(Boolean).join(" · ") : ""; }
 function ftDt(s) { s = String(s || ""); return s.length >= 10 ? (+s.slice(5, 7)) + "/" + (+s.slice(8, 10)) + s.slice(10) : s; }
 function ftNum(s) { s = String(s == null ? "" : s).trim(); if (!s) return 0; return /^\d{1,3}(\.\d?)?$/.test(s) ? ftR1(parseFloat(s)) : null; }
+// 이력 문구 보기 쉽게: 'DRY 12h / FULL CYCLE 9h / 합계 21h → 27h 남음' (예전 기록 '13.0h' · ' · ' 도 같은 모양으로)
+function ftLogTxt(x) {
+  var t = String(x[2] || "").replace(/(\d+)\.0h/g, "$1h");
+  if (x[1] === "t" || x[1] === "d") t = t.replace(/ · /g, " / ");
+  return t;
+}
 function ftTag(k, txt) { return el("span", "zt " + k, txt); }
 
 function loadFt(force) {
@@ -13453,7 +13568,9 @@ function loadFt(force) {
   if (cur === 13 && FT.data) $("upd").textContent = (FT.data.at ? FT.data.at + " 기준 · " : "") + "새로 확인 중…";
   FT.ld = ftDirect().then(function (j) { return j || call("getFtData", [true]); }).then(function (r) {   // 바로 읽기 → 안 되면(지문 미등록 · 게스트) 시트 서버 한 번
     FT.ld = null;
+    var clean = FT.sel && FT.m === "set" && !ftDirty();   // 누적 고치기 화면에서 아무것도 안 바꿨으면 새 값으로 따라감
     if (r && r.runs && r.eq) { FT.data = r; FT.err = ""; FT.at = Date.now(); try { cset("ft2", r); } catch (e) {} }
+    if (clean) { var s9 = ftSt(ftRun(FT.sel)); FT.d = String(s9.d); FT.fu = String(s9.f); }
     else FT.err = "불러오지 못했습니다";
     if (cur === 13 && !SR.open) renderFt(true);
     return FT.err;
@@ -13476,10 +13593,22 @@ setInterval(function () {
 }, 10000);
 document.addEventListener("visibilitychange", function () { if (!document.hidden && cur === 13 && Date.now() - FT.at > 5000) loadFt(false); });
 
+// ➕ 2026-11-12 add = 이번에 더 돌린 시간만 입력 (서버가 누적에 더함) · set = 누적 시간 고치기
+function ftSetMode(m) {
+  var r = ftRun(FT.sel), s = ftSt(r);
+  FT.m = m === "set" ? "set" : "add";
+  FT.d = FT.m === "set" && r ? String(s.d) : ""; FT.fu = FT.m === "set" && r ? String(s.f) : "";
+  renderFt();
+}
+function ftVals() {   // { r, s0, a1, a2, d, f, bad }  d · f = 저장 후 누적
+  var r = ftRun(FT.sel), s0 = ftSt(r), a1 = ftNum(FT.d), a2 = ftNum(FT.fu), add = FT.m === "add";
+  var d = a1 == null ? null : add ? ftR1(s0.d + a1) : a1, f = a2 == null ? null : add ? ftR1(s0.f + a2) : a2;
+  return { r: r, s0: s0, a1: a1, a2: a2, d: d, f: f, add: add, bad: d == null || f == null || d > 200 || f > 200 || a1 > 200 || a2 > 200 };
+}
 function ftSelect(name, quiet) {
   FT.sel = name || ""; FT.q = ""; FT.all = false;
   var r = FT.sel ? ftRun(FT.sel) : null, s = ftSt(r);
-  FT.d = r ? String(s.d) : ""; FT.fu = r ? String(s.f) : ""; FT.c = !!(r && r[5]); FT.why = r ? String(r[6] || "") : "";
+  FT.m = "add"; FT.d = ""; FT.fu = ""; FT.c = !!(r && r[5]); FT.why = r ? String(r[6] || "") : "";   // ➕ 처음엔 '이번에 더 돌린 시간' (빈칸)
   if (quiet) return;
   renderFt();
   setTimeout(function () { var f = $("ftform"); if (f) { var y = f.getBoundingClientRect().top + window.pageYOffset - 76; if (Math.abs(window.pageYOffset - y) > 40) window.scrollTo({ top: y, behavior: "smooth" }); } }, 30);
@@ -13491,6 +13620,8 @@ function renderFt(soft) {
   FT.pend = false;
   var D = ftCached(), T = ftToday(), M = ftEqMap(), idxOk = true, sy = window.pageYOffset;
   box.innerHTML = "";
+  if (ftpCan()) ftViewSeg(box);   // 구동 기록 · 작업자 실적
+  if (FT.v === "ppl" && ftpCan()) { ftPeople(box); if (soft) window.scrollTo(0, sy); return; }
   if (!D) {
     box.appendChild(heroX("FT · Final Test", null, "", [], ""));
     box.appendChild(FT.err ? el("div", "zer", "불러오지 못했습니다 · " + FT.err) : el("div", "zc ze", "불러오는 중…"));
@@ -13528,13 +13659,31 @@ function ftForm(M, T, elig, idxOk) {
   var chg = el("button", null, "다른 장비"); chg.type = "button";
   chg.onclick = function () { if (ftDirty() && !confirm("입력한 값이 아직 저장되지 않았습니다. 다른 장비를 고를까요?")) return; ftSelect(""); };
   sl.appendChild(chg); c.appendChild(sl);
+  var md = el("div", "zmd");
+  [["add", "이번에 더 돌린 시간 입력"], ["set", "누적 시간 고치기"]].forEach(function (o) {
+    var b = el("button", FT.m === o[0] ? "yon" : "", o[1]); b.type = "button";
+    b.onclick = function () { if (FT.m !== o[0]) ftSetMode(o[0]); };
+    md.appendChild(b);
+  });
+  c.appendChild(md);
+  if (FT.m === "add") {
+    var cu = el("div", "zcur"); cu.appendChild(el("span", "zcl", "현재 누적"));
+    if (r) {
+      [["DRY", s0.d], ["FULL CYCLE", s0.f], ["합계", s0.t]].forEach(function (x) { var sp = el("span"); sp.appendChild(document.createTextNode(x[0] + " ")); sp.appendChild(el("b", null, ftH(x[1]))); cu.appendChild(sp); });
+      cu.appendChild(el("span", "zcw", ftDt(r[4]) + (r[3] ? " · " + r[3] : "")));
+    } else cu.appendChild(el("span", null, "아직 기록이 없습니다 · 처음 돌린 시간을 입력해 주세요"));
+    c.appendChild(cu);
+  }
 
   var g = el("div", "zg");
-  g.innerHTML = '<div class="zgn"><b id="ftT">0</b><small>h / ' + FT_NEED + 'h</small><em id="ftS"></em></div><div class="zb" id="ftB"><i class="yd"></i><i class="yf"></i></div><div class="zlg"><span><i></i>DRY</span><span class="yf"><i></i>FULL CYCLE</span><em id="ftL"></em></div>';
+  // DRY · FULL CYCLE 따로 (각 24h 기준 막대) + 아래 합계 한 줄
+  g.innerHTML = '<div class="zrw" id="ftRD"><span class="zk"><i></i>DRY</span><div class="zb2"><i></i><i class="ya"></i></div><b></b><em></em></div>' +
+                '<div class="zrw yf" id="ftRF"><span class="zk"><i></i>FULL CYCLE</span><div class="zb2"><i></i><i class="ya"></i></div><b></b><em></em></div>' +
+                '<div class="ztot"><span>합계 <b id="ftT">0</b>h / ' + FT_NEED + 'h</span><em id="ftS"></em></div>';
   c.appendChild(g);
 
   var fin = el("div", "zi");
-  [["d", "DRY", "ftD", 1], ["fu", "FULL CYCLE", "ftF", 2]].forEach(function (x) {
+  [["d", FT.m === "add" ? "DRY 추가" : "DRY 누적", "ftD", 1], ["fu", FT.m === "add" ? "FULL CYCLE 추가" : "FULL CYCLE 누적", "ftF", 2]].forEach(function (x) {
     var lb = el("label", x[0] === "fu" ? "yf" : "");
     lb.innerHTML = '<span><i></i>' + x[1] + '</span><div class="zv"><input id="' + x[2] + '" type="text" inputmode="decimal" placeholder="0" autocomplete="off" enterkeyhint="done"><small>h</small></div><div class="zst"><button type="button" data-v="-1">−1h</button><button type="button" data-v="1">+1h</button></div><em class="zw"></em>';
     var inp = lb.querySelector("input"); inp.value = FT[x[0]];
@@ -13562,15 +13711,15 @@ function ftForm(M, T, elig, idxOk) {
   var sv = el("button", "zsv", "저장"); sv.type = "button"; sv.id = "ftSv"; sv.onclick = ftSave; c.appendChild(sv);
   if (r) {
     var mt = el("div", "zm"); mt.appendChild(el("span", null, "마지막 기록 " + ftDt(r[4]) + (r[3] ? " · " + r[3] : "")));
-    var dl = el("button", "zdl", "구동 기록 삭제"); dl.type = "button"; dl.id = "ftDel"; dl.onclick = ftDel; mt.appendChild(dl);
     c.appendChild(mt);
+    c.appendChild(ftXBox(r));   // ✂ 기록 지우기 (입력 한 건씩 · DRY만 · FULL CYCLE만 · 전체)
   }
   var LG = ((FT.data && FT.data.logs) || []).filter(function (x) { return ftKey(x[0]) === ftKey(FT.sel); }).slice(0, 6);
   if (LG.length) {
     var hs = el("div", "zhs"); hs.appendChild(el("h5", null, "최근 기록"));
     LG.forEach(function (x) {
       var d = el("div"); d.appendChild(el("time", null, ftDt(x[4]).replace(/ .*/, "")));
-      d.appendChild(el("b", x[1] === "c" ? "yc" : x[1] === "d" ? "yd" : "", x[2]));
+      d.appendChild(el("b", x[1] === "c" ? "yc" : x[1] === "d" ? "yd" : "", ftLogTxt(x)));
       d.appendChild(el("small", null, (ftDt(x[4]).split(" ")[1] || "") + (x[3] ? " · " + x[3] : "")));
       hs.appendChild(d);
     });
@@ -13581,31 +13730,36 @@ function ftForm(M, T, elig, idxOk) {
 }
 function ftDirty() {
   if (!FT.sel) return false;
-  var r = ftRun(FT.sel), s0 = ftSt(r), d = ftNum(FT.d), f = ftNum(FT.fu);
+  var V = ftVals(), r = V.r, s0 = V.s0, d = V.d, f = V.f;
   if (d == null || f == null) return true;
+  if (V.add) { var t0 = ftR1(d + f), cn0 = t0 < FT_NEED && FT.c, wy0 = cn0 ? String(FT.why || "").replace(/\s+/g, " ").trim() : ""; return V.a1 > 0 || V.a2 > 0 || (!!r && t0 < FT_NEED && (cn0 !== !!r[5] || (cn0 && wy0 !== String(r[6] || "")))); }
   var t = ftR1(d + f), cn = t < FT_NEED && FT.c, wy = cn ? String(FT.why || "").replace(/\s+/g, " ").trim() : "";
   if (!r) return FT.d !== "" || FT.fu !== "";
   return d !== s0.d || f !== s0.f || (t < FT_NEED && (cn !== !!r[5] || (cn && wy !== String(r[6] || ""))));
 }
 function ftPrev() {
   if (!$("ftT")) return;
-  var r = ftRun(FT.sel), s0 = ftSt(r), d = ftNum(FT.d), f = ftNum(FT.fu), bad = d == null || f == null || d > 200 || f > 200;
-  var dd = d || 0, ff = f || 0, t = ftR1(dd + ff), base = Math.max(FT_NEED, t);
+  var V = ftVals(), r = V.r, s0 = V.s0, d = V.d, f = V.f, bad = V.bad;
+  var dd = d || 0, ff = f || 0, t = ftR1(dd + ff), base = Math.max(FT_NEED, t), ad = V.add ? ftR1((V.a1 || 0) + (V.a2 || 0)) : 0;
   $("ftT").textContent = String(t);
+  [["ftRD", s0.d, V.a1, dd], ["ftRF", s0.f, V.a2, ff]].forEach(function (x) {   // 각 24h 기준 (넘으면 꽉 참)
+    var R = $(x[0]), I = R.querySelectorAll(".zb2 i"), was = V.add ? x[1] : x[3], a = V.add ? (x[2] || 0) : 0, B24 = Math.max(24, x[3]);
+    I[0].style.width = (was / B24 * 100) + "%"; I[1].style.width = (a / B24 * 100) + "%";
+    R.querySelector("b").textContent = ftH(x[3]) + " / 24h";
+    R.querySelector("em").textContent = a ? "+" + ftH(a) : x[3] > 24 ? ftH(x[3] - 24) + " 초과" : "";
+    R.classList.toggle("yok", x[3] >= 24);
+  });
   var S = $("ftS"), cn = t < FT_NEED && FT.c;
   if (bad) { S.className = ""; S.textContent = "숫자를 확인해 주세요"; }
   else if (t >= FT_NEED) { S.className = "yok"; S.textContent = "48h 달성 · OK"; }
   else if (cn) { S.className = "ycd"; S.textContent = "조건부 OK · " + ftH(FT_NEED - t) + " 미달"; }
   else { S.className = ""; S.textContent = ftH(FT_NEED - t) + " 남음"; }
-  var B = $("ftB"); B.className = "zb" + (t >= FT_NEED ? " yok" : "");
-  B.children[0].style.width = (dd / base * 100) + "%"; B.children[1].style.width = (ff / base * 100) + "%";
-  $("ftL").textContent = t > FT_NEED ? ftH(t - FT_NEED) + " 초과" : "48h 기준";
   [].forEach.call(document.querySelectorAll("#ftform .zw"), function (w) {
-    var k = w.getAttribute("data-k"), now = k === "1" ? d : f, was = k === "1" ? s0.d : s0.f;
-    w.textContent = r && now !== was ? "저장된 값 " + ftH(was) : "";
+    var k = w.getAttribute("data-k"), now = k === "1" ? d : f, was = k === "1" ? s0.d : s0.f, a = k === "1" ? V.a1 : V.a2;
+    w.textContent = V.add ? (a ? ftH(was) + " + " + ftH(a) + " = " + ftH(now) : "현재 " + ftH(was)) : r && now !== was ? "저장된 값 " + ftH(was) : "";
   });
   var C = $("ftC"); if (C) C.hidden = !(t < FT_NEED && (t > 0 || (r && r[5])));
-  var sv = $("ftSv"); if (sv && !FT.busy) { var dir = ftDirty(); sv.disabled = bad || !dir; sv.textContent = !dir && r ? "저장된 값과 같습니다" : "저장"; }
+  var sv = $("ftSv"); if (sv && !FT.busy) { var dir = ftDirty(); sv.disabled = bad || !dir; sv.textContent = !dir ? (V.add ? "더 돌린 시간을 입력해 주세요" : r ? "저장된 값과 같습니다" : "저장") : V.add && ad ? "+" + ftH(ad) + " 추가 저장" : "저장"; }
 }
 // 저장 · 삭제: 대시보드 서버에 바로 (편집 PIN 지문) · 지문 미등록이면 시트 서버로 한 번 (그때 등록됨)
 function ftWrite(fn, body, gsFn, gsArg) {
@@ -13618,7 +13772,10 @@ function ftWrite(fn, body, gsFn, gsArg) {
     return direct().then(function (j) {
       if (j && j.ok) return j;
       if (j && j.edit) { sdel("editPin"); updLock(); if (again) throw new Error(j.error); return askEdit(j.error).then(function () { return run(true); }); }
-      if (j && j.nopin) return callEdit(gsFn, [gsArg]);
+      if (j && j.nopin) {
+        if (gsFn) return callEdit(gsFn, [gsArg]);
+        return call("getFtData", [true]).then(function () { return direct(); }).then(function (j2) { if (j2 && j2.ok) return j2; throw new Error((j2 && j2.error) || "잠시 후 다시 시도해 주세요"); });   // 지문 등록 후 한 번 더
+      }
       throw new Error((j && j.error) || "저장하지 못했습니다");
     });
   };
@@ -13631,32 +13788,86 @@ function ftLocal(eq, row) {   // 저장 직후 화면에 바로 반영 (곧바�
 }
 function ftSave() {
   if (FT.busy || !FT.sel) return;
-  var d = ftNum(FT.d), f = ftNum(FT.fu);
+  var V = ftVals(), d = V.d, f = V.f;
   if (d == null || f == null) { toast("구동 시간은 숫자로 입력해 주세요 (소수점 한 자리까지)", true); return; }
-  if (d > 200 || f > 200) { toast("구동 시간은 0 ~ 200시간 사이로 입력해 주세요", true); return; }
+  if (V.bad) { toast(V.add ? "누적 구동 시간이 200시간을 넘습니다. 값을 확인해 주세요" : "구동 시간은 0 ~ 200시간 사이로 입력해 주세요", true); return; }
+  if (V.add && !ftDirty()) { toast("이번에 더 돌린 시간을 입력해 주세요", true); return; }
   var t = ftR1(d + f), r = ftRun(FT.sel), cond = t < FT_NEED ? !!FT.c : null, why = String(FT.why || "").replace(/\s+/g, " ").trim().slice(0, 60);
   if (cond && !why) { toast("48h 미달 진행 사유를 입력해 주세요", true); var wi = document.querySelector("#ftC input"); if (wi) wi.focus(); return; }
   var eq = FT.sel, sv = $("ftSv");
   FT.busy = true; if (sv) { sv.disabled = true; sv.textContent = "저장 중…"; }
-  ftWrite("bt_ft_save", { eq_name: eq, dry_h: d, full_h: f, cond_set: cond, reason: why }, "saveFt", { eq: eq, dry: d, full: f, cond: cond, why: why, prev: r ? [r[1], r[2], r[5]] : null }).then(function () {
+  var gsArg = { eq: eq, dry: d, full: f, cond: cond, why: why, prev: r ? [r[1], r[2], r[5]] : null };
+  (V.add ? ftWrite("bt_ft_add", { eq_name: eq, add_dry: V.a1 || 0, add_full: V.a2 || 0, cond_set: cond, reason: why }, "saveFt", gsArg)   // ➕ 서버가 지금 누적에 더함 (동시에 넣어도 빠짐없이)
+         : ftWrite("bt_ft_save", { eq_name: eq, dry_h: d, full_h: f, cond_set: cond, reason: why }, "saveFt", gsArg)).then(function () {
     FT.busy = false;
     ftLocal(eq, [eq, d, f, myName(), ftNow(), cond === null ? (r ? r[5] : 0) : cond ? 1 : 0, cond ? why : cond === null && r ? r[6] : "", cond ? myName() : cond === null && r ? r[7] : "", cond ? ftNow() : cond === null && r ? r[8] : ""]);
     ftSelect(eq, true); renderFt(); loadFt(true);
-    toast(t >= FT_NEED ? "저장했습니다 · 48h 달성 (OK)" : cond ? "저장했습니다 · 조건부 OK" : "저장했습니다 · " + ftH(FT_NEED - t) + " 남음");
+    toast("저장했습니다 · 누적 " + ftH(t) + (t >= FT_NEED ? " · 48h 달성 (OK)" : cond ? " · 조건부 OK" : " · " + ftH(FT_NEED - t) + " 남음"));
   }).catch(function (e) {
     FT.busy = false; ftPrev();
     if (!/취소/.test(e.message || "")) toast("저장하지 못했습니다 · " + errText(e), true);
   });
 }
+// ✂ 기록 지우기 ─ ent: [번호, 장비, DRY 추가, FULL 추가, 입력자, 시각]
+function ftXBox(r) {
+  var w = el("div", "zxb"), h = el("div", "zxh"); h.appendChild(el("b", null, "기록 지우기")); h.appendChild(el("small", null, "잘못 입력한 기록만 골라서 지울 수 있습니다")); w.appendChild(h);
+  var L = ((FT.data && FT.data.ent) || []).filter(function (x) { return ftKey(x[1]) === ftKey(FT.sel); });
+  if (!L.length) w.appendChild(el("div", "zxe", "한 건씩 지울 수 있는 입력이 없습니다 (누적 고치기 · 부분 삭제 이후 새로 입력한 것만 한 건씩 지울 수 있습니다)"));
+  L.forEach(function (x) {
+    var it = el("div", "zxi"), m = el("div", "zxm"), b = el("b");
+    if (+x[2]) b.appendChild(el("span", "yd", "DRY +" + ftH(x[2])));
+    if (+x[2] && +x[3]) b.appendChild(document.createTextNode(" · "));
+    if (+x[3]) b.appendChild(el("span", "yf", "FULL CYCLE +" + ftH(x[3])));
+    m.appendChild(b); m.appendChild(el("span", null, ftDt(x[5]) + (x[4] ? " · " + x[4] : ""))); it.appendChild(m);
+    var d = el("button", null, "이 입력 삭제"); d.type = "button"; d.onclick = function () { ftEntDel(x, d); }; it.appendChild(d);
+    w.appendChild(it);
+  });
+  var bs = el("div", "zxbs");
+  if (+r[1] > 0) { var b1 = el("button", null, "DRY 기록 삭제"); b1.type = "button"; b1.onclick = function () { ftPartDel("dry", b1); }; bs.appendChild(b1); }
+  if (+r[2] > 0) { var b2 = el("button", null, "FULL CYCLE 기록 삭제"); b2.type = "button"; b2.onclick = function () { ftPartDel("full", b2); }; bs.appendChild(b2); }
+  var b3 = el("button", "yall", "전체 삭제"); b3.type = "button"; b3.id = "ftDel"; b3.onclick = ftDel; bs.appendChild(b3);
+  w.appendChild(bs);
+  return w;
+}
+function ftXRun(fn, body, btn, msg, local) {
+  if (FT.busy) return;
+  var eq = FT.sel, t0 = btn.textContent; FT.busy = true; btn.disabled = true; btn.textContent = "삭제 중…";
+  ftWrite(fn, body, null, null).then(function () {
+    FT.busy = false; local(); ftSelect(eq, true); renderFt(); loadFt(true); toast(msg);
+  }).catch(function (e) {
+    FT.busy = false; btn.disabled = false; btn.textContent = t0;
+    if (!/취소/.test(e.message || "")) toast("삭제하지 못했습니다 · " + errText(e), true);
+  });
+}
+function ftEntDel(x, btn) {
+  var eq = FT.sel, r = ftRun(eq); if (!r) return;
+  var what = [+x[2] ? "DRY +" + ftH(x[2]) : "", +x[3] ? "FULL CYCLE +" + ftH(x[3]) : ""].filter(Boolean).join(" · ");
+  var nd = Math.max(0, ftR1(+r[1] - +x[2])), nf = Math.max(0, ftR1(+r[2] - +x[3]));
+  if (!confirm(eq + "\n" + what + " 입력 (" + ftDt(x[5]) + (x[4] ? " · " + x[4] : "") + ")을 지울까요?\n\n지우면 DRY " + ftH(nd) + " · FULL CYCLE " + ftH(nf) + "가 됩니다.")) return;
+  ftXRun("bt_ft_entry_del", { entry_id: x[0] }, btn, what + " 입력을 지웠습니다", function () {
+    FT.data.ent = (FT.data.ent || []).filter(function (y) { return y[0] !== x[0]; });
+    ftLocal(eq, nd || nf ? [eq, nd, nf, myName(), ftNow(), r[5], r[6], r[7], r[8]] : null);
+  });
+}
+function ftPartDel(part, btn) {
+  var eq = FT.sel, r = ftRun(eq); if (!r) return;
+  var lb = part === "dry" ? "DRY " + ftH(r[1]) : "FULL CYCLE " + ftH(r[2]);
+  if (!confirm(eq + "\n" + lb + " 기록을 지울까요?\n\n" + (part === "dry" ? "DRY" : "FULL CYCLE") + "만 0h가 되고, 다른 쪽 기록은 그대로 남습니다.")) return;
+  ftXRun("bt_ft_part_del", { eq_name: eq, part: part }, btn, lb + " 기록을 지웠습니다", function () {
+    var nd = part === "dry" ? 0 : +r[1], nf = part === "full" ? 0 : +r[2];
+    FT.data.ent = (FT.data.ent || []).filter(function (y) { return ftKey(y[1]) !== ftKey(eq); });
+    ftLocal(eq, nd || nf ? [eq, nd, nf, myName(), ftNow(), r[5], r[6], r[7], r[8]] : null);
+  });
+}
 function ftDel() {
   var eq = FT.sel, r = ftRun(eq); if (!r || FT.busy) return;
-  if (!confirm(eq + "\nDRY " + ftH(r[1]) + " · FULL CYCLE " + ftH(r[2]) + (r[5] ? " · 조건부 OK" : "") + "\n\n이 구동 기록을 삭제할까요? 동탄 대시보드에서도 함께 삭제되고 '미입력'으로 돌아갑니다.")) return;
+  if (!confirm(eq + "\nDRY " + ftH(r[1]) + " · FULL CYCLE " + ftH(r[2]) + (r[5] ? " · 조건부 OK" : "") + "\n\n이 장비 구동 기록 전체를 삭제할까요? 동탄 대시보드에서도 함께 삭제되고 '미입력'으로 돌아갑니다.")) return;
   var b = $("ftDel"); FT.busy = true; if (b) { b.disabled = true; b.textContent = "삭제 중…"; }
   ftWrite("bt_ft_remove", { eq_name: eq }, "delFt", { eq: eq, prev: [r[1], r[2], r[5]] }).then(function () {
-    FT.busy = false; ftLocal(eq, null);
+    FT.busy = false; ftLocal(eq, null); if (FT.data) FT.data.ent = (FT.data.ent || []).filter(function (y) { return ftKey(y[1]) !== ftKey(eq); });
     ftSelect(eq, true); renderFt(); loadFt(true); toast(eq + " 구동 기록을 삭제했습니다");
   }).catch(function (e) {
-    FT.busy = false; if (b) { b.disabled = false; b.textContent = "구동 기록 삭제"; }
+    FT.busy = false; if (b) { b.disabled = false; b.textContent = "전체 삭제"; }
     if (!/취소/.test(e.message || "")) toast("삭제하지 못했습니다 · " + errText(e), true);
   });
 }
@@ -13724,16 +13935,17 @@ function ftList(box, L, ing, okL, out) {
     r1.appendChild(x.out ? ftTag("yout", "출하") : s.cd ? ftTag("ycd", "조건부 OK") : s.full ? ftTag("yok", "OK") : ftTag("ying", "진행"));
     c.appendChild(r1);
     c.appendChild(el("div", "zq2", ftSub(x.row) || "장비 정보 없음"));
-    var base = Math.max(FT_NEED, s.t), bar = el("div", "zb ysm" + (s.full ? " yok" : ""));
-    var i1 = el("i", "yd"), i2 = el("i", "yf"); i1.style.width = (s.d / base * 100) + "%"; i2.style.width = (s.f / base * 100) + "%"; bar.appendChild(i1); bar.appendChild(i2); c.appendChild(bar);
-    var r3 = el("div", "zq3");
-    var a = el("span"); a.appendChild(document.createTextNode("DRY ")); a.appendChild(el("b", null, ftH(s.d))); r3.appendChild(a);
-    var bb = el("span"); bb.appendChild(document.createTextNode("FULL CYCLE ")); bb.appendChild(el("b", null, ftH(s.f))); r3.appendChild(bb);
-    var tt = el("span", "ztt", String(s.t)); tt.appendChild(el("small", null, "h")); r3.appendChild(tt);
+    var r3 = el("div", "zq3");   // DRY · FULL CYCLE 따로 (각 24h 기준)
+    [["DRY", s.d, ""], ["FULL CYCLE", s.f, " yf"]].forEach(function (y) {
+      var cell = el("div", "zcl2" + y[2] + (y[1] >= 24 ? " yok" : "")), hd = el("div", "zch2");
+      hd.appendChild(el("span", null, y[0])); var vb = el("b", null, ftH(y[1])); vb.appendChild(el("small", null, " / 24h")); hd.appendChild(vb); cell.appendChild(hd);
+      var br = el("div", "zb2"), bi = el("i"); bi.style.width = Math.min(100, y[1] / 24 * 100) + "%"; br.appendChild(bi); cell.appendChild(br);
+      r3.appendChild(cell);
+    });
     c.appendChild(r3);
     if (s.cd) c.appendChild(el("div", "zwy", "사유: " + (x.r[6] || "-") + (x.r[7] ? " · " + x.r[7] : "") + (x.r[8] ? " · " + ftDt(x.r[8]).replace(/ .*/, "") : "")));
     var r4 = el("div", "zq4"); r4.appendChild(el("span", null, ftDt(x.r[4]) + (x.r[3] ? " · " + x.r[3] : "")));
-    r4.appendChild(el("em", null, x.out ? "출하 완료" : s.full ? "48h 달성" : s.cd ? ftH(FT_NEED - s.t) + " 미달" : ftH(FT_NEED - s.t) + " 남음"));
+    r4.appendChild(el("em", null, "합계 " + ftH(s.t) + " · " + (x.out ? "출하 완료" : s.full ? "48h 달성" : s.cd ? ftH(FT_NEED - s.t) + " 미달" : ftH(FT_NEED - s.t) + " 남음")));
     c.appendChild(r4);
     c.onclick = function () { if (!ftCan()) return; if (x.out) { toast("출하된 장비는 기록할 수 없습니다"); return; } if (ftDirty() && ftKey(FT.sel) !== ftKey(x.n) && !confirm("입력한 값이 아직 저장되지 않았습니다. 이 장비로 바꿀까요?")) return; ftSelect(x.n); };
     rl.appendChild(c);
@@ -13742,6 +13954,153 @@ function ftList(box, L, ing, okL, out) {
 }
 // 입력이 끝나면(칸에서 나가면) 미뤄 둔 새 기록 반영
 document.addEventListener("focusout", function (e) { if (FT.pend && cur === 13 && $("ft").contains(e.target)) setTimeout(function () { var ae = document.activeElement; if (FT.pend && !(ae && $("ft").contains(ae) && ae.tagName === "INPUT")) renderFt(true); }, 200); });
+
+/* ===================== 👷 작업자별 FT 실적 (2026-11-12 · 동탄 대시보드 '작업자별 FT 실적'과 같은 기준) =====================
+ * 출하 = 올해 1/1 ~ 오늘 출하 완료 · 진행 중 = FRAME 입고 후 출하 전 · 제조1팀 담당자에 이름이 있는 장비 (담당이 여러 명이면 각자 1대)
+ * 명단 = 기본 명단 + 대시보드에서 '명단 추가하기'로 넣은 이름 (명단 관리는 대시보드에서)
+ * 자료는 이 화면을 열 때만 받음 (대시보드 서버 바로 · 5분 안에 받은 건 그대로) · 보기 전용에서는 안 보임
+ * ship.list: [출하일, 장비, TYPE, 팀/업체, 담당, 출하됨, 담당 원래 글자] · ship.ftw: [장비, TYPE, 담당 원래 글자, FRAME 입고일, 출하 예정일, 팀/업체]
+ */
+var FTP_BASE = { B: ["고현우", "나영훈", "손성민", "박제민"], A: ["김은수", "김병준", "나동현", "김호성", "박민철", "엄경준"] };
+var FTP2 = { d: null, ld: null, err: "", team: "B", open: "", mo: {}, retry: 0 };
+function ftpCan() { return !viewOnly(); }
+function ftViewSeg(box) {
+  var sg = el("div", "zvs");
+  [["run", "구동 기록"], ["ppl", "작업자별 실적"]].forEach(function (o) {
+    var b = el("button", FT.v === o[0] ? "yon" : "", o[1]); b.type = "button";
+    b.onclick = function () { if (FT.v === o[0]) return; if (FT.v === "run" && ftDirty() && !confirm("입력한 값이 아직 저장되지 않았습니다. 화면을 바꿀까요?")) return; FT.v = o[0]; renderFt(); window.scrollTo(0, 0); };
+    sg.appendChild(b);
+  });
+  box.appendChild(sg);
+}
+function ftpCached() { if (!FTP2.d) { try { var c = cget("ftp2"); if (c && c.ship) FTP2.d = c; } catch (e) {} } return FTP2.d; }
+function ftpLoad2(force) {
+  if (FTP2.ld) return FTP2.ld;
+  ftpCached();
+  if (!force && FTP2.d && Date.now() - (FTP2.d._at || 0) < 300000) return Promise.resolve("");
+  FTP2.ld = ftHash(getPin()).then(function (h) { return h ? ftSb("bt_ft_people", { pin_h: h }) : { ok: false, nopin: true }; }).then(function (j) {
+    FTP2.ld = null;
+    if (j && j.ok) { j._at = Date.now(); FTP2.d = j; FTP2.err = ""; FTP2.retry = 0; try { cset("ftp2", j); } catch (e) {} }
+    else if (j && j.nopin && FTP2.retry < 1) { FTP2.retry++; return call("getFtData", [true]).then(function () { return ftpLoad2(true); }, function (e) { FTP2.err = errText(e); }); }   // PIN 지문 등록 후 한 번 더
+    else FTP2.err = (j && j.error) || (j && j.nopin ? "잠시 후 다시 열어 주세요" : "불러오지 못했습니다");
+    if (cur === 13 && FT.v === "ppl" && !SR.open) renderFt(true);
+    return FTP2.err;
+  }, function (e) {
+    FTP2.ld = null; FTP2.err = /bt_ft_people|404|PGRST/.test(e.message || "") ? "실적 준비가 아직 안 되었습니다" : errText(e);
+    if (cur === 13 && FT.v === "ppl" && !SR.open) renderFt(true);
+    return FTP2.err;
+  });
+  return FTP2.ld;
+}
+function ftpHas2(raw, n) { return String(raw || "").replace(/\s+/g, "").indexOf(n.replace(/\s+/g, "")) >= 0; }
+function ftpCalc() {
+  var D = FTP2.d, S = D.ship || {}, T = D.today || ymdLocal(), Y = S.year ? String(S.year) : T.slice(0, 4), y0 = Y + "-01-01", mon = T.slice(0, 7);
+  var shipped = (S.list || []).filter(function (x) { return x[5] && x[0] >= y0 && x[0] <= T; });
+  var ing = Array.isArray(S.ftw) ? S.ftw : null;
+  var R = { B: FTP_BASE.B.slice(), A: FTP_BASE.A.slice() }, ex = {}, added = {};
+  R.A.concat(R.B).forEach(function (n) { ex[n] = 1; });
+  (Array.isArray(D.roster) ? D.roster : []).forEach(function (x) { if (!x || !x.n || ex[x.n] || !R[x.t]) return; R[x.t].push(x.n); ex[x.n] = 1; added[x.n] = 1; });
+  var out = { Y: Y, T: T, mon: mon, ingOk: !!ing };
+  ["B", "A"].forEach(function (t) {
+    var L = R[t].map(function (n) {
+      var sh = shipped.filter(function (x) { return ftpHas2(x[6] || x[4], n); }).sort(function (a, b) { return a[0] > b[0] ? -1 : a[0] < b[0] ? 1 : 0; });
+      var g = ing ? ing.filter(function (x) { return ftpHas2(x[2], n); }).sort(function (a, b) { var p = a[4] || "9999", q = b[4] || "9999"; return p < q ? -1 : p > q ? 1 : 0; }) : [];
+      return { n: n, s: sh, g: g, m: sh.filter(function (x) { return x[0].slice(0, 7) === mon; }).length, add: !!added[n] };
+    }).sort(function (a, b) { return b.s.length - a.s.length || b.g.length - a.g.length || (a.n < b.n ? -1 : 1); });
+    var seenS = {}, seenG = {}, seenM = {}, sN = 0, gN = 0, mN = 0;
+    L.forEach(function (p) {
+      p.s.forEach(function (x) { if (!seenS[x[1]]) { seenS[x[1]] = 1; sN++; if (x[0].slice(0, 7) === mon && !seenM[x[1]]) { seenM[x[1]] = 1; mN++; } } });
+      p.g.forEach(function (x) { if (!seenG[x[0]]) { seenG[x[0]] = 1; gN++; } });
+    });
+    out[t] = { L: L, sN: sN, gN: gN, mN: mN };
+  });
+  return out;
+}
+function ftpMd(d) { d = String(d || ""); return d.length >= 10 ? (+d.slice(5, 7)) + "/" + (+d.slice(8, 10)) : d; }
+function ftPeople(box) {
+  var D = ftpCached();
+  if (!FTP2.ld && (!D || Date.now() - (D._at || 0) > 300000) && !FTP2.err) ftpLoad2(false);
+  if (!D) {
+    box.appendChild(heroX("FT · 작업자별 실적", null, "", [], ""));
+    box.appendChild(FTP2.err ? el("div", "zer", "불러오지 못했습니다 · " + FTP2.err) : el("div", "zc ze", "불러오는 중…"));
+    return;
+  }
+  var C = ftpCalc(), t = FTP2.team === "A" ? "A" : "B", K = C[t];
+  $("upd").textContent = (D.at ? D.at + " 기준" : "") + (FTP2.ld ? " · 새로 확인 중…" : "");
+  var hx = heroX("FT · " + C.Y + " 작업자별 실적", K.sN, "대 출하", [["진행 중", C.ingOk ? K.gN : "-", C.ingOk ? "대" : ""], [(+C.mon.slice(5, 7)) + "월 출하", K.mN, "대"], ["인원", K.L.length, "명"]], t === "B" ? "B팀" : "A팀");
+  var chp = hx.querySelector(".ch"); if (chp) chp.classList.add("n");   // 팀 표시는 빨간색 말고 흰 반투명
+  var ms = el("div", "zms"); ms.appendChild(el("i")); ms.appendChild(document.createTextNode("1/1 ~ 오늘 출하 완료 · 진행 중 = FRAME 입고 후 출하 전")); hx.appendChild(ms);
+  box.appendChild(hx);
+  if (FTP2.err) box.appendChild(el("div", "zer", "최신 실적을 받지 못해 마지막으로 받은 실적을 보여 드립니다 · " + FTP2.err));
+
+  var c = el("div", "zc zpc");
+  var h = el("div", "zh"); h.appendChild(el("h3", null, "작업자별 순위")); h.appendChild(el("small", null, "출하 대수 순")); c.appendChild(h);
+  var tm = el("div", "zmd");
+  [["B", "B팀", C.B.sN], ["A", "A팀", C.A.sN]].forEach(function (o) {
+    var b = el("button", t === o[0] ? "yon" : ""); b.type = "button";
+    b.appendChild(document.createTextNode(o[1] + " ")); b.appendChild(el("i", null, o[2] + "대"));
+    b.onclick = function () { if (FTP2.team !== o[0]) { FTP2.team = o[0]; FTP2.open = ""; renderFt(); } };
+    tm.appendChild(b);
+  });
+  c.appendChild(tm);
+  var lg = el("div", "zplg"); lg.innerHTML = '<span><i></i>출하</span><span class="yg"><i></i>진행 중</span>'; c.appendChild(lg);
+  var mx = 1; K.L.forEach(function (p) { mx = Math.max(mx, p.s.length + p.g.length); });
+  var rk = 0, prev = null;
+  K.L.forEach(function (p, i) {
+    if (p.s.length !== prev) { rk = i + 1; prev = p.s.length; }
+    var on = FTP2.open === t + "|" + p.n, zero = !p.s.length && !p.g.length;
+    var r = el("button", "zp" + (on ? " yon" : "") + (zero ? " yz" : "")); r.type = "button";
+    r.appendChild(el("span", "zpr" + (p.s.length && rk <= 3 ? " r" + rk : ""), p.s.length ? String(rk) : "-"));
+    var mid = el("span", "zpm"), nm = el("span", "zpn"); nm.appendChild(el("b", null, p.n)); if (p.add) nm.appendChild(el("em", null, "추가"));
+    mid.appendChild(nm);
+    var last = p.s[0] ? ftpMd(p.s[0][0]) : "";
+    mid.appendChild(el("span", "zps", (+C.mon.slice(5, 7)) + "월 " + p.m + "대" + (last ? " · 최근 출하 " + last : "")));
+    var bar = el("span", "zpb"), b1 = el("i", "s"), b2 = el("i", "g"); b1.style.width = (p.s.length / mx * 100) + "%"; b2.style.width = (p.g.length / mx * 100) + "%"; bar.appendChild(b1); bar.appendChild(b2); mid.appendChild(bar);
+    r.appendChild(mid);
+    var v = el("span", "zpv"), vb = el("b", null, String(p.s.length)); vb.appendChild(el("small", null, "대")); v.appendChild(vb);
+    v.appendChild(el("span", "zpg" + (p.g.length ? "" : " y0"), C.ingOk ? "진행 " + p.g.length : "진행 -"));
+    r.appendChild(v);
+    r.onclick = function () { FTP2.open = on ? "" : t + "|" + p.n; renderFt(); if (!on) setTimeout(function () { var e2 = box.querySelector(".zp.yon"); if (e2) { var y = e2.getBoundingClientRect().top + window.pageYOffset - 84; if (y < window.pageYOffset) window.scrollTo({ top: y, behavior: "smooth" }); } }, 20); };
+    c.appendChild(r);
+    if (on) c.appendChild(ftpDet(p, C));
+  });
+  if (!K.L.length) c.appendChild(el("div", "ze", "명단이 없습니다"));
+  box.appendChild(c);
+  box.appendChild(el("div", "zn", "제조1팀 담당자에 이름이 있는 장비를 셉니다 (업체와 함께 적힌 장비 포함 · 담당이 여러 명이면 각자 1대). 이름 없이 업체만 적힌 장비는 세지 않습니다. 명단은 동탄 대시보드와 같습니다."));
+}
+function ftpDet(p, C) {
+  var w = el("div", "zpd");
+  if (C.ingOk) {
+    var g = el("div", "zpsec"), gh = el("div", "zpsh"); gh.appendChild(el("b", null, "진행 중")); gh.appendChild(el("span", null, p.g.length + "대")); g.appendChild(gh);
+    if (!p.g.length) g.appendChild(el("div", "zpe", "진행 중인 장비가 없습니다"));
+    p.g.forEach(function (x) {
+      var dd = x[4] ? Math.round((new Date(x[4]) - new Date(C.T)) / 864e5) : null;
+      var it = el("div", "zpi"); var m = el("div", "zpim"); m.appendChild(el("b", null, x[0])); m.appendChild(el("span", null, [x[1], x[3] ? "입고 " + ftpMd(x[3]) : ""].filter(Boolean).join(" · "))); it.appendChild(m);
+      it.appendChild(el("span", "zt " + (dd != null && dd <= 3 ? "ycd" : "ying"), x[4] ? "출하 " + ftpMd(x[4]) + (dd != null ? (dd === 0 ? " · D-day" : dd > 0 ? " · D-" + dd : " · D+" + -dd) : "") : "출하일 미정"));
+      g.appendChild(it);
+    });
+    w.appendChild(g);
+  }
+  var sh = el("div", "zpsec"), shh = el("div", "zpsh"); shh.appendChild(el("b", null, "출하 완료")); shh.appendChild(el("span", null, p.s.length + "대")); sh.appendChild(shh);
+  if (!p.s.length) sh.appendChild(el("div", "zpe", "올해 출하한 장비가 없습니다"));
+  var byM = {}, ms = [];
+  p.s.forEach(function (x) { var k = x[0].slice(0, 7); if (!byM[k]) { byM[k] = []; ms.push(k); } byM[k].push(x); });
+  ms.forEach(function (k, i) {
+    var key = p.n + "|" + k, open = FTP2.mo[key] != null ? FTP2.mo[key] : i === 0;   // 가장 최근 달만 펼침
+    var mh = el("button", "zpmh" + (open ? " yon" : "")); mh.type = "button";
+    mh.appendChild(el("b", null, (+k.slice(5, 7)) + "월")); mh.appendChild(el("span", null, byM[k].length + "대"));
+    var bw = el("span", "zpmb"), bi = el("i"); bi.style.width = Math.min(100, byM[k].length / Math.max.apply(null, ms.map(function (m) { return byM[m].length; })) * 100) + "%"; bw.appendChild(bi); mh.appendChild(bw);
+    mh.appendChild(el("em", null, open ? "접기" : "펼치기"));
+    mh.onclick = function (e) { e.stopPropagation(); FTP2.mo[key] = !open; renderFt(true); };
+    sh.appendChild(mh);
+    if (open) byM[k].forEach(function (x) {
+      var it = el("div", "zpi"); var m = el("div", "zpim"); m.appendChild(el("b", null, x[1])); m.appendChild(el("span", null, [x[2], x[3] && x[3] !== "A" && x[3] !== "B" ? x[3] : ""].filter(Boolean).join(" · "))); it.appendChild(m);
+      it.appendChild(el("span", "zpd2", ftpMd(x[0]))); sh.appendChild(it);
+    });
+  });
+  w.appendChild(sh);
+  return w;
+}
 
 function loadPj(force) {
   if (PJ.ld) return Promise.resolve();
