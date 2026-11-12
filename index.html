@@ -10748,7 +10748,7 @@ var APP_VER = "2026-11-12-9";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
-  ["2026-11-12-9", ["AI가 최근 2주간 앱 속도 기록을 분석해 느려지던 원인을 찾아 개선했습니다", "앱을 켤 때 · 다시 열 때 여러 요청이 한꺼번에 몰리지 않도록 순서를 정리해 지금 보는 화면이 먼저 열립니다", "퇴근 시간대처럼 사용이 몰릴 때도 덜 느려지도록 근무시간 자동 새로고침 간격을 조정했습니다", "근무시간 화면에서 이름 · 날짜를 연달아 바꿔도 바로 반응합니다", "느린 화면 기록이 더 정확해져, 매주 AI 분석으로 계속 개선됩니다", "FT 화면에서 기록을 정상으로 받아 왔는데도 '불러오지 못했습니다'가 표시되던 문제를 고쳤습니다"]],
+  ["2026-11-12-9", ["AI가 최근 2주간 앱 속도 기록을 분석해 느려지던 원인을 찾아 개선했습니다", "앱을 켤 때 · 다시 열 때 여러 요청이 한꺼번에 몰리지 않도록 순서를 정리해 지금 보는 화면이 먼저 열립니다", "퇴근 시간대처럼 사용이 몰릴 때도 덜 느려지도록 근무시간 자동 새로고침 간격을 조정했습니다", "근무시간 화면에서 이름 · 날짜를 연달아 바꿔도 바로 반응합니다", "느린 화면 기록이 더 정확해져, 매주 AI 분석으로 계속 개선됩니다", "시작 화면은 최신 생산 일정을 받은 뒤 열려, 메인 화면이 바로 최신 상태로 보입니다", "FT 화면에서 기록을 정상으로 받아 왔는데도 '불러오지 못했습니다'가 표시되던 문제를 고쳤습니다"]],
   ["2026-11-12-8", ["FT 구동 기록을 부분별로 지울 수 있습니다 · 잘못 넣은 입력 한 건만 지우면 그만큼 누적에서 빠집니다", "DRY만 · FULL CYCLE만 따로 지울 수도 있습니다"]],
   ["2026-11-12-7", ["FT 탭에 작업자별 실적이 추가되었습니다 · 팀원별로 올해 출하한 장비 대수와 진행 중인 장비 대수를 순위로 확인할 수 있습니다", "이름을 누르면 진행 중인 장비와 출하한 장비를 월별로 볼 수 있습니다"]],
   ["2026-11-12-6", ["FT 구동 시간은 이번에 더 돌린 시간만 입력하면 됩니다 · 지금 누적에 자동으로 더해집니다 (예: FULL CYCLE 4h 입력 → 1h + 4h = 5h)", "누적 값을 잘못 넣었을 때는 누적 시간 고치기에서 바로 고칠 수 있습니다", "DRY · FULL CYCLE을 각각 24h 기준으로 따로 보여 드려 얼마나 돌았는지 바로 보입니다", "최근 기록을 DRY 12h / FULL CYCLE 5h / 합계 17h → 31h 남음 처럼 보기 쉽게 바꿨습니다", "동탄 대시보드에서 입력한 값이 FT 화면에 바로 반영됩니다"]],
@@ -13312,7 +13312,7 @@ function spgStart() {
   var gg = el("div", "spgauge"), gt = el("div", "gt");
   gt.appendChild(el("span", "l", "시스템 시작 중")); gt.appendChild(el("b", null, "0%")); gg.appendChild(gt);
   var gb = el("div", "gb"); gb.appendChild(el("i")); gg.appendChild(gb);
-  gg.appendChild(el("div", "gs", "오늘의 생산 일정을 준비하고 있습니다"));
+  gg.appendChild(el("div", "gs", "AI가 오늘의 생산 일정을 분석하고 있습니다"));
   n.appendChild(gg);
   try { var wt = document.getElementById("splwait"); if (wt) wt.style.display = "none"; } catch (eW) {}
   SPG.on = true; SPG.t0 = Date.now(); SPG.shown = 0;
@@ -13328,7 +13328,7 @@ function spgStart() {
     var n2 = document.getElementById("splash"), el2 = Date.now() - SPG.t0, need = splNeed(n2);
     var a = Math.min(1, SPL.vt ? splEl(n2, SPL.vt) / need : el2 / need);
     var v = SPG.data ? 55 + 45 * a : 45 * a + 47 * (1 - Math.exp(-el2 / 4500));
-    spgSet(Math.min(SPG.data ? 99 : 96, v), SPG.shown < 25 ? "시스템 시작 중" : !SPG.data && SPG.shown < 75 ? "오늘 생산 일정 불러오는 중" : SPG.shown < 96 ? "화면 준비 중" : "거의 다 됐어요");
+    spgSet(Math.min(SPG.data ? 99 : 96, v), SPG.shown < 25 ? "AI 시스템 시작" : !SPG.data && SPG.shown < 75 ? "생산 일정 실시간 분석 중" : SPG.shown < 96 ? "공정 데이터 최적화 중" : "분석 마무리 중");
     setTimeout(tick, 120);
   })();
 }
@@ -13341,7 +13341,7 @@ function spgSet(v, lab) {
 function spgFinish() {
   SPG.on = false; SPG.shown = 0; spgSet(100, "완료");
   var g = spgEl(); if (!g) return false;
-  g.classList.add("ok"); g.querySelector(".gs").textContent = "준비가 끝났습니다";
+  g.classList.add("ok"); g.querySelector(".gs").textContent = SPG.data ? "최신 생산 일정이 반영되었습니다" : "최신 생산 일정은 화면에서 이어서 반영됩니다";
   return true;
 }
 function splashHide(now) {
@@ -13399,11 +13399,11 @@ function splashReplay(first) {
     if (document.hidden) { t0 = Date.now() - Math.min(el2, 2400); setTimeout(wait, 200); return; }   // 가려져 있는 동안은 시간 안 셈
     var a = Math.min(1, splEl(n, t0) / need);
     var v = fresh ? 55 + 45 * a : 45 * a + 47 * (1 - Math.exp(-el2 / 5000));
-    setP(Math.min(fresh ? 100 : 96, v), shown < 25 ? "새 버전 적용 중" : !fresh && shown < 75 ? "오늘 생산 일정 불러오는 중" : shown < 96 ? "화면 준비 중" : "거의 다 됐어요");
+    setP(Math.min(fresh ? 100 : 96, v), shown < 25 ? "새 버전 적용 중" : !fresh && shown < 75 ? "생산 일정 실시간 분석 중" : shown < 96 ? "공정 데이터 최적화 중" : "분석 마무리 중");
     if (fresh) splStat("AI 분석 완료", true);
-    var done = splEl(n, t0) >= need && (fresh || (haveToday && el2 > need + 1500));   // 오늘 받아 둔 화면이 있으면 최신은 뒤에서
+    var done = splEl(n, t0) >= need && (fresh || (haveToday && el2 > 8000));   // 🚦 2026-11-12: 최신을 받을 때까지 (오늘 받아 둔 화면이 있으면 최대 8초)
     if (done || el2 > 20000) {
-      setP(100, "완료"); gg.classList.add("ok"); gs.textContent = fresh || haveToday ? "준비가 끝났습니다" : "최신 정보는 들어가서 마저 받습니다";
+      setP(100, "완료"); gg.classList.add("ok"); gs.textContent = fresh ? "최신 생산 일정이 반영되었습니다" : "최신 생산 일정은 화면에서 이어서 반영됩니다";
       setTimeout(function () {
         n.className = "out"; setTimeout(function () { n.style.display = "none"; }, 450);
         try { animIn($(cur < 2 ? "main" : SECTIONS[[0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11][cur]] || "main")); tabInd(); } catch (eA) {}
@@ -13460,7 +13460,7 @@ function boot() {
   // ⚡ 오늘 받아 둔 금일 화면이 폰에 있으면 → 최신을 기다리지 않고 애니메이션(4.4초) 끝나면 바로 앱으로 · 최신은 뒤에서 바로 바뀜
   try {
     var cdq = cget("dash"), nw = new Date(), tdy = (nw.getMonth() + 1) + "/" + nw.getDate();
-    if (cdq && cdq.d0 && String(cdq.d0.label || "").indexOf(tdy + "(") === 0) { SPG.data = true; setTimeout(function () { if (!SPL.done) splStat("AI 분석 완료", true); }, 3300); splashHide(); }   // 4.4초 애니메이션 끝나면 바로 (최신은 뒤에서)
+    if (cdq && cdq.d0 && String(cdq.d0.label || "").indexOf(tdy + "(") === 0) SPL.today = true;   // 🚦 2026-11-12: 오늘 받아 둔 화면이 있어도 최신을 받은 뒤 닫음 (최대 8초 · '준비 끝'인데 메인은 '갱신 중'이던 것 고침)
   } catch (eQ) {}
   // ⏱ 서버 응답 + 폰↔구글 왕복이 4초를 넘는 경우가 많아서(서버 3초 + 연결 1~3초) 최대 8초까지 기다림
   //    2.5초가 지나면 시작 화면 아래에 "최신 정보 받는 중…" 표시 (멈춘 것처럼 안 보이게)
