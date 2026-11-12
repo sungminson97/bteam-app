@@ -2903,7 +2903,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #ft .zp+.zp,#ft .zpd+.zp{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
 #ft .zp.yon{background:color-mix(in srgb,var(--accent) 6%,transparent);border-top-color:transparent}
 #ft .zp:active{background:var(--bg)}
-#ft .zp.yz{opacity:.55}
+#ft .zp.yx{border-top:1px dashed #d5dbe5;margin-top:6px;padding-top:12px}.zp.yx .zpn b{color:#6b7385;font-weight:800}.zp.yz{opacity:.55}
 #ft .zpr{width:28px;height:28px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;background:var(--bg);color:var(--sub);font-variant-numeric:tabular-nums}
 #ft .zpr.r1{background:linear-gradient(135deg,#f5c542,#e0a100);color:#fff}
 #ft .zpr.r2{background:linear-gradient(135deg,#c9d1db,#97a3b1);color:#fff}
@@ -3332,6 +3332,46 @@ body.kb #totop{display:none}
 .zm2 i{font-style:normal;font-weight:700;color:var(--sub);margin-right:4px}
 .zm2 .ng{color:var(--warn)}
 .zcnt{font-size:13px;font-weight:900;padding:0 4px}
+
+/* 2026-11-13 업로드 탭 다시 그림: 장비 한 대 = 한 블록 · 이모지 없음 */
+#upload .card.up ul{margin:4px 0 0;padding:0;list-style:none}
+#upload .card.up li.ue{display:block;padding:14px 0;border-top:1px solid var(--line)}
+#upload .card.up li.ue:first-child{border-top:0;padding-top:8px}
+#upload .uh{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+#upload .un{min-width:0;display:flex;flex-direction:column;gap:2px}
+#upload .un .eq{font-size:16.5px;font-weight:900;letter-spacing:-.02em;color:var(--text);text-decoration:none;border:0;line-height:1.25;word-break:break-all}
+#upload .un .ut{font-size:12.5px;font-weight:700;color:var(--sub);letter-spacing:-.01em}
+#upload .us{flex:none;height:26px;padding:0 11px;border-radius:8px;border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);background:color-mix(in srgb,var(--accent) 7%,var(--card));color:var(--accent);font:inherit;font-size:12px;font-weight:800;letter-spacing:-.01em}
+#upload .us.hq{border-color:var(--line);background:var(--bg);color:var(--sub)}
+#upload .us.empty{border:1px dashed var(--warn);background:transparent;color:var(--warn)}
+#upload .us:active{transform:scale(.95)}
+#upload .uk{margin-top:10px;display:grid;gap:7px}
+#upload .ub{display:flex;align-items:center;gap:11px;width:100%;min-height:46px;padding:0 12px 0 13px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;text-align:left;box-shadow:0 1px 2px rgba(15,23,42,.04);transition:transform .12s,background .12s}
+#upload .ub:active{transform:scale(.985);background:color-mix(in srgb,var(--warn) 5%,var(--card))}
+#upload .ubx{flex:none;width:18px;height:18px;border-radius:5px;border:2px solid color-mix(in srgb,var(--warn) 70%,transparent);background:var(--card)}
+#upload .ubl{flex:1;min-width:0;font-size:14.5px;font-weight:800;letter-spacing:-.02em}
+#upload .ubl small{margin-left:6px;font-size:11.5px;font-weight:800;color:var(--sub)}
+#upload .uag{flex:none;padding:3px 8px;border-radius:999px;font-size:11.5px;font-weight:800;color:var(--sub);background:color-mix(in srgb,var(--text) 6%,transparent)}
+#upload .uag.new{color:var(--warn);background:color-mix(in srgb,var(--warn) 9%,transparent)}
+#upload .uag.old{color:#fff;background:var(--warn)}
+#upload .ub.op .ubx{border-style:dashed;border-color:color-mix(in srgb,var(--accent) 70%,transparent)}
+#upload .ub.op:active{background:color-mix(in srgb,var(--accent) 6%,var(--card))}
+#upload .uag.op{color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,transparent)}
+#upload .udn{display:flex;align-items:center;gap:8px;padding:2px 2px 0;font-size:12.5px;font-weight:800;color:var(--ok)}
+#upload .udn::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok)}
+#upload .card.up .hd .oppen{width:auto;height:28px;padding:0 11px;border-radius:8px;font:inherit;font-size:12px;font-weight:800;color:var(--accent)}
+#upload .card.up.dnrec .hd .arr{font-size:12px;font-weight:800;transform:none!important}
+
+/* 2026-11-13 FT 작업자별 순위 표시: 금·은·동 네모 대신 숫자만 */
+#ft .zpr,#ft .zpr.r1,#ft .zpr.r2,#ft .zpr.r3{width:26px;height:auto;border-radius:0;background:none;box-shadow:none;justify-content:flex-start;font-size:17px;font-weight:800;color:color-mix(in srgb,var(--sub) 70%,transparent);letter-spacing:-.03em}
+#ft .zpr.r1,#ft .zpr.r2,#ft .zpr.r3{font-weight:900;color:var(--accent)}
+#ft .zpr.r1{font-size:20px;background:linear-gradient(135deg,#3b6ff0,#7c5cf5);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* 2026-11-13 입고불출 장비 화면: 공정 보기 */
+#mat .mtop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#mat .mtop .ib.eqp{color:var(--accent)}
+#mat .hx .pl.tapeq{cursor:pointer}
+#mat .hx .pl.tapeq:active{transform:scale(.96)}
 </style>
 </head>
 <body>
@@ -3978,7 +4018,7 @@ SPX.start();
 
 <div class="ov" id="opov">
   <div class="box">
-    <h3 id="opttl">👷 작업자 입력(FT)</h3>
+    <h3 id="opttl">작업자 입력 (FT)</h3>
     <div class="who" id="opwho"></div>
     <p class="sub" id="opnow" style="display:none"></p>
     <div class="chips" id="opchips"></div>
@@ -5642,15 +5682,15 @@ function renderUpload(d) {
       if (p.name !== "(작업자 미입력)") who++;
       p.items.forEach(function (it) { if (it.noOp || p.name === "(작업자 미입력)") noOp++; if (!it.site) noSite++; });
     });
-    if (!d.total) { var z = heroX("업로드", null, null, null, null, true); z.appendChild(el("div", "ms", "업로드할 장비가 없어요 👍")); box.appendChild(z); return; }
+    if (!d.total) { var z = heroX("업로드", null, null, null, null, true); z.appendChild(el("div", "ms", "업로드할 장비가 없습니다")); box.appendChild(z); return; }
     box.appendChild(heroX("업로드 필요", d.total, "대", [["담당자", who, "명"], ["작업자 미입력", noOp, "대", noOp > 0], ["SITE 빈칸", noSite, "대", noSite > 0]]));
   })();
   var sum = el("div", "sum" + (d.total ? "" : " zero"));
-  sum.appendChild(el("span", null, d.total ? "업로드 필요 장비" : "업로드 필요한 장비가 없어요 👍"));
+  sum.appendChild(el("span", null, d.total ? "업로드 필요 장비" : "업로드할 장비가 없습니다"));
   if (d.total) sum.appendChild(el("b", null, d.total + "대"));
   box.appendChild(sum);
 
-  if (d.total) box.appendChild(el("div", "hint", "서버 업로드를 마친 시트를 누르면 '완료 처리' 확인창이 떠요. 작업자가 비어 있는 장비는 작업자 이름까지 적어야 목록에서 없어져요."));
+  if (d.total) box.appendChild(el("div", "hint", "서버 업로드를 마친 시트를 누르면 완료 처리 확인창이 열립니다. 작업자가 비어 있는 장비는 작업자 이름까지 입력해야 목록에서 사라집니다."));
 
   d.people.forEach(function (p) {
     var card = el("div", "card up");
@@ -5661,7 +5701,7 @@ function renderUpload(d) {
     // ✏️ 누구나: 이름 옆 연필을 누르면 작업자 바꾸기·비우기 (장비가 여러 대면 먼저 장비 고르기)
     if (p.name !== "(작업자 미입력)") {
       var pen = el("button", "oppen"); pen.type = "button"; pen.setAttribute("aria-label", p.name + " 작업자 수정");
-      pen.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+      pen.textContent = "수정";
       pen.onclick = function () { openOpCard(p, d.opNames); };
       hd.appendChild(pen);
     }
@@ -5669,30 +5709,35 @@ function renderUpload(d) {
     card.appendChild(hd);
     var ul = el("ul");
     p.items.forEach(function (it) {
-      var li = el("li");
+      // 2026-11-13: 장비 한 대 = 한 블록 (장비명 · TYPE · SITE 한 줄 + 할 일 목록) · 이모지 없이
+      var li = el("li", "ue"), uh = el("div", "uh"), un = el("div", "un");
       var eqn = el("span", "eq tapn", it.n);
       eqn.onclick = function () { openEquip(it.n); };   // 장비명을 누르면 일정
-      li.appendChild(eqn);
-      if (it.t) li.appendChild(el("span", "t", it.t));
-      // 📍 SITE (E열): 누르면 동탄/본사 고르기
-      var sb = el("button", "sitebtn" + (it.site ? (it.site === "동탄" ? "" : " hq") : " empty"), "📍 " + (it.site || "빈칸")); sb.type = "button";   // 빈칸이면 빈칸으로 표시
+      un.appendChild(eqn);
+      if (it.t) un.appendChild(el("span", "ut", it.t));
+      uh.appendChild(un);
+      // SITE (E열): 누르면 동탄/본사 고르기
+      var sb = el("button", "us" + (it.site ? (it.site === "동탄" ? "" : " hq") : " empty"), it.site || "SITE 빈칸"); sb.type = "button";
       sb.onclick = function () { openSite(it); };
-      li.appendChild(sb);
-      li.appendChild(document.createElement("br"));
+      uh.appendChild(sb);
+      li.appendChild(uh);
+      var uk = el("div", "uk");
       it.sheets.forEach(function (s) {
-        var b = el("button", "sheet", "☐ " + s.label);
-        b.type = "button";
-        if (s.age >= 1) b.appendChild(el("small", "age" + (s.age >= UP_STALE ? " old" : ""), s.age + "일 지남"));   // ⏳ 업로드로 남은 지 며칠
+        var b = el("button", "ub"); b.type = "button";
+        b.appendChild(el("i", "ubx")); b.appendChild(el("span", "ubl", s.label));
+        b.appendChild(el("span", "uag" + (s.age >= UP_STALE ? " old" : s.age >= 1 ? "" : " new"), s.age >= 1 ? s.age + "일 지남" : "업로드 필요"));   // 업로드로 남은 지 며칠
         b.onclick = function () { openConfirm(it, s); };
-        li.appendChild(b);
+        uk.appendChild(b);
       });
-      if (it.done1) li.appendChild(el("span", "sdone", "✔ 1차검수 완료"));
       if (it.noOp) {   // 작업자(F열)가 비어 있음 → 이름을 적어야 목록에서 사라짐
-        var ob = el("button", "sheet op", "👷 작업자 입력(FT)");
-        ob.type = "button";
+        var ob = el("button", "ub op"); ob.type = "button";
+        ob.appendChild(el("i", "ubx")); var ol = el("span", "ubl", "작업자 입력"); ol.appendChild(el("small", null, "FT")); ob.appendChild(ol);
+        ob.appendChild(el("span", "uag op", "이름 필요"));
         ob.onclick = function () { openOp(it, d.opNames); };
-        li.appendChild(ob);
+        uk.appendChild(ob);
       }
+      if (it.done1) uk.appendChild(el("div", "udn", "1차검수 완료"));
+      li.appendChild(uk);
       ul.appendChild(li);
     });
     card.appendChild(ul);
@@ -5703,17 +5748,17 @@ function renderUpload(d) {
   if (d.done && d.done.length) {
     var dc = el("div", "card up dnrec" + (U.dnOpen ? " open" : ""));
     var dh = el("div", "hd");
-    dh.appendChild(el("span", "ttl", "↩ 최근 완료"));
+    dh.appendChild(el("span", "ttl", "최근 완료"));
     dh.appendChild(el("span", "cnt", d.done.length + "건"));
-    dh.appendChild(el("span", "arr", "▾"));
-    dh.onclick = function () { U.dnOpen = !U.dnOpen; dc.className = "card up dnrec" + (U.dnOpen ? " open" : ""); };
+    var arr = el("span", "arr", U.dnOpen ? "접기" : "펼치기"); dh.appendChild(arr);
+    dh.onclick = function () { U.dnOpen = !U.dnOpen; dc.className = "card up dnrec" + (U.dnOpen ? " open" : ""); arr.textContent = U.dnOpen ? "접기" : "펼치기"; };
     dc.appendChild(dh);
     var dul = el("ul");
     d.done.forEach(function (x) {
       var li = el("li");
       var eqn = el("span", "eq tapn", x.n); eqn.onclick = function () { openEquip(x.n); };
       li.appendChild(eqn);
-      li.appendChild(el("span", "lb", "✔ " + x.label));
+      li.appendChild(el("span", "lb", x.label + " 완료"));
       var ub = el("button", "undo", "되돌리기"); ub.type = "button";
       ub.onclick = function () {   // 두 번 눌러야 (실수 방지)
         if (!ub.classList.contains("sure")) {
@@ -5728,7 +5773,7 @@ function renderUpload(d) {
       dul.appendChild(li);
     });
     dc.appendChild(dul);
-    dc.appendChild(el("div", "hint", "잘못 눌렀으면 [되돌리기] → 다시 '업로드 필요'로 돌아가요. (3일 안에 완료한 것만)"));
+    dc.appendChild(el("div", "hint", "잘못 누른 경우 [되돌리기]를 누르면 다시 '업로드 필요'로 돌아갑니다. (3일 안에 완료한 것만)"));
     box.appendChild(dc);
   }
 
@@ -6749,8 +6794,8 @@ function loadMatList(force) {
   return call("getMatList", []).then(function (r) {
     MT.ld = false; MT.lt = Date.now();
     if (r && r.list) { MT.list = r.list; MT.ty = r.ty || MT.ty || {}; MT.err = r.list.length ? "" : (r.note || ""); try { cset("matlist", { list: r.list, ty: MT.ty }); } catch (e) {} }
-    if (cur === 9 && !MT.prj) renderMat();
-  }).catch(function (e) { MT.ld = false; MT.lt = Date.now(); MT.err = errText(e); if (cur === 9) renderMat(); return errText(e); });
+    if (cur === 9 && !MT.prj) mtSoft();
+  }).catch(function (e) { MT.ld = false; MT.lt = Date.now(); MT.err = errText(e); if (cur === 9) mtSoft(); return errText(e); });
 }
 function loadMatTab(prj, force, hard) {
   var d = MT.data[prj];
@@ -6760,15 +6805,33 @@ function loadMatTab(prj, force, hard) {
   MT.data[prj] = Object.assign(d || {}, { ld: true });
   if (cur === 9 && MT.prj === prj) { if (d && d.rows) $("upd").textContent = (d.at ? d.at + " 기준 · " : "") + "새로 확인 중…"; else renderMat(); }
   return call("getMatTab", [prj, !!hard]).then(function (r) {
+    var same = false;
+    try { same = !!(d && d.rows && r && !r.error && JSON.stringify(d.rows) === JSON.stringify(r.rows || []) && JSON.stringify(d.tabs || []) === JSON.stringify(r.tabs || [])); } catch (eS) {}
     if (r && !r.error) {
       MT.data[prj] = { rows: r.rows || [], tabs: r.tabs || [], at: r.at, t: Date.now() };
       try { cset("mt_" + prj, { rows: r.rows || [], tabs: r.tabs || [], at: r.at, t: Date.now() }); } catch (e) {}
       try { var keep = JSON.parse(sget("matRecent") || "[]"); for (var i = localStorage.length - 1; i >= 0; i--) { var k = localStorage.key(i); if (k && k.indexOf("c_mt_") === 0 && keep.indexOf(k.slice(5)) < 0) localStorage.removeItem(k); } } catch (e) {}
     } else if (d && d.rows) { d.ld = false; d.t = Date.now(); }
     else MT.data[prj] = { err: (r && r.error) || "불러오기 실패", t: Date.now() };
-    if (cur === 9 && MT.prj === prj) renderMat();
-  }).catch(function (e) { if (d && d.rows) { d.ld = false; d.t = Date.now(); } else MT.data[prj] = { err: errText(e) }; if (cur === 9 && MT.prj === prj) renderMat(); return errText(e); });
+    if (cur === 9 && MT.prj === prj) { if (same) $("upd").textContent = r.at ? r.at + " 기준" : ""; else mtSoft(); }   // 2026-11-13: 같은 내용이면 다시 안 그림 (화면 깜빡임 · 키보드 닫힘 방지)
+  }).catch(function (e) { if (d && d.rows) { d.ld = false; d.t = Date.now(); } else MT.data[prj] = { err: errText(e) }; if (cur === 9 && MT.prj === prj) mtSoft(); return errText(e); });
 }
+// 2026-11-13: 새 데이터가 와도 찾기 칸에 입력 중이면 기다렸다가(입력 끝나면) 다시 그림 · 보던 위치 그대로
+function mtSoft() {
+  var a = document.activeElement;
+  if (a && a.tagName === "INPUT" && $("mat").contains(a)) {
+    MT.pend = true;
+    var d = MT.prj && MT.data[MT.prj]; if (d && d.at) $("upd").textContent = d.at + " 기준";
+    return;
+  }
+  var y = window.pageYOffset || 0;
+  renderMat();
+  if (y) window.scrollTo(0, y);
+}
+document.addEventListener("focusout", function (e) {
+  if (!MT.pend || !e.target || e.target.tagName !== "INPUT" || !$("mat") || !$("mat").contains(e.target)) return;
+  setTimeout(function () { var a = document.activeElement; if (!MT.pend || cur !== 9 || (a && a.tagName === "INPUT" && $("mat").contains(a))) return; mtSoft(); }, 700);   // 목록을 누른 경우 그 동작이 먼저
+});
 function openMat(prj, ty) {
   MT.prj = prj; MT.f = "all"; MT.oz = ""; MT.s = ""; MT.tab = ""; MT.tabT = ty || ""; try { MT.o = sget("matSort") || "due"; } catch (e) {}
   try { var rc = JSON.parse(sget("matRecent") || "[]").filter(function (x) { return x !== prj; }); rc.unshift(prj); sset("matRecent", JSON.stringify(rc.slice(0, 6))); } catch (e) {}
@@ -6791,7 +6854,7 @@ function mtLoading(prj) {
   return w;
 }
 function renderMat() {
-  var box = $("mat"); box.innerHTML = "";
+  var box = $("mat"); box.innerHTML = ""; MT.pend = false;
   if (!MT.prj) {
     // 🔎 장비 고르기
     box.appendChild(heroX("자재팀 입고 · 불출", MT.list ? MT.list.length : "-", "대"));
@@ -6883,7 +6946,10 @@ function renderMat() {
     return;
   }
   // 📋 장비 하나
-  var bk = el("button", "ib", "‹ 장비 목록"); bk.type = "button"; bk.onclick = function () { MT.prj = ""; renderMat(); window.scrollTo(0, 0); }; box.appendChild(bk);
+  var bk = el("button", "ib", "‹ 장비 목록"); bk.type = "button"; bk.onclick = function () { MT.prj = ""; renderMat(); window.scrollTo(0, 0); };
+  var mtop = el("div", "mtop"); mtop.appendChild(bk);
+  var eqBtn = el("button", "ib eqp", "공정 보기"); eqBtn.type = "button"; mtop.appendChild(eqBtn);   // 2026-11-13: 장비 공정 일정 (장비 검색 화면)
+  box.appendChild(mtop);
   var d = MT.data[MT.prj] || {};
   if (!d.rows) {
     if (d.err) { box.appendChild(el("div", "warn", d.err)); return; }
@@ -6895,7 +6961,12 @@ function renderMat() {
   var R = d.rows, nOut = R.filter(mtOut).length, nWait = R.filter(function (r) { return mtNum(r[8]) < mtNum(r[7]); }).length;
   var TB = (d.tabs || []).map(function (t) { return mtTabInfo(t, MT.prj); }), hasIx = R.some(function (r) { return r[11] !== "" && r[11] != null; });
   if (MT.tabT) { if (TB.length > 1 && hasIx) for (var ti = 0; ti < TB.length; ti++) if (TB[ti].t === MT.tabT) { MT.tab = String(ti); break; } MT.tabT = ""; }   // 🏷 검색에서 고른 TYPE으로 바로
-  box.appendChild(heroX(TB.length === 1 ? mtName(MT.prj, TB[0].t) : MT.prj, R.length, "품목", [["입고 완료", R.length - nWait, "건"], ["미입고", nWait, "건", nWait > 0], ["외주조립", nOut, "건"]]));
+  var eqNm = function () { return TB.length === 1 ? mtName(MT.prj, TB[0].t) : MT.tab !== "" && TB[+MT.tab] ? mtName(MT.prj, TB[+MT.tab].t) : MT.prj; };   // 고른 TYPE(EFEM · PROCESS)이 있으면 그 장비
+  var mhx = heroX(TB.length === 1 ? mtName(MT.prj, TB[0].t) : MT.prj, R.length, "품목", [["입고 완료", R.length - nWait, "건"], ["미입고", nWait, "건", nWait > 0], ["외주조립", nOut, "건"]]);
+  var goEq = function () { try { $("sq").blur(); } catch (e) {} openEquip(eqNm()); };
+  eqBtn.onclick = goEq;
+  var mpl = mhx.querySelector(".pl"); if (mpl) { mpl.classList.add("tapeq"); mpl.onclick = goEq; }   // 장비명을 눌러도 공정
+  box.appendChild(mhx);
   // 🏷 TYPE (자재팀 탭) — 탭이 여러 개(EFEM · PROCESS 등)면 눌러서 그 TYPE 품목만
   if (MT.tab !== "" && (!hasIx || !TB[+MT.tab])) MT.tab = "";
   if (TB.length) {
@@ -7974,7 +8045,7 @@ function openOp(it, names, prev) {
     names = names.filter(function (n) { return n !== CHIEF; });
   }
   $("opwho").textContent = it.n;   // 장비명만
-  $("opttl").textContent = prev ? "✏️ 작업자 수정(FT)" : "👷 작업자 입력(FT)";
+  $("opttl").textContent = prev ? "작업자 수정 (FT)" : "작업자 입력 (FT)";
   $("opnow").style.display = prev ? "" : "none";
   $("opnow").textContent = prev ? "지금 적힌 작업자: " + prev : "";
   $("opsub").style.display = prev ? "none" : "";
@@ -10744,10 +10815,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-12-9";
+var APP_VER = "2026-11-13-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-13-1", ["업로드 화면을 장비별로 깔끔하게 정리했습니다 · 시트마다 지난 날수가 한눈에 보입니다", "FT 작업자별 실적의 팀 합계를 장비통계와 같은 기준으로 맞췄습니다 · 이름이 없는 장비는 '명단 외 · 이름 없음'에서 확인할 수 있습니다", "FT 작업자별 순위 표시를 더 깔끔하게 바꿨습니다", "입고불출에서 품목을 찾는 도중 키보드가 닫히거나 화면이 깜빡이던 문제를 고쳤습니다", "입고불출 장비 화면에서 '공정 보기'나 장비명을 누르면 공정 일정을 바로 볼 수 있습니다"]],
   ["2026-11-12-9", ["AI가 최근 2주간 앱 속도 기록을 분석해 느려지던 원인을 찾아 개선했습니다", "앱을 켤 때 · 다시 열 때 여러 요청이 한꺼번에 몰리지 않도록 순서를 정리해 지금 보는 화면이 먼저 열립니다", "퇴근 시간대처럼 사용이 몰릴 때도 덜 느려지도록 근무시간 자동 새로고침 간격을 조정했습니다", "근무시간 화면에서 이름 · 날짜를 연달아 바꿔도 바로 반응합니다", "느린 화면 기록이 더 정확해져, 매주 AI 분석으로 계속 개선됩니다", "시작 화면은 최신 생산 일정을 받은 뒤 열려, 메인 화면이 바로 최신 상태로 보입니다", "FT 화면에서 기록을 정상으로 받아 왔는데도 '불러오지 못했습니다'가 표시되던 문제를 고쳤습니다"]],
   ["2026-11-12-8", ["FT 구동 기록을 부분별로 지울 수 있습니다 · 잘못 넣은 입력 한 건만 지우면 그만큼 누적에서 빠집니다", "DRY만 · FULL CYCLE만 따로 지울 수도 있습니다"]],
   ["2026-11-12-7", ["FT 탭에 작업자별 실적이 추가되었습니다 · 팀원별로 올해 출하한 장비 대수와 진행 중인 장비 대수를 순위로 확인할 수 있습니다", "이름을 누르면 진행 중인 장비와 출하한 장비를 월별로 볼 수 있습니다"]],
@@ -14056,7 +14128,13 @@ function ftpCalc() {
       p.s.forEach(function (x) { if (!seenS[x[1]]) { seenS[x[1]] = 1; sN++; if (x[0].slice(0, 7) === mon && !seenM[x[1]]) { seenM[x[1]] = 1; mN++; } } });
       p.g.forEach(function (x) { if (!seenG[x[0]]) { seenG[x[0]] = 1; gN++; } });
     });
-    out[t] = { L: L, sN: sN, gN: gN, mN: mN };
+    // 📊 2026-11-13: 팀 합계는 장비통계와 같은 기준 (장비에 적힌 팀 A팀/B팀) · 사람별 순위는 그대로 이름 기준
+    var tS = shipped.filter(function (x) { return x[3] === t; }), tG = ing ? ing.filter(function (x) { return x[5] === t; }) : [];
+    var nm0 = R[t], hit = function (raw) { return nm0.some(function (n) { return ftpHas2(raw, n); }); };
+    var xs = tS.filter(function (x) { return !hit(x[6] || x[4]); }).sort(function (a, b) { return a[0] > b[0] ? -1 : a[0] < b[0] ? 1 : 0; });
+    var xg = tG.filter(function (x) { return !hit(x[2]); });
+    if (xs.length || xg.length) L.push({ n: "명단 외 · 이름 없음", s: xs, g: xg, m: xs.filter(function (x) { return x[0].slice(0, 7) === mon; }).length, extra: true });
+    out[t] = { L: L, sN: tS.length, gN: tG.length, mN: tS.filter(function (x) { return x[0].slice(0, 7) === mon; }).length };
   });
   return out;
 }
@@ -14071,9 +14149,9 @@ function ftPeople(box) {
   }
   var C = ftpCalc(), t = FTP2.team === "A" ? "A" : "B", K = C[t];
   $("upd").textContent = (D.at ? D.at + " 기준" : "") + (FTP2.ld ? " · 새로 확인 중…" : "");
-  var hx = heroX("FT · " + C.Y + " 작업자별 실적", K.sN, "대 출하", [["진행 중", C.ingOk ? K.gN : "-", C.ingOk ? "대" : ""], [(+C.mon.slice(5, 7)) + "월 출하", K.mN, "대"], ["인원", K.L.length, "명"]], t === "B" ? "B팀" : "A팀");
+  var hx = heroX("FT · " + C.Y + " 작업자별 실적", K.sN, "대 출하", [["진행 중", C.ingOk ? K.gN : "-", C.ingOk ? "대" : ""], [(+C.mon.slice(5, 7)) + "월 출하", K.mN, "대"], ["인원", K.L.filter(function (p) { return !p.extra; }).length, "명"]], t === "B" ? "B팀" : "A팀");
   var chp = hx.querySelector(".ch"); if (chp) chp.classList.add("n");   // 팀 표시는 빨간색 말고 흰 반투명
-  var ms = el("div", "zms"); ms.appendChild(el("i")); ms.appendChild(document.createTextNode("1/1 ~ 오늘 출하 완료 · 진행 중 = FRAME 입고 후 출하 전")); hx.appendChild(ms);
+  var ms = el("div", "zms"); ms.appendChild(el("i")); ms.appendChild(document.createTextNode("1/1 ~ 오늘 출하 완료 · 팀 합계는 장비통계와 같은 기준")); hx.appendChild(ms);
   box.appendChild(hx);
   if (FTP2.err) box.appendChild(el("div", "zer", "최신 실적을 받지 못해 마지막으로 받은 실적을 보여 드립니다 · " + FTP2.err));
 
@@ -14088,18 +14166,18 @@ function ftPeople(box) {
   });
   c.appendChild(tm);
   var lg = el("div", "zplg"); lg.innerHTML = '<span><i></i>출하</span><span class="yg"><i></i>진행 중</span>'; c.appendChild(lg);
-  var mx = 1; K.L.forEach(function (p) { mx = Math.max(mx, p.s.length + p.g.length); });
+  var mx = 1; K.L.forEach(function (p) { if (!p.extra) mx = Math.max(mx, p.s.length + p.g.length); });
   var rk = 0, prev = null;
   K.L.forEach(function (p, i) {
-    if (p.s.length !== prev) { rk = i + 1; prev = p.s.length; }
+    if (!p.extra && p.s.length !== prev) { rk = i + 1; prev = p.s.length; }
     var on = FTP2.open === t + "|" + p.n, zero = !p.s.length && !p.g.length;
-    var r = el("button", "zp" + (on ? " yon" : "") + (zero ? " yz" : "")); r.type = "button";
-    r.appendChild(el("span", "zpr" + (p.s.length && rk <= 3 ? " r" + rk : ""), p.s.length ? String(rk) : "-"));
+    var r = el("button", "zp" + (on ? " yon" : "") + (zero ? " yz" : "") + (p.extra ? " yx" : "")); r.type = "button";
+    r.appendChild(el("span", "zpr" + (!p.extra && p.s.length && rk <= 3 ? " r" + rk : ""), !p.extra && p.s.length ? String(rk) : "-"));
     var mid = el("span", "zpm"), nm = el("span", "zpn"); nm.appendChild(el("b", null, p.n)); if (p.add) nm.appendChild(el("em", null, "추가"));
     mid.appendChild(nm);
     var last = p.s[0] ? ftpMd(p.s[0][0]) : "";
     mid.appendChild(el("span", "zps", (+C.mon.slice(5, 7)) + "월 " + p.m + "대" + (last ? " · 최근 출하 " + last : "")));
-    var bar = el("span", "zpb"), b1 = el("i", "s"), b2 = el("i", "g"); b1.style.width = (p.s.length / mx * 100) + "%"; b2.style.width = (p.g.length / mx * 100) + "%"; bar.appendChild(b1); bar.appendChild(b2); mid.appendChild(bar);
+    if (!p.extra) { var bar = el("span", "zpb"), b1 = el("i", "s"), b2 = el("i", "g"); b1.style.width = (p.s.length / mx * 100) + "%"; b2.style.width = (p.g.length / mx * 100) + "%"; bar.appendChild(b1); bar.appendChild(b2); mid.appendChild(bar); }
     r.appendChild(mid);
     var v = el("span", "zpv"), vb = el("b", null, String(p.s.length)); vb.appendChild(el("small", null, "대")); v.appendChild(vb);
     v.appendChild(el("span", "zpg" + (p.g.length ? "" : " y0"), C.ingOk ? "진행 " + p.g.length : "진행 -"));
@@ -14110,7 +14188,7 @@ function ftPeople(box) {
   });
   if (!K.L.length) c.appendChild(el("div", "ze", "명단이 없습니다"));
   box.appendChild(c);
-  box.appendChild(el("div", "zn", "제조1팀 담당자에 이름이 있는 장비를 셉니다 (업체와 함께 적힌 장비 포함 · 담당이 여러 명이면 각자 1대). 이름 없이 업체만 적힌 장비는 세지 않습니다. 명단은 동탄 대시보드와 같습니다."));
+  box.appendChild(el("div", "zn", "팀 합계는 장비통계와 같이 장비에 적힌 팀(A팀 · B팀)으로 셉니다. 작업자별 순위는 제조1팀 담당자에 적힌 이름으로 세며, 담당이 여러 명이면 각자 1대입니다. 팀 명단에 없는 이름이거나 이름 없이 팀만 적힌 장비는 '명단 외 · 이름 없음'에 모았습니다."));
 }
 function ftpDet(p, C) {
   var w = el("div", "zpd");
@@ -14119,7 +14197,7 @@ function ftpDet(p, C) {
     if (!p.g.length) g.appendChild(el("div", "zpe", "진행 중인 장비가 없습니다"));
     p.g.forEach(function (x) {
       var dd = x[4] ? Math.round((new Date(x[4]) - new Date(C.T)) / 864e5) : null;
-      var it = el("div", "zpi"); var m = el("div", "zpim"); m.appendChild(el("b", null, x[0])); m.appendChild(el("span", null, [x[1], x[3] ? "입고 " + ftpMd(x[3]) : ""].filter(Boolean).join(" · "))); it.appendChild(m);
+      var it = el("div", "zpi"); var m = el("div", "zpim"); m.appendChild(el("b", null, x[0])); m.appendChild(el("span", null, [x[1], x[3] ? "입고 " + ftpMd(x[3]) : "", p.extra ? "담당: " + (x[2] || "비어 있음") : ""].filter(Boolean).join(" · "))); it.appendChild(m);
       it.appendChild(el("span", "zt " + (dd != null && dd <= 3 ? "ycd" : "ying"), x[4] ? "출하 " + ftpMd(x[4]) + (dd != null ? (dd === 0 ? " · D-day" : dd > 0 ? " · D-" + dd : " · D+" + -dd) : "") : "출하일 미정"));
       g.appendChild(it);
     });
@@ -14138,7 +14216,7 @@ function ftpDet(p, C) {
     mh.onclick = function (e) { e.stopPropagation(); FTP2.mo[key] = !open; renderFt(true); };
     sh.appendChild(mh);
     if (open) byM[k].forEach(function (x) {
-      var it = el("div", "zpi"); var m = el("div", "zpim"); m.appendChild(el("b", null, x[1])); m.appendChild(el("span", null, [x[2], x[3] && x[3] !== "A" && x[3] !== "B" ? x[3] : ""].filter(Boolean).join(" · "))); it.appendChild(m);
+      var it = el("div", "zpi"); var m = el("div", "zpim"); m.appendChild(el("b", null, x[1])); m.appendChild(el("span", null, [x[2], x[3] && x[3] !== "A" && x[3] !== "B" ? x[3] : "", p.extra ? "담당: " + (x[6] || "비어 있음") : ""].filter(Boolean).join(" · "))); it.appendChild(m);
       it.appendChild(el("span", "zpd2", ftpMd(x[0]))); sh.appendChild(it);
     });
   });
