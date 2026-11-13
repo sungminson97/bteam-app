@@ -8050,7 +8050,7 @@ function openOp(it, names, prev) {
   $("opnow").textContent = prev ? "지금 적힌 작업자: " + prev : "";
   $("opsub").style.display = prev ? "none" : "";
   $("opclr").style.display = prev ? "block" : "none";
-  $("opclr").disabled = false; $("opclr").textContent = "🗑 작업자 비우기 (이 장비 작업 안 함)";
+  $("opclr").disabled = false; $("opclr").textContent = "작업자 비우기 (이 장비 작업 안 함)";
   $("opin").style.display = ""; $("opgo").style.display = ""; $("opno").style.gridColumn = "";
   var ch = $("opchips");
   ch.innerHTML = "";
@@ -8069,7 +8069,7 @@ function openOp(it, names, prev) {
 function openOpCard(p, names) {
   if (p.items.length === 1) { openOp(p.items[0], names, p.name); return; }
   OP.it = null; OP.prev = "";
-  $("opttl").textContent = "✏️ 작업자 수정(FT)";
+  $("opttl").textContent = "작업자 수정 (FT)";
   $("opwho").textContent = p.name + " 이름으로 적힌 장비";
   $("opnow").style.display = ""; $("opnow").textContent = "고칠 장비를 골라 주세요.";
   $("opsub").style.display = "none"; $("opclr").style.display = "none";
@@ -8113,6 +8113,26 @@ $("opgo").onclick = function () {
   var op = ($("opin").value.trim() || OP.pick).trim();
   if (!it) return;
   if (!op) { toast("⚠️ 작업자를 고르거나 이름을 입력해 주세요.", true); return; }
+  // ⚡ 2026-11-14: 편집 PIN이 이미 있으면 기다리지 않음 → 바로 닫고 목록에서 빼고, 서버 저장은 뒤에서 (실패하면 되돌리고 알림)
+  if (sget("editPin")) {
+    var prv = OP.prev;
+    if (!prv) upLocal(it, null, true);
+    closeOp();
+    toast(it.n + " 작업자 → " + op + " 저장 중");
+    callEdit("setOperator", prv ? [it.row, it.n, op, prv] : [it.row, it.n, op])
+      .then(function (r) {
+        if (r && r.error) { U.pend = U.pend.filter(function (e) { return !(e.row === it.row && e.op); }); U.msg = { err: true, t: r.error }; toast(r.error, true); }
+        else { U.msg = { err: false, t: it.n + " 작업자 → " + op + (prv ? " (수정)" : "") }; toast(U.msg.t + " 저장 완료"); }
+        loadUpload();   // 뒤에서 최신으로 다시 확인
+      })
+      .catch(function (e) {
+        U.pend = U.pend.filter(function (x) { return !(x.row === it.row && x.op); });   // 목록에 다시 보이게
+        U.msg = { err: true, t: "저장 실패: " + errText(e) };
+        toast(U.msg.t + " · 다시 입력해 주세요", true);
+        loadUpload();
+      });
+    return;
+  }
   $("opgo").disabled = true; $("opno").disabled = true;
   $("opgo").textContent = "저장 중…";
   callEdit("setOperator", OP.prev ? [it.row, it.n, op, OP.prev] : [it.row, it.n, op])
@@ -10815,10 +10835,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-13-1";
+var APP_VER = "2026-11-14-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-14-1", ["작업자 입력(FT)을 저장하면 기다리지 않고 바로 닫히고 목록에 반영됩니다", "근무시간 알림에서 바로 입력할 때도 저장을 누르면 바로 닫히고, 빈 날이 여러 날이면 다음 날이 바로 열립니다", "저장이 실패하면 알림과 함께 원래대로 돌아가 다시 입력할 수 있습니다"]],
   ["2026-11-13-1", ["업로드 화면을 장비별로 깔끔하게 정리했습니다 · 시트마다 지난 날수가 한눈에 보입니다", "FT 작업자별 실적의 팀 합계를 장비통계와 같은 기준으로 맞췄습니다 · 이름이 없는 장비는 '명단 외 · 이름 없음'에서 확인할 수 있습니다", "FT 작업자별 순위 표시를 더 깔끔하게 바꿨습니다", "입고불출에서 품목을 찾는 도중 키보드가 닫히거나 화면이 깜빡이던 문제를 고쳤습니다", "입고불출 장비 화면에서 '공정 보기'나 장비명을 누르면 공정 일정을 바로 볼 수 있습니다"]],
   ["2026-11-12-9", ["AI가 최근 2주간 앱 속도 기록을 분석해 느려지던 원인을 찾아 개선했습니다", "앱을 켤 때 · 다시 열 때 여러 요청이 한꺼번에 몰리지 않도록 순서를 정리해 지금 보는 화면이 먼저 열립니다", "퇴근 시간대처럼 사용이 몰릴 때도 덜 느려지도록 근무시간 자동 새로고침 간격을 조정했습니다", "근무시간 화면에서 이름 · 날짜를 연달아 바꿔도 바로 반응합니다", "느린 화면 기록이 더 정확해져, 매주 AI 분석으로 계속 개선됩니다", "시작 화면은 최신 생산 일정을 받은 뒤 열려, 메인 화면이 바로 최신 상태로 보입니다", "FT 화면에서 기록을 정상으로 받아 왔는데도 '불러오지 못했습니다'가 표시되던 문제를 고쳤습니다"]],
   ["2026-11-12-8", ["FT 구동 기록을 부분별로 지울 수 있습니다 · 잘못 넣은 입력 한 건만 지우면 그만큼 누적에서 빠집니다", "DRY만 · FULL CYCLE만 따로 지울 수도 있습니다"]],
@@ -12085,6 +12106,7 @@ function qhSync() {
 function qhBtns(on) { [].forEach.call($("qhov").querySelectorAll("button"), function (b) { b.disabled = !on; }); }
 function qhSave(me, ymd, v) {
   if (QH.busy) return;
+  if (sget("editPin")) return qhSaveFast(me, ymd, v);   // ⚡ 2026-11-14: PIN 있으면 기다리지 않음
   QH.busy = true; qhBtns(false); $("qhmsg").textContent = "";
   var go = $("qhpick").querySelector(".qhgo");
   if (go) go.textContent = "저장 중…";
@@ -12123,6 +12145,55 @@ function qhSave(me, ymd, v) {
       if (cur === 3) { H.token++; refreshCell(); setTimeout(function () { loadHoursMeta(true); }, 300); }
     })
     .catch(function (e) { done(); $("qhmsg").textContent = "저장 실패: " + errText(e); });
+}
+
+/* ⚡ 2026-11-14 근무시간 바로 저장 (빠른 길)
+ *  저장 버튼 → 창 바로 닫기 · 화면(근무시간 표 · 미입력 명단) 먼저 바꾸기 · 다음 빈 날 바로 열기
+ *  서버 저장(saveHours 1번)은 뒤에서 · 실패하거나 이미 값이 있으면 알림 + 근무시간 다시 불러오기 */
+function qhLocal(me, ymd, val) {
+  try { if (H.meta && +ymd.slice(5, 7) === H.meta.grid.m) { H.meta.grid.rows[me].v[+ymd.slice(8, 10) - 1] = val; cset("hours", H.meta); } } catch (eg) {}
+  try { if (!H.meta) { var cm = cget("hours"); if (cm && +ymd.slice(5, 7) === cm.grid.m) { cm.grid.rows[me].v[+ymd.slice(8, 10) - 1] = val; cset("hours", cm); } } } catch (ec) {}
+  try { renderTeamDay(); } catch (eTd) {}
+}
+function qhSaveFast(me, ymd, v) {
+  var md = (+ymd.slice(5, 7)) + "/" + (+ymd.slice(8, 10));
+  qhClose();
+  qhLocal(me, ymd, v);
+  sset("hoursName", me);
+  prevDone(me, ymd);
+  toast(md + " → " + v + "시간 저장 중" + (QH.queue.length ? " · 다음 날로 넘어갑니다" : ""));
+  if (QH.queue.length) {   // 📅 남은 빈 날 차례로 (저장 끝날 때까지 기다리지 않음)
+    var nx = QH.queue.shift(), rest = QH.queue.slice();
+    QH.done = (QH.done || 0) + 1;
+    setTimeout(function () { qhOpen(me, nx, qhLabel(nx), rest); }, 350);
+  } else QH.done = 0;
+  var redo = function () {   // 실패 → 화면 되돌리고 최신으로 다시
+    qhLocal(me, ymd, "");
+    H.loaded = false;
+    try { if (cur === 3) { H.token++; loadHoursMeta(true); } } catch (e3) {}
+  };
+  callEdit("saveHours", [me, ymd, v, false, "", "", false])
+    .then(function (r) {
+      if (r.error) { toast(md + " 저장 실패: " + r.error, true); redo(); return; }
+      if (r.needConfirm) { toast(md + "에 이미 '" + (r.cur === "" ? "(수식)" : r.cur) + "' 값이 있습니다 · 근무시간 탭에서 확인해 주세요", true); redo(); goPrevInput(me, ymd); return; }
+      if (!r.ok) return;
+      toast(md + " → " + (r.cur === "" ? v : r.cur) + "시간 저장 완료");
+      try {
+        if (r.past && r.cell && r.cell.grid) hpgPut(r.cell.grid);
+        if (!r.past) {
+          qhLocal(me, ymd, r.cur);
+          if (H.meta) {
+            if (r.missing) renderMissing(r.missing);
+            if (r.week) { H.meta.week = r.week; renderWeek(r.week); }
+            if (r.top !== undefined) renderTop(r.top);
+            cset("hours", H.meta);
+          }
+        }
+      } catch (eU) {}
+      H.loaded = false;   // 근무시간 탭 열면 합계·TOP 최신으로
+      if (cur === 3) { H.token++; refreshCell(); setTimeout(function () { loadHoursMeta(true); }, 300); }
+    })
+    .catch(function (e) { toast(md + " 저장 실패: " + errText(e) + " · 다시 입력해 주세요", true); redo(); });
 }
 
 // 🔕 알림 안 켠 사람: 탭 아래 고정 배너 (어느 탭이든 · 스크롤해도 보임) / 켜면 바로 사라짐
