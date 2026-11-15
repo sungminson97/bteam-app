@@ -657,6 +657,11 @@ li.tap:active{background:rgba(47,111,237,.08)}
 .tdg button.we b{font-size:13px;color:var(--sub)}
 .tdg button.me{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 .wk.tdk .hint{margin-top:8px}
+.tdnav{display:flex;align-items:center;gap:8px;margin-top:10px}
+.tdnav b{flex:1;text-align:center;font-size:14.5px;font-weight:800}
+.tdnav button{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--accent);font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.tdnav button:disabled{opacity:.35;cursor:default}
+.tdnav button.td0{background:color-mix(in srgb,var(--accent) 11%,transparent);border-color:transparent}
 .mon.flash{animation:mflash .7s ease-out}
 @keyframes mflash{0%{background:rgba(47,111,237,.18)}100%{background:var(--card)}}
 .msum{font-size:13px;color:var(--sub);line-height:1.5}
@@ -10083,17 +10088,29 @@ function applyMeta(m, fromCache) {
   hoursHero();
 }
 // 👥 2026-11-10: 오늘 팀 입력 — 미리 받아 둔 전원 값(H.meta.grid)으로 그림 (서버 요청 추가 없음)
+// 📅 2026-11-15: 전날 · 다음날로 지난 날도 보기 (이번 달 + 받아 둔 지난달 · 서버 요청 추가 없음)
+function tdYmd(d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+function tdShift(ymd, n) { return tdYmd(new Date(+ymd.slice(0, 4), +ymd.slice(5, 7) - 1, +ymd.slice(8, 10) + n)); }
+function tdRows(ymd) {   // 그 날짜가 들어 있는 달의 전원 값 (없으면 null)
+  var g = H.meta && H.meta.grid;
+  if (g && g.rows && +ymd.slice(5, 7) === g.m && ymd.slice(0, 7) === (H.meta.today || "").slice(0, 7)) return { rows: g.rows, cur: true };
+  var pg = hpgAll()[ymd.slice(0, 7)];
+  return pg && pg.rows ? { rows: pg.rows, cur: false } : null;
+}
 function renderTeamDay() {
   var b = $("hteam"), m = H.meta;
   if (!b) return;
   var g = m && m.grid, today = (m && m.today) || "";
   if (!g || !g.rows || !today || +today.slice(5, 7) !== g.m || !m.names || !m.names.length) { b.style.display = "none"; return; }
-  var open = b.open, day = +today.slice(8, 10), dt = new Date(+today.slice(0, 4), +today.slice(5, 7) - 1, day), dow = dt.getDay();
-  var off = dow === 0 || dow === 6 || !!KR_HOLI[today];   // 주말 · 공휴일은 비어 있어도 '미입력'으로 안 봄
-  var schm = (m.week && m.week.sch) || {}, me = $("hname").value, in0 = 0, all = 0, miss = [];
+  var sel = H.tdDay && H.tdDay <= today && tdRows(H.tdDay) ? H.tdDay : today;   // 고른 날 (기본은 오늘)
+  H.tdDay = sel;
+  var src = tdRows(sel), isToday = sel === today;
+  var open = b.open, day = +sel.slice(8, 10), dt = new Date(+sel.slice(0, 4), +sel.slice(5, 7) - 1, day), dow = dt.getDay();
+  var off = dow === 0 || dow === 6 || !!KR_HOLI[sel];   // 주말 · 공휴일은 비어 있어도 '미입력'으로 안 봄
+  var schm = src.cur ? ((m.week && m.week.sch) || {}) : {}, me = $("hname").value, in0 = 0, all = 0, miss = [];
   var grid = el("div", "tdg");
   m.names.forEach(function (n) {
-    var row = g.rows[n]; if (!row) return;
+    var row = src.rows[n]; if (!row || !row.v) return;
     var v = String(row.v[day - 1] == null ? "" : row.v[day - 1]).trim();
     if (WEEKEND_MARK.test(v)) v = "";
     var sv = !v && schm[n + "|" + day] ? schm[n + "|" + day][1] : "";
@@ -10106,17 +10123,37 @@ function renderTeamDay() {
     var c = el("button", cls + (n === me ? " me" : "")); c.type = "button";
     c.appendChild(el("i", null, n)); c.appendChild(el("b", null, txt));
     c.title = n + " · " + (v || sv || "비어 있음");
-    c.onclick = function () { $("hdate").value = today; goMon(n); };   // 그 사람 달력으로
+    c.onclick = function () {   // 그 사람의 그 날짜 달력으로
+      var sameName = $("hname").value === n, chg = $("hdate").value !== sel;
+      $("hdate").value = sel;
+      if (chg) { H.otherOK = false; resetConfirm(); }
+      goMon(n);
+      if (sameName && chg) refreshCell();
+    };
     grid.appendChild(c);
   });
-  if (!all) { b.style.display = "none"; return; }
+  if (!all) { if (!isToday) { H.tdDay = today; renderTeamDay(); } else b.style.display = "none"; return; }
   b.innerHTML = ""; b.style.display = "block";
+  var dlabel = (+sel.slice(5, 7)) + "/" + day + "(" + "일월화수목금토"[dow] + ")";
   var sm = el("summary");
   sm.appendChild(el("span", "tg", "팀 보기 ▾"));
-  sm.appendChild(document.createTextNode("오늘 팀 입력 " + (+today.slice(5, 7)) + "/" + day + "(" + "일월화수목금토"[dow] + ") "));
+  sm.appendChild(document.createTextNode((isToday ? "오늘 팀 입력 " : "팀 입력 ") + dlabel + " "));
   sm.appendChild(el("span", "bx", "입력 " + in0 + "/" + all + "명"));
-  sm.appendChild(el("small", null, off ? "쉬는 날이라 빈 칸은 미입력으로 보지 않아요" : miss.length ? "아직 입력 안 한 사람 " + miss.length + "명 · 하루가 끝나기 전엔 비어 있을 수 있어요" : "전원 입력했어요"));
+  sm.appendChild(el("small", null, off ? "쉬는 날이라 빈 칸은 미입력으로 보지 않아요" : miss.length ? (isToday ? "아직 입력 안 한 사람 " + miss.length + "명 · 하루가 끝나기 전엔 비어 있을 수 있어요" : "입력 안 한 사람 " + miss.length + "명") : "전원 입력했어요"));
   b.appendChild(sm);
+  // 전날 · 다음날 · 오늘
+  var prev = tdShift(sel, -1), next = tdShift(sel, 1);
+  var nav = el("div", "tdnav");
+  function nb(txt, to, ok, cls) {
+    var x = el("button", cls || null, txt); x.type = "button"; x.disabled = !ok;
+    x.onclick = function () { H.tdDay = to; renderTeamDay(); };
+    return x;
+  }
+  nav.appendChild(nb("전날", prev, !!tdRows(prev)));
+  nav.appendChild(el("b", null, dlabel));
+  nav.appendChild(nb("다음날", next, next <= today));
+  if (!isToday) nav.appendChild(nb("오늘", today, true, "td0"));
+  b.appendChild(nav);
   b.appendChild(grid);
   b.appendChild(el("div", "hint", "시트 근무시간 칸 기준이에요. 점선 칸은 schedule에만 적힌 휴가예요. 이름을 누르면 그 사람 달력으로 가요."));
   b.open = open;
@@ -10413,7 +10450,7 @@ function hpPrefetch() {
     if (m <= 1) return;
     var ym = y + "-" + ("0" + (m - 1)).slice(-2), g = hpgAll()[ym], nm = $("hname").value || myName();
     if (!nm || (H.meta && H.meta.month === m - 1) || (g && Date.now() - g.at < 600000)) return;
-    call("getHoursCell", [nm, ym + "-01"]).then(function (r) { if (r && r.grid) hpgPut(r.grid); }).catch(function () {});
+    call("getHoursCell", [nm, ym + "-01"]).then(function (r) { if (r && r.grid) { hpgPut(r.grid); try { renderTeamDay(); } catch (eTd) {} } }).catch(function () {});   // 👥 지난달 받으면 팀 입력 ◀ 전날도 바로
   } catch (e) {}
 }
 function gridCell(name, date) {
@@ -10835,10 +10872,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-14-1";
+var APP_VER = "2026-11-15-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-15-1", ["근무시간 '오늘 팀 입력'에서 전날 · 다음날 버튼으로 지난 날짜의 팀 입력 현황도 볼 수 있습니다", "이름을 누르면 그 사람의 그 날짜 입력 화면으로 바로 이동합니다"]],
   ["2026-11-14-1", ["작업자 입력(FT)을 저장하면 기다리지 않고 바로 닫히고 목록에 반영됩니다", "근무시간 알림에서 바로 입력할 때도 저장을 누르면 바로 닫히고, 빈 날이 여러 날이면 다음 날이 바로 열립니다", "저장이 실패하면 알림과 함께 원래대로 돌아가 다시 입력할 수 있습니다"]],
   ["2026-11-13-1", ["업로드 화면을 장비별로 깔끔하게 정리했습니다 · 시트마다 지난 날수가 한눈에 보입니다", "FT 작업자별 실적의 팀 합계를 장비통계와 같은 기준으로 맞췄습니다 · 이름이 없는 장비는 '명단 외 · 이름 없음'에서 확인할 수 있습니다", "FT 작업자별 순위 표시를 더 깔끔하게 바꿨습니다", "입고불출에서 품목을 찾는 도중 키보드가 닫히거나 화면이 깜빡이던 문제를 고쳤습니다", "입고불출 장비 화면에서 '공정 보기'나 장비명을 누르면 공정 일정을 바로 볼 수 있습니다"]],
   ["2026-11-12-9", ["AI가 최근 2주간 앱 속도 기록을 분석해 느려지던 원인을 찾아 개선했습니다", "앱을 켤 때 · 다시 열 때 여러 요청이 한꺼번에 몰리지 않도록 순서를 정리해 지금 보는 화면이 먼저 열립니다", "퇴근 시간대처럼 사용이 몰릴 때도 덜 느려지도록 근무시간 자동 새로고침 간격을 조정했습니다", "근무시간 화면에서 이름 · 날짜를 연달아 바꿔도 바로 반응합니다", "느린 화면 기록이 더 정확해져, 매주 AI 분석으로 계속 개선됩니다", "시작 화면은 최신 생산 일정을 받은 뒤 열려, 메인 화면이 바로 최신 상태로 보입니다", "FT 화면에서 기록을 정상으로 받아 왔는데도 '불러오지 못했습니다'가 표시되던 문제를 고쳤습니다"]],
