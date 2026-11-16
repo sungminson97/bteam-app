@@ -4335,7 +4335,9 @@ window.addEventListener("pageshow", function () { if (HID.at) { HID.sum += Date.
 // 🚦 지금 서버에 가 있는 요청 수 (뒤에서 미리 불러오기는 이게 0일 때만 보냄)
 var ACT = 0;
 // 📶 조회 요청은 연결이 끊기면 1번 자동 재시도 (저장 요청은 중복 저장 막으려고 재시도 안 함)
-var READ_FNS = { ping: 1, getDashboardAll: 1, getDashboardData: 1, getUploadStatus: 1, getHoursMeta: 1, getHoursCell: 1, getLeaveData: 1, getStatsData: 1, getEquipIndex: 1, getPjData: 1, getPjLog: 1, getFtData: 1 };
+var READ_FNS = { ping: 1, getDashboardAll: 1, getDashboardData: 1, getUploadStatus: 1, getHoursMeta: 1, getHoursCell: 1, getLeaveData: 1, getStatsData: 1, getEquipIndex: 1, getPjData: 1, getPjLog: 1, getFtData: 1,
+  getNcData: 1, getNcRows: 1, getInspData: 1, getInspRows: 1, getMatList: 1, getMatTab: 1 };   // 2026-11-16 부적합 · 수입검사 · 입고불출 추가 (AI 속도 분석)
+var SLOW_READ = { getNcData: 1, getNcRows: 1, getInspData: 1, getInspRows: 1, getMatList: 1, getMatTab: 1 };   // 서버 계산이 긴 조회 → 30초 대신 60초까지 기다림
 var CALL_TIMEOUT = 30000;   // 30초 넘게 응답 없으면 끊고 (조회면) 다시 시도
 
 // 📱 앱을 내렸다가 다시 열 때: 내려가 있는 동안 폰(특히 아이폰)이 연결을 끊어 버려서
@@ -4385,7 +4387,7 @@ function rawCall(pin, fn, args, editPin) {
     me: myName(), adm: (fn === "saveHours" || fn === "saveHoursRange" || fn === "setOperator" || fn === "getRoster" || fn === "saveRoster") && adminOn() ? sget("admPin") : "", use: use });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
   // 새로고침 버튼(금일/명일 새로 계산)은 시트를 통째로 읽어서 오래 걸릴 수 있음 → 30초에 끊지 않고 90초까지 기다림
   // 저장(근무시간 저장·작업자·업로드 완료 등)도 90초: 시트가 바쁘면 30초 넘게 걸리는데, 앱만 먼저 포기하면 실제로는 저장됐는데 '실패'로 보임
-  var to = (fn === "getDashboardAll" && args && args[0] === true) || !READ_FNS[fn] ? 90000 : 0;
+  var to = (fn === "getDashboardAll" && args && args[0] === true) || !READ_FNS[fn] ? 90000 : SLOW_READ[fn] ? 60000 : 0;
   return fetchJson(body, !!READ_FNS[fn], to)
     .catch(function (e) {
       if (!READ_FNS[fn]) throw e;
@@ -8676,13 +8678,19 @@ function loadStats(force) {
 var DB = { tm: 0, ld: 0 };
 function dashLoad(force) {
   var jobs = [], vo = viewOnly();
+  // 🚦 2026-11-16 AI 속도 분석: 7개를 한꺼번에 보내면 서버(시트)에서 서로 기다려 다 같이 느려짐
+  //    → 금일/명일만 바로 · 나머지는 서버에 가 있는 요청이 없을 때 하나씩 (요청 수는 그대로)
+  var q = function (job, key) {
+    if (BGQ.list.some(function (x) { return x.k === key; })) return Promise.resolve("");
+    return new Promise(function (res) { idle(function () { try { Promise.resolve(job()).then(res, function (e) { res(errText(e)); }); } catch (e) { res(errText(e)); } }, key); });
+  };
   if (force || !store[0]) jobs.push(loadDash(!!force));
-  if (force || !U.loaded) jobs.push(loadUpload());
-  if (force || !ST.loaded) jobs.push(loadStats(!!force));
-  if (force || !LV.loaded) jobs.push(loadLeave(!!force));
-  if (!vo && (force || !H.loaded)) jobs.push(loadHoursMeta(true));
-  if (force || !IN.loaded) jobs.push(loadInsp(!!force));
-  if (force || !NC.loaded) jobs.push(loadNc(!!force));
+  if (force || !U.loaded) jobs.push(q(function () { return loadUpload(); }, "dl_up"));
+  if (!vo && (force || !H.loaded)) jobs.push(q(function () { return loadHoursMeta(true); }, "dl_hr"));
+  if (force || !NC.loaded) jobs.push(q(function () { return loadNc(!!force); }, "dl_nc"));
+  if (force || !IN.loaded) jobs.push(q(function () { return loadInsp(!!force); }, "dl_in"));
+  if (force || !ST.loaded) jobs.push(q(function () { return loadStats(!!force); }, "dl_st"));
+  if (force || !LV.loaded) jobs.push(q(function () { return loadLeave(!!force); }, "dl_lv"));
   if (!jobs.length) return Promise.resolve("");
   DB.ld += jobs.length; dashSoon();
   jobs = jobs.map(function (p) {
@@ -10388,6 +10396,7 @@ function renderMonth(name, r) {
 
 // 현재 입력값 박스 + 달력 그리기
 function applyCell(r) {
+  H.lastCell = r;   // 2026-11-16 바로 저장(먼저 화면 반영)에 씀
   var box = $("hcur");
   box.innerHTML = "";
   box.appendChild(document.createTextNode("현재 입력값: "));
@@ -10768,6 +10777,7 @@ function doSave(value, force, delForce) {
     }
   }
   var delSched = !!delForce || ($("hdelBox").style.display !== "none" && $("hdel").checked);
+  if (hFastOK(name, date, value, note, leave, delSched, force)) return hSaveFast(name, date, String(+String(value).trim()));
   H.busy = true;
   $("hsave").disabled = true; $("hclr").disabled = true;
   $("hsave").textContent = "저장 중…";
@@ -10828,6 +10838,62 @@ function doSave(value, force, delForce) {
     });
 }
 
+/* ⚡ 2026-11-16 근무시간 바로 저장 (AI 속도 분석: 저장 체감 6~7초)
+ *  빈 칸에 숫자(0.5~24)만 넣을 때 → 누르는 순간 화면(현재값 · 달력 · 팀 입력 · 미입력) 먼저 바꾸고 저장은 뒤에서
+ *  이미 값이 있는 칸 · 연차류 · 반차 · 메모 · 여러 날 · 지난달 · 비우기는 지금처럼 서버 확인 후
+ *  실패하거나 그 사이 다른 값이 들어가 있으면 → 원래대로 되돌리고 알림 (덮어쓰기 확인 그대로) */
+function hFastOK(name, date, value, note, leave, delSched, force) {
+  var v = String(value || "").trim();
+  if (!sget("editPin") || force || H.confirm || leave || delSched || note) return false;
+  if (!/^\d{1,2}(\.\d+)?$/.test(v) || !(+v > 0 && +v <= 24)) return false;
+  if (String(H.curVal || "").trim() !== "") return false;
+  var c = H.lastCell; if (!c || c.name !== name || c.ymd !== date || c.cur !== "" || c.formula) return false;
+  try { if (!H.meta || +date.slice(5, 7) !== H.meta.grid.m || date.slice(0, 4) !== String(H.meta.today || "").slice(0, 4)) return false; } catch (e) { return false; }
+  return true;
+}
+function hLocal(name, date, val, cell) {
+  try { H.meta.grid.rows[name].v[+date.slice(8, 10) - 1] = val; cset("hours", H.meta); } catch (eg) {}
+  try { renderTeamDay(); } catch (eTd) {}
+  if (cell && $("hname").value === name && $("hdate").value === date) applyCell(cell);
+}
+function hSaveFast(name, date, v) {
+  var md = (+date.slice(5, 7)) + "/" + (+date.slice(8, 10)), d = +date.slice(8, 10);
+  var was = H.lastCell, cl = JSON.parse(JSON.stringify(was));
+  cl.cur = v; cl.total = was.total == null || was.total === "" ? null : Math.round(((+was.total || 0) + (+v)) * 100) / 100;
+  try { (cl.days || []).forEach(function (x) { if (x.d === d) x.v = v; }); } catch (eD) {}
+  resetConfirm(); H.otherOK = false;
+  hLocal(name, date, v, cl);
+  prevDone(name, date);
+  sset("hoursName", name);
+  $("hval").value = ""; updNote();
+  var res = $("hres"); res.innerHTML = ""; res.appendChild(el("div", "okmsg", "저장 중 · " + name + " " + md + " → " + v));
+  var back = function (msg) {   // 실패 → 원래대로
+    hLocal(name, date, "", was);
+    if ($("hname").value === name && $("hdate").value === date) { $("hval").value = v; updNote(); }
+    res.innerHTML = ""; res.appendChild(el("div", "warn", msg));
+  };
+  H.token++;
+  callEdit("saveHours", [name, date, v, false, "", "", false])
+    .then(function (r) {
+      if (r.error) { if (r.admBad) adminOff(); back(r.error + " · 다시 입력해 주세요"); toast(md + " 저장 실패: " + r.error, true); return; }
+      if (r.needConfirm) {   // 그 사이 다른 사람이 값을 넣음 → 덮어쓰기 확인 단계로
+        back("이미 '" + (r.cur === "" ? "(수식)" : r.cur) + "' 값이" + (r.formula ? "(수식)" : "") + " 들어 있습니다. 덮어쓰려면 한 번 더 눌러 주세요.");
+        if ($("hname").value === name && $("hdate").value === date) { H.confirm = true; $("hsave").textContent = "덮어쓰기 확인"; $("hsave").className = "save confirm"; refreshCell(); }
+        toast(md + "에 이미 값이 있습니다 · 확인해 주세요", true); return;
+      }
+      if (!r.ok) return;
+      if (r.cur !== "" && $("hname").value === name && $("hdate").value === date) { res.innerHTML = ""; res.appendChild(el("div", "okmsg", "저장 완료 ✔ " + name + " " + md + " → " + r.cur)); }
+      toast("✔ 저장 완료 · " + name + " " + md + " → " + (r.cur === "" ? v : r.cur));
+      try { H.meta.grid.rows[name].v[d - 1] = r.cur; cset("hours", H.meta); renderTeamDay(); } catch (eg) {}
+      if (r.top !== undefined) renderTop(r.top);
+      if (r.week && H.meta) { H.meta.week = r.week; renderWeek(r.week); }
+      if (r.missing) renderMissing(r.missing);
+      if (r.cell && $("hname").value === name && $("hdate").value === date) applyCell(r.cell);
+      if (r.total == null) setTimeout(function () { loadHoursMeta(true); }, 300);
+    })
+    .catch(function (e) { back("저장 실패: " + errText(e) + " · 다시 눌러 주세요"); toast(md + " 저장 실패: " + errText(e), true); });
+}
+
 $("hsave").onclick = function () { doSave($("hval").value); };
 // 칸 비우기: 확인창을 띄우고 "지우기"를 누르면 바로 지움 (덮어쓰기 확인 단계 없음)
 $("hclr").onclick = function () {
@@ -10872,10 +10938,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-15-1";
+var APP_VER = "2026-11-16-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-16-1", ["AI가 이번 주 앱 속도 기록을 분석해 느려지던 원인을 찾아 개선했습니다", "근무시간 탭에서 빈 칸에 시간을 넣고 저장하면 기다리지 않고 바로 반영됩니다", "종합 화면을 열 때 요청이 한꺼번에 몰리지 않도록 순서를 정리해 금일 · 명일이 먼저 빠르게 뜹니다", "부적합 · 수입검사 · 입고불출 화면이 자주 보는 순서에 맞춰 미리 준비되고, 연결이 잠깐 끊겨도 자동으로 다시 불러옵니다", "앱 업데이트 직후 처음 켤 때 느려지던 현상을 줄였습니다"]],
   ["2026-11-15-1", ["근무시간 '오늘 팀 입력'에서 전날 · 다음날 버튼으로 지난 날짜의 팀 입력 현황도 볼 수 있습니다", "이름을 누르면 그 사람의 그 날짜 입력 화면으로 바로 이동합니다"]],
   ["2026-11-14-1", ["작업자 입력(FT)을 저장하면 기다리지 않고 바로 닫히고 목록에 반영됩니다", "근무시간 알림에서 바로 입력할 때도 저장을 누르면 바로 닫히고, 빈 날이 여러 날이면 다음 날이 바로 열립니다", "저장이 실패하면 알림과 함께 원래대로 돌아가 다시 입력할 수 있습니다"]],
   ["2026-11-13-1", ["업로드 화면을 장비별로 깔끔하게 정리했습니다 · 시트마다 지난 날수가 한눈에 보입니다", "FT 작업자별 실적의 팀 합계를 장비통계와 같은 기준으로 맞췄습니다 · 이름이 없는 장비는 '명단 외 · 이름 없음'에서 확인할 수 있습니다", "FT 작업자별 순위 표시를 더 깔끔하게 바꿨습니다", "입고불출에서 품목을 찾는 도중 키보드가 닫히거나 화면이 깜빡이던 문제를 고쳤습니다", "입고불출 장비 화면에서 '공정 보기'나 장비명을 누르면 공정 일정을 바로 볼 수 있습니다"]],
@@ -12628,9 +12695,12 @@ function devInfo() {
 function devRegister(force) {
   var n = myName();
   if (!n) return;
-  var key = n + "|" + APP_VER + "|" + (sget("osSub") || "");   // 알림 ID가 바뀌어도 다시 보냄
+  // ⚡ 2026-11-16 AI 속도 분석: 앱 버전이 바뀔 때마다 보내면 업데이트한 날 앱 켤 때 다른 요청과 겹침
+  //    → 이름 · 알림 ID가 바뀌었거나 하루에 한 번만 · 뒤에서 (서버에 가 있는 요청 없을 때)
+  var key = n + "|" + (sget("osSub") || "") + "|" + ymdLocal();
   if (!force && sget("devReg") === key) return;
-  call("deviceRegister", [n, devInfo()]).then(function () { sset("devReg", key); }).catch(function () {});
+  var send = function () { call("deviceRegister", [n, devInfo()]).then(function () { sset("devReg", key); }).catch(function () {}); };
+  if (force) send(); else idle(send, "devreg");
 }
 var RN = { busy: "" };
 // 앱 화면이 뜬 뒤에 적용 (앱 여는 중에 온 경우 대비)
@@ -12655,7 +12725,7 @@ function applyRemoteRename(rn) {
     toast("🛠 이름이 '" + to + "'(으)로 바뀌었어요");
     if (cur === 0 && !SR.open) render();
   } else sset("nameOK", "1");
-  call("deviceRegister", [to, devInfo()]).then(function () { sset("devReg", to + "|" + APP_VER); RN.busy = ""; }).catch(function () { RN.busy = ""; });
+  call("deviceRegister", [to, devInfo()]).then(function () { sset("devReg", to + "|" + (sget("osSub") || "") + "|" + ymdLocal()); RN.busy = ""; }).catch(function () { RN.busy = ""; });
 }
 
 /* ---------- 🔐 사용 중지 / 승인 대기 ---------- */
