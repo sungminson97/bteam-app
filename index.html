@@ -3520,6 +3520,17 @@ body.kb #totop{display:none}
 #moreov .mgg button.on i{color:#fff;background:var(--mh)}
 #moreov .mgg .now{position:absolute;top:7px;right:8px;padding:2px 6px;border-radius:999px;background:var(--mh);color:#fff;font-size:9.5px;font-weight:800;font-style:normal;letter-spacing:.02em}
 #moreov .mc{height:48px;font-size:15px;color:var(--sub);background:transparent;box-shadow:inset 0 0 0 1px var(--line);margin-top:2px}
+
+/* 근무시간 1위 강조 */
+#hours #htop{--gd:#b7791f;display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;margin:0;padding:15px 18px;border-radius:18px;border:0;background:linear-gradient(135deg,#fff8e6 0%,#ffedc2 100%);box-shadow:inset 0 0 0 1px rgba(214,158,46,.35),0 10px 24px -18px rgba(183,121,31,.7);color:var(--text)}
+#hours #htop[style*="none"]{display:none!important}
+#hours #htop .tl1{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
+#hours #htop .tp{padding:3px 10px;border-radius:999px;background:var(--gd);color:#fff;font-size:11.5px;font-weight:800;letter-spacing:.02em}
+#hours #htop .tn{font-size:19px;font-weight:900;letter-spacing:-.02em;color:#3d2a07;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+#hours #htop .th{display:flex;align-items:baseline;gap:3px;color:var(--gd)}
+#hours #htop .th b{font-size:32px;font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+#hours #htop .th small{font-size:14px;font-weight:800}
+@media (prefers-color-scheme:dark){#hours #htop{--gd:#f2b950;background:linear-gradient(135deg,rgba(242,185,80,.16),rgba(242,185,80,.07));box-shadow:inset 0 0 0 1px rgba(242,185,80,.35)}#hours #htop .tp{color:#2a1c03}#hours #htop .tn{color:#fbe7c0}}
 </style>
 </head>
 <body>
@@ -9959,7 +9970,10 @@ function renderTop(t) {
   if (!t || !t.names || !t.names.length) { b.style.display = "none"; return; }
   var mm = H.meta ? H.meta.month + "월" : "이번 달";
   b.style.display = "block";
-  b.innerHTML = ""; b.appendChild(el("span", "tp", mm + " 근무시간 1위")); b.appendChild(document.createTextNode(t.names.join(", ") + "님 · " + t.hours + "시간"));
+  b.innerHTML = "";
+  var l = el("div", "tl1"); l.appendChild(el("span", "tp", mm + " 근무시간 1위")); l.appendChild(el("b", "tn", t.names.join(", ") + "님"));
+  var r = el("div", "th"); r.appendChild(el("b", null, String(t.hours))); r.appendChild(el("small", null, "시간"));
+  b.appendChild(l); b.appendChild(r);
 }
 
 /* ---------- ⏱ 주 52시간 체크 (월~일, 숫자만 합산) ----------
@@ -11257,10 +11271,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-17-3";
+var APP_VER = "2026-11-17-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-17-4", ["근무시간 화면의 이번 달 근무시간 1위를 더 눈에 띄게 바꿨습니다"]],
   ["2026-11-17-3", ["근무시간 화면이 좌우로 밀리며 흔들리던 문제를 고쳤습니다 · 이제 화면이 옆으로 움직이지 않습니다"]],
   ["2026-11-17-2", ["근무시간 화면을 새로 정리했습니다 · 요약 · 오늘 미입력 · 내 입력 · 팀 현황 순서로 보기 쉽게 바꿨습니다", "팀 근무시간 현황: 기간을 1일부터 오늘까지(예: 11/1~11/16)로 표시하고, 이번 달 · 지난달 · 지지난달을 골라 볼 수 있습니다", "더보기를 묶음별로 정리하고 화면마다 한 줄 설명을 붙였습니다", "FT 화면에서 업체 현황으로 넘어가면 아래에 FT 화면이 같이 보이던 문제를 고쳤습니다"]],
   ["2026-11-17-1", ["근무시간 탭 맨 위에 '팀 근무시간 현황'이 생겨 팀원별 이번 주 · 이번 달 근무시간을 한눈에 볼 수 있습니다", "근무시간 저장이 더 빨라졌습니다 · 이미 값이 있는 칸을 덮어쓸 때와 연차 · 공가 · 반차를 넣을 때도 기다리지 않고 바로 반영됩니다", "여러 칸을 연달아 넣을 때 화면이 버벅이지 않도록 정리했습니다"]],
