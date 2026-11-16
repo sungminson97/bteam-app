@@ -647,6 +647,25 @@ li.tap:active{background:rgba(47,111,237,.08)}
 .mon.fold>:not(h4){display:none}#hours .mon.fold h4 .mnav{display:none}.mon.fold h4 .ftg{margin-left:auto}
 /* 2026-11-10: 오늘 팀 입력 */
 .wk.tdk{border-left-color:var(--accent)}
+/* 팀 근무시간 현황 (2026-11-17) */
+.wk.hak{border-left-color:#6366f1}
+#hours .wk.hak::before{background:#6366f1}
+.hak summary small,.hak .hint{word-break:keep-all}
+.hak .hasrt{display:flex;gap:6px;margin:10px 0 8px}
+.hak .hasrt button{flex:1;border:1px solid var(--line);background:transparent;color:var(--sub);font:inherit;font-size:12.5px;font-weight:700;border-radius:999px;padding:6px 0}
+.hak .hasrt button.on{background:color-mix(in srgb,#6366f1 14%,transparent);border-color:transparent;color:#4f46e5}
+.hat{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+.hat th{font-size:11.5px;font-weight:700;color:var(--sub);text-align:right;padding:6px 4px;border-bottom:1px solid var(--line);white-space:nowrap}
+.hat th:first-child,.hat td:first-child{text-align:left}
+.hat td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.hat tr:last-child td{border-bottom:0}
+.hat td.nm button{border:0;background:none;padding:0;font:inherit;font-weight:800;color:var(--fg,inherit);text-decoration:underline;text-decoration-color:color-mix(in srgb,currentColor 30%,transparent);text-underline-offset:3px}
+.hat tr.me td{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.hat td b{font-weight:800}
+.hat .ms{color:#d97706;font-weight:800}
+.hat .lv{color:var(--sub);font-size:12px}
+.hat .bar{display:block;height:4px;border-radius:2px;background:color-mix(in srgb,#6366f1 65%,transparent);margin-top:4px;margin-left:auto}
+.hat tfoot td{font-weight:800;border-top:2px solid var(--line);border-bottom:0}
 .tdg{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:10px}
 .tdg button{display:grid;gap:2px;justify-items:center;padding:9px 4px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;cursor:pointer}
 .tdg button i{font-style:normal;font-size:12.5px;font-weight:700;color:var(--sub);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -3934,6 +3953,7 @@ SPX.start();
 
 <section id="hours">
   <div id="hvlk"><b>보기 전용에서는 근무시간을 볼 수 없습니다</b><span>근무시간은 B팀 팀원만 볼 수 있습니다.<br>팀원이면 위의 보기 전용 표시를 눌러<br>이름을 골라 주십시오.</span></div>
+  <details id="hall" class="wk hak" style="display:none"></details>
   <div id="hmiss" style="display:none"></div>
   <div id="hprev" class="prevmiss" style="display:none"></div>
   <details id="hweek" class="wk" style="display:none"></details>
@@ -10106,6 +10126,7 @@ function tdRows(ymd) {   // 그 날짜가 들어 있는 달의 전원 값 (없�
   return pg && pg.rows ? { rows: pg.rows, cur: false } : null;
 }
 function renderTeamDay() {
+  try { renderTeamAll(); } catch (eTa) {}   // 👥 팀 근무시간 현황도 같이
   var b = $("hteam"), m = H.meta;
   if (!b) return;
   var g = m && m.grid, today = (m && m.today) || "";
@@ -10165,6 +10186,82 @@ function renderTeamDay() {
   b.appendChild(grid);
   b.appendChild(el("div", "hint", "시트 근무시간 칸 기준입니다. 점선 칸은 schedule에만 적힌 휴가입니다. 이름을 누르면 그 사람 달력으로 갑니다."));
   b.open = open;
+}
+/* 👥 팀 근무시간 현황 (2026-11-17 · 팀장님 요청): 금일 미입력 위 · 펼치면 사람별 이번 주 · 이번 달 · 입력한 날 · 휴가
+ *  이미 받아 둔 근무시간 자료(이번 달 달력 · 주 52시간 표)로만 그림 → 서버 요청 추가 없음 · 저장하면 바로 같이 바뀜 */
+function renderTeamAll() {
+  var b = $("hall"), m = H.meta;
+  if (!b) return;
+  var g = m && m.grid, today = (m && m.today) || "";
+  if (!g || !g.rows || !today || +today.slice(5, 7) !== g.m || !m.names || !m.names.length) { b.style.display = "none"; return; }
+  var y = +today.slice(0, 4), mo = g.m, td = +today.slice(8, 10), w = m.week, me = $("hname").value;
+  var schm = (w && w.sch) || {};
+  var wdays = 0;   // 오늘까지 평일 (공휴일 빼고)
+  for (var d0 = 1; d0 <= td; d0++) { var dw0 = new Date(y, mo - 1, d0).getDay(), k0 = y + "-" + ("0" + mo).slice(-2) + "-" + ("0" + d0).slice(-2); if (dw0 && dw0 !== 6 && !KR_HOLI[k0]) wdays++; }
+  var rows = [];
+  m.names.forEach(function (n) {
+    var r = g.rows[n]; if (!r || !r.v) return;
+    var sum = 0, inN = 0, lvN = 0;
+    r.v.forEach(function (x, i) {
+      var v = String(x == null ? "" : x).trim(), d = i + 1; if (d > td) return;
+      var dw = new Date(y, mo - 1, d).getDay(), k = y + "-" + ("0" + mo).slice(-2) + "-" + ("0" + d).slice(-2), wd = dw && dw !== 6 && !KR_HOLI[k];
+      if (/^\d+(\.\d+)?$/.test(v)) { sum += +v; if (wd) inN++; }
+      else if (v && !WEEKEND_MARK.test(v) && v !== "-") { if (wd) { inN++; lvN++; } }
+      else if (wd && schm[n + "|" + d] && schm[n + "|" + d][0] >= 8) { inN++; lvN++; }
+    });
+    var wr = w && w.rows ? w.rows.filter(function (x) { return x.n === n; })[0] : null;
+    var wk = wr && w.cur != null && w.cur >= 0 && wr.h ? +wr.h[w.cur] || 0 : null;
+    rows.push({ n: n, sum: Math.round(sum * 10) / 10, wk: wk, inN: inN, lvN: lvN });
+  });
+  if (!rows.length) { b.style.display = "none"; return; }
+  if (H.allSort === "sum") rows.sort(function (a, b2) { return b2.sum - a.sum; });
+  var tot = rows.reduce(function (a, x) { return a + x.sum; }, 0), mx = Math.max.apply(null, rows.map(function (x) { return x.sum; })) || 1;
+  var open = b.open;
+  b.innerHTML = ""; b.style.display = "block";
+  var sm = el("summary");
+  sm.appendChild(el("span", "tg", open ? "접기" : "펼치기"));
+  sm.appendChild(document.createTextNode("팀 근무시간 현황 · " + mo + "월 "));
+  sm.appendChild(el("span", "bx", rows.length + "명 · 합계 " + fnum(Math.round(tot * 10) / 10) + "시간"));
+  sm.appendChild(el("small", null, "사람별 이번 주 · 이번 달 근무시간과 입력한 날을 한눈에 봅니다 (" + mo + "/" + td + " 기준)"));
+  b.appendChild(sm);
+  var srt = el("div", "hasrt");
+  [["name", "이름 순"], ["sum", "이번 달 많은 순"]].forEach(function (o) {
+    var x = el("button", (H.allSort || "name") === o[0] ? "on" : null, o[1]); x.type = "button";
+    x.onclick = function () { H.allSort = o[0]; renderTeamAll(); };
+    srt.appendChild(x);
+  });
+  b.appendChild(srt);
+  var t = el("table", "hat"), th = el("thead"), hr = el("tr");
+  ["이름", "이번 주", "이번 달", "입력한 날", "휴가"].forEach(function (h) { hr.appendChild(el("th", null, h)); });
+  th.appendChild(hr); t.appendChild(th);
+  var tb = el("tbody");
+  rows.forEach(function (x) {
+    var tr = el("tr", x.n === me ? "me" : null);
+    var c0 = el("td", "nm"), bt = el("button", null, x.n); bt.type = "button";
+    bt.onclick = function () { goMon(x.n); };
+    c0.appendChild(bt); tr.appendChild(c0);
+    tr.appendChild(el("td", null, x.wk == null ? "-" : fnum(x.wk)));
+    var c2 = el("td"); c2.appendChild(el("b", null, fnum(x.sum)));
+    var bar = el("i", "bar"); bar.style.width = Math.max(4, Math.round(x.sum / mx * 100)) + "%"; c2.appendChild(bar);
+    tr.appendChild(c2);
+    var miss = Math.max(0, wdays - x.inN);
+    tr.appendChild(el("td", miss ? "ms" : null, x.inN + "/" + wdays + "일"));
+    tr.appendChild(el("td", "lv", x.lvN ? x.lvN + "일" : "-"));
+    tb.appendChild(tr);
+  });
+  t.appendChild(tb);
+  var tf = el("tfoot"), fr = el("tr");
+  fr.appendChild(el("td", null, "합계"));
+  var wsum = rows.reduce(function (a, x) { return a + (x.wk || 0); }, 0);
+  fr.appendChild(el("td", null, rows.some(function (x) { return x.wk != null; }) ? fnum(Math.round(wsum * 10) / 10) : "-"));
+  fr.appendChild(el("td", null, fnum(Math.round(tot * 10) / 10)));
+  fr.appendChild(el("td", null, "평균 " + fnum(Math.round(tot / rows.length * 10) / 10)));
+  fr.appendChild(el("td", null, ""));
+  tf.appendChild(fr); t.appendChild(tf);
+  b.appendChild(t);
+  b.appendChild(el("div", "hint", "이번 달은 숫자로 넣은 근무시간 합계입니다. 입력한 날은 오늘까지 평일(공휴일 제외) 중 근무시간이나 휴가가 적힌 날이고, 주황색은 빈 날이 있다는 뜻입니다. 이름을 누르면 그 사람 달력으로 갑니다."));
+  b.open = open;
+  b.ontoggle = function () { var tg = b.querySelector("summary .tg"); if (tg) tg.textContent = b.open ? "접기" : "펼치기"; };
 }
 // 🌟 근무시간 맨 위 요약: 고른 사람의 이번 달 · 이번 주 · 52시간까지
 function hoursHero() {
@@ -10777,7 +10874,8 @@ function doSave(value, force, delForce) {
     }
   }
   var delSched = !!delForce || ($("hdelBox").style.display !== "none" && $("hdel").checked);
-  if (hFastOK(name, date, value, note, leave, delSched, force)) return hSaveFast(name, date, String(+String(value).trim()));
+  var fv = hFastOK(name, date, value, note, leave, delSched, force);
+  if (fv) return hSaveFast(name, date, fv, value, note, leave, H.confirm || !!force);
   H.busy = true;
   $("hsave").disabled = true; $("hclr").disabled = true;
   $("hsave").textContent = "저장 중…";
@@ -10826,7 +10924,7 @@ function doSave(value, force, delForce) {
         if (r.cell && $("hname").value === name && $("hdate").value === date) applyCell(r.cell);
         else refreshCell();
         // 합계(계)·TOP1은 시트 재계산 후 값이라 뒤에서 조용히 다시 불러옴
-        if (r.total == null && !r.past) setTimeout(function () { loadHoursMeta(true); }, 300);
+        if (r.total == null && !r.past) hReloadSoon();
       }
     })
     .catch(function (e) {
@@ -10842,24 +10940,38 @@ function doSave(value, force, delForce) {
  *  빈 칸에 숫자(0.5~24)만 넣을 때 → 누르는 순간 화면(현재값 · 달력 · 팀 입력 · 미입력) 먼저 바꾸고 저장은 뒤에서
  *  이미 값이 있는 칸 · 연차류 · 반차 · 메모 · 여러 날 · 지난달 · 비우기는 지금처럼 서버 확인 후
  *  실패하거나 그 사이 다른 값이 들어가 있으면 → 원래대로 되돌리고 알림 (덮어쓰기 확인 그대로) */
+// ⚡ 2026-11-17 넓힘: 빈 칸 숫자 + 덮어쓰기 확인한 숫자 · 연차 · 공가 · 반차(숫자) · 메모까지 바로 화면에 (칸 비우기 · schedule 지우기 · 여러 날 · 지난달 · 다음 달은 그대로)
+//   → 화면에 보일 값(문자)을 돌려줌 / 안 되면 false
 function hFastOK(name, date, value, note, leave, delSched, force) {
   var v = String(value || "").trim();
-  if (!sget("editPin") || force || H.confirm || leave || delSched || note) return false;
-  if (!/^\d{1,2}(\.\d+)?$/.test(v) || !(+v > 0 && +v <= 24)) return false;
-  if (String(H.curVal || "").trim() !== "") return false;
-  var c = H.lastCell; if (!c || c.name !== name || c.ymd !== date || c.cur !== "" || c.formula) return false;
-  try { if (!H.meta || +date.slice(5, 7) !== H.meta.grid.m || date.slice(0, 4) !== String(H.meta.today || "").slice(0, 4)) return false; } catch (e) { return false; }
-  return true;
+  if (!sget("editPin") || delSched || v === "__CLEAR__") return false;
+  var c = H.lastCell; if (!c || c.name !== name || c.ymd !== date) return false;
+  try { if (!H.meta || +date.slice(5, 7) !== H.meta.grid.m || date.slice(0, 4) !== String(H.meta.today || "").slice(0, 4) || c.past) return false; } catch (e) { return false; }
+  var cur = String(H.curVal || "").trim(), ok = H.confirm || !!force;
+  if (cur !== "" && !WEEKEND_MARK.test(cur) && !ok) return false;   // 값이 있는 칸은 덮어쓰기 확인 뒤에만
+  if (c.formula && !ok) return false;
+  var lm = v.match(LEAVE_RX);
+  if (leave) return /^\d{1,2}(\.\d+)?$/.test(v) && +v > 0 && +v <= 24 ? String(+v) : false;   // 반차: 칸에는 숫자
+  if (lm) return HALF_HRS[lm[1]] ? false : lm[1];   // 연차 · 공가: 칸에는 종류 글자
+  if (/^\d{1,2}(\.\d+)?$/.test(v) && +v > 0 && +v <= 24) return String(+v);
+  return false;
+}
+// ⚡ 저장 뒤 합계(계)·TOP1 다시 받기: 저장할 때마다 바로 하지 않고 4초 기다렸다 한 번만 (여러 칸을 연달아 넣어도 한 번 · 그동안 서버는 저장에 집중)
+function hReloadSoon() {
+  clearTimeout(H.relT);
+  H.relT = setTimeout(function () { idle(function () { return loadHoursMeta(true); }, "hrel"); }, 4000);
 }
 function hLocal(name, date, val, cell) {
   try { H.meta.grid.rows[name].v[+date.slice(8, 10) - 1] = val; cset("hours", H.meta); } catch (eg) {}
   try { renderTeamDay(); } catch (eTd) {}
   if (cell && $("hname").value === name && $("hdate").value === date) applyCell(cell);
 }
-function hSaveFast(name, date, v) {
+function hSaveFast(name, date, v, sendV, note, leave, ow) {
   var md = (+date.slice(5, 7)) + "/" + (+date.slice(8, 10)), d = +date.slice(8, 10);
-  var was = H.lastCell, cl = JSON.parse(JSON.stringify(was));
-  cl.cur = v; cl.total = was.total == null || was.total === "" ? null : Math.round(((+was.total || 0) + (+v)) * 100) / 100;
+  var was = H.lastCell, cl = JSON.parse(JSON.stringify(was)), oldV = String(was.cur == null ? "" : was.cur);
+  var num = function (x) { return /^\d+(\.\d+)?$/.test(String(x)) ? +x : 0; };
+  cl.cur = v; cl.formula = false;
+  cl.total = was.total == null || was.total === "" ? null : Math.round(((+was.total || 0) - num(oldV) + num(v)) * 100) / 100;
   try { (cl.days || []).forEach(function (x) { if (x.d === d) x.v = v; }); } catch (eD) {}
   resetConfirm(); H.otherOK = false;
   hLocal(name, date, v, cl);
@@ -10868,12 +10980,13 @@ function hSaveFast(name, date, v) {
   $("hval").value = ""; updNote();
   var res = $("hres"); res.innerHTML = ""; res.appendChild(el("div", "okmsg", "저장 중 · " + name + " " + md + " → " + v));
   var back = function (msg) {   // 실패 → 원래대로
-    hLocal(name, date, "", was);
+    hLocal(name, date, oldV, was);
     if ($("hname").value === name && $("hdate").value === date) { $("hval").value = v; updNote(); }
     res.innerHTML = ""; res.appendChild(el("div", "warn", msg));
   };
   H.token++;
-  callEdit("saveHours", [name, date, v, false, "", "", false])
+  if (note || leave) { $("hnote").value = ""; H.half = ""; }
+  callEdit("saveHours", [name, date, sendV == null ? v : sendV, !!ow, note || "", leave || "", false])
     .then(function (r) {
       if (r.error) { if (r.admBad) adminOff(); back(r.error + " · 다시 입력해 주십시오"); toast(md + " 저장 실패: " + r.error, true); return; }
       if (r.needConfirm) {   // 그 사이 다른 사람이 값을 넣음 → 덮어쓰기 확인 단계로
@@ -10882,14 +10995,18 @@ function hSaveFast(name, date, v) {
         toast(md + "에 이미 값이 있습니다 · 확인해 주십시오", true); return;
       }
       if (!r.ok) return;
-      if (r.cur !== "" && $("hname").value === name && $("hdate").value === date) { res.innerHTML = ""; res.appendChild(el("div", "okmsg", "저장 완료 ✔ " + name + " " + md + " → " + r.cur)); }
-      toast("✔ 저장 완료 · " + name + " " + md + " → " + (r.cur === "" ? v : r.cur));
+      resetConfirm();
+      var sc = r.sched;
+      if (sc && sc.ok && sc.action !== "없음" && sc.action !== "그대로") { LV.loaded = false; sdel("c_leave"); }   // 연차 탭 다시 불러오기
+      if (r.cur !== "" && $("hname").value === name && $("hdate").value === date) { res.innerHTML = ""; res.appendChild(el("div", "okmsg", "저장 완료 ✔ " + name + " " + md + " → " + r.cur)); if (sc && sc.error) res.appendChild(el("div", "warn", sc.error)); }
+      if (sc && sc.error) toast("⚠️ 근무시간은 저장됐지만 " + sc.error, true);
+      else toast("✔ 저장 완료 · " + name + " " + md + " → " + (r.cur === "" ? v : r.cur));
       try { H.meta.grid.rows[name].v[d - 1] = r.cur; cset("hours", H.meta); renderTeamDay(); } catch (eg) {}
       if (r.top !== undefined) renderTop(r.top);
       if (r.week && H.meta) { H.meta.week = r.week; renderWeek(r.week); }
       if (r.missing) renderMissing(r.missing);
       if (r.cell && $("hname").value === name && $("hdate").value === date) applyCell(r.cell);
-      if (r.total == null) setTimeout(function () { loadHoursMeta(true); }, 300);
+      if (r.total == null) hReloadSoon();
     })
     .catch(function (e) { back("저장 실패: " + errText(e) + " · 다시 눌러 주십시오"); toast(md + " 저장 실패: " + errText(e), true); });
 }
@@ -10938,10 +11055,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-16-2";
+var APP_VER = "2026-11-17-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-17-1", ["근무시간 탭 맨 위에 '팀 근무시간 현황'이 생겨 팀원별 이번 주 · 이번 달 근무시간과 입력한 날을 한눈에 볼 수 있습니다", "근무시간 저장이 더 빨라졌습니다 · 이미 값이 있는 칸을 덮어쓸 때와 연차 · 공가 · 반차를 넣을 때도 기다리지 않고 바로 반영됩니다", "여러 칸을 연달아 넣을 때 화면이 버벅이지 않도록 정리했습니다"]],
   ["2026-11-16-1", ["AI가 이번 주 앱 속도 기록을 분석해 느려지던 원인을 찾아 개선했습니다", "근무시간 탭에서 빈 칸에 시간을 넣고 저장하면 기다리지 않고 바로 반영됩니다", "종합 화면을 열 때 요청이 한꺼번에 몰리지 않도록 순서를 정리해 금일 · 명일이 먼저 빠르게 뜹니다", "부적합 · 수입검사 · 입고불출 화면이 자주 보는 순서에 맞춰 미리 준비되고, 연결이 잠깐 끊겨도 자동으로 다시 불러옵니다", "앱 업데이트 직후 처음 켤 때 느려지던 현상을 줄였습니다"]],
   ["2026-11-15-1", ["근무시간 '오늘 팀 입력'에서 전날 · 다음날 버튼으로 지난 날짜의 팀 입력 현황도 볼 수 있습니다", "이름을 누르면 그 사람의 그 날짜 입력 화면으로 바로 이동합니다"]],
   ["2026-11-14-1", ["작업자 입력(FT)을 저장하면 기다리지 않고 바로 닫히고 목록에 반영됩니다", "근무시간 알림에서 바로 입력할 때도 저장을 누르면 바로 닫히고, 빈 날이 여러 날이면 다음 날이 바로 열립니다", "저장이 실패하면 알림과 함께 원래대로 돌아가 다시 입력할 수 있습니다"]],
