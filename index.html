@@ -3635,6 +3635,74 @@ body.kb #totop{display:none}
 #nmov.first.cf #nmback:active{background:color-mix(in srgb,var(--oink) 10%,transparent)}
 #nmov.first.cf .ob{position:static;background:none;margin-left:0;margin-right:0;padding:0}
 @media (max-height:700px){#nmcf .nmq{font-size:19px}#nmcf .nmcard{margin-top:16px}#nmcf .nm b{font-size:34px}#nmcf .nmrows div{min-height:44px}}
+
+/* ══ 환영 화면 (v11.17-12) ══ */
+#wlov{--obg:#f5f6f9;--oglow:rgba(47,111,237,.18);--ocard:#fff;--obd:rgba(16,32,64,.08);--oink:#5d6875;display:none;position:fixed;inset:0;z-index:140;overflow:auto;background:var(--obg);color:var(--text)}
+@media (prefers-color-scheme:dark){#wlov{--obg:#08090d;--oglow:rgba(90,140,255,.26);--ocard:#141821;--obd:rgba(255,255,255,.08);--oink:#9aa5b4}}
+#wlov.on{display:block;animation:wlIn .32s ease both}
+#wlov.out{animation:wlOut .34s ease both;pointer-events:none}
+#wlov::before{content:"";position:absolute;left:0;right:0;top:0;height:420px;pointer-events:none;background:radial-gradient(60% 70% at 50% 0%,var(--oglow),transparent 72%)}
+#wlov .wwin{position:relative;max-width:420px;margin:0 auto;min-height:100%;box-sizing:border-box;padding:calc(30px + env(safe-area-inset-top)) 22px calc(26px + env(safe-area-inset-bottom));display:flex;flex-direction:column}
+#wlov .wwst{display:flex;flex-direction:column;align-items:center;gap:8px}
+#wlov .wwbars{display:flex;gap:6px}
+#wlov .wwbars i{width:30px;height:4px;border-radius:4px;background:color-mix(in srgb,var(--oink) 25%,transparent)}
+#wlov .wwbars i.on{background:var(--accent)}
+#wlov .wwst span{font-size:12.5px;font-weight:800;letter-spacing:.06em;color:var(--accent)}
+#wlov .wwh{margin-top:30px;text-align:center;font-size:31px;font-weight:900;letter-spacing:-.035em;line-height:1.28}
+#wlov .wwhr{position:relative;margin-top:26px;border-radius:26px;padding:26px 24px 22px;color:#fff;overflow:hidden;background:linear-gradient(135deg,#2f6fed 0%,#5b5cf0 55%,#8b5cf6 100%);box-shadow:0 26px 50px -26px rgba(59,90,240,.75);animation:wlCard .5s .08s cubic-bezier(.2,.8,.2,1) both}
+#wlov .wwhr::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 65%);pointer-events:none}
+#wlov .wwl{display:inline-block;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.2);font-size:11.5px;font-weight:800;letter-spacing:.12em}
+#wlov .wwnm{margin-top:18px;font-size:44px;font-weight:900;letter-spacing:-.04em;line-height:1.05;word-break:keep-all}
+#wlov .wwnm small{font-size:22px;font-weight:800;opacity:.8;margin-left:4px}
+#wlov .wwt{margin-top:10px;font-size:17px;font-weight:800;letter-spacing:-.02em;line-height:1.45}
+#wlov .wwft{margin-top:22px;padding-top:14px;border-top:1px solid rgba(255,255,255,.22);display:flex;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:700;opacity:.92}
+#wlov .wwms{margin:20px 0 0;text-align:center;font-size:15px;line-height:1.7;color:var(--oink);word-break:keep-all}
+#wlov .wwms b{color:var(--text)}
+#wlov .wwsp{flex:1;min-height:20px}
+#wlov .wwgo{height:56px;border:0;border-radius:16px;background:var(--accent);color:#fff;font:inherit;font-size:17px;font-weight:800;box-shadow:0 14px 28px -14px var(--accent);margin-top:22px}
+#wlov .wwgo:active{transform:scale(.98)}
+#wlov .wwnt{margin-top:12px;text-align:center;font-size:12.5px;color:var(--oink)}
+@keyframes wlIn{from{opacity:0}to{opacity:1}}
+@keyframes wlOut{from{opacity:1}to{opacity:0}}
+@keyframes wlCard{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#wlov.on,#wlov.out,#wlov .wwhr{animation:none}}
+@media (max-height:700px){#wlov .wwh{margin-top:18px;font-size:26px}#wlov .wwhr{margin-top:18px;padding:22px 20px 18px}#wlov .wwnm{font-size:36px}}
+
+/* ══ 알림 켜기 리디자인 (v11.17-13) ══ */
+#pushov .pfx{display:none}
+#pushov.first .pfx{display:block}
+#pushov.first .pushic,#pushov.first #pushhelp{display:none!important}
+#pushov.first #pushttl{margin-top:30px}
+#pushov.first .box{align-content:start}
+#pushov.first .pfpv{display:flex;gap:12px;align-items:flex-start;margin:26px 0 0;padding:14px 15px;border-radius:20px;background:color-mix(in srgb,var(--ocard) 82%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:0 0 0 1px var(--obd),0 22px 44px -26px rgba(16,32,64,.55);animation:pfIn .55s .1s cubic-bezier(.2,.8,.2,1) both}
+#pushov.first .pfpv img{flex:none;width:38px;height:38px;border-radius:10px;box-shadow:0 0 0 1px var(--obd)}
+#pushov.first .pftx{flex:1;min-width:0}
+#pushov.first .pfh{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--oink)}
+#pushov.first .pfh b{color:var(--oink);letter-spacing:.02em}
+#pushov.first .pftx strong{display:block;margin-top:3px;font-size:15px;font-weight:800;color:var(--text)}
+#pushov.first .pftx p{margin:2px 0 0;font-size:14px;line-height:1.45;color:var(--text);opacity:.85;word-break:keep-all}
+#pushov.first .pfld{margin:22px 0 0;text-align:center;font-size:15px;line-height:1.65;color:var(--oink);white-space:pre-line;word-break:keep-all}
+#pushov.first .pfx:not(.dn) .pfld{margin-top:20px}
+#pushov.first .pfls{margin-top:16px;border-radius:20px;background:var(--ocard);box-shadow:0 0 0 1px var(--obd),0 18px 40px -28px rgba(16,32,64,.5);overflow:hidden}
+#pushov.first .pfls div{display:grid;grid-template-columns:74px 1fr;gap:12px;align-items:center;padding:14px 18px}
+#pushov.first .pfls div+div{box-shadow:inset 0 1px 0 var(--obd)}
+#pushov.first .pfls span{font-size:13px;font-weight:800;color:var(--accent);white-space:nowrap}
+#pushov.first .pfls b{font-size:14.5px;font-weight:700;line-height:1.45;color:var(--text);word-break:keep-all}
+#pushov.first .pfst{margin-top:20px;border-radius:20px;background:var(--ocard);box-shadow:0 0 0 1px var(--obd),0 18px 40px -28px rgba(16,32,64,.5);padding:6px 18px}
+#pushov.first .pfst div{position:relative;display:flex;align-items:center;gap:14px;min-height:56px}
+#pushov.first .pfst div+div{box-shadow:inset 0 1px 0 var(--obd)}
+#pushov.first .pfst i{flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--accent);font-style:normal;font-size:13.5px;font-weight:900}
+#pushov.first .pfst div:last-child i{background:var(--accent);color:#fff}
+#pushov.first .pfst p{margin:0;font-size:15px;line-height:1.45;color:var(--text);word-break:keep-all}
+#pushov.first .pfst p b{color:var(--accent);font-weight:800}
+#pushov.first .ob{margin-top:28px}
+#pushov.first #pushno{display:none!important}
+#pushov.first .pfmu{margin-top:18px;padding:16px 18px;border-radius:18px;background:color-mix(in srgb,var(--accent) 9%,var(--ocard));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent) 35%,transparent)}
+#pushov.first .pfmu b{display:block;font-size:16.5px;font-weight:900;letter-spacing:-.02em;color:var(--accent)}
+#pushov.first .pfmu p{margin:6px 0 0;font-size:14px;line-height:1.6;color:var(--text);white-space:pre-line;word-break:keep-all}
+@keyframes pfIn{from{opacity:0;transform:translateY(-10px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#pushov.first .pfpv{animation:none}}
+@media (max-height:700px){#pushov.first #pushttl{margin-top:16px}#pushov.first .pfpv{margin-top:16px}#pushov.first .pfls div{padding:11px 16px}#pushov.first .pfst div{min-height:48px}}
 </style>
 </head>
 <body>
@@ -4336,6 +4404,7 @@ SPX.start();
     <div class="obic pushic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></div>
     <div class="pnag" id="pushnag" style="display:none"></div>
     <h3 id="pushttl">🔔 팀 공지, 폰으로 바로 받기</h3>
+    <div class="pfx" id="pfx"></div>
     <p id="pushlead">필요한 순간에만 짧게 알려 드립니다.
 <b>쓸데없는 알림은 안 보냅니다.</b></p>
     <ul class="pben">
@@ -11429,10 +11498,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-17-11";
+var APP_VER = "2026-11-17-13";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-17-13", ["처음 알림을 켜는 화면을 새로 다듬었습니다"]],
+  ["2026-11-17-12", ["처음 이름을 정하면 환영 화면이 나옵니다"]],
   ["2026-11-17-11", ["이름 확인 화면의 안내 문구를 다듬었습니다"]],
   ["2026-11-17-10", ["이름을 한 번 더 확인하는 화면을 새로 다듬었습니다"]],
   ["2026-11-17-9", ["처음 이름을 고르는 화면을 목록으로 바꿔 보기 쉽게 다듬었습니다 · 다른 폰에서 쓰는 이름은 따로 모아 보여 줍니다"]],
@@ -12215,7 +12286,7 @@ $("nmgo").onclick = function () {
     call("pushRegister", [NM.pick]).catch(function () {});
   }
   var onb = ONB.on && !wasChange;
-  if (onb) onbPush();   // 🧭 처음이면 ④ 알림 받기 화면을 먼저 띄우고 이름 창을 닫음 (앱 화면이 잠깐 보이지 않게)
+  if (onb) welcomeShow(NM.pick, onbPush);   // 🧭 처음이면 환영 화면 → [시작하기] → ④ 알림 받기 처음이면 ④ 알림 받기 화면을 먼저 띄우고 이름 창을 닫음 (앱 화면이 잠깐 보이지 않게)
   $("nmov").className = "ov";
   persistAsk();   // 💾 이름을 정하는 순간 영구 저장도 같이 (버튼 누른 직후라 허용될 확률이 높음)
   if (!onb) toast(wasChange ? "👤 이름이 '" + NM.pick + "'(으)로 바뀌었습니다" : "👤 " + NM.pick + " 님으로 정해졌습니다");
@@ -12224,6 +12295,39 @@ $("nmgo").onclick = function () {
   if (cur === 0 && !SR.open) render();
   if (!onb) setTimeout(pushAutoAsk, 800);
 };
+// ③-1 환영 화면 (처음 이름을 정한 직후 한 번): 이름 · 합류 날짜 카드 → [시작하기]를 누르면 알림 켜기로
+function welcomeShow(nm, next) {
+  var o = $("wlov");
+  if (!o) { o = el("div"); o.id = "wlov"; document.body.appendChild(o); }
+  var d = new Date(), dt = d.getFullYear() + ". " + (d.getMonth() + 1) + ". " + d.getDate() + " 합류";
+  o.innerHTML = "";
+  var w = el("div", "wwin");
+  var st = el("div", "wwst"), bars = el("div", "wwbars");
+  for (var i = 1; i <= 4; i++) bars.appendChild(el("i", i <= 3 ? "on" : ""));
+  st.appendChild(bars); st.appendChild(el("span", null, "3 / 4 · 등록 완료")); w.appendChild(st);
+  w.appendChild(el("div", "wwh", "환영합니다"));
+  var hr = el("div", "wwhr");
+  hr.appendChild(el("span", "wwl", "WELCOME"));
+  var nmEl = el("div", "wwnm", nm); nmEl.appendChild(el("small", null, "님")); hr.appendChild(nmEl);
+  hr.appendChild(el("div", "wwt", "제조1-B팀의 새 팀원이 되셨습니다"));
+  var ft = el("div", "wwft"); ft.appendChild(el("span", null, "NINEBELL 제조1-B")); ft.appendChild(el("span", null, dt)); hr.appendChild(ft);
+  w.appendChild(hr);
+  var ms = el("p", "wwms"); ms.appendChild(document.createTextNode("제조1-B팀에 오신 것을 ")); ms.appendChild(el("b", null, "진심으로 환영합니다"));
+  ms.appendChild(el("br")); ms.appendChild(document.createTextNode("궁금한 점은 언제든 팀원에게 물어봐 주십시오"));
+  ms.appendChild(el("br")); ms.appendChild(document.createTextNode("퇴근할 때마다 근무시간 입력도 잊지 마십시오"));
+  w.appendChild(ms);
+  w.appendChild(el("div", "wwsp"));
+  var go = el("button", "wwgo", "시작하기"); go.type = "button"; w.appendChild(go);
+  w.appendChild(el("div", "wwnt", "다음 화면에서 알림을 켜면 준비가 끝납니다"));
+  o.appendChild(w);
+  o.className = "on";
+  go.onclick = function () {
+    go.onclick = null;
+    try { next(); } catch (e) {}
+    o.className = "on out";
+    setTimeout(function () { o.className = ""; o.innerHTML = ""; }, 360);
+  };
+}
 // ④ 알림 받기 (처음 시작 화면 모양) → 받을 수 없는 폰이면 바로 ⑤로
 function onbPush() {
   var can = !!ONESIGNAL_APP_ID && !pushOn() && pushStandaloneOk() && ("Notification" in window);
@@ -12237,6 +12341,39 @@ function onbPush() {
   if (!pushDenied() && !$("pushgo").disabled) $("pushgo").textContent = "알림 켜고 시작하기";
   $("pushno").textContent = "나중에 하겠습니다";
   obSteps("pushst", 4);
+  pfxFill();
+}
+// ④ 알림 화면 (처음 시작) 내용: 켜기 전 = 알림 미리보기 + 받는 알림 / 막힌 폰 = 켜는 순서
+function pfxFill() {
+  var b = $("pfx"); if (!b) return;
+  var denied = pushDenied(), ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  b.innerHTML = ""; b.className = "pfx" + (denied ? " dn" : "");
+  $("pushttl").textContent = denied ? "알림이 꺼져 있습니다" : "알림을 켜고 시작하십시오";
+  if (!denied) {
+    var pv = el("div", "pfpv");
+    var ic = el("img"); ic.src = "icon.png"; ic.alt = ""; ic.onerror = function () { ic.style.visibility = "hidden"; };
+    pv.appendChild(ic);
+    var tx = el("div", "pftx"), h = el("div", "pfh"); h.appendChild(el("b", null, "제조1-B")); h.appendChild(el("span", null, "지금")); tx.appendChild(h);
+    tx.appendChild(el("strong", null, "근무시간 입력 알림"));
+    tx.appendChild(el("p", null, (myName() || "팀원") + "님, 오늘 근무시간이 아직 비어 있습니다"));
+    pv.appendChild(tx); b.appendChild(pv);
+    var mu = el("div", "pfmu");
+    mu.appendChild(el("b", null, "알림은 꼭 켜 주십시오"));
+    mu.appendChild(el("p", null, "근무시간 입력을 깜빡하면 알림으로 챙겨 드립니다\n이미 입력했으면 알림이 오지 않습니다"));
+    b.appendChild(mu);
+  } else {
+    b.appendChild(el("p", "pfld", "예전에 '허용 안 함'을 눌러서 막혀 있습니다\n휴대폰 설정에서 한 번만 켜 주십시오"));
+    var steps = ios
+      ? [["아이폰 ", "설정", " 앱을 엽니다"], ["", "알림", " 메뉴에서 제조1-B를 누릅니다"], ["", "알림 허용", "을 켭니다"], ["앱으로 돌아와 ", "다시 확인", "을 누릅니다"]]
+      : [["홈 화면의 ", "제조1-B 아이콘", "을 길게 누릅니다"], ["", "앱 정보", "에서 알림을 누릅니다"], ["", "알림 허용", "을 켭니다"], ["앱으로 돌아와 ", "다시 확인", "을 누릅니다"]];
+    var ol = el("div", "pfst");
+    steps.forEach(function (x, i) {
+      var rw = el("div"); rw.appendChild(el("i", null, String(i + 1)));
+      var t = el("p"); t.appendChild(document.createTextNode(x[0])); t.appendChild(el("b", null, x[1])); t.appendChild(document.createTextNode(x[2]));
+      rw.appendChild(t); ol.appendChild(rw);
+    });
+    b.appendChild(ol);
+  }
 }
 // ⑤ 시작 화면(웨이퍼)을 보여주고 → ⑥ 바로 사용 (금일/명일은 그동안 이미 받아 둠)
 function onbFinish() {
