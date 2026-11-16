@@ -3569,6 +3569,72 @@ body.kb #totop{display:none}
 @media (prefers-color-scheme:dark){#gate .gkp button{box-shadow:0 0 0 1px var(--obd)}}
 @media (max-height:760px){#gate .gkp{grid-template-columns:repeat(3,64px);gap:10px 26px;margin-top:14px}#gate .gkp button{width:64px;height:64px;font-size:26px}#gate .gtitle{font-size:22px;margin-top:12px}#gate .gpin{margin-top:14px}#gate .gbtns{margin-top:16px}#gate .gbtns .go{height:52px}}
 @media (max-height:700px){#gate .geb{display:none}#gate .gtitle{margin-top:4px}#gate .gkp{grid-template-columns:repeat(3,60px);gap:9px 26px}#gate .gkp button{width:60px;height:60px;font-size:25px}#gate .glogo{display:none}}
+
+/* ══ 이름 고르기 리디자인 (v11.17-8) ══ */
+#nmov.first .nmic{width:auto;height:auto;padding:6px 13px;border-radius:999px;background:color-mix(in srgb,var(--accent) 11%,transparent);color:var(--accent);font-size:12.5px;font-weight:800;letter-spacing:.06em;box-shadow:none;animation:none;cursor:default;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+#nmov.first .nmic::before,#nmov.first .nmic::after{display:none}
+#nmov.first #nmttl{margin-top:16px}
+#nmov.first #nmdesc{white-space:pre-line}
+#nmov.first .chips{margin-top:26px;gap:10px}
+#nmov.first .chip{position:relative;justify-content:center;min-height:66px;padding:12px 6px;gap:4px;border-radius:18px;border:0;background:var(--ocard);box-shadow:0 0 0 1px var(--obd),0 12px 26px -20px rgba(16,32,64,.5);font-size:17px;font-weight:800;letter-spacing:-.01em;color:var(--text);transition:transform .1s,background .15s,box-shadow .15s,color .15s;-webkit-tap-highlight-color:transparent}
+#nmov.first .chip:active{transform:scale(.96)}
+#nmov.first .chip.on{background:var(--accent);color:#fff;box-shadow:0 0 0 1px var(--accent),0 14px 26px -14px color-mix(in srgb,var(--accent) 85%,transparent)}
+#nmov.first .chip.taken{background:transparent;color:color-mix(in srgb,var(--oink) 75%,transparent);box-shadow:inset 0 0 0 1.5px var(--obd)}
+#nmov.first .chip.taken small{display:block;font-size:11px;font-weight:700;color:var(--oink);opacity:.85}
+#nmov.first .chip.taken.on{background:color-mix(in srgb,var(--accent) 12%,var(--ocard));color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+#nmov.first .chip.taken.on small{color:var(--accent)}
+#nmov.first .ob{position:sticky;bottom:0;margin:22px -22px 0;padding:16px 22px calc(4px + env(safe-area-inset-bottom));background:linear-gradient(to bottom,transparent,var(--obg) 34%)}
+#nmov.first #nmmsg{font-size:13px;font-weight:700;color:var(--warn);scroll-margin-bottom:110px;word-break:keep-all}
+/* 한 번 더 확인 */
+#nmcf .av{display:none}
+#nmcf .nmk{margin-top:6px;padding:6px 13px;border-radius:999px;background:color-mix(in srgb,var(--accent) 11%,transparent);color:var(--accent);font-size:12.5px;font-weight:800;letter-spacing:.06em}
+#nmcf .nm{margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:6px}
+#nmcf .nm b{font-size:44px;font-weight:900;letter-spacing:-.03em;line-height:1.1;color:var(--text)}
+#nmcf .nm span{font-size:19px;font-weight:800;color:var(--oink)}
+#nmcf .wn{margin-top:26px;text-align:left;border-left:4px solid var(--accent)}
+@media (max-height:700px){#nmov.first .chip{min-height:54px;font-size:15.5px}#nmcf .nm b{font-size:36px}}
+
+/* ══ 이름 고르기 v2 (v11.17-9) · 목록형 ══ */
+#nmov.first .chips{display:block;margin-top:24px}
+#nmov.first .nmgh{display:flex;align-items:baseline;justify-content:space-between;margin:20px 6px 9px;font-size:12.5px;font-weight:800;letter-spacing:.03em;color:var(--oink)}
+#nmov.first .nmgh:first-child{margin-top:0}
+#nmov.first .nmgh em{font-style:normal;font-weight:700;opacity:.8}
+#nmov.first .nml{overflow:hidden;border-radius:20px;background:var(--ocard);box-shadow:0 0 0 1px var(--obd),0 16px 34px -26px rgba(16,32,64,.55)}
+#nmov.first .nml .chip{display:flex;flex-direction:row;align-items:center;justify-content:space-between;width:100%;min-height:60px;margin:0;padding:0 18px 0 20px;border-radius:0;border:0;background:transparent;box-shadow:none;color:var(--text);text-align:left;transform:none;transition:background .15s}
+#nmov.first .nml .chip+.chip{box-shadow:inset 0 1px 0 var(--obd)}
+#nmov.first .nml .chip b{font-size:17.5px;font-weight:800;letter-spacing:-.01em}
+#nmov.first .nml .chip .rt{display:flex;align-items:center;gap:10px}
+#nmov.first .nml .chip small{display:inline;font-size:11.5px;font-weight:700;color:var(--oink);opacity:.9}
+#nmov.first .nml .rd{flex:none;width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--oink) 38%,transparent);transition:box-shadow .15s}
+#nmov.first .nml .chip:active{background:color-mix(in srgb,var(--accent) 6%,transparent);transform:none}
+#nmov.first .nml .chip.on{background:color-mix(in srgb,var(--accent) 9%,var(--ocard));color:var(--accent);box-shadow:none}
+#nmov.first .nml .chip.on+.chip,#nmov.first .nml .chip+.chip.on{box-shadow:inset 0 1px 0 var(--obd)}
+#nmov.first .nml .chip.on .rd{box-shadow:inset 0 0 0 7px var(--accent)}
+#nmov.first .nml.u{background:transparent;box-shadow:inset 0 0 0 1.5px var(--obd)}
+#nmov.first .nml.u .chip b{color:var(--oink);font-weight:700}
+#nmov.first .nml.u .chip.on{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+#nmov.first .nml.u .chip.on b{color:var(--accent)}
+@media (max-height:700px){#nmov.first .nml .chip{min-height:50px}#nmov.first .nml .chip b{font-size:16px}}
+
+/* ══ 한 번 더 확인 (v11.17-10) ══ */
+#nmov.first.cf #nmcf{align-items:stretch;text-align:left;margin-top:8px}
+#nmcf .nmq{text-align:center;font-size:22px;font-weight:900;letter-spacing:-.025em;line-height:1.38;color:var(--text)}
+#nmcf .nmcard{margin-top:26px;overflow:hidden;border-radius:24px;background:var(--ocard);box-shadow:0 0 0 1px var(--obd),0 22px 44px -30px rgba(16,32,64,.6)}
+#nmcf .nmtop{padding:24px 22px 22px;background:linear-gradient(150deg,color-mix(in srgb,var(--accent) 16%,var(--ocard)) 0%,var(--ocard) 70%)}
+#nmcf .nmk{display:inline-block;margin:0;padding:5px 11px;border-radius:999px;background:var(--accent);color:#fff;font-size:11.5px;font-weight:800;letter-spacing:.05em}
+#nmcf .nm{margin-top:14px;display:flex;flex-direction:row;align-items:baseline;gap:6px}
+#nmcf .nm b{font-size:40px;font-weight:900;letter-spacing:-.035em;line-height:1.05;color:var(--text)}
+#nmcf .nm span{font-size:20px;font-weight:800;color:var(--oink)}
+#nmcf .nmrows{padding:4px 22px 6px}
+#nmcf .nmrows div{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:50px}
+#nmcf .nmrows div+div{box-shadow:inset 0 1px 0 var(--obd)}
+#nmcf .nmrows span{flex:none;font-size:13px;font-weight:700;color:var(--oink)}
+#nmcf .nmrows b{font-size:14px;font-weight:800;color:var(--text);text-align:right}
+#nmov.first.cf .ob{margin-top:26px}
+#nmov.first.cf #nmback{display:block;width:100%;height:52px;margin-top:10px;padding:0;border:0;border-radius:16px;background:transparent;box-shadow:inset 0 0 0 1.5px var(--obd);color:var(--text);font:inherit;font-size:15.5px;font-weight:800}
+#nmov.first.cf #nmback:active{background:color-mix(in srgb,var(--oink) 10%,transparent)}
+#nmov.first.cf .ob{position:static;background:none;margin-left:0;margin-right:0;padding:0}
+@media (max-height:700px){#nmcf .nmq{font-size:19px}#nmcf .nmcard{margin-top:16px}#nmcf .nm b{font-size:34px}#nmcf .nmrows div{min-height:44px}}
 </style>
 </head>
 <body>
@@ -4392,16 +4458,15 @@ SPX.start();
 <div class="ov" id="nmov">
   <div class="obst" id="nmst"></div>
   <div class="box">
-    <div class="obic nmic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.8 4.2-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></svg></div>
-    <h3 id="nmttl">👤 본인 이름을 선택해 주십시오</h3>
+    <div class="obic nmic">제조1-B</div>
+    <h3 id="nmttl">본인 이름을 골라 주십시오</h3>
     <p id="nmdesc">처음 한 번만 선택합니다. 선택하면 이 폰에 <b style="color:var(--accent)">고정</b>되고, 바꾸려면 관리자에게 요청해야 합니다.</p>
     <div class="chips" id="nmchips"><span class="hint">이름 불러오는 중…</span></div>
-    <div id="nmcf"><div class="av" id="nmcfav"></div><div class="nm"><b id="nmcfnm"></b> 님이 맞습니까?</div><div class="wn">한 번 정하면 <b>이 폰에 고정</b>됩니다.
-바꾸려면 관리자에게 요청해야 합니다.</div></div>
+    <div id="nmcf"><div class="av" id="nmcfav"></div><div class="nmq">이 폰을 쓰실 분이 맞는지<br>한 번 더 확인해 주십시오</div><div class="nmcard"><div class="nmtop"><div class="nmk">제조1-B팀</div><div class="nm"><b id="nmcfnm"></b><span>님</span></div></div><div class="nmrows"><div><span>알림</span><b>이 이름으로 받습니다</b></div><div><span>근무시간</span><b>퇴근할 때마다 입력해 주십시오</b></div></div></div></div>
     <input type="password" id="nmpin" inputmode="numeric" autocomplete="off" placeholder="총괄팀장 PIN" style="display:none">
     <p class="sub" id="nmmsg"></p>
     <div class="ob" id="nmob" style="grid-template-columns:1fr"><button id="nmno" type="button" style="display:none">취소</button><button id="nmgo" type="button" class="go" style="background:var(--accent);border-color:var(--accent)" disabled>이 이름으로 정하기</button></div>
-    <button id="nmback" type="button" class="obsub">다시 고르기</button>
+    <button id="nmback" type="button" class="obsub">아니요, 다시 고르기</button>
   </div>
 </div>
 
@@ -11364,10 +11429,14 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-17-7";
+var APP_VER = "2026-11-17-11";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-17-11", ["이름 확인 화면의 안내 문구를 다듬었습니다"]],
+  ["2026-11-17-10", ["이름을 한 번 더 확인하는 화면을 새로 다듬었습니다"]],
+  ["2026-11-17-9", ["처음 이름을 고르는 화면을 목록으로 바꿔 보기 쉽게 다듬었습니다 · 다른 폰에서 쓰는 이름은 따로 모아 보여 줍니다"]],
+  ["2026-11-17-8", ["처음 이름을 고르는 화면을 새로 다듬었습니다"]],
   ["2026-11-17-7", ["PIN 화면에 숫자 키패드가 생겨 휴대폰 자판 없이 바로 누를 수 있습니다"]],
   ["2026-11-17-6", ["9자리 이상 PIN이 끝자리가 잘려 틀렸다고 나오던 문제를 고쳤습니다"]],
   ["2026-11-17-5", ["처음 들어올 때 PIN 화면을 새로 다듬었습니다 · 넣은 자리 수가 점으로 보입니다"]],
@@ -11963,17 +12032,27 @@ var NM = { pick: "", confirm: false };
 function nmTaken() { var c = cget("names"); var t = (c && c.taken) || []; return t.filter(function (n) { return n !== myName(); }); }
 function nmChips(names) {
   var b = $("nmchips"); b.innerHTML = "";
-  var tk = nmTaken();
+  var tk = nmTaken(), grp = !NM.change, free = [], used2 = [];
   (names || []).filter(function (n) { return n !== CHIEF || NM.showChief || NM.change; }).forEach(function (n) {
     var used = tk.indexOf(n) >= 0;
     var c = el("button", "chip" + (n === NM.pick ? " on" : "") + (used ? " taken" : ""), n); c.type = "button"; c.setAttribute("data-i", n.charAt(0));
-    if (used) c.appendChild(el("small", null, "사용 중"));
+    if (grp) { c.textContent = ""; c.appendChild(el("b", null, n)); var rt = el("span", "rt"); if (used) rt.appendChild(el("small", null, "사용 중")); rt.appendChild(el("i", "rd")); c.appendChild(rt); }
+    else if (used) c.appendChild(el("small", null, "사용 중"));
     c.onclick = function () {
       NM.pick = n; NM.confirm = false; NM.chiefOK = false; NM.admOK = false; $("nmpin").style.display = "none"; $("nmgo").disabled = false; $("nmgo").textContent = NM.change ? "이 이름으로 바꾸기" : "이 이름으로 정하기";
       $("nmmsg").textContent = !used ? "" : NM.change ? "다른 폰에서 이미 쓰는 이름입니다. 바꾸면 두 폰이 같은 이름이 됩니다." : "다른 폰에서 이미 쓰는 이름입니다. 본인이면 관리자 PIN으로 정할 수 있습니다.";
       nmChips(names);
     };
-    b.appendChild(c);
+    if (grp) (used ? used2 : free).push(c); else b.appendChild(c);
+    if (grp && used && n === NM.pick) setTimeout(function () { try { $("nmmsg").scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) {} }, 30);
+  });
+  if (!grp) return;
+  [["팀원", free], ["다른 폰에서 쓰는 이름", used2]].forEach(function (g) {
+    if (!g[1].length) return;
+    var hd = el("div", "nmgh"); hd.appendChild(el("span", null, g[0])); hd.appendChild(el("em", null, g[1].length + "명"));
+    var box = el("div", "nml" + (g[1] === used2 ? " u" : ""));
+    g[1].forEach(function (c) { box.appendChild(c); });
+    b.appendChild(hd); b.appendChild(box);
   });
 }
 
@@ -11987,7 +12066,7 @@ function nmMode(change) {
     var nb = el("b", null, myName() || "-"); nb.style.color = "var(--text)"; d.appendChild(nb);
     d.appendChild(el("br")); d.appendChild(document.createTextNode("새 이름으로 고정되고, 알림도 새 이름으로 옵니다."));
   } else {
-    d.appendChild(document.createTextNode("처음 한 번만 고릅니다.\n알림과 근무시간이 이 이름으로 연결됩니다."));
+    d.appendChild(document.createTextNode("처음 한 번만 고릅니다\n알림과 근무시간이 이 이름으로 연결됩니다"));
     d.style.whiteSpace = "pre-line";
   }
   $("nmno").style.display = change ? "" : "none";
