@@ -3550,6 +3550,25 @@ body.kb #totop{display:none}
 #gate.gwel .gtitle{font-size:28px;line-height:1.32}
 @keyframes gCur{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
 @keyframes gShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+
+/* PIN 키패드 (v11.17-7) */
+#gate .gpin{height:auto;margin-top:24px;padding:8px 0;background:none;border:0;box-shadow:none}
+#gate .gpin.fo,#gate .gpin.bad{background:none;border:0;box-shadow:none}
+#gate #gin{display:none!important}
+#gate .gdots{gap:18px}
+#gate .gdots i{width:14px;height:14px}
+#gate .gdots i.c{box-shadow:inset 0 0 0 2px var(--accent)}
+#gate .gpin[style*="none"]+.gkp{display:none}
+#gate .gkp{display:grid;grid-template-columns:repeat(3,74px);justify-content:center;gap:14px 28px;margin-top:22px}
+#gate .gkp button{width:74px;height:74px;padding:0;border:0;border-radius:50%;background:var(--ocard);color:var(--text);font:inherit;font-size:29px;font-weight:600;font-variant-numeric:tabular-nums;box-shadow:0 0 0 1px var(--obd),0 10px 22px -16px rgba(16,32,64,.45);transition:transform .08s,background .12s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#gate .gkp button:active{transform:scale(.92);background:color-mix(in srgb,var(--accent) 16%,var(--ocard))}
+#gate .gkp button.kd{background:transparent;box-shadow:none;font-size:15px;font-weight:700;color:var(--oink)}
+#gate .gkp button.kd:active{background:color-mix(in srgb,var(--oink) 12%,transparent)}
+#gate .gbtns{margin-top:22px}
+#gate .gbtns .go:disabled{opacity:.42;box-shadow:none}
+@media (prefers-color-scheme:dark){#gate .gkp button{box-shadow:0 0 0 1px var(--obd)}}
+@media (max-height:760px){#gate .gkp{grid-template-columns:repeat(3,64px);gap:10px 26px;margin-top:14px}#gate .gkp button{width:64px;height:64px;font-size:26px}#gate .gtitle{font-size:22px;margin-top:12px}#gate .gpin{margin-top:14px}#gate .gbtns{margin-top:16px}#gate .gbtns .go{height:52px}}
+@media (max-height:700px){#gate .geb{display:none}#gate .gtitle{margin-top:4px}#gate .gkp{grid-template-columns:repeat(3,60px);gap:9px 26px}#gate .gkp button{width:60px;height:60px;font-size:25px}#gate .glogo{display:none}}
 </style>
 </head>
 <body>
@@ -4040,7 +4059,8 @@ SPX.start();
     <div class="gtitle">제조1-B</div>
     <div class="gicon obic" id="gicon"></div>
     <p id="gmsg"></p>
-    <div class="gpin" id="gpin"><div class="gdots" id="gdots" aria-hidden="true"></div><input id="gin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="off" aria-label="PIN"></div>
+    <div class="gpin" id="gpin"><div class="gdots" id="gdots" aria-hidden="true"></div><input id="gin" type="password" inputmode="none" readonly tabindex="-1" maxlength="12" autocomplete="off" aria-hidden="true"></div>
+    <div class="gkp" id="gkp" role="group" aria-label="숫자 키패드"></div>
     <div id="gguest" style="display:none">
       <label class="ggn"><span>개발자 (</span><input id="ggname" type="text" maxlength="10" autocomplete="off" placeholder="이름"><span>)</span></label>
       <button id="gggo" type="button" class="go">시작하기</button>
@@ -4865,7 +4885,6 @@ function setGate(mode, msg, bad) {
   G.mode = mode;
   if (mode === "enter") {
     $("gin").value = ""; gDots(true);
-    setTimeout(function () { try { $("gin").focus(); } catch (e) {} }, 100);
   }
 }
 
@@ -5040,7 +5059,7 @@ $("ggo").onclick = function () {
   if (lockLeft() > 0) { showLocked(); return; }
   verify(v, true);
 };
-$("gin").onkeydown = function (e) { if (e.key === "Enter") $("ggo").onclick(); };
+$("gin").onkeydown = null;
 // PIN 점: 넣은 자리만큼 채움 (4자리 기본 · 더 넣으면 늘어남 · 최대 12)
 function gDots(keep) {
   var g = $("gdots"), inp = $("gin"); if (!g || !inp) return;
@@ -5049,10 +5068,42 @@ function gDots(keep) {
   g.innerHTML = "";
   for (var i = 0; i < n; i++) g.appendChild(el("i", i < v.length ? "f" : (i === v.length ? "c" : "")));
   if (keep !== true) $("gpin").classList.remove("bad");
+  $("ggo").disabled = !v.length;
 }
 $("gin").addEventListener("input", gDots);
 $("gin").addEventListener("focus", function () { $("gpin").classList.add("fo"); });
 $("gin").addEventListener("blur", function () { $("gpin").classList.remove("fo"); });
+// 숫자 키패드: 누르면 점이 채워짐 · [지우기] 길게 누르면 전부 지움 · PC는 키보드 숫자 · Backspace · Enter도 됨
+(function () {
+  var kp = $("gkp"); if (!kp) return;
+  function put(k) {
+    if (G.busy) return;
+    var inp = $("gin");
+    if (k === "all") inp.value = "";
+    else if (k === "del") inp.value = inp.value.slice(0, -1);
+    else if (inp.value.length < 12) inp.value += k;
+    gDots();
+    try { if (navigator.vibrate) navigator.vibrate(6); } catch (e) {}
+  }
+  ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "del"].forEach(function (k) {
+    if (!k) { kp.appendChild(el("span")); return; }
+    var b = el("button", k === "del" ? "kd" : "", k === "del" ? "지우기" : k); b.type = "button";
+    if (k === "del") {
+      var hold = null, held = false;
+      b.addEventListener("pointerdown", function () { held = false; hold = setTimeout(function () { held = true; put("all"); }, 550); });
+      ["pointerup", "pointerleave", "pointercancel"].forEach(function (ev) { b.addEventListener(ev, function () { clearTimeout(hold); }); });
+      b.addEventListener("click", function () { if (!held) put("del"); held = false; });
+    } else b.addEventListener("click", function () { put(k); });
+    kp.appendChild(b);
+  });
+  document.addEventListener("keydown", function (e) {
+    if ($("gate").style.display === "none" || G.mode !== "enter" || $("gpin").style.display === "none") return;
+    var t = e.target; if (t && /INPUT|TEXTAREA/.test(t.tagName) && t.id !== "gin") return;
+    if (/^[0-9]$/.test(e.key)) { put(e.key); e.preventDefault(); }
+    else if (e.key === "Backspace") { put("del"); e.preventDefault(); }
+    else if (e.key === "Enter" && !$("ggo").disabled) { $("ggo").onclick(); e.preventDefault(); }
+  });
+})();
 // 🛠 개발자 게스트: 개발자 PIN을 넣으면 → "개발자님 환영합니다" + 이름 칸 개발자(____) → 실제 데이터 전부 (저장은 편집 PIN 필요)
 function isGuest() { return /^개발자\(/.test(myName() || ""); }
 /* 열람 계정: 열람 PIN → 본인 이름 → "OOO 프로님 환영합니다" + 처음 느릴 수 있다는 안내 → [확인] → 시작 화면 → 메인 */
@@ -11313,10 +11364,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-17-6";
+var APP_VER = "2026-11-17-7";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-17-7", ["PIN 화면에 숫자 키패드가 생겨 휴대폰 자판 없이 바로 누를 수 있습니다"]],
   ["2026-11-17-6", ["9자리 이상 PIN이 끝자리가 잘려 틀렸다고 나오던 문제를 고쳤습니다"]],
   ["2026-11-17-5", ["처음 들어올 때 PIN 화면을 새로 다듬었습니다 · 넣은 자리 수가 점으로 보입니다"]],
   ["2026-11-17-4", ["근무시간 화면의 이번 달 근무시간 1위를 더 눈에 띄게 바꿨습니다"]],
