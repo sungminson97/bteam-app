@@ -3458,7 +3458,10 @@ body.kb #totop{display:none}
 #hours #hcur .hcv b.emp{font-size:15px;color:var(--sub);font-weight:700}
 #hours #hcur .sch{grid-column:1/-1;display:block;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,var(--hi) 9%,transparent);color:var(--hi);font-size:12.5px;font-weight:700}
 #hours #hcur .stale{grid-column:1/-1;font-size:11.5px;color:var(--sub)}
-#hours #chips{display:grid;grid-template-columns:repeat(35,1fr);gap:6px}
+#hours #chips{display:grid;grid-template-columns:repeat(35,minmax(0,1fr));gap:6px 0}
+#hours #chips .chip{margin:0 3px}
+#hours{grid-template-columns:minmax(0,1fr)}
+#hours>*{min-width:0}
 #hours #chips .chip{grid-column:span 5}
 #hours #chips .chip:nth-child(n+8){grid-column:span 7}
 #hours #chips .chip{height:44px;padding:0;border-radius:12px;border:0;background:var(--hc);box-shadow:inset 0 0 0 1px var(--hl);font-size:16px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
@@ -3475,7 +3478,6 @@ body.kb #totop{display:none}
 #hours .wk.hak::before{background:var(--hi)}
 #hours .wk.tdk::before{background:var(--accent)}
 #hours .wk summary{font-size:15px;font-weight:800;line-height:1.45;padding-right:4px}
-#hours .wk summary .bx{white-space:nowrap}
 #hours .wk summary small{margin-top:3px;font-size:12px;font-weight:600}
 #hours .wk summary .tg{float:right;margin:-2px 0 4px 10px;padding:5px 11px;border-radius:999px;background:var(--hc);color:var(--text);font-size:12px;font-weight:800}
 #hours .wk[open] summary .tg{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
@@ -11255,11 +11257,13 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-17-1";
+var APP_VER = "2026-11-17-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
-  ["2026-11-17-1", ["근무시간 화면을 새로 정리했습니다 · 요약 · 오늘 미입력 · 내 입력 · 팀 현황 순서로 보기 쉽게 바꿨습니다", "팀 현황에 '팀 근무시간 현황'이 생겨 팀원별 근무시간과 빈 날을 날짜별로 한눈에 볼 수 있습니다 · 이번 달 · 지난달 · 지지난달을 골라 볼 수 있습니다", "근무시간 저장이 더 빨라졌습니다 · 이미 값이 있는 칸을 덮어쓸 때와 연차 · 공가 · 반차를 넣을 때도 기다리지 않고 바로 반영됩니다", "더보기를 묶음별로 정리하고 화면마다 한 줄 설명을 붙였습니다", "FT 화면에서 업체 현황으로 넘어가면 아래에 FT 화면이 같이 보이던 문제를 고쳤습니다"]],
+  ["2026-11-17-3", ["근무시간 화면이 좌우로 밀리며 흔들리던 문제를 고쳤습니다 · 이제 화면이 옆으로 움직이지 않습니다"]],
+  ["2026-11-17-2", ["근무시간 화면을 새로 정리했습니다 · 요약 · 오늘 미입력 · 내 입력 · 팀 현황 순서로 보기 쉽게 바꿨습니다", "팀 근무시간 현황: 기간을 1일부터 오늘까지(예: 11/1~11/16)로 표시하고, 이번 달 · 지난달 · 지지난달을 골라 볼 수 있습니다", "더보기를 묶음별로 정리하고 화면마다 한 줄 설명을 붙였습니다", "FT 화면에서 업체 현황으로 넘어가면 아래에 FT 화면이 같이 보이던 문제를 고쳤습니다"]],
+  ["2026-11-17-1", ["근무시간 탭 맨 위에 '팀 근무시간 현황'이 생겨 팀원별 이번 주 · 이번 달 근무시간을 한눈에 볼 수 있습니다", "근무시간 저장이 더 빨라졌습니다 · 이미 값이 있는 칸을 덮어쓸 때와 연차 · 공가 · 반차를 넣을 때도 기다리지 않고 바로 반영됩니다", "여러 칸을 연달아 넣을 때 화면이 버벅이지 않도록 정리했습니다"]],
   ["2026-11-16-1", ["AI가 이번 주 앱 속도 기록을 분석해 느려지던 원인을 찾아 개선했습니다", "근무시간 탭에서 빈 칸에 시간을 넣고 저장하면 기다리지 않고 바로 반영됩니다", "종합 화면을 열 때 요청이 한꺼번에 몰리지 않도록 순서를 정리해 금일 · 명일이 먼저 빠르게 뜹니다", "부적합 · 수입검사 · 입고불출 화면이 자주 보는 순서에 맞춰 미리 준비되고, 연결이 잠깐 끊겨도 자동으로 다시 불러옵니다", "앱 업데이트 직후 처음 켤 때 느려지던 현상을 줄였습니다"]],
   ["2026-11-15-1", ["근무시간 '오늘 팀 입력'에서 전날 · 다음날 버튼으로 지난 날짜의 팀 입력 현황도 볼 수 있습니다", "이름을 누르면 그 사람의 그 날짜 입력 화면으로 바로 이동합니다"]],
   ["2026-11-14-1", ["작업자 입력(FT)을 저장하면 기다리지 않고 바로 닫히고 목록에 반영됩니다", "근무시간 알림에서 바로 입력할 때도 저장을 누르면 바로 닫히고, 빈 날이 여러 날이면 다음 날이 바로 열립니다", "저장이 실패하면 알림과 함께 원래대로 돌아가 다시 입력할 수 있습니다"]],
