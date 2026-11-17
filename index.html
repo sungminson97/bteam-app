@@ -3742,6 +3742,18 @@ body.kb #totop{display:none}
 #ft .zhs .zhmo{margin:3px 0 1px;font-size:12.5px;font-weight:700;line-height:1.45;color:var(--text);word-break:keep-all}
 #ft .zhs .zhmo span{display:inline-block;margin-right:6px;padding:1px 7px;border-radius:999px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);font-size:11px;font-weight:800}
 #ft .zxm .zxmo{margin:3px 0 1px;font-size:13px;font-weight:700;line-height:1.4;color:var(--text);word-break:keep-all}
+/* 2026-11-17 협력업체 보고 보기 (알림 ?vr=1&d=날짜&v=업체) — 전체 화면 창 + 협력업체 사이트 */
+#vrv{position:fixed;inset:0;z-index:10050;display:none;flex-direction:column;background:var(--bg);height:100vh;height:100dvh}
+#vrv.on{display:flex}
+#vrv .vh{flex:none;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:var(--card);border-bottom:1px solid var(--line)}
+#vrv .vh b{flex:1;min-width:0;font-size:17px;font-weight:800;letter-spacing:-.02em;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#vrv .vh small{display:block;font-size:12px;font-weight:600;color:var(--sub);letter-spacing:0}
+#vrv .vx{flex:none;height:38px;padding:0 16px;border:0;border-radius:12px;background:var(--bg);color:var(--text);font:inherit;font-size:14.5px;font-weight:800;cursor:pointer}
+#vrv .vx:active{transform:scale(.96)}
+#vrv .vb{position:relative;flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch}
+#vrv iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:var(--bg)}
+#vrv .vl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--sub)}
+html.vrvon,html.vrvon body{overflow:hidden!important;overscroll-behavior:none}
 </style>
 </head>
 <body>
@@ -4614,6 +4626,7 @@ SPX.start();
   </div>
 </div>
 
+<div id="vrv" role="dialog" aria-modal="true" aria-label="협력업체 일일보고"><div class="vh"><b>협력업체 일일보고<small id="vrvs"></small></b><button type="button" class="vx" id="vrvx">닫기</button></div><div class="vb"><div class="vl">불러오는 중입니다</div><iframe id="vrvf" title="협력업체 일일보고" src="about:blank" allow="clipboard-write"></iframe></div></div>
 <div id="toast"></div>
 <!-- 편집 PIN 입력창 -->
 <div class="ov" id="epov">
@@ -5123,6 +5136,7 @@ function wipeScreens() {
 }
 
 function lockApp(msg) {
+  try { if (VRV.open) vrvClose(true); } catch (eV) {}
   sdel("appPin");
   sdel("editPin");
   cwipe();
@@ -5139,6 +5153,7 @@ function unlock(pin, pre) {
   sdel("pinFails"); sdel("lockUntil");
   $("gate").style.display = "none";
   $("app").style.display = "block";
+  setTimeout(function () { try { if (vrvParse() && !VRV.pend && !VRV.open) VRV.pend = vrvParse(); vrvTry(); } catch (eV) {} }, 0);   // 🏭 잠금 풀리면 협력업체 보고 창
   if (!nameDone()) nameAsk();   // 🧭 이름을 아직 안 골랐으면 앱 화면보다 이름 고르기가 먼저 (깜빡임 없이)
   vBadge();
   wipeScreens();
@@ -11596,10 +11611,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-17-18";
+var APP_VER = "2026-11-17-19";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-17-19", ["협력업체 보고 알림을 누르면 앱 안에서 협력업체 일일보고를 바로 볼 수 있습니다"]],
   ["2026-11-17-18", ["근무시간을 저장하면 금일 미입력 명단과 맨 위 이번 달 · 이번 주 · 52시간까지 숫자가 바로 바뀝니다", "팀 근무시간 현황이 근무시간 많은 순으로 먼저 보입니다"]],
   ["2026-11-17-15", ["FT에서 더 돌린 시간을 넣을 때 메모를 남길 수 있습니다 (예: 볼스크류 교체로 12시간 더 돌림) · 기록에 같이 보입니다"]],
   ["2026-11-17-14", ["근무시간 저장이 더 빨라졌습니다 · 값이 있는 칸을 덮어쓸 때도 바로 확인 단계로 넘어갑니다"]],
@@ -12761,6 +12777,12 @@ function pushInit() {
         welcomeNotification: { title: "제조1-B", message: "알림이 켜졌습니다. 평일 아침 8시 30분에 오늘 할 일을 알려 드리겠습니다." }
       });
       PUSH.ready = true;
+      try {   // 🏭 앱이 켜져 있을 때 알림을 눌러도 협력업체 보고 창
+        OS.Notifications.addEventListener("click", function (ev) {
+          var u = (ev && ev.result && ev.result.url) || (ev && ev.notification && (ev.notification.launchURL || ev.notification.url)) || "";
+          if (u && vrvParse(u)) vrvFrom(u);
+        });
+      } catch (eC) {}
       osSubSave(OS);   // 🔔 이 폰 알림 ID → 기기 목록 (개발자가 이 폰에만 확인 알림 보낼 수 있게)
       try { OS.User.PushSubscription.addEventListener("change", function () { osSubSave(OS); }); } catch (eS) {}
       var n = sget("pushName");
@@ -14525,6 +14547,57 @@ function demoClean() {   // 예전에 받아 둔 예시 값(DEMO-) 지우기 · 
   ["nc", "insp", "inspr", "matlist", "ncref"].forEach(function (k) { try { var c = cget(k); if (c && (c.demo || JSON.stringify(c).indexOf("DEMO-") >= 0)) sdel("c_" + k); } catch (e) {} });
   sset("demoGone", "1");
 }
+/* ---------- 🏭 협력업체 보고 보기 (2026-11-17) ----------
+ *  협력업체 보고 알림 → 앱 주소 ?vr=1&d=날짜&v=업체 → 메인 화면 위에 전체 화면 창 + 협력업체 사이트(iframe)
+ *  - PIN 잠금이 풀린 뒤에만 띄움 (잠금 화면 위에는 안 띄움)
+ *  - 앱이 이미 켜져 있을 때 알림을 눌러도: OneSignal 알림 누름 · 화면 돌아옴 · 주소 바뀜에서 다시 확인
+ *  - 닫기 → 주소에서 vr · d · v 지우고 원래 화면
+ *  - 서버 요청 없음 (협력업체 사이트가 알아서 불러옴) */
+var VRV = { site: "https://ninebell-vendor.pages.dev/", pend: null, open: "" };
+function vrvParse(u) {
+  try {
+    var q = new URL(u || location.href, location.href).searchParams;
+    if (q.get("vr") !== "1") return null;
+    var d = q.get("d") || "", v = q.get("v") || "";
+    if (d && !/^\d{4}-\d{2}-\d{2}$/.test(d)) d = "";
+    return { d: d, v: v.slice(0, 40) };
+  } catch (e) { return null; }
+}
+function vrvReady() { return !!getPin() && $("app").style.display === "block" && $("gate").style.display === "none"; }
+function vrvTry() {
+  if (!VRV.pend || !vrvReady()) return;
+  var p = VRV.pend; VRV.pend = null; vrvOpen(p);
+}
+function vrvFrom(u) {   // 주소나 알림 주소에 vr=1이 있으면 열기 (잠겨 있으면 풀린 뒤에)
+  var p = vrvParse(u); if (!p) return;
+  if (u) { try { var nu = new URL(u, location.href); if (nu.origin === location.origin && history.replaceState) history.replaceState(null, "", location.pathname + nu.search); } catch (e) {} }
+  VRV.pend = p; vrvTry();
+}
+function vrvOpen(p) {
+  var src = VRV.site + "?d=" + encodeURIComponent(p.d || "") + "&v=" + encodeURIComponent(p.v || "") + "&embed=1";
+  var w = $("vrv"), f = $("vrvf");
+  $("vrvs").textContent = [p.v, p.d ? (+p.d.slice(5, 7)) + "/" + (+p.d.slice(8, 10)) : ""].filter(Boolean).join(" · ");
+  if (VRV.open !== src) { f.src = src; VRV.open = src; }
+  w.className = "on";
+  document.documentElement.classList.add("vrvon");
+  try { closeMenu(); } catch (e) {}
+}
+function vrvClose(keep) {
+  $("vrv").className = ""; document.documentElement.classList.remove("vrvon");
+  if (keep) return;   // 잠금 화면으로 갈 때: 주소는 그대로 → 다시 풀리면 다시 띄움
+  try { $("vrvf").src = "about:blank"; } catch (e) {}
+  VRV.open = ""; VRV.pend = null;
+  try {
+    var q = location.search.replace(/^\?/, "").split("&").filter(function (x) { return x && !/^(vr|d|v)=/.test(x); }).join("&");
+    if (history.replaceState) history.replaceState(null, "", location.pathname + (q ? "?" + q : "") + location.hash);
+  } catch (e) {}
+}
+$("vrvx").onclick = function () { vrvClose(); };
+$("vrvf").onload = function () { var l = $("vrv").querySelector(".vl"); if (l) l.style.display = this.src === "about:blank" ? "" : "none"; };
+window.addEventListener("popstate", function () { if (vrvParse()) vrvFrom(); });
+window.addEventListener("pageshow", function () { if (vrvParse() && !VRV.open) vrvFrom(); });
+document.addEventListener("visibilitychange", function () { if (!document.hidden && vrvParse() && !VRV.open) vrvFrom(); });
+
 function boot() {
   try { demoClean(); } catch (eD) {}
   if (IS_TEST) $("splsub").appendChild(document.createTextNode(" · TEST"));
@@ -14532,6 +14605,7 @@ function boot() {
   $("ver").textContent = "v" + APP_VER.slice(5).replace("-", ".");
   if (instGate()) { splashHide(true); return; }   // 📲 링크·PC면 안내 화면만
   qhParse();   // ⏰ 근무시간 알림에서 열렸는지 (?qh=날짜)
+  try { vrvFrom(); } catch (eV) {}   // 🏭 협력업체 보고 알림에서 열렸는지 (?vr=1)
   persistAsk();   // 💾 홈 화면 앱이면 영구 저장 요청 (한 번 허용되면 계속 유지)
   $("ver").textContent = "v" + APP_VER.slice(5).replace("-", ".");   // 예: v10.14-4
   if (IS_TEST) {
