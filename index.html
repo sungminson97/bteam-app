@@ -3703,6 +3703,20 @@ body.kb #totop{display:none}
 @keyframes pfIn{from{opacity:0;transform:translateY(-10px) scale(.98)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#pushov.first .pfpv{animation:none}}
 @media (max-height:700px){#pushov.first #pushttl{margin-top:16px}#pushov.first .pfpv{margin-top:16px}#pushov.first .pfls div{padding:11px 16px}#pushov.first .pfst div{min-height:48px}}
+
+/* FT 메모 (v11.17-15) */
+#ft .ftmm{position:relative;margin-top:12px;padding:12px 14px 10px;border-radius:16px;border:1px solid var(--line);background:var(--card)}
+#ft .ftmmh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+#ft .ftmmh b{font-size:14px;font-weight:900}
+#ft .ftmmh small{font-size:12px;font-weight:600;color:var(--sub)}
+#ft .ftmm textarea{display:block;width:100%;box-sizing:border-box;margin-top:9px;min-height:64px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:color-mix(in srgb,var(--text) 3%,var(--card));color:var(--text);font:inherit;font-size:16px;font-weight:600;line-height:1.45;resize:none;outline:0}
+#ft .ftmm textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+#ft .ftmm textarea::placeholder{color:color-mix(in srgb,var(--sub) 75%,transparent);font-weight:500}
+#ft .ftmm em{display:block;margin-top:5px;text-align:right;font-style:normal;font-size:11.5px;font-weight:700;color:var(--sub);font-variant-numeric:tabular-nums}
+#ft .zhs div.ymo time{grid-row:span 3}
+#ft .zhs .zhmo{margin:3px 0 1px;font-size:12.5px;font-weight:700;line-height:1.45;color:var(--text);word-break:keep-all}
+#ft .zhs .zhmo span{display:inline-block;margin-right:6px;padding:1px 7px;border-radius:999px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);font-size:11px;font-weight:800}
+#ft .zxm .zxmo{margin:3px 0 1px;font-size:13px;font-weight:700;line-height:1.4;color:var(--text);word-break:keep-all}
 </style>
 </head>
 <body>
@@ -11508,10 +11522,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-17-14";
+var APP_VER = "2026-11-17-15";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-17-15", ["FT에서 더 돌린 시간을 넣을 때 메모를 남길 수 있습니다 (예: 볼스크류 교체로 12시간 더 돌림) · 기록에 같이 보입니다"]],
   ["2026-11-17-14", ["근무시간 저장이 더 빨라졌습니다 · 값이 있는 칸을 덮어쓸 때도 바로 확인 단계로 넘어갑니다"]],
   ["2026-11-17-13", ["처음 알림을 켜는 화면을 새로 다듬었습니다"]],
   ["2026-11-17-12", ["처음 이름을 정하면 환영 화면이 나옵니다"]],
@@ -14564,7 +14579,7 @@ function ftVals() {   // { r, s0, a1, a2, d, f, bad }  d · f = 저장 후 누�
 function ftSelect(name, quiet) {
   FT.sel = name || ""; FT.q = ""; FT.all = false;
   var r = FT.sel ? ftRun(FT.sel) : null, s = ftSt(r);
-  FT.m = "add"; FT.d = ""; FT.fu = ""; FT.c = !!(r && r[5]); FT.why = r ? String(r[6] || "") : "";   // ➕ 처음엔 '이번에 더 돌린 시간' (빈칸)
+  FT.m = "add"; FT.d = ""; FT.fu = ""; FT.memo = ""; FT.c = !!(r && r[5]); FT.why = r ? String(r[6] || "") : "";   // ➕ 처음엔 '이번에 더 돌린 시간' (빈칸)
   if (quiet) return;
   renderFt();
   setTimeout(function () { var f = $("ftform"); if (f) { var y = f.getBoundingClientRect().top + window.pageYOffset - 76; if (Math.abs(window.pageYOffset - y) > 40) window.scrollTo({ top: y, behavior: "smooth" }); } }, 30);
@@ -14663,6 +14678,14 @@ function ftForm(M, T, elig, idxOk) {
   why.oninput = function () { FT.why = why.value; ftPrev(); };
   tg.onclick = function () { FT.c = !FT.c; tg.className = "ztg" + (FT.c ? " yon" : ""); tg.setAttribute("aria-pressed", FT.c ? "true" : "false"); why.hidden = !FT.c; ftPrev(); if (FT.c) setTimeout(function () { why.focus(); }, 30); };
   cd.appendChild(why); c.appendChild(cd);
+  if (FT.m === "add") {   // 📝 메모 (선택): 왜 더 돌렸는지 · 이 입력 한 건과 FT 기록에 같이 남음
+    var mo = el("div", "ftmm"), mh = el("div", "ftmmh");
+    mh.appendChild(el("b", null, "메모")); mh.appendChild(el("small", null, "선택 · 왜 더 돌렸는지 남겨 두면 기록에 같이 보입니다"));
+    var ta = el("textarea"); ta.id = "ftMemo"; ta.rows = 2; ta.maxLength = 80; ta.placeholder = "예: 볼스크류 교체로 FULL CYCLE 12시간 더 돌림"; ta.value = FT.memo || "";
+    var cnt = el("em", null, (FT.memo || "").length + " / 80");
+    ta.oninput = function () { FT.memo = ta.value; cnt.textContent = ta.value.length + " / 80"; };
+    mo.appendChild(mh); mo.appendChild(ta); mo.appendChild(cnt); c.appendChild(mo);
+  }
 
   var sv = el("button", "zsv", "저장"); sv.type = "button"; sv.id = "ftSv"; sv.onclick = ftSave; c.appendChild(sv);
   if (r) {
@@ -14675,7 +14698,9 @@ function ftForm(M, T, elig, idxOk) {
     var hs = el("div", "zhs"); hs.appendChild(el("h5", null, "최근 기록"));
     LG.forEach(function (x) {
       var d = el("div"); d.appendChild(el("time", null, ftDt(x[4]).replace(/ .*/, "")));
-      d.appendChild(el("b", x[1] === "c" ? "yc" : x[1] === "d" ? "yd" : "", ftLogTxt(x)));
+      var lt = ftLogTxt(x), mx = lt.match(/\s[·\/]\s메모:\s*(.*)$/);
+      d.appendChild(el("b", x[1] === "c" ? "yc" : x[1] === "d" ? "yd" : "", mx ? lt.slice(0, mx.index) : lt));
+      if (mx) { d.classList.add("ymo"); var mp = el("p", "zhmo"); mp.appendChild(el("span", null, "메모")); mp.appendChild(document.createTextNode(mx[1])); d.appendChild(mp); }
       d.appendChild(el("small", null, (ftDt(x[4]).split(" ")[1] || "") + (x[3] ? " · " + x[3] : "")));
       hs.appendChild(d);
     });
@@ -14752,8 +14777,9 @@ function ftSave() {
   if (cond && !why) { toast("48h 미달 진행 사유를 입력해 주십시오", true); var wi = document.querySelector("#ftC input"); if (wi) wi.focus(); return; }
   var eq = FT.sel, sv = $("ftSv");
   FT.busy = true; if (sv) { sv.disabled = true; sv.textContent = "저장 중…"; }
-  var gsArg = { eq: eq, dry: d, full: f, cond: cond, why: why, prev: r ? [r[1], r[2], r[5]] : null };
-  (V.add ? ftWrite("bt_ft_add", { eq_name: eq, add_dry: V.a1 || 0, add_full: V.a2 || 0, cond_set: cond, reason: why }, "saveFt", gsArg)   // ➕ 서버가 지금 누적에 더함 (동시에 넣어도 빠짐없이)
+  var memo = V.add ? String(FT.memo || "").replace(/\s+/g, " ").trim().slice(0, 80) : "";
+  var gsArg = { eq: eq, dry: d, full: f, cond: cond, why: why, memo: memo, prev: r ? [r[1], r[2], r[5]] : null };
+  (V.add ? ftWrite("bt_ft_add", memo ? { eq_name: eq, add_dry: V.a1 || 0, add_full: V.a2 || 0, cond_set: cond, reason: why, memo: memo } : { eq_name: eq, add_dry: V.a1 || 0, add_full: V.a2 || 0, cond_set: cond, reason: why }, "saveFt", gsArg)   // ➕ 서버가 지금 누적에 더함 (동시에 넣어도 빠짐없이)
          : ftWrite("bt_ft_save", { eq_name: eq, dry_h: d, full_h: f, cond_set: cond, reason: why }, "saveFt", gsArg)).then(function () {
     FT.busy = false;
     ftLocal(eq, [eq, d, f, myName(), ftNow(), cond === null ? (r ? r[5] : 0) : cond ? 1 : 0, cond ? why : cond === null && r ? r[6] : "", cond ? myName() : cond === null && r ? r[7] : "", cond ? ftNow() : cond === null && r ? r[8] : ""]);
@@ -14774,7 +14800,7 @@ function ftXBox(r) {
     if (+x[2]) b.appendChild(el("span", "yd", "DRY +" + ftH(x[2])));
     if (+x[2] && +x[3]) b.appendChild(document.createTextNode(" · "));
     if (+x[3]) b.appendChild(el("span", "yf", "FULL CYCLE +" + ftH(x[3])));
-    m.appendChild(b); m.appendChild(el("span", null, ftDt(x[5]) + (x[4] ? " · " + x[4] : ""))); it.appendChild(m);
+    m.appendChild(b); if (x[6]) m.appendChild(el("p", "zxmo", x[6])); m.appendChild(el("span", null, ftDt(x[5]) + (x[4] ? " · " + x[4] : ""))); it.appendChild(m);
     var d = el("button", null, "이 입력 삭제"); d.type = "button"; d.onclick = function () { ftEntDel(x, d); }; it.appendChild(d);
     w.appendChild(it);
   });
