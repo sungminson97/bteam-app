@@ -1675,6 +1675,7 @@ body.kb #tabbar{transform:translateY(140%)}
 .hx .tl span{display:block;font-size:12px;font-weight:700;opacity:.92;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hx .tl b{display:block;margin-top:3px;font-size:24px;font-weight:900;letter-spacing:-.035em;line-height:1.1;white-space:nowrap;font-variant-numeric:tabular-nums}
 .hx .tl b small{font-size:13px;font-weight:800;margin-left:2px;opacity:.9;letter-spacing:0}
+.hx .tl div.tap{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s,background .15s}.hx .tl div.tap:active{transform:scale(.96)}.hx .tl div.tap.on{background:rgba(255,255,255,.32);border-color:rgba(255,255,255,.75);box-shadow:inset 0 -3px 0 rgba(255,255,255,.85)}
 .hx .tl em{display:block;margin-top:3px;font-style:normal;font-size:12px;font-weight:800;opacity:.9;white-space:nowrap}
 .hx .tl .r{background:rgba(214,48,88,.42);border-color:rgba(255,170,180,.55)}
 .hx .ms{margin-top:6px;font-size:13.5px;font-weight:700;opacity:.92}
@@ -3411,7 +3412,8 @@ body.kb #totop{display:none}
 .zcnt{font-size:13px;font-weight:900;padding:0 4px}
 .zng{font-size:13px;font-weight:700;line-height:1.45;word-break:break-all;color:var(--text)}.zng.a{color:var(--sub);font-weight:600}
 #insp .ie.ngent{margin:12px 0 2px}#insp .ie.ngent.on{border-left:4px solid var(--warn)}
-#insp .ir.zi.tap{cursor:pointer}#insp .zil.ngw{margin-bottom:12px}
+#insp .ir.zi.tap{cursor:pointer}
+#insp .lfbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 4px 10px}#insp .lfbar b{font-size:14px;font-weight:900}#insp .lfbar button{height:32px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:13px;font-weight:800}#insp .zil.ngw{margin-bottom:12px}
 
 /* 2026-11-13 업로드 탭 다시 그림: 장비 한 대 = 한 블록 · 이모지 없음 */
 #upload .card.up ul{margin:4px 0 0;padding:0;list-style:none}
@@ -6345,7 +6347,9 @@ function renderInsp() {
   var LV = d.list.map(function (x) { var v = SV(x); return { e: x.e, n: v.n, p: v.p, u: v.u, g: v.g, l: v.l || x.l, ss: x.ss, no: IN.site === "all" ? x.no || 0 : (d.ngl || []).filter(function (y) { return y[18] === x.e && y[2] === IN.site && !ngDone(y); }).length }; }).filter(function (x) { return x.n > 0; });
   var tot = LV.reduce(function (a, x) { a.p += x.p; a.u += x.u; a.g += x.g; return a; }, { p: 0, u: 0, g: 0 });
   var pendEq = LV.filter(function (x) { return x.p > 0; }).length;
-  box.appendChild(heroX("수입검사 대기", tot.p, "건", [["긴급 대기", tot.u, "건", tot.u > 0], ["NG", tot.g, "건", tot.g > 0], ["대기 장비", pendEq, "대"]], d.year + "년 · " + (IN.site === "all" ? "B팀" : IN.site)));
+  var setLf = function (f) { return function () { IN.lf = IN.lf === f ? "" : f; IN.q = ""; IN.all = false; renderInsp(); setTimeout(function () { var l = document.querySelector("#insp .il"); if (l) window.scrollTo({ top: l.getBoundingClientRect().top + window.pageYOffset - 150, behavior: "smooth" }); }, 30); }; };   // 🔴 2026-11-19 위 카드 눌러서 장비 거르기
+  var ngEq = LV.filter(function (x) { return x.g > 0 || x.no > 0; }).length;
+  box.appendChild(heroX("수입검사 대기", tot.p, "건", [["긴급 대기", tot.u, "건", tot.u > 0, "", setLf("urg"), IN.lf === "urg"], ["NG", tot.g, "건", tot.g > 0, "", setLf("ng"), IN.lf === "ng"], ["대기 장비", pendEq, "대", false, "", setLf(""), !IN.lf]], d.year + "년 · " + (IN.site === "all" ? "B팀" : IN.site)));
   if (hasSite) {
     var sg = el("div", "iseg");
     [["all", "전체"], ["성남", "성남"], ["동탄", "동탄"]].forEach(function (o) {
@@ -6398,7 +6402,8 @@ function renderInsp() {
   function draw() {
     list.innerHTML = "";
     var ks = String(IN.q || "").split("/").map(inspKey).filter(Boolean), k = ks.length === 1 ? ks[0] : ks.join("/");
-    var items = inspSorted(LV.filter(function (x) { return ks.length ? ks.some(function (k1) { return inspKey(x.e).indexOf(k1) >= 0; }) : x.p > 0; }));   // 검색 안 하면 검사 대기 있는 장비만 · / = 여러 장비
+    var items = inspSorted(LV.filter(function (x) { if (ks.length) return ks.some(function (k1) { return inspKey(x.e).indexOf(k1) >= 0; }); if (IN.lf === "urg") return x.u > 0; if (IN.lf === "ng") return x.g > 0 || x.no > 0; return x.p > 0; }));   // 검색 안 하면 검사 대기 있는 장비만 · 위 카드로 긴급 · NG 장비만 · / = 여러 장비
+    if (IN.lf && !ks.length) { var lfb = el("div", "lfbar"); lfb.appendChild(el("b", null, (IN.lf === "urg" ? "긴급 대기" : "NG") + " 장비 " + items.length + "대")); var lfx = el("button", null, "전체 보기"); lfx.type = "button"; lfx.onclick = function () { IN.lf = ""; renderInsp(); }; lfb.appendChild(lfx); list.appendChild(lfb); }
     if (!items.length) {
       var other = k && IN.site !== "all" && d.list.some(function (x) { return inspKey(x.e).indexOf(k) >= 0; });
       list.appendChild(el("div", "msg", k ? "'" + IN.q + "' 장비의 " + (IN.site === "all" ? "" : IN.site + " ") + "수입검사가 없습니다." + (other ? "\n다른 사업장에는 있습니다 · 위에서 '전체'를 눌러 보십시오" : "") : "검사 대기 중인 " + (IN.site === "all" ? "B팀" : IN.site) + " 장비가 없습니다"));
@@ -6482,7 +6487,8 @@ function inspDetail(box) {
   var bk = el("button", "ib", "‹ 장비 목록"); bk.type = "button";
   bk.onclick = function () { IN.eq = ""; renderInsp(); };
   box.appendChild(bk);
-  box.appendChild(heroX(eq, sum.p, "건 대기", [["전체", sum.n, "건"], ["긴급 대기", sum.u, "건", sum.u > 0], ["NG", sum.g, "건", sum.g > 0]], st ? "수입검사 · " + st : "수입검사"));
+  var setF2 = function (f) { return function () { IN.f = IN.f === f ? "all" : f; inspLoadAll(eq); renderInsp(); setTimeout(function () { var l = document.querySelector("#insp .zsf") || document.querySelector("#insp .zil"); if (l) window.scrollTo({ top: l.getBoundingClientRect().top + window.pageYOffset - 150, behavior: "smooth" }); }, 30); }; };   // 🔴 2026-11-19 위 카드 눌러서 거르기
+  box.appendChild(heroX(eq, sum.p, "건 대기", [["전체", sum.n, "건", false, "", setF2("all"), IN.f === "all"], ["긴급 대기", sum.u, "건", sum.u > 0, "", setF2("urg"), IN.f === "urg"], ["NG", sum.g, "건", sum.g > 0, "", setF2("ng"), IN.f === "ng"]], st ? "수입검사 · " + st : "수입검사"));
   if (st) {
     var other = inspSum(eq).n - sum.n;
     if (other > 0) { var ob = el("button", "more", st + "만 보는 중 · 다른 사업장 " + other + "건 더 보기"); ob.type = "button"; ob.onclick = function () { IN.site = "all"; sset("inspSite", "all"); renderInsp(); }; box.appendChild(ob); }
@@ -6593,13 +6599,14 @@ function inspNgView(box) {
   var d = IN.data, A = (d.ngl || []).filter(ngSite), open = A.filter(function (x) { return !ngDone(x); }), eqs = {};
   A.forEach(function (x) { if (x[18]) eqs[x[18]] = 1; });
   var bk = el("button", "ib", "‹ 수입검사"); bk.type = "button"; bk.onclick = function () { IN.ngv = false; renderInsp(); window.scrollTo(0, 0); }; box.appendChild(bk);
-  box.appendChild(heroX("NG 조치 중", open.length, "건", [["전체", A.length, "건"], ["완료", A.length - open.length, "건"], ["장비", Object.keys(eqs).length, "대"]], d.year + "년 · NG 이력 · " + (IN.site && IN.site !== "all" ? IN.site : "B팀")));
   if (!IN.nf) IN.nf = open.length ? "open" : "all";
+  var setN = function (f) { return function () { IN.nf = f; renderInsp(); }; };
+  box.appendChild(heroX("NG 조치 중", open.length, "건", [["전체", A.length, "건", false, "", setN("all"), IN.nf === "all"], ["완료", A.length - open.length, "건", false, "", setN("done"), IN.nf === "done"], ["장비", Object.keys(eqs).length, "대"]], d.year + "년 · NG 이력 · " + (IN.site && IN.site !== "all" ? IN.site : "B팀")));
   var fb = el("div", "zsf");
   [["open", "조치 중", open.length], ["done", "완료", A.length - open.length], ["all", "전체", A.length]].forEach(function (o) {
     var b = el("button", (IN.nf === o[0] ? "on" : "") + (o[0] === "open" && o[2] ? " w" : "")); b.type = "button";
     b.appendChild(document.createTextNode(o[1])); b.appendChild(el("b", null, String(o[2])));
-    b.onclick = function () { IN.nf = o[0]; [].forEach.call(fb.children, function (c) { c.classList.remove("on"); }); b.classList.add("on"); paint(); };
+    b.onclick = function () { IN.nf = o[0]; renderInsp(); };
     fb.appendChild(b);
   });
   box.appendChild(fb);
@@ -8771,6 +8778,7 @@ function heroX(pill, big, unit, tiles, chip, ok) {
       var d = el("div", x[3] ? "r" : ""); d.appendChild(el("span", null, x[0]));
       var v = el("b", null, String(x[1])); if (x[2]) v.appendChild(el("small", null, x[2])); d.appendChild(v);
       if (x[4]) d.appendChild(el("em", null, x[4]));   // 아래 작은 줄 (예: 14대 출하)
+      if (typeof x[5] === "function") { d.classList.add("tap"); if (x[6]) d.classList.add("on"); d.onclick = x[5]; }   // 🔴 2026-11-19 눌러서 거르기
       tl.appendChild(d);
     });
     h.appendChild(tl);
@@ -11724,10 +11732,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-19-3";
+var APP_VER = "2026-11-19-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-19-4", ["수입검사 위 카드(긴급 대기 · NG · 대기 장비)를 누르면 그 장비만 골라 보이고, 장비 화면에서는 전체 · 긴급 대기 · NG 카드를 누르면 그 검사만 보입니다"]],
   ["2026-11-19-3", ["수입검사에 'NG 이력'이 추가되었습니다 · 수입검사 NG를 한 건씩 불량유형 · 불량내용 · 조치 · 재검사 결과까지 볼 수 있고, 조치 중 · 완료로 골라 볼 수 있습니다", "장비 수입검사 화면에도 그 장비의 NG 이력이 보이고, 장비 목록에는 NG 조치 중 숫자가 표시됩니다"]],
   ["2026-11-19-2", ["자재 화면의 상태를 자재팀 입출고 현황판과 같은 기준으로 맞췄습니다 · 3공장 · 1공장 구분도 품목마다 정해진 공장 기준으로 바뀌었습니다", "공용자재는 미입고 수에서 빼고 '공용자재'로 따로 표시합니다", "품목마다 ERP 종결 · 사급 · 부적합 · 성남 입고 표시가 붙고, 부적합은 빨간 테두리, 성남 입고는 노란 테두리로 보입니다"]],
   ["2026-11-19-1", ["보기 PIN으로 들어왔어도 메뉴의 '팀원이신가요? 편집 PIN으로 바꾸기'에서 편집 PIN을 넣으면 바로 팀원으로 쓸 수 있습니다", "PIN 화면에서 편집 PIN과 보기 PIN을 구분해 안내합니다 · 메뉴 맨 아래에 내 기기 번호가 보입니다"]],
