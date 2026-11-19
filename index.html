@@ -3747,13 +3747,29 @@ body.kb #totop{display:none}
 #vrv.on{display:flex}
 #vrv .vh{flex:none;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:var(--card);border-bottom:1px solid var(--line)}
 #vrv .vh b{flex:1;min-width:0;font-size:17px;font-weight:800;letter-spacing:-.02em;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#vrv .vh small{display:block;font-size:12px;font-weight:600;color:var(--sub);letter-spacing:0}
 #vrv .vx{flex:none;height:38px;padding:0 16px;border:0;border-radius:12px;background:var(--bg);color:var(--text);font:inherit;font-size:14.5px;font-weight:800;cursor:pointer}
 #vrv .vx:active{transform:scale(.96)}
-#vrv .vb{position:relative;flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch}
-#vrv iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:var(--bg)}
+#vrv .vb{position:relative;flex:1 1 auto;min-height:0;overflow:hidden;margin-bottom:env(safe-area-inset-bottom)}
+#vrv iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:transparent}
+#vrv .vl{z-index:0}#vrv iframe{z-index:1}
 #vrv .vl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--sub)}
 html.vrvon,html.vrvon body{overflow:hidden!important;overscroll-behavior:none}
+
+/* 👀 2026-11-19 보기 전용 → 편집 PIN · 내 기기 번호 · 기기 목록 */
+#vwov .vtm{display:block;width:100%;margin-top:10px;padding:12px;border:0;background:none;color:var(--ac,#4f8cff);font:inherit;font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+#mnlist .mnid{margin-top:10px;text-align:center;font-size:12px;font-weight:600;color:var(--sub,#8a93a4);letter-spacing:.02em}
+.voov{z-index:9600}
+.voov .box h3{margin-bottom:8px}
+.voov .vod{white-space:pre-line;font-size:14px;line-height:1.6;color:var(--sub,#8a93a4);margin-bottom:14px}
+.voov .voin{width:100%;height:52px;padding:0 16px;border-radius:14px;border:1.5px solid var(--line,#2a3142);background:transparent;color:inherit;font:inherit;font-size:20px;font-weight:700;letter-spacing:.3em;text-align:center;outline:none}
+.voov .voin:focus{border-color:var(--ac,#4f8cff)}
+.voov .vomsg{min-height:20px;margin-top:8px;font-size:13px;font-weight:600;text-align:center}
+.voov .vomsg.bad{color:#ef4444}.voov .vomsg.ok{color:#22c55e}
+.voov .vobt{display:grid;gap:8px;margin-top:14px}
+.voov .vobt button{height:48px;border-radius:14px;border:1px solid var(--line,#2a3142);background:transparent;color:inherit;font:inherit;font-size:15px;font-weight:700}
+.voov .vobt button.p{border:0;background:linear-gradient(135deg,#4f8cff,#7c5cff);color:#fff}
+.vtg.now{background:rgba(34,197,94,.16)!important;color:#22c55e!important}
+b.vnn{color:#f59e0b}
 </style>
 </head>
 <body>
@@ -4190,6 +4206,7 @@ SPX.start();
 한 번 본 화면은 다음부터 바로 뜹니다</div>
     <div class="vst" id="vwst"><s></s><b>첫 화면 불러오는 중…</b></div>
     <button type="button" class="vgo" id="vwgo">보기 전용으로 시작하겠습니다</button>
+    <button type="button" class="vtm" id="vwtm">B팀원이시면 편집 PIN을 입력해 주십시오</button>
   </div>
 </div>
 <div id="rlov" aria-live="polite">
@@ -4626,7 +4643,7 @@ SPX.start();
   </div>
 </div>
 
-<div id="vrv" role="dialog" aria-modal="true" aria-label="협력업체 일일보고"><div class="vh"><b>협력업체 일일보고<small id="vrvs"></small></b><button type="button" class="vx" id="vrvx">닫기</button></div><div class="vb"><div class="vl">불러오는 중입니다</div><iframe id="vrvf" title="협력업체 일일보고" src="about:blank" allow="clipboard-write"></iframe></div></div>
+<div id="vrv" role="dialog" aria-modal="true" aria-label="협력업체 일일보고"><div class="vh"><b>협력업체 일일보고</b><button type="button" class="vx" id="vrvx">닫기</button></div><div class="vb"><div class="vl">불러오는 중입니다</div><iframe id="vrvf" title="협력업체 일일보고" src="about:blank" allow="clipboard-write"></iframe></div></div>
 <div id="toast"></div>
 <!-- 편집 PIN 입력창 -->
 <div class="ov" id="epov">
@@ -4781,7 +4798,7 @@ function rawCall(pin, fn, args, editPin) {
   if (myName() && !IS_TEST) { use = useQ(); useN = use.length; if (!useN) use = null; }
   var a0 = (fn === "getDashboardAll" || fn === "getEquipIndex") ? [args && args[0] === true] : [];
   var body = JSON.stringify({ pin: pin, fn: fn, args: args || [], editPin: editPin || "", dev: devId(), rid: rid, prev: prev,
-    me: myName(), vn: voRaw() ? voName() : "", adm: (fn === "saveHours" || fn === "saveHoursRange" || fn === "setOperator" || fn === "getRoster" || fn === "saveRoster") && adminOn() ? sget("admPin") : "", use: use });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
+    me: myName(), vn: voRaw() ? voName() : "", dk: voRaw() ? devInfo().kind : "", adm: (fn === "saveHours" || fn === "saveHoursRange" || fn === "setOperator" || fn === "getRoster" || fn === "saveRoster") && adminOn() ? sget("admPin") : "", use: use });   // me = 입력자(앱_수정기록), adm = 관리자 모드일 때만
   // 새로고침 버튼(금일/명일 새로 계산)은 시트를 통째로 읽어서 오래 걸릴 수 있음 → 30초에 끊지 않고 90초까지 기다림
   // 저장(근무시간 저장·작업자·업로드 완료 등)도 90초: 시트가 바쁘면 30초 넘게 걸리는데, 앱만 먼저 포기하면 실제로는 저장됐는데 '실패'로 보임
   var to = (fn === "getDashboardAll" && args && args[0] === true) || !READ_FNS[fn] ? 90000 : SLOW_READ[fn] ? 60000 : 0;
@@ -5081,7 +5098,7 @@ function setGate(mode, msg, bad) {
   gi.className = "gicon obic" + (bad && mode !== "enter" ? " bad" : "");
   gi.style.display = mode === "enter" ? "none" : "";
   document.querySelector("#gate .gtitle").textContent = GATE_T[mode] || "제조1-B";
-  if (mode === "enter" && (!msg || msg === "PIN을 입력해 주십시오.")) m.textContent = ONB.on ? "팀 PIN을 넣으면 바로 시작할 수 있습니다." : "팀 PIN을 입력해 주십시오.";
+  if (mode === "enter" && (!msg || msg === "PIN을 입력해 주십시오.")) { m.textContent = "B팀원은 개인톡으로 받은 편집 PIN을 입력해 주십시오\n보기 PIN은 열람용입니다"; m.style.whiteSpace = "pre-line"; }   // 👀 2026-11-19 보기 PIN · 편집 PIN 헷갈리지 않게
   obSteps("gst", ONB.on ? 1 : 0);
   $("gate").style.display = "flex";
   $("app").style.display = "none";
@@ -5228,7 +5245,7 @@ function verify(pin, typed) {
       if (j.data && j.data.level === "view") { if (!nameDone()) sset("viewOnly", "1"); }
       else if (j.data && j.data.level === "edit") sdel("viewOnly");
       // 👀 보기 PIN으로 처음 들어오면 안내 화면 먼저 → [확인] 누르면 메인 (그동안 금일·명일은 뒤에서 계속 불러옴)
-      if (j.data && j.data.level === "view" && !nameDone() && (typed || !voName())) { vIntro(pre, function () { unlock(pin, pre); }); return; }   // 👀 이름 적고 보기 전용으로 시작 (예전 보기 전용 폰도 이름이 없으면 한 번)
+      if (j.data && j.data.level === "view" && !nameDone() && (typed || !voName())) { vIntro(pre, function () { unlock(pin, pre); }, pin); return; }   // 👀 이름 적고 보기 전용으로 시작 (예전 보기 전용 폰도 이름이 없으면 한 번)
       unlock(pin, pre);
       return;
     }
@@ -11611,11 +11628,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-17-19";
+var APP_VER = "2026-11-19-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
-  ["2026-11-17-19", ["협력업체 보고 알림을 누르면 앱 안에서 협력업체 일일보고를 바로 볼 수 있습니다"]],
+  ["2026-11-19-1", ["보기 PIN으로 들어왔어도 메뉴의 '팀원이신가요? 편집 PIN으로 바꾸기'에서 편집 PIN을 넣으면 바로 팀원으로 쓸 수 있습니다", "PIN 화면에서 편집 PIN과 보기 PIN을 구분해 안내합니다 · 메뉴 맨 아래에 내 기기 번호가 보입니다"]],
+  ["2026-11-17-19", ["협력업체 보고 알림을 누르면 앱 안에서 협력업체 일일보고를 바로 볼 수 있습니다 · 처음 한 번은 협력업체 일일보고 화면에서 로그인해 주십시오"]],
   ["2026-11-17-18", ["근무시간을 저장하면 금일 미입력 명단과 맨 위 이번 달 · 이번 주 · 52시간까지 숫자가 바로 바뀝니다", "팀 근무시간 현황이 근무시간 많은 순으로 먼저 보입니다"]],
   ["2026-11-17-15", ["FT에서 더 돌린 시간을 넣을 때 메모를 남길 수 있습니다 (예: 볼스크류 교체로 12시간 더 돌림) · 기록에 같이 보입니다"]],
   ["2026-11-17-14", ["근무시간 저장이 더 빨라졌습니다 · 값이 있는 칸을 덮어쓸 때도 바로 확인 단계로 넘어갑니다"]],
@@ -12273,7 +12291,7 @@ function openNameChange() {
 $("nmno").onclick = function () { $("nmov").className = "ov"; nmMode(false); };
 
 // 👀 보기 전용 안내 화면 (보기 PIN 넣은 직후 한 번)
-function vIntro(pre, done) {
+function vIntro(pre, done, pin) {
   var o = $("vwov"), st = $("vwst"), go = $("vwgo"), inp = $("vwnm"), er = $("vwer");
   inp.value = voName(); er.textContent = "";
   st.className = "vst"; st.querySelector("b").textContent = "첫 화면 불러오는 중…"; st.style.display = pre ? "" : "none";
@@ -12287,15 +12305,62 @@ function vIntro(pre, done) {
     if (pj && pj.ok) { st.className = "vst ok"; st.querySelector("b").textContent = "첫 화면 준비 완료"; }
     else { st.className = "vst"; st.querySelector("b").textContent = "들어가서 마저 불러오겠습니다"; }
   });
+  $("vwtm").onclick = function () { inp.blur(); voToEdit(); };
+  // 👀 2026-11-19 적은 이름이 B팀 명단에 있으면 편집 PIN으로 시작할지 물어봄 (명단은 미리 받아 둠)
+  var TN = null; try { var cn0 = cget("names"); if (cn0 && cn0.names) TN = cn0.names; } catch (eN) {}
+  if (!TN && pin) rawCall(pin, "getTeamNames").then(function (j) { if (j && j.ok && j.data && j.data.names) TN = j.data.names; }).catch(function () {});
+  var asked = "";
   go.onclick = function () {
     var v = ok();
     if (!v) { er.textContent = "이름을 한글 또는 영문으로 2자 이상 입력해 주십시오"; try { inp.focus(); } catch (e2) {} return; }
+    var vk = v.replace(/\s+/g, ""), hit = (TN || []).filter(function (x) { return String(x && x.n || x).replace(/\s+/g, "") === vk; })[0];
+    if (hit && asked !== vk) { asked = vk; voTeamAsk(v); return; }
     go.onclick = null; inp.blur();
     sset("voName", v);
     o.className = "on out";
     done();
     setTimeout(function () { o.className = ""; }, 380);
   };
+}
+
+/* 👀 2026-11-19 보기 전용 → 편집 PIN으로 바꾸기 (B팀원이 보기 PIN을 잘못 넣었을 때) */
+function voTeamAsk(v) {
+  var o = voBox("B팀원이신가요?", v + "님은 B팀 명단에 있는 이름입니다.\n편집 PIN으로 시작하시면 근무시간 입력 등 팀원 기능을 그대로 쓰실 수 있습니다.");
+  o.q("편집 PIN으로 시작하겠습니다", function () { o.close(); voToEdit(); }, "p");
+  o.q("보기 전용으로 계속하겠습니다", function () { o.close(); try { $("vwgo").click(); } catch (e) {} });
+}
+function voToEdit() {
+  var o = voBox("편집 PIN으로 바꾸기", "개인톡으로 받은 편집 PIN을 입력해 주십시오.\n바꾸면 이름을 고르고 팀원과 똑같이 쓰실 수 있습니다.");
+  var inp = el("input"); inp.type = "password"; inp.inputMode = "numeric"; inp.maxLength = 12; inp.autocomplete = "off"; inp.placeholder = "편집 PIN"; inp.className = "voin";
+  o.body.appendChild(inp);
+  var msg = el("div", "vomsg"); o.body.appendChild(msg);
+  var busy = false, go = o.q("확인", function () {
+    var p = inp.value.trim(); if (!p || busy) { if (!p) msg.textContent = "편집 PIN을 입력해 주십시오."; return; }
+    busy = true; go.disabled = true; go.textContent = "확인 중…"; msg.className = "vomsg";
+    rawCall(p, "ping").then(function (j) {
+      busy = false; go.disabled = false; go.textContent = "확인";
+      var lv = j && j.ok && j.data ? j.data.level : "";
+      if (lv === "edit") {
+        sset("appPin", p); sset("editPin", p); sdel("viewOnly"); sdel("voEd");
+        msg.className = "vomsg ok"; msg.textContent = "확인되었습니다. 이름을 고르는 화면으로 이동합니다.";
+        setTimeout(function () { location.reload(); }, 700);
+        return;
+      }
+      inp.value = ""; msg.className = "vomsg bad";
+      msg.textContent = lv === "view" ? "보기 PIN입니다. 개인톡으로 받은 편집 PIN을 입력해 주십시오." : lv ? "편집 PIN이 아닙니다. 다시 확인해 주십시오." : (j && j.error) || "PIN이 맞지 않습니다.";
+    }).catch(function (e) { busy = false; go.disabled = false; go.textContent = "확인"; msg.className = "vomsg bad"; msg.textContent = "확인 실패: " + errText(e); });
+  }, "p");
+  inp.onkeydown = function (e) { if (e.key === "Enter") { e.preventDefault(); go.click(); } };
+  o.q("취소", function () { o.close(); });
+  setTimeout(function () { try { inp.focus(); } catch (e) {} }, 250);
+}
+function voBox(t, d) {
+  var ov = el("div", "ov on voov"), box = el("div", "box"), body = el("div", "vobd"), bt = el("div", "vobt");
+  box.appendChild(el("h3", null, t));
+  var p = el("p", "vod", d); box.appendChild(p); box.appendChild(body); box.appendChild(bt); ov.appendChild(box);
+  document.body.appendChild(ov);
+  return { body: body, close: function () { if (ov.parentNode) ov.parentNode.removeChild(ov); },
+    q: function (tx, fn, cls) { var b = el("button", cls || "", tx); b.type = "button"; b.onclick = fn; bt.appendChild(b); return b; } };
 }
 // 👀 보기 전용: 보기 PIN으로 들어오고 이름을 안 고른 폰 (이름 고르기·알림 권유 안 함)
 function viewOnly() { return voRaw() && !voEd(); }
@@ -13452,6 +13517,7 @@ function openMenu() {
     b.onclick = function () { closeMenu(); mnBackHide(); fn(); if (ov) mnBackShow(ov); };
     L.appendChild(b);
   }
+  if (viewOnly()) item("편집 PIN으로 바꾸기", "B팀원 전용", voToEdit);   // 👀 2026-11-19
   if (myName()) item("👤 내 이름", myName() + " (고정)", function () { toast("이름이 틀렸으면 " + DEV_NAME + "에게 말해 주십시오"); });
   if (ONESIGNAL_APP_ID) item("🔔 알림 설정", pushOn() ? "켜짐" : "꺼짐", openPush, "pushov");
   if (noticeIsAdmin()) item("🔑 관리자 모드", adminOn() ? "켜짐 · 누르면 끄기" : "꺼짐", function () {
@@ -13463,6 +13529,8 @@ function openMenu() {
   item("🔄 앱 새로 불러오기", "v" + APP_VER.slice(5).replace("-", "."), function () { location.reload(); });
   item("🛠 Developer", "개발자", function () { openAdminGate("dev"); }, "apov");
   L.lastChild.className = "dev";
+  var mid = el("div", "mnid", "내 기기 · 기기-" + devId() + (viewOnly() ? " · 보기 전용" : ""));   // 👀 2026-11-19 손성민님께 이 번호를 알려 주면 기기 목록에서 바로 찾음
+  L.appendChild(mid);
   $("mnov").className = "ov on";
 }
 function closeMenu() { $("mnov").className = "ov"; }
@@ -13724,16 +13792,17 @@ function dlTabs() {
 function dlVoSec(L) {
   var vs = el("div", "dlsec"), vh = el("div", "r"), vl = el("div");
   vl.appendChild(el("b", null, "보기 PIN으로 보고 있는 사람"));
-  vl.appendChild(el("span", "vhint", "통화로 본인 확인 후 [편집 권한 부여]를 누르면 그 폰만 팀원과 똑같이 보고 입력할 수 있습니다 · 그 폰에서 앱을 다시 열면 적용됩니다"));
+  vl.appendChild(el("span", "vhint", "최근 접속 순입니다 · 그 폰 메뉴 맨 아래 '내 기기' 번호로 찾을 수 있습니다 · 통화로 본인 확인 후 [편집 권한 부여]를 누르면 그 폰만 팀원과 똑같이 보고 입력할 수 있습니다 · 그 폰에서 앱을 다시 열면 적용됩니다"));
   vh.appendChild(vl); vs.appendChild(vh);
   if (!DL.vip) { vs.appendChild(el("small", null, "불러오는 중…")); L.appendChild(vs); return; }
   var VO = DL.vip.vo;
   if (!VO) { vs.appendChild(el("small", null, "서버 업데이트 후부터 보입니다")); L.appendChild(vs); return; }
   if (!VO.length) vs.appendChild(el("small", null, "아직 없습니다 · 보기 PIN으로 앱을 연 폰부터 나옵니다"));
   VO.forEach(function (x) {
-    var w = el("div", "vw"), rr = el("div", "r"), a = el("div"), nb = el("b", null, x.n || "이름 없음");
+    var w = el("div", "vw"), rr = el("div", "r"), a = el("div"), nb = el("b", x.n ? null : "vnn", x.n || "이름 없음");
     nb.appendChild(el("span", "vtg" + (x.ed ? " ed" : ""), x.ed ? "편집 권한" : "보기 전용"));
-    a.appendChild(nb); a.appendChild(el("span", "vdv", "기기-" + x.dev + (x.at ? " · 최근 " + x.at : "")));
+    if (x.t && Date.now() - x.t < 10 * 60e3) nb.appendChild(el("span", "vtg now", "방금"));   // 👀 2026-11-19 10분 안에 연 폰
+    a.appendChild(nb); a.appendChild(el("span", "vdv", "기기-" + x.dev + (x.k ? " · " + x.k : "") + (x.at ? " · 최근 " + x.at : "") + (x.fa ? " · 처음 " + x.fa : "")));
     rr.appendChild(a);
     var vm = el("div", "em voe"); vm.dataset.dev = x.dev;
     var lb = function () { return x.ed ? "보기 전용으로" : "편집 권한 부여"; };
@@ -14574,10 +14643,9 @@ function vrvFrom(u) {   // 주소나 알림 주소에 vr=1이 있으면 열기 (
   VRV.pend = p; vrvTry();
 }
 function vrvOpen(p) {
-  var src = VRV.site + "?d=" + encodeURIComponent(p.d || "") + "&v=" + encodeURIComponent(p.v || "") + "&embed=1";
+  var src = VRV.site + (p.d && p.v ? "?d=" + p.d + "&v=" + encodeURIComponent(p.v) + "&embed=1" : "?embed=1");   // d · v 없으면 전체 현황판
   var w = $("vrv"), f = $("vrvf");
-  $("vrvs").textContent = [p.v, p.d ? (+p.d.slice(5, 7)) + "/" + (+p.d.slice(8, 10)) : ""].filter(Boolean).join(" · ");
-  if (VRV.open !== src) { f.src = src; VRV.open = src; }
+  if (VRV.open !== src) { var ld = w.querySelector(".vl"); if (ld) ld.style.display = ""; f.src = src; VRV.open = src; }   // 창이 열려 있으면 주소만 바꿈
   w.className = "on";
   document.documentElement.classList.add("vrvon");
   try { closeMenu(); } catch (e) {}
@@ -14593,7 +14661,7 @@ function vrvClose(keep) {
   } catch (e) {}
 }
 $("vrvx").onclick = function () { vrvClose(); };
-$("vrvf").onload = function () { var l = $("vrv").querySelector(".vl"); if (l) l.style.display = this.src === "about:blank" ? "" : "none"; };
+$("vrvf").addEventListener("load", function () { if (!VRV.open) return; var l = $("vrv").querySelector(".vl"); if (l) l.style.display = "none"; });
 window.addEventListener("popstate", function () { if (vrvParse()) vrvFrom(); });
 window.addEventListener("pageshow", function () { if (vrvParse() && !VRV.open) vrvFrom(); });
 document.addEventListener("visibilitychange", function () { if (!document.hidden && vrvParse() && !VRV.open) vrvFrom(); });
