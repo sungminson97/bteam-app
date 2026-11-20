@@ -2784,6 +2784,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 /* 🟢 일정 변경 안내 (앱을 오래 켜 두었을 때 · 새로고침 누를 때까지) */
 .chgbar{display:flex;align-items:center;gap:10px;margin-top:8px;padding:9px 10px 9px 12px;border-radius:12px;background:#e7f8ef;border:1.5px solid #34c27a;animation:chgIn .45s cubic-bezier(.2,.8,.2,1)}
 .chgbar[hidden]{display:none!important}
+.chgbar button.ing{opacity:.85}.chgbar button.ing svg{animation:chgSp .8s linear infinite}@keyframes chgSp{to{transform:rotate(360deg)}}
 .chgbar i{flex:none;width:9px;height:9px;border-radius:50%;background:#1f9d55;animation:chgP 1.6s ease-out infinite}
 .chgbar span{flex:1;min-width:0;font-size:14.5px;font-weight:800;color:#0f6b3a}
 .chgbar button{flex:none;display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 13px;border-radius:999px;border:0;background:#1f9d55;color:#fff;font:inherit;font-size:13.5px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -9653,12 +9654,15 @@ function normQ(s) { return String(s || "").toUpperCase().replace(/[\s\-_#.]/g, "
 function loadEquipIndex(force) {
   if (SR.loading) return SR.loading;
   if (!SR.idx) { var c = cget("eqidx"); if (c && c.rows) { SR.idx = c; SR.at = c._at || 0; } }
-  if (!force && SR.idx && Date.now() - SR.at < 5 * 60000) return Promise.resolve("");   // 5분 안에 받은 건 그대로 (2026-11-06: 10분 → 5분 · 날짜가 늦게 바뀌지 않게)
+  if (!force && SR.idx && Date.now() - SR.at < 5 * 60000) return Promise.resolve("");
+  if (force === "net" && SR.loading) return SR.loading;   // 5분 안에 받은 건 그대로 (2026-11-06: 10분 → 5분 · 날짜가 늦게 바뀌지 않게)
   SR.err = "";
-  SR.loading = call("getEquipIndex", [!!force]).then(function (idx) {
+  SR.loading = call("getEquipIndex", [force === true]).then(function (idx) {   // "net" = 서버가 미리 만들어 둔 것 (빠름)
     SR.loading = false;
     if (idx && idx.error) { SR.err = idx.error; renderSearch(); return idx.error; }
     idx._at = Date.now();
+    // 🐞 2026-11-20: 장비 화면을 보고 있었으면 새 목록에서 같은 이름으로 다시 찾음 (예전: 줄 번호로 기억해서 목록 순서가 바뀌면 다른 장비가 열림)
+    if (SR.sel >= 0 && SR.idx && SR.idx.rows && SR.idx.rows[SR.sel]) { var oNm = SR.idx.rows[SR.sel][0], nI = -1; (idx.rows || []).forEach(function (r, k) { if (nI < 0 && r[0] === oNm) nI = k; }); SR.sel = nI; }
     SR.idx = idx; SR.at = idx._at;
     if (idx.sig) { CHG.sig = idx.sig; if (CHG.on && !CHG.hc) chgHide(); else if (CHG.on) { CHG.eq = false; chgShow(false, true); } }   // 🟢 지금 보고 있는 일정의 지문 (근무시간 변경 띠는 남김)
     cset("eqidx", idx);
@@ -11732,10 +11736,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-19-4";
+var APP_VER = "2026-11-20-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-20-1", ["'일정이 변경 · 수정되었습니다'에서 새로고침을 누르면 바로 바뀝니다 (예전에는 몇 초 멈춘 것처럼 보였습니다)", "다른 팀 장비 일정만 바뀐 경우에는 변경 안내가 뜨지 않습니다"]],
   ["2026-11-19-4", ["수입검사 위 카드(긴급 대기 · NG · 대기 장비)를 누르면 그 장비만 골라 보이고, 장비 화면에서는 전체 · 긴급 대기 · NG 카드를 누르면 그 검사만 보입니다"]],
   ["2026-11-19-3", ["수입검사에 'NG 이력'이 추가되었습니다 · 수입검사 NG를 한 건씩 불량유형 · 불량내용 · 조치 · 재검사 결과까지 볼 수 있고, 조치 중 · 완료로 골라 볼 수 있습니다", "장비 수입검사 화면에도 그 장비의 NG 이력이 보이고, 장비 목록에는 NG 조치 중 숫자가 표시됩니다"]],
   ["2026-11-19-2", ["자재 화면의 상태를 자재팀 입출고 현황판과 같은 기준으로 맞췄습니다 · 3공장 · 1공장 구분도 품목마다 정해진 공장 기준으로 바뀌었습니다", "공용자재는 미입고 수에서 빼고 '공용자재'로 따로 표시합니다", "품목마다 ERP 종결 · 사급 · 부적합 · 성남 입고 표시가 붙고, 부적합은 빨간 테두리, 성남 입고는 노란 테두리로 보입니다"]],
@@ -12290,6 +12295,8 @@ function chgCheck() {
   CHG.t = Date.now();
   call("getEquipIndex", ["sig"]).then(function (r) {
     if (!r) return;
+    if (r.sig) CHG.ns = r.sig;
+    if (r.sig && CHG.sig && r.sig.charAt(0) !== CHG.sig.charAt(0) && (r.sig.charAt(0) === "b" || CHG.sig.charAt(0) === "b")) { CHG.sig = r.sig; return; }   // 🟢 2026-11-20 지문 방식이 바뀐 것뿐 (일정 변경 아님)
     var eq = !!(r.sig && CHG.sig && r.sig !== CHG.sig), hv = r.h || "";
     if (hv && !CHG.h) CHG.h = hv;   // 처음 받은 값은 기억만
     var hc = !!(hv && CHG.h && hv !== CHG.h);
@@ -12299,22 +12306,26 @@ function chgCheck() {
 }
 setInterval(function () { idle(chgCheck, "chg"); }, 180000);
 $("chggo").onclick = function () {
-  var b = this; b.disabled = true;
+  var b = this; if (b.disabled) return; b.disabled = true; b.classList.add("ing");
+  var tx = b.lastChild; if (tx && tx.nodeType === 3) { b._t = b._t || tx.textContent; tx.textContent = " 반영 중"; }
+  var done = function () { b.disabled = false; b.classList.remove("ing"); if (tx && b._t) tx.textContent = b._t; };
   var hc = CHG.hc, ps = [];
   if (CHG.eq || !hc) {
-    ps = [loadEquipIndex(true), loadDash(true)];   // 일정이 들어 있는 두 곳을 최신으로
+    // ⚡ 2026-11-20: 띠가 뜬 건 서버가 이미 새 일정을 만들어 뒀다는 뜻 → 그걸 바로 받음 (예전: 시트를 다시 통째로 읽어서 10초+ 멈춘 것처럼 보임)
+    //    받은 지문이 아직 옛것이면(드묾) 그때만 시트를 새로 읽음
+    ps = [loadEquipIndex("net").then(function (x) { if (!x && CHG.ns && SR.idx && SR.idx.sig && SR.idx.sig !== CHG.ns) return Promise.all([loadEquipIndex(true), loadDash(true)]).then(function (a) { return a.filter(Boolean)[0] || ""; }); return x; }), loadDash(false)];
     if (cur === 11) ps[0] = ps[0].then(function (x) { if (cur === 11 && !SR.open) renderLay(); return x; });
     else if (cur === 10) ps.push(dashLoad(true));
   }
   if (hc) ps.push(chgHours());
   Promise.all(ps).then(function (a) {
-    b.disabled = false;
+    done();
     var err = a.filter(Boolean)[0];
     if (err) { toast("⚠️ 새로고침 실패: " + err, true); return; }
     chgHide();
     if (SR.open) renderSearch();
-    toast("✔ 최신 내용으로 바뀌었습니다");
-  }, function (e) { b.disabled = false; toast("⚠️ 새로고침 실패: " + errText(e), true); });
+    toast("✔ 최신 일정으로 바뀌었습니다");
+  }, function (e) { done(); toast("⚠️ 새로고침 실패: " + errText(e), true); });
 };
 
 /* 🔄 근무시간 자동 새로고침 (2026-11-09)
