@@ -2660,6 +2660,10 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 #mat .mts span::before{content:"·";margin-right:6px;opacity:.6}
 #mat .mts i{font-style:normal;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:6px;background:color-mix(in srgb,#8b5cf6 14%,var(--card));color:#7c3aed}
 #mat .mtq{display:grid;grid-template-columns:repeat(4,36px);gap:4px;text-align:center}
+#mat .mti{cursor:pointer;-webkit-tap-highlight-color:transparent}
+#mat .mti.open .mtn,#mat .mti.open .mtp,#mat .mti.open .mts b{white-space:normal;overflow:visible;text-overflow:clip;word-break:break-all}
+#mat .mti.open .mts{flex-wrap:wrap;white-space:normal}
+#mat .mti.open .mtp{color:var(--text);opacity:.8;font-size:12.5px;line-height:1.45}
 #mat .mth span{font-size:10.5px;font-weight:800;color:var(--sub)}
 #mat .mti .mtq b{display:grid;place-items:center;height:30px;border-radius:8px;background:var(--bg);font-size:14px;font-weight:900;font-variant-numeric:tabular-nums}
 #mat .mti .mtq b.z{color:var(--sub);opacity:.55}
@@ -7616,7 +7620,7 @@ function renderMat() {
     zx.appendChild(oz);
   }
   var lg = el("div", "zlg"); ["part", "done", "o3", "o1", "cw"].forEach(function (k) { lg.appendChild(el("span", "z-" + k, MTS[k].replace(" 불출완료", " 불출"))); }); zx.appendChild(lg);
-  var lg2 = el("div", "zbl"); [["erp", "ERP 종결"], ["sup", "사급"], ["nc", "부적합 · 빨간 테두리"], ["sn", "성남 입고 · 노란 테두리"]].forEach(function (o) { lg2.appendChild(el("em", "zbd " + o[0], o[1])); }); lg2.appendChild(el("span", null, "상태는 자재팀 입출고 현황판 기준 · 공용자재는 미입고에서 뺌")); zx.appendChild(lg2);
+  var lg2 = el("div", "zbl"); [["erp", "ERP 종결"], ["sup", "사급"], ["nc", "부적합 · 빨간 테두리"], ["sn", "성남 입고 · 노란 테두리"]].forEach(function (o) { lg2.appendChild(el("em", "zbd " + o[0], o[1])); }); lg2.appendChild(el("span", null, "상태는 자재팀 입출고 현황판 기준 · 공용자재는 미입고에서 뺌 · 품목을 누르면 잘린 글자가 다 보입니다")); zx.appendChild(lg2);
   box.appendChild(zx);
   var wrap = el("div", "mtw"); box.appendChild(wrap);
   var draw = function () {
@@ -7671,6 +7675,10 @@ function renderMat() {
       var q = el("div", "mtq");
       [r[7], r[8], r[9], r[10]].forEach(function (x, i) { q.appendChild(el("b", i === 1 && lack && mtNum(r[8]) < mtNum(r[7]) ? "lack" : (mtNum(x) ? "" : "z"), String(x === "" || x == null ? "-" : x))); });
       it.appendChild(q);
+      // 📖 2026-11-21 누르면 잘린 글자(품목명 · 규격 · 거래처 · 상위품목)를 다 펼쳐 보기 · 다시 누르면 접기 (찾기로 다시 그려도 유지)
+      var ok0 = r[4] + "|" + r[12] + "|" + r[13];
+      if (MT.open && MT.open[ok0]) it.classList.add("open");
+      it.onclick = function () { MT.open = MT.open || {}; var on = !it.classList.contains("open"); it.classList.toggle("open", on); if (on) MT.open[ok0] = 1; else delete MT.open[ok0]; };
       c.appendChild(it);
     });
     wrap.appendChild(c);
@@ -11736,10 +11744,12 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-20-1";
+var APP_VER = "2026-11-21-2";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-21-2", ["입고 · 불출 품목을 누르면 잘려 있던 품목명 · 규격 · 거래처가 다 보입니다 (다시 누르면 접힙니다)"]],
+  ["2026-11-21-1", ["부적합 처리 요청 작성에서 '맨 위로' 버튼이 아래 '메시지 복사' 띠와 겹치지 않도록 그 위로 올렸습니다"]],
   ["2026-11-20-1", ["'일정이 변경 · 수정되었습니다'에서 새로고침을 누르면 바로 바뀝니다 (예전에는 몇 초 멈춘 것처럼 보였습니다)", "다른 팀 장비 일정만 바뀐 경우에는 변경 안내가 뜨지 않습니다"]],
   ["2026-11-19-4", ["수입검사 위 카드(긴급 대기 · NG · 대기 장비)를 누르면 그 장비만 골라 보이고, 장비 화면에서는 전체 · 긴급 대기 · NG 카드를 누르면 그 검사만 보입니다"]],
   ["2026-11-19-3", ["수입검사에 'NG 이력'이 추가되었습니다 · 수입검사 NG를 한 건씩 불량유형 · 불량내용 · 조치 · 재검사 결과까지 볼 수 있고, 조치 중 · 완료로 골라 볼 수 있습니다", "장비 수입검사 화면에도 그 장비의 NG 이력이 보이고, 장비 목록에는 NG 조치 중 숫자가 표시됩니다"]],
@@ -16051,8 +16061,18 @@ function pjEqChips(cps, name) {
     var app = document.getElementById("app"), sp = document.getElementById("splash");
     var on = window.pageYOffset > Math.max(900, window.innerHeight * 1.5) && app && app.style.display !== "none" && !(sp && sp.style.display !== "none" && !/out/.test(sp.className));
     b.classList.toggle("on", !!on);
+    // 🐞 2026-11-21: 아래에 떠 있는 띠(부적합 요청 '준비 완료 · 복사' · 보기 전용 안내)가 있으면 그 위로 올림 (겹치지 않게)
+    var top = 0;
+    if (on) ["#nc .nfdock", "#demobar"].forEach(function (q) {
+      var d = document.querySelector(q); if (!d || d.hidden || !d.isConnected || getComputedStyle(d).display === "none" || (d.closest(".tab") && d.closest(".tab").offsetParent === null && getComputedStyle(d.closest(".tab")).display === "none")) return;   // 고정 띠는 offsetParent가 늘 비어서 표시 여부로 봄
+      var r = d.getBoundingClientRect(); if (!r.height || r.top >= window.innerHeight || r.bottom <= 0) return;
+      if (r.right < window.innerWidth - 140) return;   // 오른쪽 아래와 안 겹치면 그대로
+      if (!top || r.top < top) top = r.top;
+    });
+    b.style.bottom = top ? Math.round(window.innerHeight - top + 10) + "px" : "";
   };
   window.addEventListener("scroll", function () { if (!tk) tk = requestAnimationFrame(chk); }, { passive: true });
+  window.addEventListener("resize", function () { if (!tk) tk = requestAnimationFrame(chk); }, { passive: true });
 })();
 </script>
 </body>
