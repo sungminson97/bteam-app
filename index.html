@@ -11458,14 +11458,14 @@ function doRangeSave(kind, note, force) {
       H.confirm = true; H.rangeSkip = tot.skip.map(function (x) { return x.d; });
       $("hsave").textContent = "덮어쓰기 확인"; $("hsave").className = "save confirm";
       res.appendChild(el("div", "warn", "이미 값이 있는 날 " + tot.skip.length + "일은 건너뛰었습니다: " + tot.skip.map(function (x) { return md(x.d) + "(" + x.cur + ")"; }).join(", ") + "\n이 날들도 " + kind + "로 덮어쓰려면 한 번 더 눌러 주십시오."));
-      setTimeout(function () { loadHoursMeta(true); }, 300);
+      hReloadSoon();   // ⚡ 2026-11-23
       return;
     }
     H.otherOK = false; H.rangeSkip = null;
     $("hval").value = ""; $("hnote").value = ""; $("hrng").checked = false; $("hrend").value = ""; $("hrstart").value = ""; H.half = ""; updNote();
     sset("hoursName", name);
     H.token++;
-    setTimeout(function () { loadHoursMeta(true); }, 300);
+    hReloadSoon();   // ⚡ 2026-11-23 여러 날 저장 끝 → 모아서 한 번
   }
   function next() {
     if (i >= list.length) { finish(""); return; }
@@ -11744,10 +11744,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-21-2";
+var APP_VER = "2026-11-23-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-23-1", ["근무시간을 저장한 뒤 합계 · 미입력 명단이 더 빨리 반영됩니다 · 여러 날을 연달아 넣어도 한 번에 새로 고칩니다"]],
   ["2026-11-21-2", ["입고 · 불출 품목을 누르면 잘려 있던 품목명 · 규격 · 거래처가 다 보입니다 (다시 누르면 접힙니다)"]],
   ["2026-11-21-1", ["부적합 처리 요청 작성에서 '맨 위로' 버튼이 아래 '메시지 복사' 띠와 겹치지 않도록 그 위로 올렸습니다"]],
   ["2026-11-20-1", ["'일정이 변경 · 수정되었습니다'에서 새로고침을 누르면 바로 바뀝니다 (예전에는 몇 초 멈춘 것처럼 보였습니다)", "다른 팀 장비 일정만 바뀐 경우에는 변경 안내가 뜨지 않습니다"]],
@@ -12277,7 +12278,7 @@ function refreshIfStale() {
   if (cur === 7) loadInsp(false); else if (cur === 8) loadNc(false); else setTimeout(function () { idle(qPrefetch, "qpf"); }, 4000);   // 수입검사·부적합도 최신으로 (뒤에서 하나씩)
   if (cur === 4) loadLeave(false);
   else if (cur === 5) loadStats(false);
-  else if (cur === 3 && !H.busy && !hoursLock() && Date.now() - (H.metaAt || 0) > 60000) loadHoursMeta(true);   // 방금 자동 새로고침했으면 또 안 부름
+  else if (cur === 3 && !H.busy && !hoursLock() && Date.now() - (H.metaAt || 0) > 60000) idle(function () { return H.busy || hoursLock() ? null : loadHoursMeta(true); }, "hrel");   // 방금 자동 새로고침했으면 또 안 부름 · ⚡ 2026-11-23 금일/명일 먼저 끝나고 차례로
   if (dayChanged) toast("📅 날짜가 바뀌어서 오늘 기준으로 새로 불러왔습니다");
 }
 
@@ -13229,7 +13230,7 @@ function qhSave(me, ymd, v) {
         }
       } catch (eU) {}
       H.loaded = false;   // 근무시간 탭 열면 합계·TOP 최신으로
-      if (cur === 3) { H.token++; refreshCell(); setTimeout(function () { loadHoursMeta(true); }, 300); }
+      if (cur === 3) { H.token++; refreshCell(); if (r.total == null || !r.week || r.top === undefined) hReloadSoon(); }   // ⚡ 2026-11-23 저장 직후 0.3초 뒤 바로 다시 부르지 않음 → 2.5초 모아서 한 번 (여러 날 연달아 넣어도 1번 · 응답에 다 있으면 안 부름)
     })
     .catch(function (e) { done(); $("qhmsg").textContent = "저장 실패: " + errText(e); });
 }
@@ -13279,7 +13280,7 @@ function qhSaveFast(me, ymd, v) {
         }
       } catch (eU) {}
       H.loaded = false;   // 근무시간 탭 열면 합계·TOP 최신으로
-      if (cur === 3) { H.token++; refreshCell(); setTimeout(function () { loadHoursMeta(true); }, 300); }
+      if (cur === 3) { H.token++; refreshCell(); if (r.total == null || !r.week || r.top === undefined) hReloadSoon(); }   // ⚡ 2026-11-23 저장 직후 0.3초 뒤 바로 다시 부르지 않음 → 2.5초 모아서 한 번 (여러 날 연달아 넣어도 1번 · 응답에 다 있으면 안 부름)
     })
     .catch(function (e) { toast(md + " 저장 실패: " + errText(e) + " · 다시 입력해 주십시오", true); redo(); });
 }
