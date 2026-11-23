@@ -141,14 +141,18 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .tmtag.u{background:transparent;color:var(--warn);border:1px solid var(--warn)}
 .snb{display:inline-flex;align-items:center;gap:7px;max-width:100%;padding:3px 10px 3px 3px;border-radius:9px;background:#eaf1ff;border:1px solid #bcd0fb;vertical-align:middle}
 .snb .k{flex:none;padding:2px 7px;border-radius:6px;background:#2f6bed;color:#fff;font-size:11px;font-weight:800;letter-spacing:-.01em}
-.snb .v{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#13306b;font-size:13.5px;font-weight:900;letter-spacing:0}
-.sres .it .snb{display:flex;width:max-content;max-width:100%;box-sizing:border-box;margin-top:7px}
-#srch .eqh .snb{display:flex;width:max-content;max-width:100%;box-sizing:border-box;margin:9px 0 8px;padding:5px 13px 5px 5px;border-radius:11px;background:#fff;border:0;box-shadow:0 3px 12px rgba(0,0,0,.16)}
+.snb{align-items:flex-start}
+.snb .k{margin-top:1px}
+.snb .v{min-width:0;flex:0 1 auto;white-space:normal;overflow-wrap:anywhere;word-break:keep-all;line-height:1.35;color:#13306b;font-size:13.5px;font-weight:900;letter-spacing:0;padding-top:1px}
+.sres .it .snb{display:flex;width:fit-content;max-width:100%;min-width:0;box-sizing:border-box;margin-top:7px}
+#srch .eqh .snb{display:flex;width:fit-content;max-width:100%;min-width:0;box-sizing:border-box;margin:9px 0 8px;padding:5px 13px 5px 5px;border-radius:11px;background:#fff;border:0;box-shadow:0 3px 12px rgba(0,0,0,.16)}
 #srch .eqh .snb .k{padding:3px 9px;font-size:12.5px;background:#2f6bed}
 #srch .eqh .snb .v{font-size:18px;color:#13306b}
-#upload .ue > .snb{display:flex;width:max-content;max-width:100%;box-sizing:border-box;margin:6px 0 2px;padding:2px 9px 2px 2px}
+#srch .eqh .snb.lng .v{font-size:14.5px}
+#upload .ue > .snb{display:flex;width:fit-content;max-width:100%;min-width:0;box-sizing:border-box;margin:6px 0 2px;padding:2px 9px 2px 2px}
 #upload .ue > .snb .k{font-size:10.5px}
 #upload .ue > .snb .v{font-size:12.5px}
+#upload .ue,#upload .uh{min-width:0;max-width:100%}
 #upload .ur{display:flex;align-items:center;gap:6px;flex:none}
 #upload .uun{display:inline-block;font-size:11.5px;font-weight:900;color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent);border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);border-radius:7px;padding:2px 8px;white-space:nowrap}
 .tmtag.unas{margin:0 0 0 8px}
@@ -6176,7 +6180,7 @@ function upUndo(x, btn) {
 }
 
 function snBadge(v) {   // 🚚 (대체) 출하명 배지 (라벨 + 값, 눈에 띄게)
-  var b = el("span", "snb"); b.appendChild(el("span", "k", "출하명")); b.appendChild(el("span", "v", v)); b.title = "(대체) 출하명 " + v; return b;
+  var b = el("span", "snb" + (String(v).length > 24 ? " lng" : "")); b.appendChild(el("span", "k", "출하명")); b.appendChild(el("span", "v", v)); b.title = "(대체) 출하명 " + v; return b;
 }
 function upSn(n) {   // 장비명 → (대체) 출하명 (검색용 장비 목록 · 서버 요청 없음)
   try { var I = eqIdx(), k = normQ(n); if (!I || !I.rows) return ""; for (var i = 0; i < I.rows.length; i++) if (normQ(I.rows[i][0]) === k) return I.rows[i][12] || ""; } catch (e) {}
@@ -11770,10 +11774,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-23-7";
+var APP_VER = "2026-11-23-8";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-23-8", ["출하명이 긴 장비에서 화면이 좌우로 밀리던 현상을 고쳤습니다"]],
   ["2026-11-23-7", ["(대체) 출하명을 배지로 크게 표시해 검색 결과 · 장비 상세 · 업로드 현황에서 한눈에 보입니다"]],
   ["2026-11-23-6", ["장비 검색에서 (대체) 출하명으로도 찾을 수 있고, 검색 결과 · 장비 상세 · 업로드 현황에 출하명이 함께 보입니다"]],
   ["2026-11-23-5", ["업로드 현황에서 Backlog 담당자가 정해지지 않은 장비는 사업장 왼쪽에 'Backlog 담당자 미지정'으로 표시됩니다"]],
