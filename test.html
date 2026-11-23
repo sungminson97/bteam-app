@@ -139,6 +139,7 @@ main,#hours,#upload,#leave,#stats,#sched,#srch{padding:12px 16px 40px;display:gr
 .tmtag.a{background:var(--ta)}
 .tmtag.b{background:var(--tb)}
 .tmtag.u{background:transparent;color:var(--warn);border:1px solid var(--warn)}
+#upload .un .uun{align-self:flex-start;display:inline-block;margin-top:4px;font-size:11.5px;font-weight:900;color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent);border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);border-radius:7px;padding:2px 8px;white-space:nowrap}
 .tmtag.unas{margin:0 0 0 8px}
 /* 🚨 긴급 장비 (PR. = 1): 장비명만 빨간색 */
 .urg{color:var(--warn)!important;font-weight:800}
@@ -6193,6 +6194,7 @@ function renderUpload(d) {
   box.appendChild(sum);
 
   if (d.total) box.appendChild(el("div", "hint", "서버 업로드를 마친 시트를 누르면 완료 처리 확인창이 열립니다. 작업자가 비어 있는 장비는 작업자 이름까지 입력해야 목록에서 사라집니다."));
+  if (d.people.some(function (p) { return p.items.some(function (it) { return it.un; }); })) box.appendChild(el("div", "hint", "팀/담당자 미지정은 Backlog에 팀과 담당자가 아직 없는 장비입니다. Backlog에서 지정해 주십시오."));
 
   d.people.forEach(function (p) {
     var card = el("div", "card up");
@@ -6217,6 +6219,7 @@ function renderUpload(d) {
       eqn.onclick = function () { openEquip(it.n); };   // 장비명을 누르면 일정
       un.appendChild(eqn);
       if (it.t) un.appendChild(el("span", "ut", it.t));
+      if (it.un) un.appendChild(el("span", "uun", "▲팀/담당자 미지정"));   // 2026-11-23 Backlog에 팀/담당자가 없는 장비
       uh.appendChild(un);
       // SITE (E열): 누르면 동탄/본사 고르기
       var sb = el("button", "us" + (it.site ? (it.site === "동탄" ? "" : " hq") : " empty"), it.site || "SITE 빈칸"); sb.type = "button";
@@ -11744,10 +11747,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-23-2";
+var APP_VER = "2026-11-23-3";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-23-3", ["업로드 현황에 Backlog 팀/담당자가 아직 정해지지 않은 장비도 나오고, '▲팀/담당자 미지정'으로 따로 표시됩니다"]],
   ["2026-11-23-2", ["앱을 켤 때 나오는 진행 표시가 화면 글자와 겹치지 않도록 자리를 고쳤습니다"]],
   ["2026-11-23-1", ["근무시간을 저장한 뒤 합계 · 미입력 명단이 더 빨리 반영됩니다 · 여러 날을 연달아 넣어도 한 번에 새로 고칩니다"]],
   ["2026-11-21-2", ["입고 · 불출 품목을 누르면 잘려 있던 품목명 · 규격 · 거래처가 다 보입니다 (다시 누르면 접힙니다)"]],
