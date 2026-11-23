@@ -8752,10 +8752,10 @@ $("opgo").onclick = function () {
     });
 };
 
-function loadUpload() {
+function loadUpload(force) {
   U.loaded = true;
   R.up = true;
-  return call("getUploadStatus")
+  return call("getUploadStatus", force === true ? [true] : undefined)
     .then(function (d) {
       R.up = false;
       if (d && !d.error) upPendApply(d);   // 방금 앱에서 완료한 건 다시 안 보이게
@@ -10346,7 +10346,7 @@ $("ref").onclick = function () {
   var p;
   if (SR.open) p = loadEquipIndex(true);
   else if (cur === 3) p = hoursLock() ? Promise.resolve() : loadHoursMeta();
-  else if (cur === 2) { p = loadUpload(); renderUpload(U.data); }
+  else if (cur === 2) { p = loadUpload(true); renderUpload(U.data); }   // 🔄 2026-11-23 새로고침 = 서버 캐시 말고 시트에서 바로 (업로드 현황은 0.3초대로 가벼움)
   else if (cur === 4) { p = loadLeave(true); renderLeave(LV.data); }
   else if (cur === 5) { p = loadStats(true); renderStats(ST.data); }
   else if (cur === 7) { p = loadInsp(true); }
@@ -11747,10 +11747,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-23-3";
+var APP_VER = "2026-11-23-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-23-4", ["업로드 탭에서 오른쪽 위 새로고침을 누르면 최신 상태를 바로 불러옵니다"]],
   ["2026-11-23-3", ["업로드 현황에 Backlog 팀/담당자가 아직 정해지지 않은 장비도 나오고, '▲팀/담당자 미지정'으로 따로 표시됩니다"]],
   ["2026-11-23-2", ["앱을 켤 때 나오는 진행 표시가 화면 글자와 겹치지 않도록 자리를 고쳤습니다"]],
   ["2026-11-23-1", ["근무시간을 저장한 뒤 합계 · 미입력 명단이 더 빨리 반영됩니다 · 여러 날을 연달아 넣어도 한 번에 새로 고칩니다"]],
