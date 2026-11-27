@@ -2754,6 +2754,22 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .ltns{flex:1;display:flex;flex-direction:row-reverse;justify-content:center;gap:1px;min-height:0;max-height:110px}
 .ltns .ltn{flex:none;font-size:9.5px;max-height:110px}
 .ltns .ltn+.ltn{color:var(--sub)}
+/* 단독 EFEM · PROCESS 자리 (위아래 반 칸) */
+.lt.solo{cursor:default;border:0;background:none;padding:5px 0 0;gap:3px}.lt.solo:active{transform:none}
+.lt.solo>.lti{line-height:13px}
+.lhf{all:unset;box-sizing:border-box;position:relative;flex:1;width:100%;min-height:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 1px 5px;border-radius:7px;border:1.5px dashed var(--line);background:var(--card);overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.lhf.on{border:1.5px solid color-mix(in srgb,var(--c) 70%,transparent);background:color-mix(in srgb,var(--c) 13%,var(--card))}
+.lhf.pre{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}.lhf.off{cursor:default;opacity:.7}
+.lhf.fl{justify-content:flex-end;padding:4px 1px 7px}
+.lhk{font-size:7px;font-weight:900;letter-spacing:-.02em;color:var(--sub);white-space:nowrap}.lhf.on .lhk{color:var(--c)}
+.lhn{font-size:7px;letter-spacing:-.04em;font-weight:800;line-height:1.2;color:var(--text);white-space:nowrap;max-width:100%;overflow:hidden;text-align:center}.lhn1,.lhn2{display:block}.lhks{display:inline}.lhkf{display:none}.lhf .lhd{display:none}.lhn.u{color:var(--warn)}.lhf.pre .lhn{color:var(--sub)}
+.lhd{font-size:7px;font-weight:700;color:var(--sub);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.lhb{position:absolute;left:4px;right:4px;height:2px;border-radius:1px;background:var(--text);opacity:.75}.lhf.tp .lhb{top:2px}.lhf.bt .lhb{bottom:2px}
+.lhp{position:absolute;left:2px;bottom:4px;width:2.5px;height:calc((100% - 10px) * var(--p) / 100);background:var(--c);border-radius:2px}
+.lhf.ef.bt .lhp{bottom:6px}
+.lwrap.zm .lt.solo{padding:8px 0 0;gap:4px}.lwrap.zm .lhf{padding:9px 6px 7px;gap:3px}.lwrap.zm .lhf.fl{padding:6px 6px 10px}
+.lwrap.zm .lhk{font-size:10px}.lwrap.zm .lhkf{display:inline}.lwrap.zm .lhks{display:none}.lwrap.zm .lhf .lhd{display:block}.lwrap.zm .lhn1,.lwrap.zm .lhn2{display:inline}.lwrap.zm .lhn{font-size:12px;letter-spacing:0}.lwrap.zm .lhd{font-size:10.5px}
+.lgf i{display:inline-block;width:12px;height:2px;border-radius:1px;background:var(--text);margin-right:5px;vertical-align:3px;opacity:.75}
 .lt.dup{box-shadow:inset 0 0 0 2px var(--text)}
 .lt.dup::after{content:"";position:absolute;right:4px;bottom:6px;width:7px;height:7px;background:var(--text);transform:rotate(45deg)}
 #lay{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
@@ -9833,9 +9849,37 @@ function laySlots(L, T) {
     var nx = A.filter(function (e) { return live(e) && (!e.inD || e.inD > T); }).sort(function (a, b) { var x = a.inD || "9999", y = b.inD || "9999"; return x < y ? -1 : x > y ? 1 : 0; });
     var lv = A.filter(live), dup = layDup(cur.concat(nx.slice(0, 1)), lv, T);
     var pick = cur.concat(cur.length ? [] : nx.slice(0, 1)); dup.forEach(function (x) { if (pick.indexOf(x) < 0) pick.push(x); });
-    out[k] = { cur: cur[0] || null, more: Math.max(0, cur.length - 1), others: cur.slice(1), next: nx[0] || null, wait: nx.length, dup: dup, pick: pick };
+    out[k] = { cur: cur[0] || null, more: Math.max(0, cur.length - 1), others: cur.slice(1), next: nx[0] || null, wait: nx.length, dup: dup, pick: pick, live: lv };
   });
   return out;
+}
+/* 단독 장비 (EFEM만 · PROCESS만): 한 자리에 2대 · EFEM은 고정 자리 (동탄 대시보드와 같음)
+ * B줄 = 위 EFEM · 아래 PROCESS / A줄 = 위 PROCESS · 아래 EFEM ('EFEM' 글자도 칸 아래 · 고정선 옆) */
+function laySoloK(e) { var t = String((e.t || "") + " " + (e.n || "")).toUpperCase(); return /EFEM/.test(t) ? "E" : /PROCESS/.test(t) ? "P" : "S"; }
+function laySolo(si, T) {
+  var lv = si.live || [], inn = lv.filter(function (e) { return e.inD && e.inD <= T; }), base = inn.length ? inn : si.next ? [si.next] : [];
+  if (!base.length || base.some(function (e) { return laySoloK(e) === "S"; })) return null;
+  lv = lv.filter(function (e) { return laySoloK(e) !== "S"; });
+  var pick = function (k) { var L = lv.filter(function (e) { return laySoloK(e) === k; }); if (!L.length) return null;
+    var a = L.filter(function (e) { return e.inD && e.inD <= T; }).sort(function (x, y) { return x.inD < y.inD ? 1 : -1; });
+    if (a.length) return a[0]; return L.sort(function (x, y) { var p = x.inD || "9999", q = y.inD || "9999"; return p < q ? -1 : p > q ? 1 : 0; })[0]; };
+  return { E: pick("E"), P: pick("P") };
+}
+function layHalf(k, o, top, T) {
+  var inn = o && o.inD && o.inD <= T, stI = inn ? Math.max(0, o.st) : 0, fl = k === "E" && !top;
+  var h = el("button", "lhf" + (k === "E" ? " ef" : "") + (top ? " tp" : " bt") + (inn ? " on" : o ? " pre" : " off") + (fl ? " fl" : "")); h.type = "button";
+  if (inn) h.style.setProperty("--c", LAYC[stI]);
+  var hn = o && String(o.n).match(/#\s*\d+/);
+  var kl = el("span", "lhk"); kl.appendChild(el("span", "lhkf", (k === "E" ? "EFEM" : "PROCESS") + (hn ? " " + hn[0].replace(/\s/g, "") : ""))); kl.appendChild(el("span", "lhks", k === "E" ? "EFEM" : "PRO"));
+  var nm = el("span", "lhn" + (o && o.u ? " u" : "")), n0 = o ? laySplit(o.n)[0] : "", np = n0.match(/^([^-]+-)(.+)$/);
+  if (np) { nm.appendChild(el("span", "lhn1", np[1])); nm.appendChild(el("span", "lhn2", np[2])); nm.title = n0; } else nm.textContent = n0;
+  var dd = el("span", "lhd", o ? (inn ? LAYS[stI] : o.inD ? layMd(o.inD) + " 입고" : "입고 예정") : "자리");
+  if (fl) { h.appendChild(nm); h.appendChild(dd); h.appendChild(kl); } else { h.appendChild(kl); h.appendChild(nm); h.appendChild(dd); }
+  if (k === "E") h.appendChild(el("i", "lhb"));   // EFEM 고정 표시: 바깥쪽 굵은 선
+  if (inn) { var pb = el("i", "lhp"); pb.style.setProperty("--p", ((stI + 1) / 11 * 100).toFixed(0) + "%"); h.appendChild(pb); }
+  if (o) h.onclick = function (ev) { ev.stopPropagation(); openEquip(o.n); }; else h.disabled = true;
+  h.title = (k === "E" ? "EFEM (고정 자리)" : "PROCESS") + (o ? " · " + o.n : " · 비어 있음");
+  return h;
 }
 var LAYZ = false;   // 🔍 확대 보기 (가로로 크게 · 옆으로 밀어서 보기)
 try { LAYZ = localStorage.getItem("layz") === "1"; } catch (e) {}
@@ -9853,14 +9897,23 @@ function renderLay() {
   h.appendChild(zb); cd.appendChild(h);
   if (!L) { cd.appendChild(el("div", "msg", SR.err ? SR.err : "배치도를 불러오는 중…")); box.appendChild(cd); return; }
   var T = SR.idx.today, SM = laySlots(L, T), used = 0, pre = 0, eqN = 0;
-  LAYP.forEach(function (pp) { var si = SM[pp.id] || {}; if (si.cur) { used++; eqN += 1 + (si.more || 0); } else if (si.next) pre++; });   // 한 자리에 2대면 장비는 2대로 셈
+  LAYP.forEach(function (pp) { var si = SM[pp.id] || {}; if (si.cur) { used++; eqN += 1 + (si.more || 0); } else if (si.next) pre++; });
+  var soloN = 0; LAYP.forEach(function (pp) { if (laySolo(SM[pp.id] || {}, T)) soloN++; });   // 한 자리에 2대면 장비는 2대로 셈
   var sm = el("div", "lays");
   [["장비", eqN + "대", "a"], ["사용 자리", used + " / " + LAYP.length, ""], ["빈 자리", LAYP.length - used, ""], ["입고 예정", pre, "b"]].forEach(function (k) { var c = el("span", k[2]); c.appendChild(document.createTextNode(k[0] + " ")); c.appendChild(el("b", null, String(k[1]))); sm.appendChild(c); });
   cd.appendChild(sm);
   // 가로 도면: 위 = B줄 (왼쪽 B9 → 오른쪽 B1) · 아래 = A줄 (A9 → A1, 한 칸 오른쪽으로 · B1 = A2 줄 맞춤) · 맨 오른쪽 = 출하장
   var wrap = el("div", "lwrap" + (LAYZ ? " zm" : "")), fl = el("div", "lfl");
   var tile = function (id, col, row) {
-    var si = SM[id] || {}, e = si.cur, nx = si.next, t = el("button", "lt" + (e ? " on" : nx ? " pre" : " off")); t.type = "button";
+    var si = SM[id] || {}, e = si.cur, nx = si.next, solo = laySolo(si, T);
+    if (solo) {   /* 단독 EFEM · PROCESS: 칸을 위아래로 나눔 · EFEM은 늘 같은 쪽 */
+      var sd = el("div", "lt solo"); sd.style.gridColumn = String(col); sd.style.gridRow = String(row);
+      sd.appendChild(el("span", "lti", id)); var isB = id.charAt(0) === "B";
+      sd.appendChild(layHalf(isB ? "E" : "P", isB ? solo.E : solo.P, true, T));
+      sd.appendChild(layHalf(isB ? "P" : "E", isB ? solo.P : solo.E, false, T));
+      return sd;
+    }
+    var t = el("button", "lt" + (e ? " on" : nx ? " pre" : " off")); t.type = "button";
     t.style.gridColumn = String(col); t.style.gridRow = String(row);
     var stI = e ? Math.max(0, e.st) : 0; if (e) t.style.setProperty("--c", LAYC[stI]);
     t.appendChild(el("span", "lti", id));
@@ -9900,6 +9953,7 @@ function renderLay() {
   if (LAYZ) cd.appendChild(el("div", "hint", "옆으로 밀어서 보십시오 · 칸을 누르면 장비 일정"));
   var lg = el("div", "layg"); LAYS.forEach(function (s, i2) { var sp = el("span"); var ii = el("i"); ii.style.background = LAYC[i2]; sp.appendChild(ii); sp.appendChild(document.createTextNode(s)); lg.appendChild(sp); });
   var lx = el("span", "lgx"); lx.appendChild(el("i")); lx.appendChild(document.createTextNode("같은 자리 연달아 입고 (같은 날 · 다음 날)")); lg.appendChild(lx);
+  var lf = el("span", "lgf"); lf.appendChild(el("i")); lf.appendChild(document.createTextNode("단독 EFEM 고정 자리 (B줄 위 · A줄 아래)")); lg.appendChild(lf);
   cd.appendChild(lg);
   box.appendChild(cd);
   if (sx) wrap.scrollLeft = sx;
@@ -11774,10 +11828,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-23-8";
+var APP_VER = "2026-11-27-1";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-27-1", ["배치도: 한 자리에 단독 EFEM · PROCESS 2대가 들어오면 칸을 위아래로 나눠 보여 드립니다 · EFEM은 고정 자리입니다 (B줄 위 · A줄 아래)"]],
   ["2026-11-23-8", ["출하명이 긴 장비에서 화면이 좌우로 밀리던 현상을 고쳤습니다"]],
   ["2026-11-23-7", ["(대체) 출하명을 배지로 크게 표시해 검색 결과 · 장비 상세 · 업로드 현황에서 한눈에 보입니다"]],
   ["2026-11-23-6", ["장비 검색에서 (대체) 출하명으로도 찾을 수 있고, 검색 결과 · 장비 상세 · 업로드 현황에 출하명이 함께 보입니다"]],
