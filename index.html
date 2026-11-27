@@ -1813,6 +1813,7 @@ body.kb #tabbar{transform:translateY(140%)}
 #srch .sres .it::after{content:"";position:absolute;right:14px;top:50%;width:7px;height:7px;margin-top:-4px;border-right:2px solid var(--sub);border-top:2px solid var(--sub);transform:rotate(45deg);opacity:.4}
 #srch .sres .nm{font-size:15.5px;font-weight:900;letter-spacing:-.01em}
 #srch .sres .nx{font-weight:700;color:var(--accent)}
+#pj .pjbk{height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--card);box-shadow:var(--csh);font-weight:800;margin-bottom:12px;display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #srch .sback{height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--card);box-shadow:var(--csh);font-weight:800}
 /* 상세: 위 그라데이션 카드 */
 #srch .eqh .nmr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -9558,6 +9559,7 @@ function setTab(n) {
   try { meSync(); } catch (eM) {}
   try { pushBar(); } catch (ePb) {}
   if (SR.open) closeSearch(true);
+  if (n !== 12 && typeof PJ === "object" && PJ) PJ.back = null;   // PJ 탭을 떠나면 '장비로 돌아가기'는 지움
   cur = n;
   for (var i = 0; i < 14; i++) $("t" + i).className = "tab" + (n === i ? " on" : "");
   $("main").style.display = n < 2 ? "grid" : "none";
@@ -11878,10 +11880,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-27-4";
+var APP_VER = "2026-11-27-5";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-27-5", ["장비 화면에서 PJ 전환 표시를 눌러 PJ 전환으로 넘어가면 맨 위 '← 장비 이름' 버튼으로 그 장비 화면에 바로 돌아갈 수 있습니다"]],
   ["2026-11-27-4", ["배치도: 장비는 있는데 업체 · 담당이 정해지지 않은 자리는 자리 번호에 '미지정'으로 보여 드립니다 · 업체 버튼으로 미지정 자리만 골라 볼 수 있습니다"]],
   ["2026-11-27-3", ["앱 화면에서 오류가 나면 자동으로 알려져 더 빨리 고칠 수 있습니다"]],
   ["2026-11-27-2", ["배치도: 자리 번호에 업체(시노드 · 동오정밀)를 같이 보여 드립니다 · 한 자리에 업체가 둘이면 위 칸 업체는 위에, 아래 칸 업체는 칸 아래에 표시합니다", "배치도: 업체 버튼으로 시노드 · 동오정밀 자리만 골라 볼 수 있습니다"]],
@@ -15736,8 +15739,14 @@ function pjCnt(code) {
   return { its: its, by: o, done: done, n: its.length, late: its.filter(pjLate).length };
 }
 
+function pjBackBtn(box) {   // 장비 화면의 PJ 전환 표시를 눌러 들어온 경우: 그 장비 화면으로 돌아가기
+  var b = PJ.back; if (!b || !b.n) return;
+  var k = el("button", "sback pjbk", "← " + b.n); k.type = "button";
+  k.onclick = function () { PJ.back = null; setTab(b.tab); openEquip(b.n); };
+  box.appendChild(k);
+}
 function renderPj() {
-  var box = $("pj"); box.innerHTML = "";
+  var box = $("pj"); box.innerHTML = ""; pjBackBtn(box);
   var D = pjCached();
   if (!D) {
     box.appendChild(heroX("PJ 전환", null, "", [], ""));
@@ -16200,7 +16209,7 @@ function pjEqChips(cps, name) {
   if (!PJ.data) { if (!PJ.tried && !PJ.ld) loadPj(false); return; }
   pjForEq(name).forEach(function (m) {
     var s = el("span", "pjx", m.t + " ›");
-    s.onclick = function () { closeSearch(true); PJ.lim = 60;
+    s.onclick = function () { var bt = cur; closeSearch(true); PJ.lim = 60; PJ.back = { n: name, tab: bt === 12 ? 0 : bt };   // 2026-11-27 PJ 화면에서 이 장비로 돌아가기
       if (m.code) { PJ.sub = "st"; PJ.f = { p: m.code, k: "", st: "", q: "" }; } else { PJ.sub = "map"; PJ.mq = String(m.q || "").replace(/\s+(EFEM|PROCESS)$/i, ""); } setTab(12); window.scrollTo(0, 0); };
     cps.appendChild(s);
   });
