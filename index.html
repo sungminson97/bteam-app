@@ -2757,7 +2757,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 /* 단독 EFEM · PROCESS 자리 (위아래 반 칸) */
 .lt.solo{cursor:default;border:0;background:none;padding:5px 0 0;gap:3px;overflow:visible}.lt.solo:active{transform:none}
 .lt.solo>.lti{line-height:13px}
-.lti{max-width:100%;text-align:center}.lvd{display:block;font-size:6.4px;font-weight:900;line-height:9px;letter-spacing:-.07em;white-space:nowrap}.lvd.s{color:#0ea5e9}.lvd.d{color:#f97316}
+.lti{max-width:100%;text-align:center}.lvd{display:block;font-size:6.4px;font-weight:900;line-height:9px;letter-spacing:-.07em;white-space:nowrap}.lvd.s{color:#0ea5e9}.lvd.d{color:#f97316}.lvd.n{color:#ef4444}
 .lti.lbt{order:9;margin-top:1px;padding:0 2px}.lt.solo>.lti.lbt{line-height:10px}
 .lwrap.zm .lvd{display:inline;font-size:11px;line-height:inherit;margin-left:4px;letter-spacing:0}
 .lt.vdim>*,.lhf.vdim>*,.lti.vdim{opacity:.22}.lt.vdim:not(.solo),.lhf.vdim{border-color:var(--line);background:var(--card)}
@@ -2765,7 +2765,7 @@ html.xmas #sched .card.sday .hd .ttl{position:relative}
 .layv>b{margin-right:2px}
 .layv button{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--sub);font-size:12px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .layv button.on{background:var(--text);border-color:var(--text);color:var(--card)}
-.layv i{width:7px;height:7px;border-radius:50%}.layv i.s{background:#0ea5e9}.layv i.d{background:#f97316}.layv em{font-style:normal;font-size:11px;opacity:.8}
+.layv i{width:7px;height:7px;border-radius:50%}.layv i.s{background:#0ea5e9}.layv i.d{background:#f97316}.layv i.n{background:#ef4444}.layv em{font-style:normal;font-size:11px;opacity:.8}
 .lhf{all:unset;box-sizing:border-box;position:relative;flex:1;width:100%;min-height:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 1px 5px;border-radius:7px;border:1.5px dashed var(--line);background:var(--card);overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .lhf.on{border:1.5px solid color-mix(in srgb,var(--c) 70%,transparent);background:color-mix(in srgb,var(--c) 13%,var(--card))}
 .lhf.pre{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}.lhf.off{cursor:default;opacity:.7}
@@ -9908,9 +9908,10 @@ function layHalf(k, o, top, T) {
   return h;
 }
 /* 2026-11-27 업체(시노드 · 동오정밀) 표기: 자리 번호 옆 · 한 자리에 업체가 둘이면 위 칸 업체는 위, 아래 칸 업체는 칸 아래 (동탄 대시보드와 같음) */
-var LVD = { "시노드": "s", "동오정밀": "d" }, LAYV = "all";
+var LVD = { "시노드": "s", "동오정밀": "d", "미지정": "n" }, LAYV = "all";
 try { LAYV = localStorage.getItem("layv") || "all"; } catch (e) {}
 function layVd(o) { var s = o ? String(o.v || "") + " " + String(o.p || "") : ""; return /시노/.test(s) ? "시노드" : /동오/.test(s) ? "동오정밀" : ""; }
+function layVd2(o) { return o ? layVd(o) || "미지정" : ""; }   // 2026-11-27 장비는 있는데 업체 · 담당이 비었으면 '미지정'
 function layLab(id, v, bt) { var t = el("span", "lti" + (bt ? " lbt" : "")); t.appendChild(document.createTextNode(id)); if (v) t.appendChild(el("span", "lvd " + LVD[v], v)); return t; }
 var LAYZ = false;   // 🔍 확대 보기 (가로로 크게 · 옆으로 밀어서 보기)
 try { LAYZ = localStorage.getItem("layz") === "1"; } catch (e) {}
@@ -9934,12 +9935,12 @@ function renderLay() {
   [["장비", eqN + "대", "a"], ["사용 자리", used + " / " + LAYP.length, ""], ["빈 자리", LAYP.length - used, ""], ["입고 예정", pre, "b"]].forEach(function (k) { var c = el("span", k[2]); c.appendChild(document.createTextNode(k[0] + " ")); c.appendChild(el("b", null, String(k[1]))); sm.appendChild(c); });
   cd.appendChild(sm);
   // 가로 도면: 위 = B줄 (왼쪽 B9 → 오른쪽 B1) · 아래 = A줄 (A9 → A1, 한 칸 오른쪽으로 · B1 = A2 줄 맞춤) · 맨 오른쪽 = 출하장
-  var wrap = el("div", "lwrap" + (LAYZ ? " zm" : "")), fl = el("div", "lfl"), vc = { "시노드": 0, "동오정밀": 0 };
+  var wrap = el("div", "lwrap" + (LAYZ ? " zm" : "")), fl = el("div", "lfl"), vc = { "시노드": 0, "동오정밀": 0, "미지정": 0 };
   var tile = function (id, col, row) {
     var si = SM[id] || {}, e = si.cur, nx = si.next, solo = laySolo(si, T);
     if (solo) {   /* 단독 EFEM · PROCESS: 칸을 위아래로 나눔 · EFEM은 늘 같은 쪽 */
       var sd = el("div", "lt solo"); sd.style.gridColumn = String(col); sd.style.gridRow = String(row);
-      var isB = id.charAt(0) === "B", oT = isB ? solo.E : solo.P, oB = isB ? solo.P : solo.E, vT = layVd(oT), vB = layVd(oB);
+      var isB = id.charAt(0) === "B", oT = isB ? solo.E : solo.P, oB = isB ? solo.P : solo.E, vT = layVd2(oT), vB = layVd2(oB);
       var la = layLab(id, vT); sd.appendChild(la);
       var hT = layHalf(isB ? "E" : "P", oT, true, T), hB = layHalf(isB ? "P" : "E", oB, false, T); sd.appendChild(hT); sd.appendChild(hB);
       var lb = vB && vB !== vT ? layLab(id, vB, true) : null; if (lb) sd.appendChild(lb);
@@ -9950,7 +9951,7 @@ function renderLay() {
     var t = el("button", "lt" + (e ? " on" : nx ? " pre" : " off")); t.type = "button";
     t.style.gridColumn = String(col); t.style.gridRow = String(row);
     var stI = e ? Math.max(0, e.st) : 0; if (e) t.style.setProperty("--c", LAYC[stI]);
-    var vl = []; (e ? [e].concat(si.others || []) : nx ? [nx] : []).forEach(function (o) { var v = layVd(o); if (v && vl.indexOf(v) < 0) vl.push(v); });
+    var vl = [], vo = e ? [e].concat(si.others || []) : nx ? [nx] : []; vo.forEach(function (o) { var v = layVd(o); if (v && vl.indexOf(v) < 0) vl.push(v); }); if (!vl.length && vo.length) vl.push("미지정");
     t.appendChild(layLab(id, vl[0] || ""));
     if (vl[1]) t.appendChild(layLab(id, vl[1], true));
     vl.forEach(function (v) { vc[v]++; });
@@ -9988,9 +9989,9 @@ function renderLay() {
   var cr = el("div", "lcr"); cr.appendChild(el("b", null, "CR4")); cr.appendChild(el("small", null, "CLEAN ROOM")); fl.appendChild(cr);
   var sh = el("div", "lsh"); sh.appendChild(el("b", null, "출하장")); sh.appendChild(el("span", null, "→")); fl.appendChild(sh);
   wrap.appendChild(fl);
-  if (vc["시노드"] || vc["동오정밀"]) {   // 업체 거르기: 고른 업체가 아닌 칸은 흐리게
+  if (vc["시노드"] || vc["동오정밀"] || vc["미지정"]) {   // 업체 거르기: 고른 업체가 아닌 칸은 흐리게
     var vf = el("div", "layv"); vf.appendChild(el("b", null, "업체"));
-    [["all", "전체"], ["시노드", "시노드"], ["동오정밀", "동오정밀"]].forEach(function (x) {
+    [["all", "전체"], ["시노드", "시노드"], ["동오정밀", "동오정밀"]].concat(vc["미지정"] ? [["미지정", "미지정"]] : []).forEach(function (x) {
       var b = el("button", LAYV === x[0] ? "on" : null); b.type = "button"; b.setAttribute("aria-pressed", LAYV === x[0] ? "true" : "false");
       if (x[0] !== "all") b.appendChild(el("i", LVD[x[0]])); b.appendChild(document.createTextNode(x[1])); if (x[0] !== "all") b.appendChild(el("em", null, String(vc[x[0]])));
       b.onclick = function () { LAYV = x[0]; try { localStorage.setItem("layv", LAYV); } catch (e) {} renderLay(); };
@@ -11877,10 +11878,11 @@ $("hval").oninput = function () { resetConfirm(); updNote(); };
  * 앱을 열거나, 백그라운드에서 다시 켤 때 서버의 index.html을 캐시 없이 확인해서
  * 버전이 다르면 자동으로 새로 불러와요. (폰이 예전 화면을 붙잡고 있는 문제 해결)
  */
-var APP_VER = "2026-11-27-3";
+var APP_VER = "2026-11-27-4";
 // 📝 버전별 '바뀐 점' (최신이 맨 위) — 새 버전 올릴 때 맨 위에 한 줄 추가
 //    업데이트를 몇 번 건너뛴 사람도 그동안 바뀐 걸 한 번에 보여줌 (JSON 모양 그대로: 큰따옴표, 마지막 쉼표 없이)
 var APP_HISTORY = [
+  ["2026-11-27-4", ["배치도: 장비는 있는데 업체 · 담당이 정해지지 않은 자리는 자리 번호에 '미지정'으로 보여 드립니다 · 업체 버튼으로 미지정 자리만 골라 볼 수 있습니다"]],
   ["2026-11-27-3", ["앱 화면에서 오류가 나면 자동으로 알려져 더 빨리 고칠 수 있습니다"]],
   ["2026-11-27-2", ["배치도: 자리 번호에 업체(시노드 · 동오정밀)를 같이 보여 드립니다 · 한 자리에 업체가 둘이면 위 칸 업체는 위에, 아래 칸 업체는 칸 아래에 표시합니다", "배치도: 업체 버튼으로 시노드 · 동오정밀 자리만 골라 볼 수 있습니다"]],
   ["2026-11-27-1", ["배치도: 한 자리에 단독 EFEM · PROCESS 2대가 들어오면 칸을 위아래로 나눠 보여 드립니다 · EFEM은 고정 자리입니다 (B줄 위 · A줄 아래)"]],
